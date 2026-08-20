@@ -25,32 +25,23 @@ min-height:100vh;
 color:white;
 
 background:
-radial-gradient(
-circle at 50% -10%,
-#08704d 0%,
-#03291f 35%,
-transparent 60%
-),
-linear-gradient(
-180deg,
-#02130e,
-#010706
-);
+radial-gradient(circle at top,#064d37,transparent 40%),
+linear-gradient(180deg,#03110d,#020707);
 
 }
 
-
-/* الصفحة */
 
 .container{
 
-width:min(92%,520px);
+width:90%;
+max-width:500px;
 
 margin:auto;
 
-padding:35px 0 45px;
+padding:40px 0;
 
 }
+
 
 
 /* الحساب */
@@ -59,141 +50,113 @@ padding:35px 0 45px;
 
 text-align:center;
 
-padding:25px 20px 30px;
-
-margin-bottom:25px;
-
-border-radius:30px;
-
-background:
-linear-gradient(
-145deg,
-rgba(0,85,58,.55),
-rgba(0,30,22,.45)
-);
-
-border:1px solid rgba(0,255,145,.18);
-
-box-shadow:
-0 15px 45px rgba(0,0,0,.3);
+margin-bottom:35px;
 
 }
 
-
-/* صورة الحساب */
 
 .avatar{
 
 width:105px;
-
 height:105px;
 
-margin:0 auto 18px;
+margin:auto;
 
 border-radius:50%;
 
-object-fit:cover;
-
-display:block;
-
-border:3px solid #00e889;
-
-box-shadow:
-0 0 25px rgba(0,232,137,.18);
-
-background:#123c31;
-
-}
-
-
-/* الاسم */
-
-.name{
-
-font-size:29px;
-
-font-weight:bold;
-
-margin-bottom:10px;
-
-}
-
-
-/* ID */
-
-.id{
-
-display:inline-block;
-
-padding:8px 18px;
-
-border-radius:15px;
-
-font-size:18px;
-
-font-weight:bold;
-
-color:#00e889;
-
-background:rgba(0,232,137,.09);
-
-border:1px solid rgba(0,232,137,.18);
-
-}
-
-
-/* عنوان */
-
-.title{
-
-font-size:23px;
-
-font-weight:bold;
-
-margin:25px 5px 15px;
-
-}
-
-
-/* البطاقات */
-
-.card{
+overflow:hidden;
 
 display:flex;
 
 align-items:center;
 
-gap:16px;
-
-width:100%;
-
-padding:20px;
-
-margin-bottom:14px;
-
-border-radius:22px;
-
-text-decoration:none;
-
-color:white;
+justify-content:center;
 
 background:
-linear-gradient(
-135deg,
-rgba(0,85,58,.65),
-rgba(2,35,27,.9)
-);
+rgba(0,255,145,.12);
 
-border:1px solid rgba(0,255,145,.16);
+border:3px solid #00e889;
 
-box-shadow:
-0 10px 30px rgba(0,0,0,.25);
+font-size:45px;
 
-transition:.18s;
+}
+
+
+.avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+}
+
+
+
+h1{
+
+margin-top:20px;
+
+font-size:38px;
+
+}
+
+
+.name{
+
+margin-top:15px;
+
+font-size:25px;
+
+font-weight:bold;
+
+}
+
+
+.id{
+
+margin-top:12px;
+
+display:inline-block;
+
+padding:8px 18px;
+
+border-radius:20px;
+
+color:#00e889;
+
+background:
+rgba(0,255,145,.12);
+
+font-size:18px;
+
+}
+
+
+
+/* الخدمات */
+
+.card{
+
+padding:22px;
+
+margin-bottom:15px;
+
+border-radius:25px;
+
+background:
+rgba(0,85,58,.55);
+
+border:1px solid rgba(0,255,145,.18);
+
+font-size:20px;
 
 cursor:pointer;
 
+transition:.2s;
+
 }
+
 
 
 .card:active{
@@ -203,87 +166,21 @@ transform:scale(.97);
 }
 
 
-.card-icon{
 
-width:55px;
-
-height:55px;
-
-flex-shrink:0;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:30px;
-
-border-radius:17px;
-
-background:rgba(0,255,145,.10);
-
-}
-
-
-.card-text{
-
-flex:1;
-
-font-size:19px;
-
-font-weight:bold;
-
-}
-
-
-.card-arrow{
-
-font-size:25px;
-
-color:#00e889;
-
-}
-
-
-/* تسجيل الخروج */
+/* خروج */
 
 .logout{
 
-display:flex;
+background:
+rgba(150,30,30,.25);
 
-align-items:center;
+color:#ffaaaa;
 
-justify-content:center;
-
-width:100%;
-
-padding:18px;
-
-margin-top:25px;
-
-border-radius:20px;
-
-border:1px solid rgba(255,70,70,.25);
-
-background:rgba(100,15,15,.35);
-
-color:#ff9b9b;
-
-font-size:18px;
-
-font-weight:bold;
-
-cursor:pointer;
+border-color:
+rgba(255,80,80,.3);
 
 }
 
-
-.logout:active{
-
-transform:scale(.97);
-
-}
 
 
 /* تحميل */
@@ -300,22 +197,23 @@ justify-content:center;
 
 flex-direction:column;
 
-gap:15px;
-
-font-size:18px;
+gap:20px;
 
 color:#a8bdb6;
+
+font-size:18px;
 
 }
 
 
+
 .spinner{
 
-width:32px;
+width:35px;
 
-height:32px;
+height:35px;
 
-border:3px solid rgba(255,255,255,.15);
+border:4px solid rgba(255,255,255,.15);
 
 border-top-color:#00e889;
 
@@ -324,6 +222,7 @@ border-radius:50%;
 animation:spin .8s linear infinite;
 
 }
+
 
 
 @keyframes spin{
@@ -335,12 +234,6 @@ transform:rotate(360deg);
 }
 
 
-.hidden{
-
-display:none;
-
-}
-
 </style>
 
 </head>
@@ -349,7 +242,6 @@ display:none;
 <body>
 
 
-<!-- التحميل -->
 
 <div id="loading" class="loading">
 
@@ -363,141 +255,76 @@ display:none;
 
 
 
-<!-- الصفحة -->
 
-<main id="app" class="container hidden">
-
-
-<!-- الحساب -->
-
-<section class="profile">
-
-<img
-id="avatar"
-class="avatar"
-src=""
-alt="صورة الحساب"
->
-
-<div
-id="name"
-class="name">
-</div>
-
-<div
-id="userId"
-class="id">
-</div>
-
-</section>
+<div id="app" class="container" style="display:none;">
 
 
 
-<div class="title">
-💬 Mecd Chat
+<div class="profile">
+
+
+<div id="avatar" class="avatar">
+👤
 </div>
 
 
 
-<!-- الأصدقاء -->
+<h1>
+Mecd Chat
+</h1>
+
+
+
+<div id="name" class="name">
+</div>
+
+
+
+<div id="userId" class="id">
+</div>
+
+
+</div>
+
+
+
+
 
 <div class="card">
-
-<div class="card-icon">
-👥
+👥 الأصدقاء
 </div>
 
-<div class="card-text">
-الأصدقاء
-</div>
-
-<div class="card-arrow">
-←
-</div>
-
-</div>
-
-
-
-<!-- إنشاء غرفة -->
 
 <div class="card">
-
-<div class="card-icon">
-➕
+➕ إنشاء غرفة دردشة
 </div>
 
-<div class="card-text">
-إنشاء غرفة دردشة
-</div>
-
-<div class="card-arrow">
-←
-</div>
-
-</div>
-
-
-
-<!-- الدخول عبر ID -->
 
 <div class="card">
-
-<div class="card-icon">
-🔑
+🔑 دخول دردشة عبر ID
 </div>
 
-<div class="card-text">
-دخول دردشة عبر ID
-</div>
-
-<div class="card-arrow">
-←
-</div>
-
-</div>
-
-
-
-<!-- الإعدادات -->
 
 <div class="card">
-
-<div class="card-icon">
-⚙️
-</div>
-
-<div class="card-text">
-الإعدادات
-</div>
-
-<div class="card-arrow">
-←
-</div>
-
+⚙️ الإعدادات
 </div>
 
 
-
-<!-- تسجيل الخروج -->
-
-<button
-id="logoutBtn"
-class="logout">
-
+<div id="logoutBtn" class="card logout">
 🚪 تسجيل الخروج
+</div>
 
-</button>
 
 
-</main>
+</div>
+
+
+
 
 
 
 <script type="module">
 
-
-/* Firebase */
 
 import {
 initializeApp
@@ -507,52 +334,57 @@ from
 
 
 import {
+
 getAuth,
+
 onAuthStateChanged,
+
 signOut
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-import {
-getFirestore,
-doc,
-getDoc,
-setDoc,
-runTransaction
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
-/* إعداد Firebase */
 
 const firebaseConfig = {
 
+
 apiKey:
-"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+"AIzaSyA8ZA5fcy5Tl3hZ7_5n91xVOw06syHPGyI",
+
 
 authDomain:
 "mecd-tools.firebaseapp.com",
 
+
 projectId:
 "mecd-tools",
+
 
 storageBucket:
 "mecd-tools.firebasestorage.app",
 
+
 messagingSenderId:
 "643005547408",
+
 
 appId:
 "1:643005547408:web:b1719060ec340dd0e0a915",
 
+
 measurementId:
 "G-0VKYR3TQV2"
 
+
 };
+
+
 
 
 
@@ -560,248 +392,192 @@ const app =
 initializeApp(firebaseConfig);
 
 
+
 const auth =
 getAuth(app);
 
 
-const db =
-getFirestore(app);
 
 
-
-/* العناصر */
 
 const loading =
 document.getElementById("loading");
 
+
 const main =
 document.getElementById("app");
+
 
 const avatar =
 document.getElementById("avatar");
 
+
 const name =
 document.getElementById("name");
 
+
 const userId =
 document.getElementById("userId");
+
 
 const logoutBtn =
 document.getElementById("logoutBtn");
 
 
 
-/* إنشاء ID جديد */
 
-async function getAccountId(user){
 
-const userRef =
-doc(db,"users",user.uid);
 
+onAuthStateChanged(auth,(user)=>{
 
-/* هل الحساب موجود؟ */
 
-const existing =
-await getDoc(userRef);
+if(user){
 
 
-if(existing.exists()){
 
-return existing.data().id;
+loading.style.display="none";
 
-}
+main.style.display="block";
 
 
-/* إنشاء ID جديد */
 
-const counterRef =
-doc(db,"counters","accounts");
 
-
-let newId;
-
-
-await runTransaction(db,async(transaction)=>{
-
-const counterSnap =
-await transaction.get(counterRef);
-
-
-let number = 0;
-
-
-if(counterSnap.exists()){
-
-number =
-counterSnap.data().number || 0;
-
-}
-
-
-/* الرقم التالي */
-
-number++;
-
-
-/* ID */
-
-newId =
-"MC-" +
-String(number).padStart(6,"0");
-
-
-/* حفظ العداد */
-
-transaction.set(
-counterRef,
-{
-number:number
-},
-{
-merge:true
-}
-);
-
-
-/* حفظ الحساب */
-
-transaction.set(
-userRef,
-{
-id:newId,
-name:user.displayName || "مستخدم Mecd",
-photo:user.photoURL || "",
-createdAt:Date.now()
-}
-);
-
-});
-
-
-return newId;
-
-}
-
-
-
-/* تسجيل الدخول */
-
-onAuthStateChanged(
-auth,
-async(user)=>{
-
-if(!user){
-
-window.location.href =
-"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
-
-return;
-
-}
-
-
-try{
-
-
-/* الحصول على ID */
-
-const id =
-await getAccountId(user);
-
-
-/* الصورة */
-
-if(user.photoURL){
-
-avatar.src =
-user.photoURL;
-
-}else{
-
-avatar.src =
-"data:image/svg+xml;charset=UTF-8," +
-encodeURIComponent(`
-<svg xmlns="http://www.w3.org/2000/svg"
-width="200"
-height="200">
-
-<rect width="100%" height="100%"
-fill="#315f52"/>
-
-<text x="50%"
-y="58%"
-font-size="90"
-text-anchor="middle"
-fill="white">
-
-${(user.displayName || "M").charAt(0)}
-
-</text>
-
-</svg>
-`);
-
-}
-
-
-/* الاسم */
+// الاسم
 
 name.textContent =
 user.displayName || "مستخدم Mecd";
 
 
-/* ID */
-
-userId.textContent =
-"ID: " + id;
 
 
-/* إظهار الصفحة */
+// الصورة
 
-loading.classList.add("hidden");
-
-main.classList.remove("hidden");
+if(user.photoURL){
 
 
-}catch(error){
+avatar.innerHTML =
 
-console.error(error);
-
-loading.innerHTML =
-"حدث خطأ أثناء تحميل الحساب ❌";
+`
+<img src="${user.photoURL}">
+`;
 
 }
 
-});
 
 
 
-/* تسجيل الخروج */
+// ID
 
-logoutBtn.addEventListener(
-"click",
-async()=>{
+let id =
+localStorage.getItem("mecdChatID");
 
-try{
 
-await signOut(auth);
+
+if(!id){
+
+
+let num =
+localStorage.getItem("mecdNumber");
+
+
+
+if(!num){
+
+num=1;
+
+}else{
+
+num =
+Number(num)+1;
+
+}
+
+
+
+localStorage.setItem(
+"mecdNumber",
+num
+);
+
+
+
+id =
+"MC-" +
+String(num).padStart(6,"0");
+
+
+
+localStorage.setItem(
+"mecdChatID",
+id
+);
+
+
+
+}
+
+
+
+userId.textContent =
+"ID: "+id;
+
+
+
+}else{
+
+
+
+loading.style.display="none";
+
 
 window.location.href =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
-}catch(error){
 
-console.error(error);
-
-alert(
-"حدث خطأ أثناء تسجيل الخروج"
-);
 
 }
 
+
+
 });
 
+
+
+
+
+
+
+
+logoutBtn.onclick =
+async()=>{
+
+
+logoutBtn.textContent =
+"جاري تسجيل الخروج...";
+
+
+await signOut(auth);
+
+
+
+localStorage.removeItem(
+"mecdChatID"
+);
+
+
+
+window.location.href =
+"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+
+
+
+};
+
+
+
+
 </script>
+
 
 
 </body>
