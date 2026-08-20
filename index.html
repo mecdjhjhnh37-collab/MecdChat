@@ -147,12 +147,85 @@ Mecd Chat
 </p>
 
 
-<button>
+<button id="loginBtn">
 🔵 تسجيل الدخول بواسطة Google
 </button>
 
 
 </div>
+
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+getAuth,
+GoogleAuthProvider,
+signInWithPopup
+}
+from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain: "mecd-tools.firebaseapp.com",
+
+projectId: "mecd-tools",
+
+storageBucket: "mecd-tools.firebasestorage.app",
+
+messagingSenderId: "643005547408",
+
+appId: "1:643005547408:web:6aa62cfee07acc72e0a915",
+
+measurementId: "G-P2G68RY19Q"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
+
+const loginBtn = document.getElementById("loginBtn");
+
+
+loginBtn.onclick = async () => {
+
+try {
+
+const result = await signInWithPopup(
+auth,
+provider
+);
+
+
+console.log("تم تسجيل الدخول:", result.user);
+
+
+// هنا لاحقاً نفتح صفحة الدردشة
+
+
+} catch(error){
+
+console.log(error);
+
+alert("حدث خطأ في تسجيل الدخول");
+
+}
+
+};
+
+
+</script>
 
 
 </body>
