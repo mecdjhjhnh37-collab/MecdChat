@@ -17,17 +17,13 @@ padding:0;
 }
 
 body{
-
 min-height:100vh;
-
 font-family:Arial,sans-serif;
-
 color:white;
 
 background:
 radial-gradient(circle at top,#064d37,transparent 40%),
 linear-gradient(180deg,#03110d,#020707);
-
 }
 
 
@@ -37,21 +33,17 @@ width:90%;
 max-width:500px;
 
 margin:auto;
-
 padding:40px 0;
 
 }
 
 
-
 .profile{
 
 text-align:center;
-
 margin-bottom:35px;
 
 }
-
 
 
 .avatar{
@@ -66,20 +58,16 @@ border-radius:50%;
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
-background:
-rgba(0,255,145,.12);
+background:rgba(0,255,145,.12);
 
 border:3px solid #00e889;
 
 font-size:45px;
 
 }
-
 
 
 .avatar img{
@@ -92,39 +80,30 @@ object-fit:cover;
 }
 
 
-
 h1{
 
 margin-top:20px;
-
 font-size:38px;
 
 }
 
 
-
 .name{
 
 margin-top:15px;
-
 font-size:25px;
-
 font-weight:bold;
 
 }
 
 
-
 .id{
 
 margin-top:12px;
-
 font-size:18px;
-
 color:#00e889;
 
 }
-
 
 
 .card{
@@ -135,8 +114,7 @@ margin-bottom:15px;
 
 border-radius:25px;
 
-background:
-rgba(0,85,58,.55);
+background:rgba(0,85,58,.55);
 
 border:1px solid rgba(0,255,145,.18);
 
@@ -145,16 +123,13 @@ font-size:20px;
 }
 
 
-
 .logout{
 
-background:
-rgba(160,40,40,.25);
+background:rgba(160,40,40,.25);
 
 color:#ffaaaa;
 
 }
-
 
 
 .loading{
@@ -178,11 +153,9 @@ font-size:18px;
 }
 
 
-
 .spinner{
 
 width:35px;
-
 height:35px;
 
 border:4px solid rgba(255,255,255,.15);
@@ -204,14 +177,12 @@ transform:rotate(360deg);
 
 }
 
-
 </style>
 
 </head>
 
 
 <body>
-
 
 
 <div id="loading" class="loading">
@@ -227,9 +198,7 @@ transform:rotate(360deg);
 
 
 
-
 <div id="app" class="container" style="display:none;">
-
 
 
 <div class="profile">
@@ -245,12 +214,10 @@ Mecd Chat
 </h1>
 
 
-<div id="name" class="name">
-</div>
+<div id="name" class="name"></div>
 
 
-<div id="userId" class="id">
-</div>
+<div id="userId" class="id"></div>
 
 
 </div>
@@ -283,36 +250,82 @@ Mecd Chat
 </div>
 
 
-
 </div>
 
 
 
+<script type="module">
 
 
-<script>
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+getFirestore,
+doc,
+getDoc,
+setDoc,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain: "mecd-tools.firebaseapp.com",
+
+projectId: "mecd-tools",
+
+storageBucket: "mecd-tools.firebasestorage.app",
+
+messagingSenderId: "643005547408",
+
+appId: "1:643005547408:web:b1719060ec340dd0e0a915"
+
+};
+
+
+
+const firebaseApp =
+initializeApp(firebaseConfig);
+
+
+const auth =
+getAuth(firebaseApp);
+
+
+const db =
+getFirestore(firebaseApp);
+
 
 
 const loading =
 document.getElementById("loading");
 
-
 const app =
 document.getElementById("app");
-
 
 const avatar =
 document.getElementById("avatar");
 
-
 const name =
 document.getElementById("name");
 
-
 const userId =
 document.getElementById("userId");
-
-
 
 const logout =
 document.getElementById("logoutBtn");
@@ -321,16 +334,73 @@ document.getElementById("logoutBtn");
 
 
 
-// جلب حساب Mecd Tools
-
-const user =
-JSON.parse(localStorage.getItem("mecdUser"));
+async function getUserID(user){
 
 
+const ref =
+doc(db,"users",user.uid);
 
+
+const old =
+await getDoc(ref);
+
+
+
+if(old.exists()){
+
+
+return old.data().chatID;
+
+
+}
+
+
+
+const all =
+await getDocs(collection(db,"users"));
+
+
+
+let number =
+all.size + 1;
+
+
+
+let newID =
+"MC-" +
+String(number).padStart(6,"0");
+
+
+
+await setDoc(ref,{
+
+name:user.displayName || "مستخدم Mecd",
+
+photo:user.photoURL || "",
+
+chatID:newID
+
+});
+
+
+
+return newID;
+
+
+}
+
+
+
+
+
+onAuthStateChanged(auth,async(user)=>{
 
 
 if(user){
+
+
+let id =
+await getUserID(user);
 
 
 
@@ -340,90 +410,25 @@ app.style.display="block";
 
 
 
-
-// الاسم
-
 name.textContent =
-user.name || "مستخدم Mecd";
+user.displayName || "مستخدم Mecd";
 
 
 
-
-
-// الصورة
-
-if(user.photo){
+if(user.photoURL){
 
 
 avatar.innerHTML =
 `
-<img src="${user.photo}">
+<img src="${user.photoURL}">
 `;
 
 }
 
 
 
-
-
-// إنشاء ID
-
-let id =
-localStorage.getItem("mecdChatID");
-
-
-
-if(!id){
-
-
-
-let number =
-localStorage.getItem("mecdNumber");
-
-
-
-if(!number){
-
-number=1;
-
-}else{
-
-number =
-Number(number)+1;
-
-}
-
-
-
-localStorage.setItem(
-"mecdNumber",
-number
-);
-
-
-
-id =
-"MC-" +
-String(number).padStart(6,"0");
-
-
-
-localStorage.setItem(
-"mecdChatID",
-id
-);
-
-
-
-}
-
-
-
 userId.textContent =
-"ID: "+id;
-
-
-
+"ID: " + id;
 
 
 
@@ -437,18 +442,17 @@ window.location.href =
 
 
 
+});
 
 
 
-// تسجيل الخروج
 
 
-logout.onclick=()=>{
+
+logout.onclick=async()=>{
 
 
-localStorage.removeItem("mecdUser");
-
-localStorage.removeItem("mecdChatID");
+await signOut(auth);
 
 
 window.location.href =
