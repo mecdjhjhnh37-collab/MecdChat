@@ -17,13 +17,17 @@ padding:0;
 }
 
 body{
+
 min-height:100vh;
+
 font-family:Arial,sans-serif;
+
 color:white;
 
 background:
 radial-gradient(circle at top,#064d37,transparent 40%),
 linear-gradient(180deg,#03110d,#020707);
+
 }
 
 
@@ -33,6 +37,7 @@ width:90%;
 max-width:500px;
 
 margin:auto;
+
 padding:40px 0;
 
 }
@@ -41,6 +46,7 @@ padding:40px 0;
 .profile{
 
 text-align:center;
+
 margin-bottom:35px;
 
 }
@@ -58,6 +64,7 @@ border-radius:50%;
 overflow:hidden;
 
 display:flex;
+
 align-items:center;
 justify-content:center;
 
@@ -83,6 +90,7 @@ object-fit:cover;
 h1{
 
 margin-top:20px;
+
 font-size:38px;
 
 }
@@ -91,7 +99,9 @@ font-size:38px;
 .name{
 
 margin-top:15px;
+
 font-size:25px;
+
 font-weight:bold;
 
 }
@@ -100,7 +110,9 @@ font-weight:bold;
 .id{
 
 margin-top:12px;
+
 font-size:18px;
+
 color:#00e889;
 
 }
@@ -119,6 +131,17 @@ background:rgba(0,85,58,.55);
 border:1px solid rgba(0,255,145,.18);
 
 font-size:20px;
+
+cursor:pointer;
+
+transition:.2s;
+
+}
+
+
+.card:active{
+
+transform:scale(.98);
 
 }
 
@@ -156,6 +179,7 @@ font-size:18px;
 .spinner{
 
 width:35px;
+
 height:35px;
 
 border:4px solid rgba(255,255,255,.15);
@@ -172,7 +196,9 @@ animation:spin .8s linear infinite;
 @keyframes spin{
 
 to{
+
 transform:rotate(360deg);
+
 }
 
 }
@@ -185,18 +211,21 @@ transform:rotate(360deg);
 <body>
 
 
+<!-- شاشة التحميل -->
+
 <div id="loading" class="loading">
 
 <div class="spinner"></div>
 
-<div>
-جارٍ تحميل الحساب...
+<div id="loadingText">
+جارٍ التحقق من الحساب...
 </div>
 
 </div>
 
 
 
+<!-- Mecd Chat -->
 
 <div id="app" class="container" style="display:none;">
 
@@ -205,7 +234,9 @@ transform:rotate(360deg);
 
 
 <div id="avatar" class="avatar">
+
 👤
+
 </div>
 
 
@@ -214,39 +245,52 @@ Mecd Chat
 </h1>
 
 
-<div id="name" class="name"></div>
+<div id="name" class="name">
+
+</div>
 
 
-<div id="userId" class="id"></div>
+<div id="userId" class="id">
+
+</div>
 
 
 </div>
 
 
 
-
 <div class="card">
+
 👥 الأصدقاء
+
 </div>
 
 
 <div class="card">
+
 ➕ إنشاء غرفة دردشة
+
 </div>
 
 
 <div class="card">
+
 🔑 دخول دردشة عبر ID
+
 </div>
 
 
 <div class="card">
+
 ⚙️ الإعدادات
+
 </div>
 
 
 <div id="logoutBtn" class="card logout">
+
 🚪 تسجيل الخروج
+
 </div>
 
 
@@ -257,7 +301,14 @@ Mecd Chat
 <script type="module">
 
 
-import { initializeApp }
+/* =========================
+   Firebase
+========================= */
+
+
+import {
+initializeApp
+}
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
@@ -274,29 +325,44 @@ getFirestore,
 doc,
 getDoc,
 setDoc,
-collection,
-getDocs
+runTransaction
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 
+/* =========================
+   Firebase Config
+========================= */
+
+
 const firebaseConfig = {
 
-apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
 
-authDomain: "mecd-tools.firebaseapp.com",
+authDomain:
+"mecd-tools.firebaseapp.com",
 
-projectId: "mecd-tools",
+projectId:
+"mecd-tools",
 
-storageBucket: "mecd-tools.firebasestorage.app",
+storageBucket:
+"mecd-tools.firebasestorage.app",
 
-messagingSenderId: "643005547408",
+messagingSenderId:
+"643005547408",
 
-appId: "1:643005547408:web:b1719060ec340dd0e0a915"
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915"
 
 };
 
+
+
+/* =========================
+   Firebase Start
+========================= */
 
 
 const firebaseApp =
@@ -312,155 +378,356 @@ getFirestore(firebaseApp);
 
 
 
+/* =========================
+   Elements
+========================= */
+
+
 const loading =
 document.getElementById("loading");
+
+
+const loadingText =
+document.getElementById("loadingText");
+
 
 const app =
 document.getElementById("app");
 
+
 const avatar =
 document.getElementById("avatar");
+
 
 const name =
 document.getElementById("name");
 
+
 const userId =
 document.getElementById("userId");
+
 
 const logout =
 document.getElementById("logoutBtn");
 
 
 
+/* =========================
+   Mecd Tools URL
+========================= */
+
+
+const mecdToolsURL =
+"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+
+
+
+/* =========================
+   إنشاء ID ثابت للمستخدم
+========================= */
 
 
 async function getUserID(user){
 
-
-const ref =
+const userRef =
 doc(db,"users",user.uid);
 
 
-const old =
-await getDoc(ref);
+/* أولاً: نبحث عن حساب المستخدم */
+
+const userSnapshot =
+await getDoc(userRef);
 
 
+if(userSnapshot.exists()){
 
-if(old.exists()){
+const data =
+userSnapshot.data();
 
 
-return old.data().chatID;
+if(data.chatID){
 
+return data.chatID;
+
+}
 
 }
 
 
-
-const all =
-await getDocs(collection(db,"users"));
-
-
-
-let number =
-all.size + 1;
+/* =========================
+   إنشاء ID جديد
+========================= */
 
 
+const newID =
+await runTransaction(
+db,
+async(transaction)=>{
 
-let newID =
+
+/*
+
+نستخدم مستند خاص بالعداد
+
+حتى لا نعتمد على عدد
+المستخدمين الموجودين.
+
+*/
+
+
+const counterRef =
+doc(db,"settings","userCounter");
+
+
+const counterSnapshot =
+await transaction.get(counterRef);
+
+
+let nextNumber = 1;
+
+
+if(counterSnapshot.exists()){
+
+const data =
+counterSnapshot.data();
+
+
+nextNumber =
+(data.lastNumber || 0) + 1;
+
+}
+
+
+/* ID الجديد */
+
+const chatID =
 "MC-" +
-String(number).padStart(6,"0");
+String(nextNumber).padStart(6,"0");
 
 
+/* تحديث العداد */
 
-await setDoc(ref,{
+transaction.set(
+counterRef,
+{
+lastNumber:nextNumber
+},
+{
+merge:true
+}
+);
 
-name:user.displayName || "مستخدم Mecd",
 
-photo:user.photoURL || "",
+/* حفظ حساب المستخدم */
 
-chatID:newID
+transaction.set(
+userRef,
+{
 
-});
+name:
+user.displayName || "مستخدم Mecd",
 
+photo:
+user.photoURL || "",
+
+chatID:
+chatID,
+
+createdAt:
+new Date()
+
+},
+{
+merge:true
+}
+);
+
+
+return chatID;
+
+}
+);
 
 
 return newID;
 
+}
+
+
+
+/* =========================
+   التحقق من تسجيل الدخول
+========================= */
+
+
+onAuthStateChanged(
+auth,
+async(user)=>{
+
+
+/*
+
+إذا لم يوجد مستخدم
+نعيده إلى Mecd Tools.
+
+*/
+
+
+if(!user){
+
+window.location.replace(
+mecdToolsURL
+);
+
+return;
 
 }
 
 
 
+/* =========================
+   المستخدم مسجل دخول
+========================= */
 
 
-onAuthStateChanged(auth,async(user)=>{
+try{
 
 
-if(user){
+loadingText.textContent =
+"جارٍ تحميل حسابك...";
 
 
-let id =
+/* الحصول على ID */
+
+const id =
 await getUserID(user);
 
 
-
-loading.style.display="none";
-
-app.style.display="block";
-
-
+/* الاسم */
 
 name.textContent =
-user.displayName || "مستخدم Mecd";
+user.displayName ||
+"مستخدم Mecd";
 
 
+/* صورة Google */
 
 if(user.photoURL){
 
+avatar.innerHTML = `
 
-avatar.innerHTML =
-`
-<img src="${user.photoURL}">
+<img
+src="${user.photoURL}"
+alt="صورة الحساب"
+>
+
 `;
+
+}else{
+
+avatar.textContent =
+"👤";
 
 }
 
 
+/* ID */
 
 userId.textContent =
 "ID: " + id;
 
 
+/* إظهار التطبيق */
 
-}else{
+loading.style.display =
+"none";
+
+app.style.display =
+"block";
 
 
-window.location.href =
-"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+}catch(error){
+
+
+console.error(
+"Mecd Chat error:",
+error
+);
+
+
+/*
+
+إذا حصل خطأ في Firestore
+لا ندخل المستخدم إلى التطبيق.
+
+*/
+
+loadingText.textContent =
+"حدث خطأ أثناء تحميل الحساب";
+
 
 }
-
-
 
 });
 
 
 
+/* =========================
+   تسجيل الخروج
+========================= */
 
 
+logout.addEventListener(
+"click",
+async()=>{
 
-logout.onclick=async()=>{
+
+logout.textContent =
+"جاري تسجيل الخروج...";
+
+
+logout.style.pointerEvents =
+"none";
+
+
+try{
 
 
 await signOut(auth);
 
 
-window.location.href =
-"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+/*
 
-};
+بعد تسجيل الخروج
+نرجع إلى Mecd Tools.
+
+*/
+
+window.location.replace(
+mecdToolsURL
+);
 
 
+}catch(error){
+
+
+console.error(
+"Logout error:",
+error
+);
+
+
+logout.textContent =
+"🚪 تسجيل الخروج";
+
+
+logout.style.pointerEvents =
+"auto";
+
+
+}
+
+});
 
 </script>
 
