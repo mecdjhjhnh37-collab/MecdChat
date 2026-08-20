@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,112 +17,166 @@ padding:0;
 }
 
 body{
-min-height:100vh;
 font-family:Arial,sans-serif;
+min-height:100vh;
 color:white;
-display:flex;
-align-items:center;
-justify-content:center;
 
 background:
 radial-gradient(circle at top,#064d37,transparent 40%),
 linear-gradient(180deg,#03110d,#020707);
 }
 
-
-.card{
-
+.container{
 width:90%;
-max-width:400px;
-
-padding:40px 25px;
-
-text-align:center;
-
-border-radius:30px;
-
-background:
-rgba(0,60,40,.65);
-
-border:1px solid rgba(0,255,145,.25);
-
-box-shadow:
-0 20px 60px rgba(0,0,0,.4);
-
+max-width:500px;
+margin:auto;
+padding:40px 0;
 }
 
+.profile{
+text-align:center;
+margin-bottom:40px;
+}
 
-.logo{
-
+.avatar{
 width:100px;
 height:100px;
-
-margin:0 auto 25px;
-
-border-radius:30px;
+margin:auto;
+border-radius:50%;
 
 display:flex;
 align-items:center;
 justify-content:center;
 
-font-size:55px;
+font-size:50px;
 
-background:
-rgba(0,255,145,.12);
+background:rgba(0,255,145,.12);
+border:2px solid #00e889;
 
+overflow:hidden;
 }
 
+.avatar img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
 
-.profile img{
+h1{
+margin-top:20px;
+font-size:36px;
+}
 
-width:80px;
-height:80px;
+.name{
+margin-top:12px;
+font-size:24px;
+font-weight:bold;
+}
+
+.email{
+margin-top:7px;
+color:#a8bdb6;
+font-size:16px;
+}
+
+.id{
+color:#00e889;
+margin-top:12px;
+font-size:18px;
+}
+
+.card{
+padding:20px;
+margin-bottom:15px;
+
+border-radius:22px;
+
+background:rgba(0,85,58,.55);
+
+border:1px solid rgba(0,255,145,.18);
+
+font-size:20px;
+
+cursor:pointer;
+
+transition:.2s;
+}
+
+.card:active{
+transform:scale(.98);
+}
+
+.logout{
+background:rgba(180,40,40,.25);
+border-color:rgba(255,80,80,.25);
+color:#ffaaaa;
+}
+
+.loading{
+min-height:100vh;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+flex-direction:column;
+
+gap:20px;
+
+font-size:20px;
+
+color:#a8bdb6;
+}
+
+.spinner{
+width:35px;
+height:35px;
+
+border:4px solid rgba(255,255,255,.15);
+border-top-color:#00e889;
 
 border-radius:50%;
 
-margin-bottom:15px;
-
-border:2px solid #00e889;
-
+animation:spin .8s linear infinite;
 }
 
-
-h1{
-
-font-size:38px;
-margin-bottom:15px;
-
+@keyframes spin{
+to{
+transform:rotate(360deg);
 }
-
-
-h2{
-
-margin-bottom:10px;
-
-}
-
-
-p{
-
-color:#a8bdb6;
-font-size:18px;
-line-height:1.7;
-
 }
 
 </style>
 
 </head>
 
-
 <body>
 
 
-<div class="card">
+<!-- شاشة التحميل -->
+
+<div id="loading" class="loading">
+
+<div class="spinner"></div>
+
+<div>
+جارٍ تحميل الحساب...
+</div>
+
+</div>
 
 
-<div class="logo">
-💬
+
+<!-- صفحة Mecd Chat -->
+
+<div id="app" class="container" style="display:none;">
+
+
+<div class="profile">
+
+
+<div id="avatar" class="avatar">
+👤
 </div>
 
 
@@ -130,14 +185,47 @@ Mecd Chat
 </h1>
 
 
-<div id="profile" class="profile">
+<div id="name" class="name">
+مستخدم Mecd
+</div>
+
+
+<div id="email" class="email">
+</div>
+
+
+<div id="userId" class="id">
+ID: 000001
+</div>
+
 
 </div>
 
 
-<p id="status">
-جارٍ تحميل الحساب...
-</p>
+
+<div class="card">
+👥 الأصدقاء
+</div>
+
+
+<div class="card">
+➕ إنشاء غرفة دردشة
+</div>
+
+
+<div class="card">
+🔑 دخول دردشة عبر ID
+</div>
+
+
+<div class="card">
+⚙️ الإعدادات
+</div>
+
+
+<div id="logoutBtn" class="card logout">
+🚪 تسجيل الخروج
+</div>
 
 
 </div>
@@ -147,13 +235,16 @@ Mecd Chat
 <script type="module">
 
 
-import { initializeApp }
+import {
+initializeApp
+}
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
 getAuth,
-onAuthStateChanged
+onAuthStateChanged,
+signOut
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -179,18 +270,35 @@ measurementId: "G-0VKYR3TQV2"
 
 
 
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
+const app =
+initializeApp(firebaseConfig);
 
 
-const profile =
-document.getElementById("profile");
+const auth =
+getAuth(app);
 
 
-const status =
-document.getElementById("status");
+
+const loading =
+document.getElementById("loading");
+
+const main =
+document.getElementById("app");
+
+const avatar =
+document.getElementById("avatar");
+
+const name =
+document.getElementById("name");
+
+const email =
+document.getElementById("email");
+
+const userId =
+document.getElementById("userId");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
 
 
 
@@ -199,34 +307,110 @@ onAuthStateChanged(auth,(user)=>{
 
 if(user){
 
+loading.style.display = "none";
 
-profile.innerHTML = `
+main.style.display = "block";
 
-<img src="${user.photoURL || 'https://via.placeholder.com/80'}">
 
-<h2>
-${user.displayName || "مستخدم Mecd"}
-</h2>
+// اسم الحساب
 
-<p>
-${user.email}
-</p>
+name.textContent =
+user.displayName || "مستخدم Mecd";
 
+
+// الإيميل
+
+email.textContent =
+user.email || "";
+
+
+// صورة Google
+
+if(user.photoURL){
+
+avatar.innerHTML = `
+<img
+src="${user.photoURL}"
+alt="صورة الحساب"
+>
 `;
 
+}else{
 
-status.textContent =
-"تم تحميل الحساب ✅";
+avatar.textContent = "👤";
+
+}
+
+
+// إنشاء ID ثابت من UID
+
+const savedId =
+localStorage.getItem("mecdChatID");
+
+if(!savedId){
+
+const newId =
+"MC" +
+Math.floor(100000 + Math.random() * 900000);
+
+localStorage.setItem(
+"mecdChatID",
+newId
+);
+
+userId.textContent =
+"ID: " + newId;
+
+}else{
+
+userId.textContent =
+"ID: " + savedId;
+
+}
 
 
 }else{
 
+
+loading.style.display = "none";
+
+
+// إذا لم يكن مسجل دخول
+// يرجعه إلى Mecd Tools
 
 window.location.href =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
 }
 
+});
+
+
+
+// تسجيل الخروج
+
+logoutBtn.addEventListener("click",async()=>{
+
+logoutBtn.textContent =
+"جاري تسجيل الخروج...";
+
+try{
+
+await signOut(auth);
+
+localStorage.removeItem("mecdUser");
+
+window.location.href =
+"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+
+}catch(error){
+
+console.error(error);
+
+logoutBtn.textContent =
+"🚪 تسجيل الخروج";
+
+}
 
 });
 
