@@ -94,6 +94,13 @@ margin-bottom:15px;
 }
 
 
+h2{
+
+margin-bottom:10px;
+
+}
+
+
 p{
 
 color:#a8bdb6;
@@ -128,7 +135,7 @@ Mecd Chat
 </div>
 
 
-<p>
+<p id="status">
 جارٍ تحميل الحساب...
 </p>
 
@@ -137,26 +144,79 @@ Mecd Chat
 
 
 
-<script>
+<script type="module">
 
-const user =
-JSON.parse(localStorage.getItem("mecdUser"));
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain: "mecd-tools.firebaseapp.com",
+
+projectId: "mecd-tools",
+
+storageBucket: "mecd-tools.firebasestorage.app",
+
+messagingSenderId: "643005547408",
+
+appId: "1:643005547408:web:b1719060ec340dd0e0a915",
+
+measurementId: "G-0VKYR3TQV2"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+
+const profile =
+document.getElementById("profile");
+
+
+const status =
+document.getElementById("status");
+
+
+
+onAuthStateChanged(auth,(user)=>{
 
 
 if(user){
 
 
-document.getElementById("profile").innerHTML = `
+profile.innerHTML = `
 
-<img src="${user.photo}">
+<img src="${user.photoURL || 'https://via.placeholder.com/80'}">
 
-<h2>${user.name}</h2>
+<h2>
+${user.displayName || "مستخدم Mecd"}
+</h2>
 
 <p>
 ${user.email}
 </p>
 
 `;
+
+
+status.textContent =
+"تم تحميل الحساب ✅";
 
 
 }else{
@@ -166,6 +226,9 @@ window.location.href =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
 }
+
+
+});
 
 
 </script>
