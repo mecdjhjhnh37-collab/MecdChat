@@ -18,9 +18,9 @@ padding:0;
 
 body{
 
-font-family:Arial,sans-serif;
-
 min-height:100vh;
+
+font-family:Arial,sans-serif;
 
 color:white;
 
@@ -44,8 +44,6 @@ padding:40px 0;
 
 
 
-/* الحساب */
-
 .profile{
 
 text-align:center;
@@ -53,6 +51,7 @@ text-align:center;
 margin-bottom:35px;
 
 }
+
 
 
 .avatar{
@@ -82,6 +81,7 @@ font-size:45px;
 }
 
 
+
 .avatar img{
 
 width:100%;
@@ -102,6 +102,7 @@ font-size:38px;
 }
 
 
+
 .name{
 
 margin-top:15px;
@@ -113,28 +114,18 @@ font-weight:bold;
 }
 
 
+
 .id{
 
 margin-top:12px;
 
-display:inline-block;
-
-padding:8px 18px;
-
-border-radius:20px;
+font-size:18px;
 
 color:#00e889;
-
-background:
-rgba(0,255,145,.12);
-
-font-size:18px;
 
 }
 
 
-
-/* الخدمات */
 
 .card{
 
@@ -151,43 +142,24 @@ border:1px solid rgba(0,255,145,.18);
 
 font-size:20px;
 
-cursor:pointer;
-
-transition:.2s;
-
 }
 
 
-
-.card:active{
-
-transform:scale(.97);
-
-}
-
-
-
-/* خروج */
 
 .logout{
 
 background:
-rgba(150,30,30,.25);
+rgba(160,40,40,.25);
 
 color:#ffaaaa;
-
-border-color:
-rgba(255,80,80,.3);
 
 }
 
 
 
-/* تحميل */
-
 .loading{
 
-min-height:100vh;
+height:100vh;
 
 display:flex;
 
@@ -224,7 +196,6 @@ animation:spin .8s linear infinite;
 }
 
 
-
 @keyframes spin{
 
 to{
@@ -256,6 +227,7 @@ transform:rotate(360deg);
 
 
 
+
 <div id="app" class="container" style="display:none;">
 
 
@@ -268,16 +240,13 @@ transform:rotate(360deg);
 </div>
 
 
-
 <h1>
 Mecd Chat
 </h1>
 
 
-
 <div id="name" class="name">
 </div>
-
 
 
 <div id="userId" class="id">
@@ -285,7 +254,6 @@ Mecd Chat
 
 
 </div>
-
 
 
 
@@ -322,89 +290,14 @@ Mecd Chat
 
 
 
-
-<script type="module">
-
-
-import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-import {
-
-getAuth,
-
-onAuthStateChanged,
-
-signOut
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-
-
-
-const firebaseConfig = {
-
-
-apiKey:
-"AIzaSyA8ZA5fcy5Tl3hZ7_5n91xVOw06syHPGyI",
-
-
-authDomain:
-"mecd-tools.firebaseapp.com",
-
-
-projectId:
-"mecd-tools",
-
-
-storageBucket:
-"mecd-tools.firebasestorage.app",
-
-
-messagingSenderId:
-"643005547408",
-
-
-appId:
-"1:643005547408:web:b1719060ec340dd0e0a915",
-
-
-measurementId:
-"G-0VKYR3TQV2"
-
-
-};
-
-
-
-
-
-const app =
-initializeApp(firebaseConfig);
-
-
-
-const auth =
-getAuth(app);
-
-
-
+<script>
 
 
 const loading =
 document.getElementById("loading");
 
 
-const main =
+const app =
 document.getElementById("app");
 
 
@@ -420,15 +313,21 @@ const userId =
 document.getElementById("userId");
 
 
-const logoutBtn =
+
+const logout =
 document.getElementById("logoutBtn");
 
 
 
 
 
+// جلب حساب Mecd Tools
 
-onAuthStateChanged(auth,(user)=>{
+const user =
+JSON.parse(localStorage.getItem("mecdUser"));
+
+
+
 
 
 if(user){
@@ -437,7 +336,7 @@ if(user){
 
 loading.style.display="none";
 
-main.style.display="block";
+app.style.display="block";
 
 
 
@@ -445,20 +344,20 @@ main.style.display="block";
 // الاسم
 
 name.textContent =
-user.displayName || "مستخدم Mecd";
+user.name || "مستخدم Mecd";
+
 
 
 
 
 // الصورة
 
-if(user.photoURL){
+if(user.photo){
 
 
 avatar.innerHTML =
-
 `
-<img src="${user.photoURL}">
+<img src="${user.photo}">
 `;
 
 }
@@ -466,7 +365,8 @@ avatar.innerHTML =
 
 
 
-// ID
+
+// إنشاء ID
 
 let id =
 localStorage.getItem("mecdChatID");
@@ -476,19 +376,20 @@ localStorage.getItem("mecdChatID");
 if(!id){
 
 
-let num =
+
+let number =
 localStorage.getItem("mecdNumber");
 
 
 
-if(!num){
+if(!number){
 
-num=1;
+number=1;
 
 }else{
 
-num =
-Number(num)+1;
+number =
+Number(number)+1;
 
 }
 
@@ -496,14 +397,14 @@ Number(num)+1;
 
 localStorage.setItem(
 "mecdNumber",
-num
+number
 );
 
 
 
 id =
 "MC-" +
-String(num).padStart(6,"0");
+String(number).padStart(6,"0");
 
 
 
@@ -523,61 +424,41 @@ userId.textContent =
 
 
 
+
+
+
 }else{
-
-
-
-loading.style.display="none";
 
 
 window.location.href =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
-
-
 
 }
 
 
 
-});
 
 
 
+// تسجيل الخروج
 
 
+logout.onclick=()=>{
 
 
+localStorage.removeItem("mecdUser");
 
-logoutBtn.onclick =
-async()=>{
-
-
-logoutBtn.textContent =
-"جاري تسجيل الخروج...";
-
-
-await signOut(auth);
-
-
-
-localStorage.removeItem(
-"mecdChatID"
-);
-
+localStorage.removeItem("mecdChatID");
 
 
 window.location.href =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
-
-
 };
 
 
 
-
 </script>
-
 
 
 </body>
