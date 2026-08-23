@@ -1074,7 +1074,17 @@ document.getElementById("blockFriendButton");
 
 const closeFriendMenu =
 document.getElementById("closeFriendMenu");
+chatFriendButton.addEventListener("click", () => {
 
+    if (!selectedFriend) {
+        return;
+    }
+
+    window.location.href =
+        "./chat.html?friend=" +
+        encodeURIComponent(selectedFriend.uid);
+
+});
 
 /* =========================
    المتغيرات
