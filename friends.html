@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#050807">
+
+<title>Mecd Chat - الأصدقاء</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+
+min-height:100vh;
+
+font-family:Arial,Tahoma,sans-serif;
+
+color:white;
+
+background:
+radial-gradient(
+circle at 50% 0%,
+#123d35 0%,
+transparent 35%
+),
+linear-gradient(
+180deg,
+#07110f 0%,
+#020504 100%
+);
+
+overflow-x:hidden;
+
+}
+
+
+/* الخلفية */
+
+.background{
+
+position:fixed;
+inset:0;
+
+overflow:hidden;
+
+pointer-events:none;
+
+z-index:0;
+
+}
+
+.glow{
+
+position:absolute;
+
+width:300px;
+height:300px;
+
+border-radius:50%;
+
+filter:blur(100px);
+
+opacity:.18;
+
+}
+
+.glow.one{
+
+background:#00e676;
+
+top:-100px;
+right:-100px;
+
+}
+
+.glow.two{
+
+background:#2979ff;
+
+bottom:-100px;
+left:-100px;
+
+}
+
+
+/* التطبيق */
+
+.app{
+
+position:relative;
+
+z-index:1;
+
+width:100%;
+
+max-width:650px;
+
+min-height:100vh;
+
+margin:auto;
+
+padding:25px 20px 45px;
+
+}
+
+
+/* الهيدر */
+
+header{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:40px;
+
+}
+
+.brand{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.logo{
+
+width:52px;
+height:52px;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+border-radius:16px;
+
+font-size:27px;
+
+background:
+linear-gradient(
+135deg,
+#00e676,
+#00a85a
+);
+
+box-shadow:
+0 10px 30px
+rgba(0,230,118,.22);
+
+}
+
+.brand h2{
+
+font-size:21px;
+
+}
+
+.brand span{
+
+display:block;
+
+margin-top:4px;
+
+color:#8d9a97;
+
+font-size:12px;
+
+}
+
+
+/* زر الرجوع */
+
+.back-button{
+
+border:1px solid
+rgba(255,255,255,.08);
+
+background:
+rgba(255,255,255,.04);
+
+color:white;
+
+padding:10px 14px;
+
+border-radius:15px;
+
+font-size:14px;
+
+cursor:pointer;
+
+}
+
+.back-button:active{
+
+transform:scale(.96);
+
+}
+
+
+/* العنوان */
+
+.hero{
+
+text-align:center;
+
+margin-bottom:30px;
+
+}
+
+.hero-icon{
+
+width:82px;
+height:82px;
+
+margin:0 auto 20px;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+border-radius:26px;
+
+font-size:40px;
+
+background:
+rgba(0,255,145,.08);
+
+border:1px solid
+rgba(0,255,145,.15);
+
+box-shadow:
+0 20px 60px
+rgba(0,0,0,.3);
+
+}
+
+.hero h1{
+
+font-size:34px;
+
+margin-bottom:12px;
+
+}
+
+.hero h1 span{
+
+color:#00e676;
+
+}
+
+.hero p{
+
+color:#9ba7a4;
+
+font-size:15px;
+
+line-height:1.7;
+
+}
+
+
+/* البحث */
+
+.search-box{
+
+padding:20px;
+
+border-radius:25px;
+
+background:
+linear-gradient(
+135deg,
+rgba(0,85,58,.55),
+rgba(2,31,24,.75)
+);
+
+border:1px solid
+rgba(0,255,145,.16);
+
+box-shadow:
+0 15px 45px
+rgba(0,0,0,.25);
+
+margin-bottom:22px;
+
+}
+
+.search-title{
+
+font-size:17px;
+
+font-weight:bold;
+
+margin-bottom:12px;
+
+}
+
+.search-row{
+
+display:flex;
+
+gap:10px;
+
+}
+
+#friendId{
+
+flex:1;
+
+min-width:0;
+
+padding:15px;
+
+border-radius:15px;
+
+border:1px solid
+rgba(255,255,255,.1);
+
+outline:none;
+
+background:
+rgba(0,0,0,.25);
+
+color:white;
+
+font-size:15px;
+
+font-family:inherit;
+
+text-align:right;
+
+}
+
+#friendId::placeholder{
+
+color:#687872;
+
+}
+
+#searchBtn{
+
+padding:0 20px;
+
+border:none;
+
+border-radius:15px;
+
+background:#00e889;
+
+color:#00150e;
+
+font-weight:bold;
+
+font-size:15px;
+
+cursor:pointer;
+
+}
+
+#searchBtn:active{
+
+transform:scale(.96);
+
+}
+
+#searchBtn:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+
+
+/* النتيجة */
+
+.result{
+
+display:none;
+
+padding:20px;
+
+border-radius:25px;
+
+background:
+rgba(255,255,255,.035);
+
+border:1px solid
+rgba(255,255,255,.08);
+
+margin-bottom:20px;
+
+}
+
+.user-card{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.user-avatar{
+
+width:65px;
+height:65px;
+
+flex-shrink:0;
+
+border-radius:20px;
+
+overflow:hidden;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:28px;
+
+background:
+rgba(0,255,145,.1);
+
+border:1px solid
+rgba(0,255,145,.15);
+
+}
+
+.user-avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+}
+
+.user-info{
+
+flex:1;
+
+min-width:0;
+
+}
+
+.user-name{
+
+font-size:18px;
+
+font-weight:bold;
+
+margin-bottom:7px;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+}
+
+.user-id{
+
+color:#00e889;
+
+font-size:13px;
+
+}
+
+.add-button{
+
+margin-top:15px;
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+border-radius:15px;
+
+background:#00e889;
+
+color:#00150e;
+
+font-size:15px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.add-button:active{
+
+transform:scale(.98);
+
+}
+
+
+/* الرسائل */
+
+.message{
+
+display:none;
+
+padding:18px;
+
+border-radius:18px;
+
+text-align:center;
+
+font-size:14px;
+
+line-height:1.6;
+
+margin-bottom:20px;
+
+}
+
+.message.error{
+
+background:
+rgba(255,70,70,.08);
+
+border:1px solid
+rgba(255,70,70,.15);
+
+color:#ffaaaa;
+
+}
+
+.message.success{
+
+background:
+rgba(0,230,118,.08);
+
+border:1px solid
+rgba(0,230,118,.15);
+
+color:#8fffc5;
+
+}
+
+
+/* أصدقائي */
+
+.section-title{
+
+font-size:20px;
+
+font-weight:bold;
+
+margin:30px 0 15px;
+
+}
+
+.empty{
+
+padding:25px;
+
+border-radius:22px;
+
+background:
+rgba(255,255,255,.03);
+
+border:1px solid
+rgba(255,255,255,.06);
+
+text-align:center;
+
+color:#788680;
+
+font-size:14px;
+
+line-height:1.7;
+
+}
+
+
+/* Loading */
+
+.loading{
+
+position:fixed;
+
+inset:0;
+
+z-index:999;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+flex-direction:column;
+
+gap:18px;
+
+background:
+linear-gradient(
+180deg,
+#07110f,
+#020504
+);
+
+color:#a8bdb6;
+
+}
+
+.spinner{
+
+width:35px;
+height:35px;
+
+border:4px solid
+rgba(255,255,255,.15);
+
+border-top-color:#00e889;
+
+border-radius:50%;
+
+animation:spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+to{
+
+transform:rotate(360deg);
+
+}
+
+}
+
+
+/* الموبايل */
+
+@media(max-width:480px){
+
+.app{
+
+padding:20px 15px 35px;
+
+}
+
+.logo{
+
+width:45px;
+height:45px;
+
+border-radius:14px;
+
+font-size:23px;
+
+}
+
+.brand h2{
+
+font-size:18px;
+
+}
+
+.back-button{
+
+font-size:12px;
+
+padding:9px 11px;
+
+}
+
+.hero h1{
+
+font-size:30px;
+
+}
+
+.search-row{
+
+flex-direction:column;
+
+}
+
+#searchBtn{
+
+height:50px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="background">
+
+<div class="glow one"></div>
+
+<div class="glow two"></div>
+
+</div>
+
+
+<!-- Loading -->
+
+<div id="loading" class="loading">
+
+<div class="spinner"></div>
+
+<div>
+جارٍ تحميل الحساب...
+</div>
+
+</div>
+
+
+<!-- التطبيق -->
+
+<main id="app" class="app" style="display:none;">
+
+
+<!-- Header -->
+
+<header>
+
+<div class="brand">
+
+<div class="logo">
+👥
+</div>
+
+<div>
+
+<h2>
+الأصدقاء
+</h2>
+
+<span>
+Mecd Chat
+</span>
+
+</div>
+
+</div>
+
+
+<button
+id="backBtn"
+class="back-button"
+>
+
+← رجوع
+
+</button>
+
+</header>
+
+
+<!-- Hero -->
+
+<section class="hero">
+
+<div class="hero-icon">
+👥
+</div>
+
+<h1>
+
+<span>
+الأصدقاء
+</span>
+
+</h1>
+
+<p>
+
+ابحث عن أصدقائك باستخدام
+ID الخاص بهم وأضفهم إلى قائمة أصدقائك.
+
+</p>
+
+</section>
+
+
+<!-- البحث -->
+
+<section class="search-box">
+
+<div class="search-title">
+
+🔎 البحث عن صديق
+
+</div>
+
+
+<div class="search-row">
+
+<input
+id="friendId"
+type="text"
+placeholder="مثال: MC-000002"
+autocomplete="off"
+>
+
+<button
+id="searchBtn"
+>
+
+بحث
+
+</button>
+
+</div>
+
+</section>
+
+
+<!-- الرسائل -->
+
+<div
+id="errorMessage"
+class="message error"
+></div>
+
+
+<div
+id="successMessage"
+class="message success"
+></div>
+
+
+<!-- النتيجة -->
+
+<div
+id="result"
+class="result"
+>
+
+<div class="user-card">
+
+
+<div
+id="userAvatar"
+class="user-avatar"
+>
+
+👤
+
+</div>
+
+
+<div class="user-info">
+
+<div
+id="userName"
+class="user-name"
+>
+</div>
+
+<div
+id="foundUserId"
+class="user-id"
+>
+</div>
+
+</div>
+
+</div>
+
+
+<button
+id="addButton"
+class="add-button"
+>
+
+➕ إضافة صديق
+
+</button>
+
+</div>
+
+
+<!-- قائمة الأصدقاء -->
+
+<div class="section-title">
+
+👥 أصدقائي
+
+</div>
+
+
+<div class="empty">
+
+لا يوجد أصدقاء حتى الآن.
+<br>
+ابحث عن صديق باستخدام الـ ID لإضافته.
+
+</div>
+
+
+</main>
+
+
+<script type="module">
+
+
+/* =========================
+   Firebase
+========================= */
+
+import {
+
+initializeApp
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
+getFirestore,
+collection,
+query,
+where,
+getDocs,
+doc,
+getDoc,
+setDoc
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain:
+"mecd-tools.firebaseapp.com",
+
+projectId:
+"mecd-tools",
+
+storageBucket:
+"mecd-tools.firebasestorage.app",
+
+messagingSenderId:
+"643005547408",
+
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915",
+
+measurementId:
+"G-0VKYR3TQV2"
+
+};
+
+
+const firebaseApp =
+initializeApp(firebaseConfig);
+
+
+const auth =
+getAuth(firebaseApp);
+
+
+const db =
+getFirestore(firebaseApp);
+
+
+/* =========================
+   العناصر
+========================= */
+
+const loading =
+document.getElementById("loading");
+
+const app =
+document.getElementById("app");
+
+const friendId =
+document.getElementById("friendId");
+
+const searchBtn =
+document.getElementById("searchBtn");
+
+const result =
+document.getElementById("result");
+
+const userAvatar =
+document.getElementById("userAvatar");
+
+const userName =
+document.getElementById("userName");
+
+const foundUserId =
+document.getElementById("foundUserId");
+
+const addButton =
+document.getElementById("addButton");
+
+const errorMessage =
+document.getElementById("errorMessage");
+
+const successMessage =
+document.getElementById("successMessage");
+
+const backBtn =
+document.getElementById("backBtn");
+
+
+/* المستخدم الحالي */
+
+let currentUser = null;
+
+let foundUser = null;
+
+
+/* رابط Mecd Chat */
+
+const mecdChatURL =
+"https://mecdjhjhnh37-collab.github.io/MecdChat/";
+
+
+/* =========================
+   الرسائل
+========================= */
+
+function hideMessages(){
+
+errorMessage.style.display =
+"none";
+
+successMessage.style.display =
+"none";
+
+}
+
+function showError(message){
+
+hideMessages();
+
+result.style.display =
+"none";
+
+errorMessage.textContent =
+message;
+
+errorMessage.style.display =
+"block";
+
+}
+
+function showSuccess(message){
+
+hideMessages();
+
+successMessage.textContent =
+message;
+
+successMessage.style.display =
+"block";
+
+}
+
+
+/* =========================
+   فحص تسجيل الدخول
+========================= */
+
+onAuthStateChanged(
+
+auth,
+
+(user)=>{
+
+if(user){
+
+currentUser = user;
+
+loading.style.display =
+"none";
+
+app.style.display =
+"block";
+
+}else{
+
+window.location.replace(
+mecdChatURL
+);
+
+}
+
+}
+
+);
+
+
+/* =========================
+   البحث عن المستخدم
+========================= */
+
+async function searchFriend(){
+
+hideMessages();
+
+result.style.display =
+"none";
+
+const id =
+friendId.value
+.trim()
+.toUpperCase();
+
+
+if(!id){
+
+showError(
+"اكتب ID الخاص بالصديق أولاً."
+);
+
+return;
+
+}
+
+
+if(
+!/^MC-\d{6}$/.test(id)
+){
+
+showError(
+"صيغة ID غير صحيحة. مثال: MC-000002"
+);
+
+return;
+
+}
+
+
+if(
+currentUser &&
+currentUser.uid
+){
+
+/* لا تسمح للمستخدم بالبحث عن نفسه لاحقاً */
+
+}
+
+
+searchBtn.disabled =
+true;
+
+searchBtn.textContent =
+"جاري البحث...";
+
+
+try{
+
+
+/*
+البحث في users
+عن chatID مطابق
+*/
+
+const usersRef =
+collection(
+db,
+"users"
+);
+
+
+const usersQuery =
+query(
+usersRef,
+where(
+"chatID",
+"==",
+id
+)
+);
+
+
+const snapshot =
+await getDocs(
+usersQuery
+);
+
+
+if(snapshot.empty){
+
+showError(
+"لم يتم العثور على مستخدم بهذا الـ ID."
+);
+
+return;
+
+}
+
+
+const userDoc =
+snapshot.docs[0];
+
+const data =
+userDoc.data();
+
+
+/* منع إضافة نفسك */
+
+if(
+currentUser &&
+userDoc.id === currentUser.uid
+){
+
+showError(
+"لا يمكنك إضافة نفسك كصديق."
+);
+
+return;
+
+}
+
+
+/* حفظ المستخدم الموجود */
+
+foundUser = {
+
+uid:
+userDoc.id,
+
+name:
+data.name ||
+"مستخدم Mecd",
+
+photo:
+data.photo ||
+"",
+
+chatID:
+data.chatID ||
+id
+
+};
+
+
+/* عرض الصورة */
+
+if(foundUser.photo){
+
+userAvatar.innerHTML = `
+
+<img
+src="${foundUser.photo}"
+alt="صورة المستخدم"
+>
+
+`;
+
+}else{
+
+userAvatar.textContent =
+"👤";
+
+}
+
+
+/* الاسم */
+
+userName.textContent =
+foundUser.name;
+
+
+/* ID */
+
+foundUserId.textContent =
+"ID: " +
+foundUser.chatID;
+
+
+/* عرض النتيجة */
+
+result.style.display =
+"block";
+
+
+}catch(error){
+
+console.error(
+"Search error:",
+error
+);
+
+showError(
+"حدث خطأ أثناء البحث. حاول مرة أخرى."
+);
+
+}finally{
+
+searchBtn.disabled =
+false;
+
+searchBtn.textContent =
+"بحث";
+
+}
+
+}
+
+
+/* =========================
+   زر البحث
+========================= */
+
+searchBtn.addEventListener(
+
+"click",
+
+searchFriend
+
+);
+
+
+/* البحث بالضغط Enter */
+
+friendId.addEventListener(
+
+"keydown",
+
+(event)=>{
+
+if(
+event.key === "Enter"
+){
+
+searchFriend();
+
+}
+
+}
+
+);
+
+
+/* =========================
+   إضافة صديق
+========================= */
+
+addButton.addEventListener(
+
+"click",
+
+async()=>{
+
+if(
+!currentUser ||
+!foundUser
+){
+
+return;
+
+}
+
+
+addButton.disabled =
+true;
+
+addButton.textContent =
+"جاري الإضافة...";
+
+
+try{
+
+
+/*
+مكان حفظ الصداقة:
+
+users
+  UID
+    friends
+      UID الصديق
+*/
+
+
+const friendRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+foundUser.uid
+);
+
+
+const existing =
+await getDoc(
+friendRef
+);
+
+
+if(existing.exists()){
+
+showSuccess(
+"هذا المستخدم موجود بالفعل في أصدقائك."
+);
+
+return;
+
+}
+
+
+/* حفظ الصديق */
+
+await setDoc(
+
+friendRef,
+
+{
+
+uid:
+foundUser.uid,
+
+name:
+foundUser.name,
+
+photo:
+foundUser.photo,
+
+chatID:
+foundUser.chatID,
+
+addedAt:
+Date.now()
+
+}
+
+);
+
+
+showSuccess(
+"✅ تمت إضافة الصديق بنجاح!"
+);
+
+
+addButton.textContent =
+"✓ تمت الإضافة";
+
+
+}catch(error){
+
+console.error(
+"Add friend error:",
+error
+);
+
+showError(
+"حدث خطأ أثناء إضافة الصديق."
+);
+
+addButton.disabled =
+false;
+
+addButton.textContent =
+"➕ إضافة صديق";
+
+}
+
+});
+
+
+/* =========================
+   الرجوع
+========================= */
+
+backBtn.addEventListener(
+
+"click",
+
+()=>{
+
+window.location.href =
+mecdChatURL;
+
+}
+
+);
+
+
+/* =========================
+   Service Worker
+========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+navigator.serviceWorker
+.register("./sw.js")
+
+.then(
+registration=>{
+
+console.log(
+"Friends Service Worker:",
+registration.scope
+);
+
+}
+
+)
+
+.catch(
+error=>{
+
+console.error(
+"Service Worker:",
+error
+);
+
+}
+
+);
+
+}
+
+);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
