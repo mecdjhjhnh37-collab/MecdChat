@@ -6,7 +6,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mecd Chat</title>
+<meta name="theme-color" content="#061712">
+
+<title>Mecd Tools</title>
 
 <style>
 
@@ -17,45 +19,153 @@ padding:0;
 }
 
 body{
-font-family:Arial,sans-serif;
+
 min-height:100vh;
+
+font-family:Arial,Tahoma,sans-serif;
+
 color:white;
 
 background:
-radial-gradient(circle at top,#064d37,transparent 40%),
-linear-gradient(180deg,#03110d,#020707);
-}
-
-
-.container{
-
-width:90%;
-max-width:500px;
-
-margin:auto;
-
-padding:40px 0;
+radial-gradient(
+circle at 50% -10%,
+#08734f 0%,
+#064d37 18%,
+transparent 48%
+),
+linear-gradient(
+180deg,
+#03110d 0%,
+#020707 100%
+);
 
 }
 
 
-.profile{
+/* =========================
+   Loading
+========================= */
+
+.loading{
+
+position:fixed;
+
+inset:0;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+flex-direction:column;
+
+gap:18px;
+
+background:#020707;
+
+z-index:999;
+
+}
+
+.loading-logo{
+
+width:85px;
+height:85px;
+
+border-radius:26px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:44px;
+
+background:rgba(0,255,145,.12);
+
+border:1px solid rgba(0,255,145,.25);
+
+box-shadow:
+0 0 40px rgba(0,255,145,.08);
+
+}
+
+.spinner{
+
+width:30px;
+height:30px;
+
+border:3px solid rgba(255,255,255,.12);
+
+border-top-color:#00e889;
+
+border-radius:50%;
+
+animation:spin .8s linear infinite;
+
+}
+
+@keyframes spin{
+
+to{
+transform:rotate(360deg);
+}
+
+}
+
+
+/* =========================
+   Login
+========================= */
+
+.login{
+
+min-height:100vh;
+
+display:none;
+
+align-items:center;
+
+justify-content:center;
+
+padding:25px;
+
+}
+
+.login-box{
+
+width:min(100%,420px);
+
+padding:38px 25px;
 
 text-align:center;
 
-margin-bottom:40px;
+border-radius:30px;
+
+background:
+linear-gradient(
+145deg,
+rgba(0,75,51,.75),
+rgba(2,25,19,.95)
+);
+
+border:1px solid rgba(0,255,145,.2);
+
+box-shadow:
+0 25px 70px rgba(0,0,0,.45);
 
 }
 
+.main-logo{
 
-.avatar{
+width:95px;
+height:95px;
 
-width:100px;
-height:100px;
+margin:0 auto 22px;
 
-margin:auto;
-
-border-radius:50%;
+border-radius:28px;
 
 display:flex;
 
@@ -65,58 +175,471 @@ justify-content:center;
 
 font-size:50px;
 
-background:rgba(0,255,145,.12);
+background:rgba(0,255,145,.1);
 
-border:1px solid rgba(0,255,145,.25);
+border:1px solid rgba(0,255,145,.22);
+
+}
+
+.login-box h1{
+
+font-size:35px;
+
+margin-bottom:12px;
+
+}
+
+.login-box p{
+
+color:#9db1aa;
+
+font-size:17px;
+
+line-height:1.7;
+
+margin-bottom:25px;
+
+}
+
+.login-button{
+
+width:100%;
+
+padding:16px;
+
+border:0;
+
+border-radius:18px;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+background:#00e889;
+
+color:#00150e;
+
+transition:.2s;
+
+}
+
+.login-button:active{
+
+transform:scale(.97);
+
+}
+
+.login-button:disabled{
+
+opacity:.6;
 
 }
 
 
-h1{
+/* =========================
+   Main
+========================= */
 
-margin-top:20px;
+.main{
 
-font-size:36px;
+display:none;
+
+width:min(94%,760px);
+
+margin:auto;
+
+padding:22px 0 45px;
 
 }
 
 
-.id{
+/* =========================
+   Account
+========================= */
+
+.top{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:35px;
+
+}
+
+.brand-mini{
+
+font-size:19px;
+
+font-weight:bold;
+
+color:#d9e8e3;
+
+}
+
+.account{
+
+position:relative;
+
+}
+
+.account-button{
+
+display:flex;
+
+align-items:center;
+
+gap:9px;
+
+padding:6px 9px;
+
+border-radius:18px;
+
+border:1px solid rgba(0,255,145,.2);
+
+background:rgba(0,55,37,.65);
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.account-button:active{
+
+transform:scale(.97);
+
+}
+
+.account-photo{
+
+width:40px;
+height:40px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:2px solid #00e889;
+
+}
+
+.account-name{
+
+max-width:120px;
+
+font-size:14px;
+
+font-weight:bold;
+
+white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+}
+
+.arrow{
+
+font-size:12px;
 
 color:#00e889;
 
-margin-top:10px;
-
-font-size:18px;
-
 }
 
 
-.card{
+/* Account menu */
 
-padding:20px;
+.menu{
 
-margin-bottom:15px;
+position:absolute;
 
-border-radius:22px;
+top:55px;
 
-background:rgba(0,85,58,.55);
+right:0;
 
-border:1px solid rgba(0,255,145,.18);
+width:220px;
 
-font-size:20px;
+padding:10px;
+
+border-radius:20px;
+
+background:
+linear-gradient(
+145deg,
+rgba(0,65,44,.98),
+rgba(2,25,19,.99)
+);
+
+border:1px solid rgba(0,255,145,.2);
+
+box-shadow:
+0 20px 50px rgba(0,0,0,.5);
+
+display:none;
+
+z-index:100;
+
+}
+
+.menu.show{
+
+display:block;
+
+}
+
+.menu-email{
+
+padding:10px;
+
+font-size:13px;
+
+color:#91a59e;
+
+white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+margin-bottom:8px;
+
+}
+
+.logout{
+
+width:100%;
+
+padding:12px;
+
+border:0;
+
+border-radius:13px;
+
+background:rgba(255,70,70,.12);
+
+color:#ff9b9b;
+
+font-weight:bold;
 
 cursor:pointer;
 
 }
 
 
-.card:hover{
+/* =========================
+   Hero
+========================= */
 
-background:rgba(0,120,80,.7);
+.hero{
+
+text-align:center;
+
+margin-bottom:42px;
 
 }
 
+.hero-logo{
+
+width:105px;
+height:105px;
+
+margin:auto;
+
+border-radius:31px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:54px;
+
+background:
+linear-gradient(
+145deg,
+rgba(0,255,145,.15),
+rgba(0,120,80,.12)
+);
+
+border:1px solid rgba(0,255,145,.25);
+
+box-shadow:
+0 15px 45px rgba(0,0,0,.25);
+
+}
+
+.hero h1{
+
+font-size:40px;
+
+margin-top:20px;
+
+}
+
+.hero p{
+
+margin-top:10px;
+
+font-size:18px;
+
+color:#9db1aa;
+
+}
+
+
+/* =========================
+   Section
+========================= */
+
+.section-title{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+font-size:23px;
+
+font-weight:bold;
+
+margin-bottom:18px;
+
+}
+
+
+/* =========================
+   Services
+========================= */
+
+.services{
+
+display:grid;
+
+gap:16px;
+
+}
+
+.service{
+
+display:flex;
+
+align-items:center;
+
+gap:17px;
+
+padding:20px;
+
+text-decoration:none;
+
+color:white;
+
+border-radius:25px;
+
+background:
+linear-gradient(
+135deg,
+rgba(0,75,51,.72),
+rgba(2,30,23,.9)
+);
+
+border:1px solid rgba(0,255,145,.17);
+
+box-shadow:
+0 12px 35px rgba(0,0,0,.25);
+
+transition:.2s;
+
+}
+
+.service:active{
+
+transform:scale(.98);
+
+}
+
+.service-icon{
+
+width:68px;
+height:68px;
+
+flex-shrink:0;
+
+border-radius:21px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:35px;
+
+background:rgba(0,255,145,.1);
+
+border:1px solid rgba(0,255,145,.18);
+
+}
+
+.service-info{
+
+flex:1;
+
+}
+
+.service-name{
+
+font-size:21px;
+
+font-weight:bold;
+
+margin-bottom:7px;
+
+}
+
+.service-description{
+
+font-size:14px;
+
+line-height:1.6;
+
+color:#93a8a1;
+
+}
+
+.service-arrow{
+
+font-size:27px;
+
+color:#00e889;
+
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.footer{
+
+text-align:center;
+
+margin-top:45px;
+
+color:#53665f;
+
+font-size:13px;
+
+}
 
 </style>
 
@@ -126,49 +649,513 @@ background:rgba(0,120,80,.7);
 <body>
 
 
-<div class="container">
+<!-- Loading -->
+
+<div id="loading" class="loading">
+
+<div class="loading-logo">
+🛠️
+</div>
+
+<div class="spinner"></div>
+
+</div>
 
 
-<div class="profile">
+<!-- Login -->
 
-<div class="avatar">
-👤
+<div id="login" class="login">
+
+<div class="login-box">
+
+<div class="main-logo">
+🛠️
 </div>
 
 <h1>
-Mecd Chat
+Mecd Tools
 </h1>
 
-<div class="id">
-ID: 000001
+<p>
+أهلاً بك 👋<br>
+سجّل الدخول للوصول إلى جميع خدمات Mecd
+</p>
+
+<button id="loginBtn" class="login-button">
+🔵 تسجيل الدخول بواسطة Google
+</button>
+
+</div>
+
+</div>
+
+
+<!-- Main -->
+
+<main id="main" class="main">
+
+
+<!-- Top -->
+
+<div class="top">
+
+<div class="brand-mini">
+Mecd Tools
+</div>
+
+
+<div class="account">
+
+<button
+id="accountButton"
+class="account-button"
+>
+
+<img
+id="accountPhoto"
+class="account-photo"
+src=""
+alt="الحساب"
+>
+
+<span
+id="accountName"
+class="account-name"
+>
+الحساب
+</span>
+
+<span class="arrow">
+▼
+</span>
+
+</button>
+
+
+<div
+id="menu"
+class="menu"
+>
+
+<div
+id="accountEmail"
+class="menu-email"
+>
+</div>
+
+<button
+id="logoutBtn"
+class="logout"
+>
+🚪 تسجيل الخروج
+</button>
+
 </div>
 
 </div>
 
-
-
-<div class="card">
-👥 الأصدقاء
 </div>
 
 
-<div class="card">
-➕ إنشاء غرفة دردشة
+<!-- Hero -->
+
+<header class="hero">
+
+<div class="hero-logo">
+🛠️
+</div>
+
+<h1>
+Mecd Tools
+</h1>
+
+<p>
+كل أدواتك في مكان واحد
+</p>
+
+</header>
+
+
+<!-- Services -->
+
+<section>
+
+<div class="section-title">
+🧰 الخدمات
 </div>
 
 
-<div class="card">
-🔑 دخول دردشة عبر ID
+<div class="services">
+
+
+<!-- Camera -->
+
+<a
+class="service"
+href="https://mecdjhjhnh37-collab.github.io/walkie-talkie-telsiz/"
+>
+
+<div class="service-icon">
+📷
 </div>
 
+<div class="service-info">
 
-<div class="card">
-⚙️ الإعدادات
+<div class="service-name">
+Camera Connect
 </div>
 
+<div class="service-description">
+استخدم هاتفك ككاميرا واتصل بجهاز مراقبة بسهولة.
+</div>
+
+</div>
+
+<div class="service-arrow">
+←
+</div>
+
+</a>
+
+
+<!-- Chat -->
+
+<a
+class="service"
+href="https://mecdjhjhnh37-collab.github.io/MecdChat/"
+>
+
+<div class="service-icon">
+💬
+</div>
+
+<div class="service-info">
+
+<div class="service-name">
+Mecd Chat
+</div>
+
+<div class="service-description">
+دردشة وغرف خاصة بين مستخدمي Mecd.
+</div>
+
+</div>
+
+<div class="service-arrow">
+←
+</div>
+
+</a>
 
 
 </div>
+
+</section>
+
+
+<footer class="footer">
+Mecd Tools © 2026
+</footer>
+
+
+</main>
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+getAuth,
+GoogleAuthProvider,
+signInWithPopup,
+onAuthStateChanged,
+setPersistence,
+browserLocalPersistence,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+/* Firebase */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain:
+"mecd-tools.firebaseapp.com",
+
+projectId:
+"mecd-tools",
+
+storageBucket:
+"mecd-tools.firebasestorage.app",
+
+messagingSenderId:
+"643005547408",
+
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915",
+
+measurementId:
+"G-0VKYR3TQV2"
+
+};
+
+
+const firebaseApp =
+initializeApp(firebaseConfig);
+
+
+const auth =
+getAuth(firebaseApp);
+
+const provider =
+new GoogleAuthProvider();
+
+
+/* Elements */
+
+const loading =
+document.getElementById("loading");
+
+const login =
+document.getElementById("login");
+
+const main =
+document.getElementById("main");
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const accountButton =
+document.getElementById("accountButton");
+
+const accountPhoto =
+document.getElementById("accountPhoto");
+
+const accountName =
+document.getElementById("accountName");
+
+const accountEmail =
+document.getElementById("accountEmail");
+
+const menu =
+document.getElementById("menu");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
+
+
+/* Persistence */
+
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+/* Save user */
+
+function saveUser(user){
+
+localStorage.setItem(
+"mecdUser",
+
+JSON.stringify({
+
+name:
+user.displayName || "مستخدم Mecd",
+
+photo:
+user.photoURL || "",
+
+email:
+user.email || ""
+
+})
+);
+
+}
+
+
+/* Show user */
+
+function showUser(user){
+
+accountName.textContent =
+user.displayName || "مستخدم";
+
+accountEmail.textContent =
+user.email || "";
+
+accountPhoto.src =
+user.photoURL ||
+"https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+
+}
+
+
+/* Auth */
+
+onAuthStateChanged(
+auth,
+(user)=>{
+
+loading.style.display =
+"none";
+
+
+if(user){
+
+saveUser(user);
+
+showUser(user);
+
+login.style.display =
+"none";
+
+main.style.display =
+"block";
+
+}
+
+else{
+
+main.style.display =
+"none";
+
+login.style.display =
+"flex";
+
+}
+
+}
+);
+
+
+/* Login */
+
+loginBtn.addEventListener(
+"click",
+
+async()=>{
+
+loginBtn.disabled =
+true;
+
+loginBtn.textContent =
+"جاري تسجيل الدخول...";
+
+
+try{
+
+const result =
+await signInWithPopup(
+auth,
+provider
+);
+
+saveUser(result.user);
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"حدث خطأ أثناء تسجيل الدخول."
+);
+
+loginBtn.disabled =
+false;
+
+loginBtn.textContent =
+"🔵 تسجيل الدخول بواسطة Google";
+
+}
+
+}
+);
+
+
+/* Account menu */
+
+accountButton.addEventListener(
+"click",
+
+(event)=>{
+
+event.stopPropagation();
+
+menu.classList.toggle("show");
+
+}
+);
+
+
+/* Close menu */
+
+document.addEventListener(
+"click",
+
+()=>{
+
+menu.classList.remove("show");
+
+}
+);
+
+
+/* Logout */
+
+logoutBtn.addEventListener(
+"click",
+
+async(event)=>{
+
+event.stopPropagation();
+
+logoutBtn.disabled =
+true;
+
+logoutBtn.textContent =
+"جاري تسجيل الخروج...";
+
+
+try{
+
+await signOut(auth);
+
+localStorage.removeItem(
+"mecdUser"
+);
+
+}
+
+catch(error){
+
+console.error(error);
+
+logoutBtn.disabled =
+false;
+
+logoutBtn.textContent =
+"🚪 تسجيل الخروج";
+
+}
+
+}
+);
+
+</script>
 
 
 </body>
