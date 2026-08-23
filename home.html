@@ -4,13 +4,20 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="theme-color" content="#061712">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+content="#061712">
 
 <title>Mecd Tools</title>
 
 <style>
+
+/* =========================
+   Reset
+========================= */
 
 *{
 box-sizing:border-box;
@@ -18,25 +25,29 @@ margin:0;
 padding:0;
 }
 
+
+/* =========================
+   Body
+========================= */
+
 body{
 
-min-height:100vh;
+font-family:Arial,sans-serif;
 
-font-family:Arial,Tahoma,sans-serif;
+min-height:100vh;
 
 color:white;
 
 background:
 radial-gradient(
-circle at 50% -10%,
-#08734f 0%,
-#064d37 18%,
-transparent 48%
+circle at 50% 0%,
+#064d37 0%,
+transparent 38%
 ),
 linear-gradient(
 180deg,
-#03110d 0%,
-#020707 100%
+#03110d,
+#020707
 );
 
 }
@@ -48,9 +59,7 @@ linear-gradient(
 
 .loading{
 
-position:fixed;
-
-inset:0;
+min-height:100vh;
 
 display:flex;
 
@@ -62,18 +71,20 @@ flex-direction:column;
 
 gap:18px;
 
-background:#020707;
+color:#a8bdb6;
 
-z-index:999;
+font-size:18px;
 
 }
 
+
 .loading-logo{
 
-width:85px;
-height:85px;
+width:80px;
 
-border-radius:26px;
+height:80px;
+
+border-radius:25px;
 
 display:flex;
 
@@ -81,87 +92,264 @@ align-items:center;
 
 justify-content:center;
 
-font-size:44px;
+font-size:42px;
 
-background:rgba(0,255,145,.12);
+background:
+rgba(0,255,145,.12);
 
-border:1px solid rgba(0,255,145,.25);
-
-box-shadow:
-0 0 40px rgba(0,255,145,.08);
+border:
+1px solid rgba(0,255,145,.25);
 
 }
 
+
 .spinner{
 
-width:30px;
-height:30px;
+width:28px;
 
-border:3px solid rgba(255,255,255,.12);
+height:28px;
+
+border:
+3px solid rgba(255,255,255,.15);
 
 border-top-color:#00e889;
 
 border-radius:50%;
 
-animation:spin .8s linear infinite;
+animation:
+spin .8s linear infinite;
 
 }
+
 
 @keyframes spin{
 
 to{
+
 transform:rotate(360deg);
+
 }
 
 }
 
 
 /* =========================
-   Login
+   Main
 ========================= */
 
-.login{
-
-min-height:100vh;
+.container{
 
 display:none;
 
-align-items:center;
+width:min(92%,700px);
 
-justify-content:center;
+margin:auto;
 
-padding:25px;
+padding:
+25px 0 40px;
 
 }
 
-.login-box{
 
-width:min(100%,420px);
+/* =========================
+   Account
+========================= */
 
-padding:38px 25px;
+.account-area{
 
-text-align:center;
+position:relative;
 
-border-radius:30px;
+display:flex;
+
+justify-content:flex-start;
+
+margin-bottom:25px;
+
+}
+
+
+.account-button{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:7px 10px;
+
+border-radius:18px;
+
+border:
+1px solid rgba(0,255,145,.2);
+
+background:
+rgba(0,60,40,.55);
+
+color:white;
+
+cursor:pointer;
+
+}
+
+
+.account-photo{
+
+width:42px;
+
+height:42px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:2px solid #00e889;
+
+}
+
+
+.account-name{
+
+max-width:150px;
+
+overflow:hidden;
+
+white-space:nowrap;
+
+text-overflow:ellipsis;
+
+font-size:15px;
+
+font-weight:bold;
+
+}
+
+
+.account-arrow{
+
+color:#00e889;
+
+font-size:14px;
+
+}
+
+
+/* =========================
+   Account Menu
+========================= */
+
+.account-menu{
+
+position:absolute;
+
+top:58px;
+
+right:0;
+
+width:220px;
+
+padding:10px;
+
+border-radius:18px;
 
 background:
 linear-gradient(
 145deg,
-rgba(0,75,51,.75),
-rgba(2,25,19,.95)
+rgba(0,60,40,.98),
+rgba(2,25,20,.98)
 );
 
-border:1px solid rgba(0,255,145,.2);
+border:
+1px solid rgba(0,255,145,.2);
 
 box-shadow:
-0 25px 70px rgba(0,0,0,.45);
+0 15px 40px rgba(0,0,0,.4);
+
+display:none;
+
+z-index:100;
 
 }
 
-.main-logo{
 
-width:95px;
-height:95px;
+.account-menu.show{
+
+display:block;
+
+}
+
+
+.account-email{
+
+padding:10px;
+
+color:#9db1aa;
+
+font-size:13px;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+
+margin-bottom:8px;
+
+}
+
+
+.back-button{
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+border-radius:12px;
+
+background:
+rgba(0,255,145,.10);
+
+color:#00e889;
+
+font-size:15px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+
+.back-button:active{
+
+transform:scale(.97);
+
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.header{
+
+text-align:center;
+
+margin-bottom:40px;
+
+}
+
+
+.logo{
+
+width:90px;
+
+height:90px;
 
 margin:0 auto 22px;
 
@@ -173,325 +361,68 @@ align-items:center;
 
 justify-content:center;
 
-font-size:50px;
+font-size:48px;
 
-background:rgba(0,255,145,.1);
+background:
+rgba(0,255,145,.12);
 
-border:1px solid rgba(0,255,145,.22);
+border:
+1px solid rgba(0,255,145,.25);
 
 }
 
-.login-box h1{
 
-font-size:35px;
+.header h1{
+
+font-size:36px;
 
 margin-bottom:12px;
 
 }
 
-.login-box p{
 
-color:#9db1aa;
+.welcome{
 
-font-size:17px;
-
-line-height:1.7;
-
-margin-bottom:25px;
-
-}
-
-.login-button{
-
-width:100%;
-
-padding:16px;
-
-border:0;
-
-border-radius:18px;
-
-font-size:17px;
-
-font-weight:bold;
-
-cursor:pointer;
-
-background:#00e889;
-
-color:#00150e;
-
-transition:.2s;
-
-}
-
-.login-button:active{
-
-transform:scale(.97);
-
-}
-
-.login-button:disabled{
-
-opacity:.6;
-
-}
-
-
-/* =========================
-   Main
-========================= */
-
-.main{
-
-display:none;
-
-width:min(94%,760px);
-
-margin:auto;
-
-padding:22px 0 45px;
-
-}
-
-
-/* =========================
-   Account
-========================= */
-
-.top{
-
-display:flex;
-
-align-items:center;
-
-justify-content:space-between;
-
-margin-bottom:35px;
-
-}
-
-.brand-mini{
-
-font-size:19px;
-
-font-weight:bold;
-
-color:#d9e8e3;
-
-}
-
-.account{
-
-position:relative;
-
-}
-
-.account-button{
-
-display:flex;
-
-align-items:center;
-
-gap:9px;
-
-padding:6px 9px;
-
-border-radius:18px;
-
-border:1px solid rgba(0,255,145,.2);
-
-background:rgba(0,55,37,.65);
-
-color:white;
-
-cursor:pointer;
-
-}
-
-.account-button:active{
-
-transform:scale(.97);
-
-}
-
-.account-photo{
-
-width:40px;
-height:40px;
-
-border-radius:50%;
-
-object-fit:cover;
-
-border:2px solid #00e889;
-
-}
-
-.account-name{
-
-max-width:120px;
-
-font-size:14px;
-
-font-weight:bold;
-
-white-space:nowrap;
-
-overflow:hidden;
-
-text-overflow:ellipsis;
-
-}
-
-.arrow{
-
-font-size:12px;
-
-color:#00e889;
-
-}
-
-
-/* Account menu */
-
-.menu{
-
-position:absolute;
-
-top:55px;
-
-right:0;
-
-width:220px;
-
-padding:10px;
-
-border-radius:20px;
-
-background:
-linear-gradient(
-145deg,
-rgba(0,65,44,.98),
-rgba(2,25,19,.99)
-);
-
-border:1px solid rgba(0,255,145,.2);
-
-box-shadow:
-0 20px 50px rgba(0,0,0,.5);
-
-display:none;
-
-z-index:100;
-
-}
-
-.menu.show{
-
-display:block;
-
-}
-
-.menu-email{
-
-padding:10px;
-
-font-size:13px;
-
-color:#91a59e;
-
-white-space:nowrap;
-
-overflow:hidden;
-
-text-overflow:ellipsis;
-
-border-bottom:1px solid rgba(255,255,255,.08);
-
-margin-bottom:8px;
-
-}
-
-.logout{
-
-width:100%;
-
-padding:12px;
-
-border:0;
-
-border-radius:13px;
-
-background:rgba(255,70,70,.12);
-
-color:#ff9b9b;
-
-font-weight:bold;
-
-cursor:pointer;
-
-}
-
-
-/* =========================
-   Hero
-========================= */
-
-.hero{
-
-text-align:center;
-
-margin-bottom:42px;
-
-}
-
-.hero-logo{
-
-width:105px;
-height:105px;
-
-margin:auto;
-
-border-radius:31px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:54px;
-
-background:
-linear-gradient(
-145deg,
-rgba(0,255,145,.15),
-rgba(0,120,80,.12)
-);
-
-border:1px solid rgba(0,255,145,.25);
-
-box-shadow:
-0 15px 45px rgba(0,0,0,.25);
-
-}
-
-.hero h1{
-
-font-size:40px;
-
-margin-top:20px;
-
-}
-
-.hero p{
-
-margin-top:10px;
+color:#a8bdb6;
 
 font-size:18px;
 
-color:#9db1aa;
+line-height:1.7;
+
+}
+
+
+/* =========================
+   User Info
+========================= */
+
+.user-info{
+
+text-align:center;
+
+margin-top:30px;
+
+margin-bottom:38px;
+
+}
+
+
+.user-name{
+
+font-size:27px;
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+}
+
+
+.user-id{
+
+font-size:18px;
+
+color:#00e889;
 
 }
 
@@ -502,17 +433,11 @@ color:#9db1aa;
 
 .section-title{
 
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-font-size:23px;
-
-font-weight:bold;
+font-size:22px;
 
 margin-bottom:18px;
+
+color:#d9e8e3;
 
 }
 
@@ -521,45 +446,45 @@ margin-bottom:18px;
    Services
 ========================= */
 
-.services{
-
-display:grid;
-
-gap:16px;
-
-}
-
 .service{
 
 display:flex;
 
 align-items:center;
 
-gap:17px;
+gap:18px;
 
-padding:20px;
+width:100%;
+
+padding:22px;
+
+margin-bottom:18px;
 
 text-decoration:none;
 
 color:white;
 
-border-radius:25px;
-
 background:
 linear-gradient(
 135deg,
-rgba(0,75,51,.72),
-rgba(2,30,23,.9)
+rgba(0,85,58,.65),
+rgba(2,31,24,.85)
 );
 
-border:1px solid rgba(0,255,145,.17);
+border:
+1px solid rgba(0,255,145,.18);
+
+border-radius:26px;
+
+transition:.2s;
 
 box-shadow:
 0 12px 35px rgba(0,0,0,.25);
 
-transition:.2s;
+cursor:pointer;
 
 }
+
 
 .service:active{
 
@@ -567,14 +492,16 @@ transform:scale(.98);
 
 }
 
+
 .service-icon{
 
-width:68px;
-height:68px;
+width:70px;
+
+height:70px;
 
 flex-shrink:0;
 
-border-radius:21px;
+border-radius:22px;
 
 display:flex;
 
@@ -582,13 +509,16 @@ align-items:center;
 
 justify-content:center;
 
-font-size:35px;
+font-size:38px;
 
-background:rgba(0,255,145,.1);
+background:
+rgba(0,255,145,.12);
 
-border:1px solid rgba(0,255,145,.18);
+border:
+1px solid rgba(0,255,145,.18);
 
 }
+
 
 .service-info{
 
@@ -596,29 +526,32 @@ flex:1;
 
 }
 
+
 .service-name{
 
-font-size:21px;
+font-size:22px;
 
 font-weight:bold;
 
-margin-bottom:7px;
+margin-bottom:8px;
 
 }
+
 
 .service-description{
 
-font-size:14px;
+color:#9db1aa;
+
+font-size:15px;
 
 line-height:1.6;
 
-color:#93a8a1;
-
 }
 
-.service-arrow{
 
-font-size:27px;
+.arrow{
+
+font-size:28px;
 
 color:#00e889;
 
@@ -635,9 +568,58 @@ text-align:center;
 
 margin-top:45px;
 
-color:#53665f;
+color:#62756e;
 
 font-size:13px;
+
+}
+
+
+/* =========================
+   Mobile
+========================= */
+
+@media(max-width:500px){
+
+.container{
+
+width:92%;
+
+}
+
+.header h1{
+
+font-size:34px;
+
+}
+
+.user-name{
+
+font-size:25px;
+
+}
+
+.service{
+
+padding:20px;
+
+}
+
+.service-icon{
+
+width:65px;
+
+height:65px;
+
+font-size:34px;
+
+}
+
+.service-name{
+
+font-size:20px;
+
+}
 
 }
 
@@ -649,9 +631,11 @@ font-size:13px;
 <body>
 
 
-<!-- Loading -->
+<!-- =========================
+     Loading
+========================= -->
 
-<div id="loading" class="loading">
+<div id="loadingPage" class="loading">
 
 <div class="loading-logo">
 🛠️
@@ -659,52 +643,30 @@ font-size:13px;
 
 <div class="spinner"></div>
 
-</div>
-
-
-<!-- Login -->
-
-<div id="login" class="login">
-
-<div class="login-box">
-
-<div class="main-logo">
-🛠️
-</div>
-
-<h1>
-Mecd Tools
-</h1>
-
-<p>
-أهلاً بك 👋<br>
-سجّل الدخول للوصول إلى جميع خدمات Mecd
-</p>
-
-<button id="loginBtn" class="login-button">
-🔵 تسجيل الدخول بواسطة Google
-</button>
-
+<div>
+جارٍ تحميل الحساب...
 </div>
 
 </div>
 
 
-<!-- Main -->
 
-<main id="main" class="main">
+<!-- =========================
+     Main
+========================= -->
 
-
-<!-- Top -->
-
-<div class="top">
-
-<div class="brand-mini">
-Mecd Tools
-</div>
+<main
+id="mainPage"
+class="container"
+>
 
 
-<div class="account">
+<!-- =========================
+     Account
+========================= -->
+
+<div class="account-area">
+
 
 <button
 id="accountButton"
@@ -725,132 +687,286 @@ class="account-name"
 الحساب
 </span>
 
-<span class="arrow">
+<span class="account-arrow">
 ▼
 </span>
 
 </button>
 
 
+
 <div
-id="menu"
-class="menu"
+id="accountMenu"
+class="account-menu"
 >
+
 
 <div
 id="accountEmail"
-class="menu-email"
+class="account-email"
 >
 </div>
+
 
 <button
-id="logoutBtn"
-class="logout"
+id="backButton"
+class="back-button"
 >
-🚪 تسجيل الخروج
+🏠 العودة إلى Mecd Tools
 </button>
 
-</div>
 
 </div>
 
 </div>
 
 
-<!-- Hero -->
 
-<header class="hero">
+<!-- =========================
+     Header
+========================= -->
 
-<div class="hero-logo">
+<header class="header">
+
+
+<div class="logo">
 🛠️
 </div>
+
 
 <h1>
 Mecd Tools
 </h1>
 
-<p>
-كل أدواتك في مكان واحد
+
+<p class="welcome">
+أهلاً بك في أدوات Mecd
 </p>
+
 
 </header>
 
 
-<!-- Services -->
+
+<!-- =========================
+     User
+========================= -->
+
+<div class="user-info">
+
+
+<div
+id="userName"
+class="user-name"
+>
+مستخدم Mecd
+</div>
+
+
+<div
+id="userId"
+class="user-id"
+>
+ID: MC-000001
+</div>
+
+
+</div>
+
+
+
+<!-- =========================
+     Services
+========================= -->
 
 <section>
 
+
 <div class="section-title">
-🧰 الخدمات
+💬 Mecd Chat
 </div>
 
 
-<div class="services">
 
+<!-- Friends -->
 
-<!-- Camera -->
+<div class="service">
 
-<a
-class="service"
-href="https://mecdjhjhnh37-collab.github.io/walkie-talkie-telsiz/"
->
 
 <div class="service-icon">
-📷
+👥
 </div>
+
 
 <div class="service-info">
 
 <div class="service-name">
-Camera Connect
+الأصدقاء
 </div>
 
 <div class="service-description">
-استخدم هاتفك ككاميرا واتصل بجهاز مراقبة بسهولة.
+شاهد أصدقاءك وأضف مستخدمين جدد.
 </div>
 
 </div>
 
-<div class="service-arrow">
+
+<div class="arrow">
 ←
 </div>
 
-</a>
+</div>
 
 
-<!-- Chat -->
 
-<a
-class="service"
-href="https://mecdjhjhnh37-collab.github.io/MecdChat/"
->
+<!-- Create Room -->
+
+<div class="service">
+
 
 <div class="service-icon">
-💬
+➕
 </div>
+
 
 <div class="service-info">
 
 <div class="service-name">
-Mecd Chat
+إنشاء غرفة دردشة
 </div>
 
 <div class="service-description">
-دردشة وغرف خاصة بين مستخدمي Mecd.
+أنشئ غرفة دردشة خاصة وشاركها مع أصدقائك.
 </div>
 
 </div>
 
-<div class="service-arrow">
+
+<div class="arrow">
 ←
 </div>
 
-</a>
+</div>
 
+
+
+<!-- Join -->
+
+<div class="service">
+
+
+<div class="service-icon">
+🔑
+</div>
+
+
+<div class="service-info">
+
+<div class="service-name">
+دخول دردشة عبر ID
+</div>
+
+<div class="service-description">
+ادخل إلى غرفة دردشة باستخدام معرف الغرفة.
+</div>
 
 </div>
+
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+
+
+<!-- Settings -->
+
+<div class="service">
+
+
+<div class="service-icon">
+⚙️
+</div>
+
+
+<div class="service-info">
+
+<div class="service-name">
+الإعدادات
+</div>
+
+<div class="service-description">
+تحكم بإعدادات حساب Mecd Chat.
+</div>
+
+</div>
+
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+
+
+<!-- Back -->
+
+<div
+id="backService"
+class="service"
+style="
+background:
+linear-gradient(
+135deg,
+rgba(100,35,35,.35),
+rgba(50,15,15,.45)
+);
+border-color:
+rgba(255,100,100,.18);
+"
+>
+
+
+<div class="service-icon"
+style="
+background:rgba(255,80,80,.10);
+border-color:rgba(255,100,100,.15);
+">
+🏠
+</div>
+
+
+<div class="service-info">
+
+<div
+class="service-name"
+style="color:#ffaaaa;"
+>
+العودة إلى Mecd Tools
+</div>
+
+<div class="service-description">
+العودة إلى الصفحة الرئيسية للخدمات.
+</div>
+
+</div>
+
+
+<div
+class="arrow"
+style="color:#ffaaaa;"
+>
+←
+</div>
+
+</div>
+
 
 </section>
+
 
 
 <footer class="footer">
@@ -861,27 +977,58 @@ Mecd Tools © 2026
 </main>
 
 
+
+<!-- =========================
+     Firebase
+========================= -->
+
 <script type="module">
+
 
 import {
 initializeApp
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
+
 getAuth,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
+
+onAuthStateChanged
+
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-/* Firebase */
+import {
+
+getFirestore,
+
+doc,
+
+getDoc,
+
+setDoc,
+
+collection,
+
+getDocs
+
+}
+
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+/* =========================
+   Firebase Config
+========================= */
 
 const firebaseConfig = {
 
@@ -901,13 +1048,15 @@ messagingSenderId:
 "643005547408",
 
 appId:
-"1:643005547408:web:b1719060ec340dd0e0a915",
-
-measurementId:
-"G-0VKYR3TQV2"
+"1:643005547408:web:b1719060ec340dd0e0a915"
 
 };
 
+
+
+/* =========================
+   Firebase
+========================= */
 
 const firebaseApp =
 initializeApp(firebaseConfig);
@@ -916,26 +1065,27 @@ initializeApp(firebaseConfig);
 const auth =
 getAuth(firebaseApp);
 
-const provider =
-new GoogleAuthProvider();
+
+const db =
+getFirestore(firebaseApp);
 
 
-/* Elements */
 
-const loading =
-document.getElementById("loading");
+/* =========================
+   Elements
+========================= */
 
-const login =
-document.getElementById("login");
+const loadingPage =
+document.getElementById("loadingPage");
 
-const main =
-document.getElementById("main");
-
-const loginBtn =
-document.getElementById("loginBtn");
+const mainPage =
+document.getElementById("mainPage");
 
 const accountButton =
 document.getElementById("accountButton");
+
+const accountMenu =
+document.getElementById("accountMenu");
 
 const accountPhoto =
 document.getElementById("accountPhoto");
@@ -946,123 +1096,276 @@ document.getElementById("accountName");
 const accountEmail =
 document.getElementById("accountEmail");
 
-const menu =
-document.getElementById("menu");
+const userName =
+document.getElementById("userName");
 
-const logoutBtn =
-document.getElementById("logoutBtn");
+const userId =
+document.getElementById("userId");
+
+const backButton =
+document.getElementById("backButton");
+
+const backService =
+document.getElementById("backService");
 
 
-/* Persistence */
 
-await setPersistence(
-auth,
-browserLocalPersistence
+/* =========================
+   Mecd Tools URL
+========================= */
+
+const MECD_TOOLS_URL =
+"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
+
+
+
+/* =========================
+   Get / Create Chat ID
+========================= */
+
+async function getUserID(user){
+
+try{
+
+const userRef =
+doc(
+db,
+"users",
+user.uid
 );
 
 
-/* Save user */
+const userDoc =
+await getDoc(userRef);
 
-function saveUser(user){
 
-localStorage.setItem(
-"mecdUser",
 
-JSON.stringify({
+/*
+إذا كان المستخدم موجود
+نستخدم نفس ID
+*/
 
-name:
-user.displayName || "مستخدم Mecd",
+if(userDoc.exists()){
 
-photo:
-user.photoURL || "",
+const data =
+userDoc.data();
 
-email:
-user.email || ""
 
-})
-);
+if(data.chatID){
+
+return data.chatID;
+
+}
 
 }
 
 
-/* Show user */
 
-function showUser(user){
+/*
+إذا لم يكن لديه ID
+نبحث عن أكبر رقم موجود
+*/
+
+const usersSnapshot =
+await getDocs(
+collection(db,"users")
+);
+
+
+let highestNumber = 0;
+
+
+usersSnapshot.forEach(
+(documentSnapshot)=>{
+
+const data =
+documentSnapshot.data();
+
+
+if(data.chatID){
+
+const match =
+String(data.chatID)
+.match(/MC-(\d+)/);
+
+
+if(match){
+
+const number =
+parseInt(
+match[1],
+10
+);
+
+
+if(number >
+highestNumber){
+
+highestNumber =
+number;
+
+}
+
+}
+
+}
+
+});
+
+
+const nextNumber =
+highestNumber + 1;
+
+
+const newID =
+"MC-" +
+String(nextNumber)
+.padStart(6,"0");
+
+
+
+/*
+حفظ الحساب و ID
+*/
+
+await setDoc(
+userRef,
+
+{
+
+name:
+user.displayName ||
+"مستخدم Mecd",
+
+email:
+user.email ||
+"",
+
+photo:
+user.photoURL ||
+"",
+
+chatID:
+newID
+
+},
+
+{
+
+merge:true
+
+});
+
+
+return newID;
+
+
+}
+
+catch(error){
+
+console.error(
+"Chat ID Error:",
+error
+);
+
+
+/*
+لا ننشئ ID محلي
+إذا حصل خطأ في Firestore
+*/
+
+return "MC-000001";
+
+}
+
+}
+
+
+
+/* =========================
+   Authentication
+========================= */
+
+onAuthStateChanged(
+auth,
+
+async(user)=>{
+
+
+/*
+إذا المستخدم غير مسجل
+*/
+
+if(!user){
+
+window.location.replace(
+MECD_TOOLS_URL
+);
+
+return;
+
+}
+
+
+
+/*
+المستخدم مسجل
+*/
+
+try{
+
+
+const id =
+await getUserID(user);
+
+
+
+/*
+الحساب
+*/
 
 accountName.textContent =
-user.displayName || "مستخدم";
+user.displayName ||
+"مستخدم Mecd";
+
 
 accountEmail.textContent =
-user.email || "";
+user.email ||
+"";
+
 
 accountPhoto.src =
 user.photoURL ||
 "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
-}
 
 
-/* Auth */
+/*
+الاسم والـ ID
+*/
 
-onAuthStateChanged(
-auth,
-(user)=>{
+userName.textContent =
+user.displayName ||
+"مستخدم Mecd";
 
-loading.style.display =
+
+userId.textContent =
+"ID: " + id;
+
+
+
+/*
+إظهار الصفحة
+*/
+
+loadingPage.style.display =
 "none";
 
 
-if(user){
-
-saveUser(user);
-
-showUser(user);
-
-login.style.display =
-"none";
-
-main.style.display =
+mainPage.style.display =
 "block";
 
-}
-
-else{
-
-main.style.display =
-"none";
-
-login.style.display =
-"flex";
-
-}
-
-}
-);
-
-
-/* Login */
-
-loginBtn.addEventListener(
-"click",
-
-async()=>{
-
-loginBtn.disabled =
-true;
-
-loginBtn.textContent =
-"جاري تسجيل الدخول...";
-
-
-try{
-
-const result =
-await signInWithPopup(
-auth,
-provider
-);
-
-saveUser(result.user);
 
 }
 
@@ -1070,23 +1373,19 @@ catch(error){
 
 console.error(error);
 
-alert(
-"حدث خطأ أثناء تسجيل الدخول."
+window.location.replace(
+MECD_TOOLS_URL
 );
-
-loginBtn.disabled =
-false;
-
-loginBtn.textContent =
-"🔵 تسجيل الدخول بواسطة Google";
 
 }
 
-}
-);
+});
 
 
-/* Account menu */
+
+/* =========================
+   Account Menu
+========================= */
 
 accountButton.addEventListener(
 "click",
@@ -1095,65 +1394,65 @@ accountButton.addEventListener(
 
 event.stopPropagation();
 
-menu.classList.toggle("show");
-
-}
+accountMenu.classList.toggle(
+"show"
 );
 
+});
 
-/* Close menu */
+
+
+/* =========================
+   Close Menu
+========================= */
 
 document.addEventListener(
 "click",
 
 ()=>{
 
-menu.classList.remove("show");
-
-}
+accountMenu.classList.remove(
+"show"
 );
 
+});
 
-/* Logout */
 
-logoutBtn.addEventListener(
+
+/* =========================
+   Back to Mecd Tools
+========================= */
+
+function goToMecdTools(){
+
+window.location.replace(
+MECD_TOOLS_URL
+);
+
+}
+
+
+backButton.addEventListener(
 "click",
 
-async(event)=>{
+(event)=>{
 
 event.stopPropagation();
 
-logoutBtn.disabled =
-true;
+goToMecdTools();
 
-logoutBtn.textContent =
-"جاري تسجيل الخروج...";
+});
 
 
-try{
+backService.addEventListener(
+"click",
 
-await signOut(auth);
+()=>{
 
-localStorage.removeItem(
-"mecdUser"
-);
+goToMecdTools();
 
-}
+});
 
-catch(error){
-
-console.error(error);
-
-logoutBtn.disabled =
-false;
-
-logoutBtn.textContent =
-"🚪 تسجيل الخروج";
-
-}
-
-}
-);
 
 </script>
 
