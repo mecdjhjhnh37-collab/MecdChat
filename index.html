@@ -6,6 +6,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#050807">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mecd Chat">
+
 <title>Mecd Chat</title>
 
 <style>
@@ -17,138 +26,827 @@ padding:0;
 }
 
 body{
+
 min-height:100vh;
-font-family:Arial,sans-serif;
+
+font-family:Arial,Tahoma,sans-serif;
+
 color:white;
 
 background:
-radial-gradient(circle at top,#064d37,transparent 40%),
-linear-gradient(180deg,#03110d,#020707);
+radial-gradient(
+circle at 50% 0%,
+#123d35 0%,
+transparent 35%
+),
+linear-gradient(
+180deg,
+#07110f 0%,
+#020504 100%
+);
+
+overflow-x:hidden;
+
 }
 
-.container{
-width:90%;
-max-width:500px;
-margin:auto;
-padding:40px 0;
-}
 
-.profile{
-text-align:center;
-margin-bottom:35px;
-}
+/* =========================
+   الخلفية
+========================= */
 
-.avatar{
-width:105px;
-height:105px;
-margin:auto;
-border-radius:50%;
+.background{
+
+position:fixed;
+
+inset:0;
+
 overflow:hidden;
 
+pointer-events:none;
+
+z-index:0;
+
+}
+
+.glow{
+
+position:absolute;
+
+width:300px;
+height:300px;
+
+border-radius:50%;
+
+filter:blur(100px);
+
+opacity:.18;
+
+}
+
+.glow.one{
+
+background:#00e676;
+
+top:-100px;
+
+right:-100px;
+
+}
+
+.glow.two{
+
+background:#2979ff;
+
+bottom:-100px;
+
+left:-100px;
+
+}
+
+
+/* =========================
+   التطبيق
+========================= */
+
+.app{
+
+position:relative;
+
+z-index:1;
+
+width:100%;
+
+max-width:650px;
+
+min-height:100vh;
+
+margin:auto;
+
+padding:28px 20px 45px;
+
 display:flex;
+
+flex-direction:column;
+
+}
+
+
+/* =========================
+   الهيدر
+========================= */
+
+header{
+
+display:flex;
+
 align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:55px;
+
+}
+
+.brand{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.logo{
+
+width:52px;
+height:52px;
+
+display:flex;
+
+align-items:center;
+
 justify-content:center;
 
-background:rgba(0,255,145,.12);
-border:3px solid #00e889;
+border-radius:16px;
+
+font-size:27px;
+
+background:
+linear-gradient(
+135deg,
+#00e676,
+#00a85a
+);
+
+box-shadow:
+0 10px 30px
+rgba(0,230,118,.22);
+
+}
+
+.brand h2{
+
+font-size:21px;
+
+}
+
+.brand span{
+
+display:block;
+
+margin-top:4px;
+
+color:#8d9a97;
+
+font-size:12px;
+
+}
+
+.status{
+
+display:flex;
+
+align-items:center;
+
+gap:7px;
+
+padding:8px 12px;
+
+border:1px solid
+rgba(255,255,255,.08);
+
+border-radius:20px;
+
+background:
+rgba(255,255,255,.04);
+
+color:#aab5b2;
+
+font-size:12px;
+
+}
+
+.status-dot{
+
+width:8px;
+height:8px;
+
+border-radius:50%;
+
+background:#00e676;
+
+box-shadow:
+0 0 10px #00e676;
+
+}
+
+
+/* =========================
+   الترحيب
+========================= */
+
+.hero{
+
+text-align:center;
+
+margin-bottom:35px;
+
+}
+
+
+/* صورة الحساب */
+
+.avatar{
+
+width:92px;
+height:92px;
+
+margin:0 auto 25px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:28px;
+
+overflow:hidden;
 
 font-size:45px;
+
+background:
+rgba(255,255,255,.055);
+
+border:1px solid
+rgba(255,255,255,.09);
+
+box-shadow:
+0 20px 60px rgba(0,0,0,.3),
+inset 0 0 30px
+rgba(255,255,255,.025);
+
 }
 
 .avatar img{
+
 width:100%;
 height:100%;
+
 object-fit:cover;
+
 }
 
-h1{
-margin-top:20px;
-font-size:38px;
-}
 
-.name{
-margin-top:15px;
-font-size:25px;
-font-weight:bold;
-}
+/* العنوان */
 
-.id{
-margin-top:12px;
-font-size:18px;
-color:#00e889;
-}
+.hero h1{
 
-.card{
-padding:22px;
+font-size:
+clamp(30px,7vw,48px);
+
+line-height:1.2;
+
 margin-bottom:15px;
+
+letter-spacing:-.8px;
+
+}
+
+.hero h1 span{
+
+color:#00e676;
+
+}
+
+
+/* الوصف */
+
+.hero p{
+
+max-width:430px;
+
+margin:auto;
+
+color:#9ba7a4;
+
+line-height:1.8;
+
+font-size:15px;
+
+}
+
+
+/* =========================
+   معلومات الحساب
+========================= */
+
+.account-info{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:center;
+
+gap:7px;
+
+margin-bottom:35px;
+
+}
+
+.account-name{
+
+font-size:24px;
+
+font-weight:bold;
+
+}
+
+.account-id{
+
+font-size:18px;
+
+color:#00e676;
+
+}
+
+
+/* =========================
+   الخيارات
+========================= */
+
+.choices{
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+
+/* البطاقة */
+
+.choice{
+
+position:relative;
+
+width:100%;
+
+min-height:130px;
+
+padding:25px;
 
 border-radius:25px;
 
-background:rgba(0,85,58,.55);
+border:1px solid
+rgba(255,255,255,.09);
 
-border:1px solid rgba(0,255,145,.18);
+color:white;
 
-font-size:20px;
+text-align:right;
 
 cursor:pointer;
 
-transition:.2s;
+overflow:hidden;
+
+transition:.25s ease;
+
+font-family:inherit;
+
 }
 
-.card:active{
+.choice::before{
+
+content:"";
+
+position:absolute;
+
+width:180px;
+height:180px;
+
+border-radius:50%;
+
+filter:blur(55px);
+
+opacity:.13;
+
+top:-100px;
+left:-60px;
+
+}
+
+.choice:hover{
+
+transform:translateY(-4px);
+
+}
+
+.choice:active{
+
 transform:scale(.98);
+
 }
 
-.logout{
-background:rgba(160,40,40,.25);
+
+/* الأصدقاء */
+
+.friends-choice{
+
+background:
+linear-gradient(
+135deg,
+rgba(0,230,118,.16),
+rgba(0,230,118,.035)
+);
+
+}
+
+.friends-choice::before{
+
+background:#00e676;
+
+}
+
+
+/* إنشاء غرفة */
+
+.room-choice{
+
+background:
+linear-gradient(
+135deg,
+rgba(0,230,118,.16),
+rgba(0,230,118,.035)
+);
+
+}
+
+.room-choice::before{
+
+background:#00e676;
+
+}
+
+
+/* دخول ID */
+
+.join-choice{
+
+background:
+linear-gradient(
+135deg,
+rgba(41,121,255,.17),
+rgba(41,121,255,.035)
+);
+
+}
+
+.join-choice::before{
+
+background:#2979ff;
+
+}
+
+
+/* الإعدادات */
+
+.settings-choice{
+
+background:
+linear-gradient(
+135deg,
+rgba(255,255,255,.08),
+rgba(255,255,255,.025)
+);
+
+}
+
+
+/* العودة */
+
+.back-choice{
+
+background:
+linear-gradient(
+135deg,
+rgba(180,50,50,.18),
+rgba(120,30,30,.04)
+);
+
 color:#ffaaaa;
+
 }
 
-.loading{
-height:100vh;
+
+/* محتوى البطاقة */
+
+.choice-content{
+
+position:relative;
+
+z-index:2;
 
 display:flex;
+
 align-items:center;
+
+gap:20px;
+
+}
+
+.choice-icon{
+
+flex-shrink:0;
+
+width:72px;
+height:72px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:21px;
+
+font-size:34px;
+
+background:
+rgba(255,255,255,.07);
+
+}
+
+.choice-text{
+
+flex:1;
+
+}
+
+.choice-text h3{
+
+font-size:21px;
+
+margin-bottom:8px;
+
+}
+
+.choice-text p{
+
+color:#9ca9a6;
+
+font-size:13px;
+
+line-height:1.6;
+
+}
+
+.arrow{
+
+font-size:26px;
+
+color:#7d8986;
+
+}
+
+
+/* =========================
+   معلومات
+========================= */
+
+.info{
+
+margin-top:30px;
+
+padding:18px;
+
+border-radius:20px;
+
+background:
+rgba(255,255,255,.035);
+
+border:1px solid
+rgba(255,255,255,.06);
+
+text-align:center;
+
+color:#798581;
+
+font-size:12px;
+
+line-height:1.7;
+
+}
+
+
+/* =========================
+   الفوتر
+========================= */
+
+footer{
+
+margin-top:auto;
+
+padding-top:45px;
+
+text-align:center;
+
+color:#58635f;
+
+font-size:11px;
+
+}
+
+
+/* =========================
+   Loading
+========================= */
+
+.loading{
+
+position:fixed;
+
+inset:0;
+
+z-index:999;
+
+display:flex;
+
+align-items:center;
+
 justify-content:center;
 
 flex-direction:column;
 
 gap:20px;
 
+background:
+linear-gradient(
+180deg,
+#07110f,
+#020504
+);
+
 color:#a8bdb6;
 
 font-size:18px;
+
 }
 
 .spinner{
+
 width:35px;
 height:35px;
 
-border:4px solid rgba(255,255,255,.15);
+border:4px solid
+rgba(255,255,255,.15);
 
 border-top-color:#00e889;
 
 border-radius:50%;
 
 animation:spin .8s linear infinite;
+
 }
 
 @keyframes spin{
+
 to{
+
 transform:rotate(360deg);
+
 }
+
+}
+
+
+/* =========================
+   الموبايل
+========================= */
+
+@media(max-width:480px){
+
+.app{
+
+padding:20px 15px 35px;
+
+}
+
+header{
+
+margin-bottom:42px;
+
+}
+
+.logo{
+
+width:45px;
+height:45px;
+
+border-radius:14px;
+
+font-size:23px;
+
+}
+
+.brand h2{
+
+font-size:18px;
+
+}
+
+.status{
+
+font-size:10px;
+
+}
+
+.avatar{
+
+width:82px;
+height:82px;
+
+font-size:40px;
+
+}
+
+.hero{
+
+margin-bottom:28px;
+
+}
+
+.hero h1{
+
+font-size:31px;
+
+}
+
+.account-name{
+
+font-size:23px;
+
+}
+
+.choice{
+
+min-height:130px;
+
+padding:19px;
+
+}
+
+.choice-icon{
+
+width:61px;
+height:61px;
+
+font-size:29px;
+
+}
+
+.choice-text h3{
+
+font-size:18px;
+
+}
+
+.choice-text p{
+
+font-size:12px;
+
+}
+
 }
 
 </style>
 
 </head>
 
+
 <body>
+
+
+<!-- الخلفية -->
+
+<div class="background">
+
+<div class="glow one"></div>
+
+<div class="glow two"></div>
+
+</div>
 
 
 <!-- Loading -->
 
-<div id="loading" class="loading">
+<div
+id="loading"
+class="loading"
+>
 
 <div class="spinner"></div>
 
@@ -159,75 +857,338 @@ transform:rotate(360deg);
 </div>
 
 
-<!-- Mecd Chat -->
+<!-- التطبيق -->
 
-<div id="app" class="container" style="display:none;">
+<main
+id="app"
+class="app"
+style="display:none;"
+>
 
 
-<div class="profile">
+<!-- =========================
+     Header
+========================= -->
 
-<div id="avatar" class="avatar">
-👤
+<header>
+
+<div class="brand">
+
+<div class="logo">
+💬
 </div>
+
+<div>
+
+<h2>
+Mecd Chat
+</h2>
+
+<span>
+دردشة وغرف خاصة
+</span>
+
+</div>
+
+</div>
+
+
+<div class="status">
+
+<div class="status-dot"></div>
+
+متصل
+
+</div>
+
+</header>
+
+
+<!-- =========================
+     Hero
+========================= -->
+
+<section class="hero">
+
+
+<div
+id="avatar"
+class="avatar"
+>
+
+👤
+
+</div>
+
 
 <h1>
+
+أهلاً بك في<br>
+
+<span>
 Mecd Chat
+</span>
+
 </h1>
 
-<div id="name" class="name">
+
+<p>
+
+تواصل مع أصدقائك وأنشئ غرف دردشة
+خاصة بسهولة وأمان.
+
+</p>
+
+
+</section>
+
+
+<!-- =========================
+     Account
+========================= -->
+
+<div class="account-info">
+
+<div
+id="name"
+class="account-name"
+>
+
 مستخدم Mecd
+
 </div>
 
-<div id="userId" class="id">
+
+<div
+id="userId"
+class="account-id"
+>
+
 جارٍ تحميل ID...
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     الخيارات
+========================= -->
+
+<section class="choices">
+
+
+<!-- الأصدقاء -->
+
+<button
+class="choice friends-choice"
+>
+
+<div class="choice-content">
+
+<div class="choice-icon">
+👥
+</div>
+
+<div class="choice-text">
+
+<h3>
+الأصدقاء
+</h3>
+
+<p>
+عرض الأصدقاء والتواصل معهم بسهولة.
+</p>
+
+</div>
+
+<div class="arrow">
+←
 </div>
 
 </div>
 
+</button>
 
-<div class="card">
-👥 الأصدقاء
+
+<!-- إنشاء غرفة -->
+
+<button
+class="choice room-choice"
+>
+
+<div class="choice-content">
+
+<div class="choice-icon">
+➕
+</div>
+
+<div class="choice-text">
+
+<h3>
+إنشاء غرفة دردشة
+</h3>
+
+<p>
+أنشئ غرفة جديدة وابدأ الدردشة مع الآخرين.
+</p>
+
+</div>
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+</button>
+
+
+<!-- دخول عبر ID -->
+
+<button
+class="choice join-choice"
+>
+
+<div class="choice-content">
+
+<div class="choice-icon">
+🔑
+</div>
+
+<div class="choice-text">
+
+<h3>
+دخول دردشة عبر ID
+</h3>
+
+<p>
+أدخل ID للانضمام إلى غرفة دردشة.
+</p>
+
+</div>
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+</button>
+
+
+<!-- الإعدادات -->
+
+<button
+class="choice settings-choice"
+>
+
+<div class="choice-content">
+
+<div class="choice-icon">
+⚙️
+</div>
+
+<div class="choice-text">
+
+<h3>
+الإعدادات
+</h3>
+
+<p>
+إدارة إعدادات حسابك في Mecd Chat.
+</p>
+
+</div>
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+</button>
+
+
+<!-- العودة -->
+
+<button
+id="backBtn"
+class="choice back-choice"
+>
+
+<div class="choice-content">
+
+<div class="choice-icon">
+🚪
+</div>
+
+<div class="choice-text">
+
+<h3>
+العودة إلى Mecd Tools
+</h3>
+
+<p>
+العودة إلى الصفحة الرئيسية بدون تسجيل الخروج.
+</p>
+
+</div>
+
+<div class="arrow">
+←
+</div>
+
+</div>
+
+</button>
+
+
+</section>
+
+
+<!-- معلومات -->
+
+<div class="info">
+
+🔒 حسابك مرتبط بـ Mecd Tools.
+<br>
+
+لن يتم تسجيل خروجك عند العودة إلى Mecd Tools.
+
 </div>
 
 
-<div class="card">
-➕ إنشاء غرفة دردشة
-</div>
+<footer>
+
+Mecd Chat © 2026
+
+</footer>
 
 
-<div class="card">
-🔑 دخول دردشة عبر ID
-</div>
-
-
-<div class="card">
-⚙️ الإعدادات
-</div>
-
-
-<!-- العودة إلى Mecd Tools -->
-
-<div id="backBtn" class="card logout">
-🚪 العودة إلى Mecd Tools
-</div>
-
-
-</div>
+</main>
 
 
 <script type="module">
 
+
+/* =========================
+   Firebase
+========================= */
+
 import {
 initializeApp
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
 getAuth,
 onAuthStateChanged
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
@@ -236,11 +1197,9 @@ doc,
 getDoc,
 setDoc
 }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-
-/* Firebase */
 
 const firebaseConfig = {
 
@@ -280,8 +1239,9 @@ const db =
 getFirestore(firebaseApp);
 
 
-
-/* Elements */
+/* =========================
+   العناصر
+========================= */
 
 const loading =
 document.getElementById("loading");
@@ -302,24 +1262,28 @@ const backBtn =
 document.getElementById("backBtn");
 
 
-
-/* Mecd Tools */
+/* =========================
+   Mecd Tools
+========================= */
 
 const mecdToolsURL =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
 
-
-/*
-الحصول على ID ثابت من Firestore
-*/
+/* =========================
+   الحصول على Chat ID
+========================= */
 
 async function getChatID(user){
 
 try{
 
 const userRef =
-doc(db,"users",user.uid);
+doc(
+db,
+"users",
+user.uid
+);
 
 
 const userDoc =
@@ -341,13 +1305,14 @@ return data.chatID;
 }
 
 
-/*
-إذا الحساب جديد
-نستخدم عداد داخل Firestore
-*/
+/* العداد */
 
 const counterRef =
-doc(db,"settings","chatCounter");
+doc(
+db,
+"settings",
+"chatCounter"
+);
 
 
 const counterDoc =
@@ -360,7 +1325,9 @@ let number = 1;
 if(counterDoc.exists()){
 
 number =
-Number(counterDoc.data().number || 0) + 1;
+Number(
+counterDoc.data().number || 0
+) + 1;
 
 }
 
@@ -375,38 +1342,55 @@ String(number).padStart(6,"0");
 /* حفظ المستخدم */
 
 await setDoc(
+
 userRef,
+
 {
 
 name:
-user.displayName || "مستخدم Mecd",
+user.displayName ||
+"مستخدم Mecd",
 
 photo:
-user.photoURL || "",
+user.photoURL ||
+"",
 
 email:
-user.email || "",
+user.email ||
+"",
 
 chatID:
 newID
 
 },
+
 {
+
 merge:true
+
 }
+
 );
 
 
 /* حفظ العداد */
 
 await setDoc(
+
 counterRef,
+
 {
+
 number:number
+
 },
+
 {
+
 merge:true
+
 }
+
 );
 
 
@@ -422,8 +1406,8 @@ error
 
 
 /*
-إذا حدث خطأ في Firestore
-نظهر الحساب لكن بدون ID مزيف
+لا نغيّر ID الحقيقي
+إذا حصل خطأ
 */
 
 return "MC-000001";
@@ -433,11 +1417,14 @@ return "MC-000001";
 }
 
 
-
-/* Firebase Login Check */
+/* =========================
+   فحص تسجيل الدخول
+========================= */
 
 onAuthStateChanged(
+
 auth,
+
 async(user)=>{
 
 
@@ -458,10 +1445,12 @@ user.displayName ||
 if(user.photoURL){
 
 avatar.innerHTML = `
+
 <img
 src="${user.photoURL}"
 alt="صورة الحساب"
 >
+
 `;
 
 }
@@ -483,15 +1472,16 @@ loading.style.display =
 "none";
 
 app.style.display =
-"block";
+"flex";
 
 
 }catch(error){
 
 console.error(error);
 
-window.location.href =
-mecdToolsURL;
+window.location.replace(
+mecdToolsURL
+);
 
 }
 
@@ -500,8 +1490,8 @@ mecdToolsURL;
 
 
 /*
-إذا غير مسجل الدخول:
-العودة إلى Mecd Tools
+إذا غير مسجل الدخول
+يرجع إلى Mecd Tools
 */
 
 window.location.replace(
@@ -513,27 +1503,76 @@ mecdToolsURL
 });
 
 
+/* =========================
+   العودة إلى Mecd Tools
+========================= */
 
 /*
-زر العودة
-
-مهم جداً:
+مهم:
 لا يوجد signOut هنا.
 
-يعني الحساب يبقى مسجل دخول.
+الحساب يبقى مسجل الدخول.
 */
 
 backBtn.addEventListener(
+
 "click",
+
 ()=>{
 
 window.location.href =
 mecdToolsURL;
 
-});
+}
 
+);
+
+
+/* =========================
+   Service Worker
+========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+navigator.serviceWorker
+.register("./sw.js")
+.then(
+registration=>{
+
+console.log(
+"Mecd Chat Service Worker:",
+registration.scope
+);
+
+}
+)
+.catch(
+error=>{
+
+console.error(
+"Service Worker:",
+error
+);
+
+}
+);
+
+}
+
+);
+
+}
 
 </script>
+
 
 </body>
 
