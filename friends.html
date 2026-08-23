@@ -44,9 +44,6 @@ overflow-x:hidden;
 
 }
 
-
-/* الخلفية */
-
 .background{
 
 position:fixed;
@@ -93,9 +90,6 @@ left:-100px;
 
 }
 
-
-/* التطبيق */
-
 .app{
 
 position:relative;
@@ -113,9 +107,6 @@ margin:auto;
 padding:25px 20px 45px;
 
 }
-
-
-/* الهيدر */
 
 header{
 
@@ -184,9 +175,6 @@ font-size:12px;
 
 }
 
-
-/* زر الرجوع */
-
 .back-button{
 
 border:1px solid
@@ -212,9 +200,6 @@ cursor:pointer;
 transform:scale(.96);
 
 }
-
-
-/* العنوان */
 
 .hero{
 
@@ -275,9 +260,6 @@ font-size:15px;
 line-height:1.7;
 
 }
-
-
-/* البحث */
 
 .search-box{
 
@@ -388,9 +370,6 @@ opacity:.6;
 cursor:not-allowed;
 
 }
-
-
-/* النتيجة */
 
 .result{
 
@@ -517,8 +496,13 @@ transform:scale(.98);
 
 }
 
+.add-button:disabled{
 
-/* الرسائل */
+opacity:.7;
+
+cursor:not-allowed;
+
+}
 
 .message{
 
@@ -563,7 +547,19 @@ color:#8fffc5;
 }
 
 
-/* أصدقائي */
+/* عنوان الأصدقاء */
+
+.friends-header{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin:30px 0 15px;
+
+}
 
 .section-title{
 
@@ -571,9 +567,303 @@ font-size:20px;
 
 font-weight:bold;
 
-margin:30px 0 15px;
+}
+
+
+/* زر الإشعارات */
+
+.requests-button{
+
+position:relative;
+
+width:48px;
+
+height:48px;
+
+border-radius:16px;
+
+border:1px solid
+rgba(255,255,255,.08);
+
+background:
+rgba(255,255,255,.05);
+
+color:white;
+
+font-size:24px;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
 
 }
+
+.requests-button:active{
+
+transform:scale(.94);
+
+}
+
+.request-count{
+
+position:absolute;
+
+top:-5px;
+
+left:-5px;
+
+min-width:21px;
+
+height:21px;
+
+padding:0 5px;
+
+border-radius:50px;
+
+display:none;
+
+align-items:center;
+
+justify-content:center;
+
+background:#ff3d5a;
+
+color:white;
+
+font-size:11px;
+
+font-weight:bold;
+
+border:2px solid #07110f;
+
+}
+
+
+/* صندوق الطلبات */
+
+.requests-panel{
+
+display:none;
+
+padding:18px;
+
+margin-bottom:22px;
+
+border-radius:24px;
+
+background:
+linear-gradient(
+135deg,
+rgba(0,85,58,.5),
+rgba(2,31,24,.8)
+);
+
+border:1px solid
+rgba(0,255,145,.15);
+
+}
+
+.requests-panel-title{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:15px;
+
+font-size:18px;
+
+font-weight:bold;
+
+}
+
+.close-requests{
+
+border:none;
+
+background:
+rgba(255,255,255,.06);
+
+color:#aaa;
+
+width:34px;
+
+height:34px;
+
+border-radius:12px;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+.request-card{
+
+padding:15px;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,.04);
+
+border:1px solid
+rgba(255,255,255,.06);
+
+margin-bottom:12px;
+
+}
+
+.request-user{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+}
+
+.request-avatar{
+
+width:55px;
+
+height:55px;
+
+border-radius:17px;
+
+overflow:hidden;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:
+rgba(0,255,145,.1);
+
+font-size:25px;
+
+flex-shrink:0;
+
+}
+
+.request-avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+}
+
+.request-info{
+
+flex:1;
+
+min-width:0;
+
+}
+
+.request-name{
+
+font-size:16px;
+
+font-weight:bold;
+
+margin-bottom:5px;
+
+}
+
+.request-id{
+
+font-size:12px;
+
+color:#00e889;
+
+}
+
+.request-actions{
+
+display:flex;
+
+gap:8px;
+
+margin-top:13px;
+
+}
+
+.accept-button,
+.reject-button{
+
+flex:1;
+
+border:none;
+
+padding:11px;
+
+border-radius:12px;
+
+font-family:inherit;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+.accept-button{
+
+background:#00e889;
+
+color:#00150e;
+
+}
+
+.reject-button{
+
+background:
+rgba(255,70,70,.12);
+
+color:#ffaaaa;
+
+border:1px solid
+rgba(255,70,70,.15);
+
+}
+
+.accept-button:disabled,
+.reject-button:disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+
+.no-requests{
+
+text-align:center;
+
+padding:20px;
+
+color:#788680;
+
+font-size:14px;
+
+line-height:1.7;
+
+}
+
+
+/* قائمة الأصدقاء */
 
 .empty{
 
@@ -594,6 +884,96 @@ color:#788680;
 font-size:14px;
 
 line-height:1.7;
+
+}
+
+.friend-list{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
+}
+
+.friend-item{
+
+display:flex;
+
+align-items:center;
+
+gap:13px;
+
+padding:15px;
+
+border-radius:20px;
+
+background:
+rgba(255,255,255,.035);
+
+border:1px solid
+rgba(255,255,255,.06);
+
+}
+
+.friend-item-avatar{
+
+width:55px;
+
+height:55px;
+
+border-radius:17px;
+
+overflow:hidden;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+background:
+rgba(0,255,145,.1);
+
+font-size:24px;
+
+flex-shrink:0;
+
+}
+
+.friend-item-avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
+}
+
+.friend-item-info{
+
+flex:1;
+
+min-width:0;
+
+}
+
+.friend-item-name{
+
+font-size:16px;
+
+font-weight:bold;
+
+margin-bottom:5px;
+
+}
+
+.friend-item-id{
+
+font-size:12px;
+
+color:#00e889;
 
 }
 
@@ -668,6 +1048,7 @@ padding:20px 15px 35px;
 .logo{
 
 width:45px;
+
 height:45px;
 
 border-radius:14px;
@@ -727,8 +1108,6 @@ height:50px;
 </div>
 
 
-<!-- Loading -->
-
 <div id="loading" class="loading">
 
 <div class="spinner"></div>
@@ -740,12 +1119,8 @@ height:50px;
 </div>
 
 
-<!-- التطبيق -->
-
 <main id="app" class="app" style="display:none;">
 
-
-<!-- Header -->
 
 <header>
 
@@ -782,8 +1157,6 @@ class="back-button"
 </header>
 
 
-<!-- Hero -->
-
 <section class="hero">
 
 <div class="hero-icon">
@@ -801,14 +1174,12 @@ class="back-button"
 <p>
 
 ابحث عن أصدقائك باستخدام
-ID الخاص بهم وأضفهم إلى قائمة أصدقائك.
+ID الخاص بهم وأرسل لهم طلب صداقة.
 
 </p>
 
 </section>
 
-
-<!-- البحث -->
 
 <section class="search-box">
 
@@ -841,8 +1212,6 @@ id="searchBtn"
 </section>
 
 
-<!-- الرسائل -->
-
 <div
 id="errorMessage"
 class="message error"
@@ -854,8 +1223,6 @@ id="successMessage"
 class="message success"
 ></div>
 
-
-<!-- النتيجة -->
 
 <div
 id="result"
@@ -899,14 +1266,16 @@ id="addButton"
 class="add-button"
 >
 
-➕ إضافة صديق
+📨 إرسال طلب صداقة
 
 </button>
 
 </div>
 
 
-<!-- قائمة الأصدقاء -->
+<!-- عنوان الأصدقاء + زر الطلبات -->
+
+<div class="friends-header">
 
 <div class="section-title">
 
@@ -915,11 +1284,82 @@ class="add-button"
 </div>
 
 
-<div class="empty">
+<button
+id="requestsBtn"
+class="requests-button"
+title="طلبات الصداقة"
+>
+
+🔔
+
+<span
+id="requestCount"
+class="request-count"
+>
+0
+</span>
+
+</button>
+
+</div>
+
+
+<!-- طلبات الصداقة -->
+
+<div
+id="requestsPanel"
+class="requests-panel"
+>
+
+<div class="requests-panel-title">
+
+<span>
+🔔 طلبات الصداقة
+</span>
+
+<button
+id="closeRequests"
+class="close-requests"
+>
+✕
+</button>
+
+</div>
+
+
+<div
+id="requestsList"
+>
+
+<div class="no-requests">
+
+لا توجد طلبات صداقة حالياً.
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- قائمة الأصدقاء -->
+
+<div
+id="friendsList"
+class="friend-list"
+>
+
+<div
+id="emptyFriends"
+class="empty"
+>
 
 لا يوجد أصدقاء حتى الآن.
 <br>
-ابحث عن صديق باستخدام الـ ID لإضافته.
+
+ابحث عن صديق وأرسل له طلب صداقة.
+
+</div>
 
 </div>
 
@@ -966,7 +1406,9 @@ where,
 getDocs,
 doc,
 getDoc,
-setDoc
+setDoc,
+deleteDoc,
+onSnapshot
 
 }
 
@@ -1053,12 +1495,39 @@ document.getElementById("successMessage");
 const backBtn =
 document.getElementById("backBtn");
 
+const requestsBtn =
+document.getElementById("requestsBtn");
 
-/* المستخدم الحالي */
+const requestCount =
+document.getElementById("requestCount");
+
+const requestsPanel =
+document.getElementById("requestsPanel");
+
+const closeRequests =
+document.getElementById("closeRequests");
+
+const requestsList =
+document.getElementById("requestsList");
+
+const friendsList =
+document.getElementById("friendsList");
+
+const emptyFriends =
+document.getElementById("emptyFriends");
+
+
+/* =========================
+   المتغيرات
+========================= */
 
 let currentUser = null;
 
 let foundUser = null;
+
+let requestsUnsubscribe = null;
+
+let friendsUnsubscribe = null;
 
 
 /* رابط Mecd Chat */
@@ -1129,6 +1598,17 @@ loading.style.display =
 app.style.display =
 "block";
 
+
+/* تشغيل طلبات الصداقة */
+
+listenForRequests();
+
+
+/* تشغيل قائمة الأصدقاء */
+
+listenForFriends();
+
+
 }else{
 
 window.location.replace(
@@ -1143,7 +1623,7 @@ mecdChatURL
 
 
 /* =========================
-   البحث عن المستخدم
+   البحث عن صديق
 ========================= */
 
 async function searchFriend(){
@@ -1183,16 +1663,6 @@ return;
 }
 
 
-if(
-currentUser &&
-currentUser.uid
-){
-
-/* لا تسمح للمستخدم بالبحث عن نفسه لاحقاً */
-
-}
-
-
 searchBtn.disabled =
 true;
 
@@ -1202,11 +1672,6 @@ searchBtn.textContent =
 
 try{
 
-
-/*
-البحث في users
-عن chatID مطابق
-*/
 
 const usersRef =
 collection(
@@ -1258,15 +1723,13 @@ userDoc.id === currentUser.uid
 ){
 
 showError(
-"لا يمكنك إضافة نفسك كصديق."
+"لا يمكنك إرسال طلب صداقة لنفسك."
 );
 
 return;
 
 }
 
-
-/* حفظ المستخدم الموجود */
 
 foundUser = {
 
@@ -1322,10 +1785,63 @@ foundUserId.textContent =
 foundUser.chatID;
 
 
-/* عرض النتيجة */
+/* فحص حالة العلاقة */
+
+const myFriendRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+foundUser.uid
+);
+
+const friendDoc =
+await getDoc(myFriendRef);
+
+
+const requestRef =
+doc(
+db,
+"users",
+foundUser.uid,
+"friendRequests",
+currentUser.uid
+);
+
+const requestDoc =
+await getDoc(requestRef);
+
 
 result.style.display =
 "block";
+
+
+if(friendDoc.exists()){
+
+addButton.textContent =
+"✓ صديق بالفعل";
+
+addButton.disabled =
+true;
+
+}else if(requestDoc.exists()){
+
+addButton.textContent =
+"✓ تم إرسال الطلب";
+
+addButton.disabled =
+true;
+
+}else{
+
+addButton.textContent =
+"📨 إرسال طلب صداقة";
+
+addButton.disabled =
+false;
+
+}
 
 
 }catch(error){
@@ -1365,7 +1881,7 @@ searchFriend
 );
 
 
-/* البحث بالضغط Enter */
+/* Enter */
 
 friendId.addEventListener(
 
@@ -1387,7 +1903,7 @@ searchFriend();
 
 
 /* =========================
-   إضافة صديق
+   إرسال طلب صداقة
 ========================= */
 
 addButton.addEventListener(
@@ -1410,21 +1926,13 @@ addButton.disabled =
 true;
 
 addButton.textContent =
-"جاري الإضافة...";
+"جاري إرسال الطلب...";
 
 
 try{
 
 
-/*
-مكان حفظ الصداقة:
-
-users
-  UID
-    friends
-      UID الصديق
-*/
-
+/* التأكد أن الصداقة غير موجودة */
 
 const friendRef =
 doc(
@@ -1436,16 +1944,498 @@ foundUser.uid
 );
 
 
-const existing =
-await getDoc(
-friendRef
+const existingFriend =
+await getDoc(friendRef);
+
+
+if(existingFriend.exists()){
+
+addButton.textContent =
+"✓ صديق بالفعل";
+
+return;
+
+}
+
+
+/* مكان الطلب عند الشخص الآخر */
+
+const requestRef =
+doc(
+db,
+"users",
+foundUser.uid,
+"friendRequests",
+currentUser.uid
 );
 
 
-if(existing.exists()){
+const existingRequest =
+await getDoc(requestRef);
+
+
+if(existingRequest.exists()){
+
+addButton.textContent =
+"✓ تم إرسال الطلب";
+
+return;
+
+}
+
+
+/* إنشاء طلب الصداقة */
+
+await setDoc(
+
+requestRef,
+
+{
+
+senderUid:
+currentUser.uid,
+
+senderName:
+currentUser.displayName ||
+"مستخدم Mecd",
+
+senderPhoto:
+currentUser.photoURL ||
+"",
+
+senderEmail:
+currentUser.email ||
+"",
+
+senderChatID:
+await getMyChatID(),
+
+status:
+"pending",
+
+createdAt:
+Date.now()
+
+}
+
+);
+
 
 showSuccess(
-"هذا المستخدم موجود بالفعل في أصدقائك."
+"📨 تم إرسال طلب الصداقة بنجاح!"
+);
+
+
+addButton.textContent =
+"✓ تم إرسال الطلب";
+
+
+}catch(error){
+
+console.error(
+"Friend request error:",
+error
+);
+
+console.error(
+error.code
+);
+
+showError(
+"حدث خطأ أثناء إرسال طلب الصداقة."
+);
+
+addButton.disabled =
+false;
+
+addButton.textContent =
+"📨 إرسال طلب صداقة";
+
+}
+
+});
+
+
+/* =========================
+   الحصول على Chat ID الحالي
+========================= */
+
+async function getMyChatID(){
+
+try{
+
+const userRef =
+doc(
+db,
+"users",
+currentUser.uid
+);
+
+
+const userDoc =
+await getDoc(userRef);
+
+
+if(userDoc.exists()){
+
+return (
+userDoc.data().chatID ||
+""
+);
+
+}
+
+return "";
+
+}catch(error){
+
+console.error(error);
+
+return "";
+
+}
+
+}
+
+
+/* =========================
+   الاستماع لطلبات الصداقة
+========================= */
+
+function listenForRequests(){
+
+if(
+!currentUser
+){
+
+return;
+
+}
+
+
+const requestsRef =
+collection(
+db,
+"users",
+currentUser.uid,
+"friendRequests"
+);
+
+
+requestsUnsubscribe =
+onSnapshot(
+
+requestsRef,
+
+(snapshot)=>{
+
+const requests =
+[];
+
+
+snapshot.forEach(
+
+(docSnap)=>{
+
+const data =
+docSnap.data();
+
+
+if(
+data.status === "pending"
+){
+
+requests.push({
+
+id:
+docSnap.id,
+
+...data
+
+});
+
+}
+
+}
+
+);
+
+
+/* عدد الطلبات */
+
+if(
+requests.length > 0
+){
+
+requestCount.textContent =
+requests.length;
+
+requestCount.style.display =
+"flex";
+
+}else{
+
+requestCount.style.display =
+"none";
+
+}
+
+
+/* عرض الطلبات */
+
+renderRequests(requests);
+
+},
+
+(error)=>{
+
+console.error(
+"Requests listener:",
+error
+);
+
+}
+
+);
+
+}
+
+
+/* =========================
+   عرض طلبات الصداقة
+========================= */
+
+function renderRequests(requests){
+
+if(
+requests.length === 0
+){
+
+requestsList.innerHTML = `
+
+<div class="no-requests">
+
+لا توجد طلبات صداقة حالياً.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+requestsList.innerHTML =
+"";
+
+
+requests.forEach(
+
+(request)=>{
+
+const card =
+document.createElement("div");
+
+card.className =
+"request-card";
+
+
+const photo =
+request.senderPhoto ||
+"";
+
+
+card.innerHTML = `
+
+<div class="request-user">
+
+<div class="request-avatar">
+
+${
+photo
+?
+`<img src="${photo}" alt="صورة المستخدم">`
+:
+"👤"
+}
+
+</div>
+
+
+<div class="request-info">
+
+<div class="request-name">
+
+${escapeHTML(
+request.senderName ||
+"مستخدم Mecd"
+)}
+
+</div>
+
+<div class="request-id">
+
+ID:
+${escapeHTML(
+request.senderChatID ||
+""
+)}
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="request-actions">
+
+<button
+class="accept-button"
+data-uid="${request.senderUid}"
+data-id="${request.id}"
+>
+
+✓ قبول
+
+</button>
+
+
+<button
+class="reject-button"
+data-uid="${request.senderUid}"
+data-id="${request.id}"
+>
+
+✕ رفض
+
+</button>
+
+</div>
+
+`;
+
+
+requestsList.appendChild(card);
+
+}
+
+);
+
+
+/* أزرار القبول */
+
+document
+.querySelectorAll(".accept-button")
+.forEach(
+
+button=>{
+
+button.addEventListener(
+
+"click",
+
+()=>{
+
+acceptRequest(
+button.dataset.uid,
+button.dataset.id
+);
+
+}
+
+);
+
+}
+
+);
+
+
+/* أزرار الرفض */
+
+document
+.querySelectorAll(".reject-button")
+.forEach(
+
+button=>{
+
+button.addEventListener(
+
+"click",
+
+()=>{
+
+rejectRequest(
+button.dataset.uid,
+button.dataset.id
+);
+
+}
+
+);
+
+}
+
+);
+
+}
+
+
+/* =========================
+   قبول طلب الصداقة
+========================= */
+
+async function acceptRequest(
+senderUid,
+requestId
+){
+
+try{
+
+const requestRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+requestId
+);
+
+
+const requestDoc =
+await getDoc(requestRef);
+
+
+if(!requestDoc.exists()){
+
+return;
+
+}
+
+
+const request =
+requestDoc.data();
+
+
+/* بيانات المرسل */
+
+const senderRef =
+doc(
+db,
+"users",
+senderUid
+);
+
+
+const senderDoc =
+await getDoc(senderRef);
+
+
+if(!senderDoc.exists()){
+
+showError(
+"لم يعد حساب صاحب الطلب موجودًا."
 );
 
 return;
@@ -1453,25 +2443,45 @@ return;
 }
 
 
-/* حفظ الصديق */
+const senderData =
+senderDoc.data();
+
+
+/* إضافة المرسل إلى أصدقائي */
+
+const myFriendRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+senderUid
+);
+
 
 await setDoc(
 
-friendRef,
+myFriendRef,
 
 {
 
 uid:
-foundUser.uid,
+senderUid,
 
 name:
-foundUser.name,
+senderData.name ||
+request.senderName ||
+"مستخدم Mecd",
 
 photo:
-foundUser.photo,
+senderData.photo ||
+request.senderPhoto ||
+"",
 
 chatID:
-foundUser.chatID,
+senderData.chatID ||
+request.senderChatID ||
+"",
 
 addedAt:
 Date.now()
@@ -1481,35 +2491,340 @@ Date.now()
 );
 
 
-showSuccess(
-"✅ تمت إضافة الصديق بنجاح!"
+/* إضافة المستخدم الحالي إلى أصدقاء المرسل */
+
+const senderFriendRef =
+doc(
+db,
+"users",
+senderUid,
+"friends",
+currentUser.uid
 );
 
 
-addButton.textContent =
-"✓ تمت الإضافة";
+await setDoc(
+
+senderFriendRef,
+
+{
+
+uid:
+currentUser.uid,
+
+name:
+currentUser.displayName ||
+"مستخدم Mecd",
+
+photo:
+currentUser.photoURL ||
+"",
+
+chatID:
+await getMyChatID(),
+
+addedAt:
+Date.now()
+
+}
+
+);
+
+
+/* حذف الطلب */
+
+await deleteDoc(requestRef);
+
+
+showSuccess(
+"✅ تم قبول طلب الصداقة!"
+);
 
 
 }catch(error){
 
 console.error(
-"Add friend error:",
+"Accept request error:",
 error
 );
 
 showError(
-"حدث خطأ أثناء إضافة الصديق."
+"حدث خطأ أثناء قبول طلب الصداقة."
 );
-
-addButton.disabled =
-false;
-
-addButton.textContent =
-"➕ إضافة صديق";
 
 }
 
+}
+
+
+/* =========================
+   رفض الطلب
+========================= */
+
+async function rejectRequest(
+senderUid,
+requestId
+){
+
+try{
+
+const requestRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+requestId
+);
+
+
+await deleteDoc(requestRef);
+
+
+showSuccess(
+"تم رفض طلب الصداقة."
+);
+
+
+}catch(error){
+
+console.error(
+"Reject request error:",
+error
+);
+
+showError(
+"حدث خطأ أثناء رفض الطلب."
+);
+
+}
+
+}
+
+
+/* =========================
+   قائمة الأصدقاء مباشرة
+========================= */
+
+function listenForFriends(){
+
+if(
+!currentUser
+){
+
+return;
+
+}
+
+
+const friendsRef =
+collection(
+db,
+"users",
+currentUser.uid,
+"friends"
+);
+
+
+friendsUnsubscribe =
+onSnapshot(
+
+friendsRef,
+
+(snapshot)=>{
+
+if(snapshot.empty){
+
+emptyFriends.style.display =
+"block";
+
+friendsList
+.querySelectorAll(".friend-item")
+.forEach(
+element=>element.remove()
+);
+
+return;
+
+}
+
+
+emptyFriends.style.display =
+"none";
+
+
+friendsList
+.querySelectorAll(".friend-item")
+.forEach(
+element=>element.remove()
+);
+
+
+snapshot.forEach(
+
+(friendDoc)=>{
+
+const friend =
+friendDoc.data();
+
+
+const item =
+document.createElement("div");
+
+item.className =
+"friend-item";
+
+
+item.innerHTML = `
+
+<div class="friend-item-avatar">
+
+${
+friend.photo
+?
+`<img src="${friend.photo}" alt="صورة الصديق">`
+:
+"👤"
+}
+
+</div>
+
+
+<div class="friend-item-info">
+
+<div class="friend-item-name">
+
+${escapeHTML(
+friend.name ||
+"مستخدم Mecd"
+)}
+
+</div>
+
+<div class="friend-item-id">
+
+ID:
+${escapeHTML(
+friend.chatID ||
+""
+)}
+
+</div>
+
+</div>
+
+`;
+
+
+friendsList.appendChild(item);
+
+}
+
+);
+
+},
+
+(error)=>{
+
+console.error(
+"Friends listener:",
+error
+);
+
+}
+
+);
+
+}
+
+
+/* =========================
+   حماية النصوص
+========================= */
+
+function escapeHTML(value){
+
+return String(value)
+
+.replace(
+/&/g,
+"&amp;"
+)
+
+.replace(
+/</g,
+"&lt;"
+)
+
+.replace(
+/>/g,
+"&gt;"
+)
+
+.replace(
+/"/g,
+"&quot;"
+)
+
+.replace(
+/'/g,
+"&#039;"
+);
+
+}
+
+
+/* =========================
+   زر 🔔
+========================= */
+
+requestsBtn.addEventListener(
+
+"click",
+
+()=>{
+
+if(
+requestsPanel.style.display === "block"
+){
+
+requestsPanel.style.display =
+"none";
+
+}else{
+
+requestsPanel.style.display =
+"block";
+
+requestsPanel.scrollIntoView({
+
+behavior:"smooth",
+
+block:"center"
+
 });
+
+}
+
+}
+
+);
+
+
+/* إغلاق الطلبات */
+
+closeRequests.addEventListener(
+
+"click",
+
+()=>{
+
+requestsPanel.style.display =
+"none";
+
+}
+
+);
 
 
 /* =========================
