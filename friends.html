@@ -21,11 +21,8 @@ padding:0;
 }
 
 body{
-
 min-height:100vh;
-
 font-family:Arial,Tahoma,sans-serif;
-
 color:white;
 
 background:
@@ -41,107 +38,69 @@ linear-gradient(
 );
 
 overflow-x:hidden;
-
 }
 
 .background{
-
 position:fixed;
 inset:0;
-
 overflow:hidden;
-
 pointer-events:none;
-
 z-index:0;
-
 }
 
 .glow{
-
 position:absolute;
-
 width:300px;
 height:300px;
-
 border-radius:50%;
-
 filter:blur(100px);
-
 opacity:.18;
-
 }
 
 .glow.one{
-
 background:#00e676;
-
 top:-100px;
 right:-100px;
-
 }
 
 .glow.two{
-
 background:#2979ff;
-
 bottom:-100px;
 left:-100px;
-
 }
 
 .app{
-
 position:relative;
-
 z-index:1;
-
 width:100%;
-
 max-width:650px;
-
 min-height:100vh;
-
 margin:auto;
-
 padding:25px 20px 45px;
-
 }
 
 header{
-
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
-
 margin-bottom:40px;
-
 }
 
 .brand{
-
 display:flex;
-
 align-items:center;
-
 gap:12px;
-
 }
 
 .logo{
-
 width:52px;
 height:52px;
 
 display:flex;
-
 align-items:center;
 justify-content:center;
 
 border-radius:16px;
-
 font-size:27px;
 
 background:
@@ -154,29 +113,20 @@ linear-gradient(
 box-shadow:
 0 10px 30px
 rgba(0,230,118,.22);
-
 }
 
 .brand h2{
-
 font-size:21px;
-
 }
 
 .brand span{
-
 display:block;
-
 margin-top:4px;
-
 color:#8d9a97;
-
 font-size:12px;
-
 }
 
 .back-button{
-
 border:1px solid
 rgba(255,255,255,.08);
 
@@ -190,34 +140,25 @@ padding:10px 14px;
 border-radius:15px;
 
 font-size:14px;
-
 cursor:pointer;
-
 }
 
 .back-button:active{
-
 transform:scale(.96);
-
 }
 
 .hero{
-
 text-align:center;
-
 margin-bottom:30px;
-
 }
 
 .hero-icon{
-
 width:82px;
 height:82px;
 
 margin:0 auto 20px;
 
 display:flex;
-
 align-items:center;
 justify-content:center;
 
@@ -234,37 +175,25 @@ rgba(0,255,145,.15);
 box-shadow:
 0 20px 60px
 rgba(0,0,0,.3);
-
 }
 
 .hero h1{
-
 font-size:34px;
-
 margin-bottom:12px;
-
 }
 
 .hero h1 span{
-
 color:#00e676;
-
 }
 
 .hero p{
-
 color:#9ba7a4;
-
 font-size:15px;
-
 line-height:1.7;
-
 }
 
 .search-box{
-
 padding:20px;
-
 border-radius:25px;
 
 background:
@@ -282,31 +211,21 @@ box-shadow:
 rgba(0,0,0,.25);
 
 margin-bottom:22px;
-
 }
 
 .search-title{
-
 font-size:17px;
-
 font-weight:bold;
-
 margin-bottom:12px;
-
 }
 
 .search-row{
-
 display:flex;
-
 gap:10px;
-
 }
 
 #friendId{
-
 flex:1;
-
 min-width:0;
 
 padding:15px;
@@ -324,21 +243,16 @@ rgba(0,0,0,.25);
 color:white;
 
 font-size:15px;
-
 font-family:inherit;
 
 text-align:right;
-
 }
 
 #friendId::placeholder{
-
 color:#687872;
-
 }
 
 #searchBtn{
-
 padding:0 20px;
 
 border:none;
@@ -354,25 +268,18 @@ font-weight:bold;
 font-size:15px;
 
 cursor:pointer;
-
 }
 
 #searchBtn:active{
-
 transform:scale(.96);
-
 }
 
 #searchBtn:disabled{
-
 opacity:.6;
-
 cursor:not-allowed;
-
 }
 
 .result{
-
 display:none;
 
 padding:20px;
@@ -386,21 +293,15 @@ border:1px solid
 rgba(255,255,255,.08);
 
 margin-bottom:20px;
-
 }
 
 .user-card{
-
 display:flex;
-
 align-items:center;
-
 gap:15px;
-
 }
 
 .user-avatar{
-
 width:65px;
 height:65px;
 
@@ -411,7 +312,6 @@ border-radius:20px;
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
 justify-content:center;
 
@@ -422,52 +322,35 @@ rgba(0,255,145,.1);
 
 border:1px solid
 rgba(0,255,145,.15);
-
 }
 
 .user-avatar img{
-
 width:100%;
 height:100%;
-
 object-fit:cover;
-
 }
 
 .user-info{
-
 flex:1;
-
 min-width:0;
-
 }
 
 .user-name{
-
 font-size:18px;
-
 font-weight:bold;
-
 margin-bottom:7px;
 
 overflow:hidden;
-
 text-overflow:ellipsis;
-
 white-space:nowrap;
-
 }
 
 .user-id{
-
 color:#00e889;
-
 font-size:13px;
-
 }
 
 .add-button{
-
 margin-top:15px;
 
 width:100%;
@@ -487,25 +370,18 @@ font-size:15px;
 font-weight:bold;
 
 cursor:pointer;
-
 }
 
 .add-button:active{
-
 transform:scale(.98);
-
 }
 
 .add-button:disabled{
-
-opacity:.7;
-
+opacity:.65;
 cursor:not-allowed;
-
 }
 
 .message{
-
 display:none;
 
 padding:18px;
@@ -519,11 +395,9 @@ font-size:14px;
 line-height:1.6;
 
 margin-bottom:20px;
-
 }
 
 .message.error{
-
 background:
 rgba(255,70,70,.08);
 
@@ -531,11 +405,9 @@ border:1px solid
 rgba(255,70,70,.15);
 
 color:#ffaaaa;
-
 }
 
 .message.success{
-
 background:
 rgba(0,230,118,.08);
 
@@ -543,197 +415,148 @@ border:1px solid
 rgba(0,230,118,.15);
 
 color:#8fffc5;
-
 }
 
-
-/* عنوان الأصدقاء */
-
-.friends-header{
-
+.section-head{
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
 
 margin:30px 0 15px;
-
 }
 
 .section-title{
-
 font-size:20px;
-
 font-weight:bold;
-
 }
 
+.notification-button{
+width:58px;
+height:58px;
 
-/* زر الإشعارات */
-
-.requests-button{
-
-position:relative;
-
-width:48px;
-
-height:48px;
-
-border-radius:16px;
+border-radius:18px;
 
 border:1px solid
 rgba(255,255,255,.08);
 
 background:
-rgba(255,255,255,.05);
+rgba(255,255,255,.04);
 
 color:white;
 
-font-size:24px;
+font-size:29px;
 
 cursor:pointer;
 
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
+position:relative;
 }
 
-.requests-button:active{
-
-transform:scale(.94);
-
+.notification-button:active{
+transform:scale(.95);
 }
 
-.request-count{
-
+.notification-count{
 position:absolute;
 
 top:-5px;
-
 left:-5px;
 
-min-width:21px;
-
-height:21px;
+min-width:22px;
+height:22px;
 
 padding:0 5px;
-
-border-radius:50px;
 
 display:none;
 
 align-items:center;
-
 justify-content:center;
 
-background:#ff3d5a;
+border-radius:50%;
+
+background:#ff3b30;
 
 color:white;
 
-font-size:11px;
+font-size:12px;
 
 font-weight:bold;
 
-border:2px solid #07110f;
-
+border:2px solid #06100d;
 }
 
-
-/* صندوق الطلبات */
-
-.requests-panel{
-
+.requests{
 display:none;
 
-padding:18px;
+padding:20px;
 
-margin-bottom:22px;
-
-border-radius:24px;
+border-radius:25px;
 
 background:
 linear-gradient(
 135deg,
-rgba(0,85,58,.5),
-rgba(2,31,24,.8)
+rgba(0,85,58,.55),
+rgba(2,31,24,.75)
 );
 
 border:1px solid
-rgba(0,255,145,.15);
+rgba(0,255,145,.16);
 
+margin-bottom:20px;
 }
 
-.requests-panel-title{
-
+.requests-header{
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
 
-margin-bottom:15px;
+margin-bottom:18px;
+}
 
-font-size:18px;
-
+.requests-title{
+font-size:20px;
 font-weight:bold;
-
 }
 
 .close-requests{
+width:45px;
+height:45px;
 
 border:none;
+
+border-radius:14px;
 
 background:
 rgba(255,255,255,.06);
 
 color:#aaa;
 
-width:34px;
-
-height:34px;
-
-border-radius:12px;
-
-font-size:18px;
+font-size:28px;
 
 cursor:pointer;
-
 }
 
-.request-card{
-
+.request-item{
 padding:15px;
 
-border-radius:18px;
+border-radius:20px;
 
 background:
-rgba(255,255,255,.04);
+rgba(0,0,0,.20);
 
 border:1px solid
-rgba(255,255,255,.06);
+rgba(255,255,255,.07);
 
 margin-bottom:12px;
-
 }
 
 .request-user{
-
 display:flex;
-
 align-items:center;
-
 gap:12px;
-
 }
 
 .request-avatar{
-
 width:55px;
-
 height:55px;
 
 border-radius:17px;
@@ -741,132 +564,88 @@ border-radius:17px;
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
-background:
-rgba(0,255,145,.1);
+background:#303030;
 
 font-size:25px;
-
-flex-shrink:0;
-
 }
 
 .request-avatar img{
-
 width:100%;
 height:100%;
-
 object-fit:cover;
-
 }
 
 .request-info{
-
 flex:1;
-
 min-width:0;
-
 }
 
 .request-name{
-
-font-size:16px;
-
 font-weight:bold;
-
+font-size:16px;
 margin-bottom:5px;
-
 }
 
 .request-id{
-
 font-size:12px;
-
 color:#00e889;
-
 }
 
 .request-actions{
-
 display:flex;
-
 gap:8px;
-
-margin-top:13px;
-
+margin-top:14px;
 }
 
 .accept-button,
 .reject-button{
-
 flex:1;
 
 border:none;
 
-padding:11px;
+padding:12px;
 
-border-radius:12px;
-
-font-family:inherit;
+border-radius:13px;
 
 font-weight:bold;
 
-cursor:pointer;
+font-size:14px;
 
+cursor:pointer;
 }
 
 .accept-button{
-
 background:#00e889;
-
 color:#00150e;
-
 }
 
 .reject-button{
-
 background:
 rgba(255,70,70,.12);
 
-color:#ffaaaa;
-
 border:1px solid
-rgba(255,70,70,.15);
+rgba(255,70,70,.2);
 
-}
-
-.accept-button:disabled,
-.reject-button:disabled{
-
-opacity:.6;
-
-cursor:not-allowed;
-
+color:#ffaaaa;
 }
 
 .no-requests{
-
 text-align:center;
-
-padding:20px;
-
 color:#788680;
-
 font-size:14px;
-
-line-height:1.7;
-
+padding:20px 5px;
 }
 
-
-/* قائمة الأصدقاء */
+.friends-list{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
 
 .empty{
-
 padding:25px;
 
 border-radius:22px;
@@ -884,112 +663,69 @@ color:#788680;
 font-size:14px;
 
 line-height:1.7;
-
-}
-
-.friend-list{
-
-display:flex;
-
-flex-direction:column;
-
-gap:12px;
-
 }
 
 .friend-item{
-
 display:flex;
-
 align-items:center;
+gap:14px;
 
-gap:13px;
+padding:16px;
 
-padding:15px;
-
-border-radius:20px;
+border-radius:22px;
 
 background:
 rgba(255,255,255,.035);
 
 border:1px solid
-rgba(255,255,255,.06);
-
+rgba(255,255,255,.07);
 }
 
-.friend-item-avatar{
+.friend-avatar{
+width:58px;
+height:58px;
 
-width:55px;
-
-height:55px;
-
-border-radius:17px;
+border-radius:18px;
 
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
-background:
-rgba(0,255,145,.1);
+background:#303030;
 
-font-size:24px;
-
-flex-shrink:0;
-
+font-size:25px;
 }
 
-.friend-item-avatar img{
-
+.friend-avatar img{
 width:100%;
 height:100%;
-
 object-fit:cover;
-
 }
 
-.friend-item-info{
-
+.friend-info{
 flex:1;
-
-min-width:0;
-
 }
 
-.friend-item-name{
-
-font-size:16px;
-
+.friend-name{
 font-weight:bold;
-
+font-size:16px;
 margin-bottom:5px;
-
 }
 
-.friend-item-id{
-
-font-size:12px;
-
+.friend-id{
 color:#00e889;
-
+font-size:12px;
 }
-
-
-/* Loading */
 
 .loading{
-
 position:fixed;
-
 inset:0;
 
 z-index:999;
 
 display:flex;
-
 align-items:center;
 justify-content:center;
 
@@ -1005,11 +741,9 @@ linear-gradient(
 );
 
 color:#a8bdb6;
-
 }
 
 .spinner{
-
 width:35px;
 height:35px;
 
@@ -1021,72 +755,46 @@ border-top-color:#00e889;
 border-radius:50%;
 
 animation:spin .8s linear infinite;
-
 }
 
 @keyframes spin{
-
 to{
-
 transform:rotate(360deg);
-
 }
-
 }
-
-
-/* الموبايل */
 
 @media(max-width:480px){
 
 .app{
-
 padding:20px 15px 35px;
-
 }
 
 .logo{
-
 width:45px;
-
 height:45px;
-
 border-radius:14px;
-
 font-size:23px;
-
 }
 
 .brand h2{
-
 font-size:18px;
-
 }
 
 .back-button{
-
 font-size:12px;
-
 padding:9px 11px;
-
 }
 
 .hero h1{
-
 font-size:30px;
-
 }
 
 .search-row{
-
 flex-direction:column;
-
 }
 
 #searchBtn{
-
 height:50px;
-
 }
 
 }
@@ -1095,18 +803,14 @@ height:50px;
 
 </head>
 
-
 <body>
-
 
 <div class="background">
 
 <div class="glow one"></div>
-
 <div class="glow two"></div>
 
 </div>
-
 
 <div id="loading" class="loading">
 
@@ -1118,9 +822,7 @@ height:50px;
 
 </div>
 
-
 <main id="app" class="app" style="display:none;">
-
 
 <header>
 
@@ -1144,18 +846,14 @@ Mecd Chat
 
 </div>
 
-
 <button
 id="backBtn"
 class="back-button"
 >
-
 ← رجوع
-
 </button>
 
 </header>
-
 
 <section class="hero">
 
@@ -1164,31 +862,23 @@ class="back-button"
 </div>
 
 <h1>
-
 <span>
 الأصدقاء
 </span>
-
 </h1>
 
 <p>
-
-ابحث عن أصدقائك باستخدام
-ID الخاص بهم وأرسل لهم طلب صداقة.
-
+ابحث عن أصدقائك باستخدام ID الخاص بهم
+وأرسل لهم طلب صداقة.
 </p>
 
 </section>
 
-
 <section class="search-box">
 
 <div class="search-title">
-
 🔎 البحث عن صديق
-
 </div>
-
 
 <div class="search-row">
 
@@ -1199,30 +889,23 @@ placeholder="مثال: MC-000002"
 autocomplete="off"
 >
 
-<button
-id="searchBtn"
->
-
+<button id="searchBtn">
 بحث
-
 </button>
 
 </div>
 
 </section>
 
-
 <div
 id="errorMessage"
 class="message error"
 ></div>
 
-
 <div
 id="successMessage"
 class="message success"
 ></div>
-
 
 <div
 id="result"
@@ -1231,70 +914,54 @@ class="result"
 
 <div class="user-card">
 
-
 <div
 id="userAvatar"
 class="user-avatar"
 >
-
 👤
-
 </div>
-
 
 <div class="user-info">
 
 <div
 id="userName"
 class="user-name"
->
-</div>
+></div>
 
 <div
 id="foundUserId"
 class="user-id"
->
-</div>
+></div>
 
 </div>
 
 </div>
-
 
 <button
 id="addButton"
 class="add-button"
 >
-
 📨 إرسال طلب صداقة
-
 </button>
 
 </div>
 
-
-<!-- عنوان الأصدقاء + زر الطلبات -->
-
-<div class="friends-header">
+<div class="section-head">
 
 <div class="section-title">
-
 👥 أصدقائي
-
 </div>
 
-
 <button
-id="requestsBtn"
-class="requests-button"
+id="notificationBtn"
+class="notification-button"
 title="طلبات الصداقة"
 >
-
 🔔
 
 <span
-id="requestCount"
-class="request-count"
+id="notificationCount"
+class="notification-count"
 >
 0
 </span>
@@ -1303,102 +970,67 @@ class="request-count"
 
 </div>
 
-
-<!-- طلبات الصداقة -->
-
 <div
-id="requestsPanel"
-class="requests-panel"
+id="requests"
+class="requests"
 >
 
-<div class="requests-panel-title">
+<div class="requests-header">
 
-<span>
+<div class="requests-title">
 🔔 طلبات الصداقة
-</span>
+</div>
 
 <button
 id="closeRequests"
 class="close-requests"
 >
-✕
+×
 </button>
 
 </div>
 
-
 <div
 id="requestsList"
 >
-
-<div class="no-requests">
-
-لا توجد طلبات صداقة حالياً.
-
 </div>
 
 </div>
-
-</div>
-
-
-<!-- قائمة الأصدقاء -->
 
 <div
 id="friendsList"
-class="friend-list"
+class="friends-list"
 >
 
-<div
-id="emptyFriends"
-class="empty"
->
+<div class="empty">
 
 لا يوجد أصدقاء حتى الآن.
 <br>
 
-ابحث عن صديق وأرسل له طلب صداقة.
+ابحث عن صديق باستخدام الـ ID لإضافته.
 
 </div>
 
 </div>
-
 
 </main>
 
-
 <script type="module">
 
-
-/* =========================
-   Firebase
-========================= */
-
 import {
-
 initializeApp
-
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
-
 getAuth,
 onAuthStateChanged
-
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
 import {
-
 getFirestore,
 collection,
 query,
@@ -1407,13 +1039,12 @@ getDocs,
 doc,
 getDoc,
 setDoc,
+updateDoc,
 deleteDoc,
-onSnapshot
-
+orderBy,
+serverTimestamp
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -1446,18 +1077,14 @@ measurementId:
 const firebaseApp =
 initializeApp(firebaseConfig);
 
-
 const auth =
 getAuth(firebaseApp);
-
 
 const db =
 getFirestore(firebaseApp);
 
 
-/* =========================
-   العناصر
-========================= */
+/* العناصر */
 
 const loading =
 document.getElementById("loading");
@@ -1495,50 +1122,34 @@ document.getElementById("successMessage");
 const backBtn =
 document.getElementById("backBtn");
 
-const requestsBtn =
-document.getElementById("requestsBtn");
+const notificationBtn =
+document.getElementById("notificationBtn");
 
-const requestCount =
-document.getElementById("requestCount");
+const notificationCount =
+document.getElementById("notificationCount");
 
-const requestsPanel =
-document.getElementById("requestsPanel");
-
-const closeRequests =
-document.getElementById("closeRequests");
+const requests =
+document.getElementById("requests");
 
 const requestsList =
 document.getElementById("requestsList");
 
+const closeRequests =
+document.getElementById("closeRequests");
+
 const friendsList =
 document.getElementById("friendsList");
 
-const emptyFriends =
-document.getElementById("emptyFriends");
-
-
-/* =========================
-   المتغيرات
-========================= */
 
 let currentUser = null;
-
 let foundUser = null;
 
-let requestsUnsubscribe = null;
-
-let friendsUnsubscribe = null;
-
-
-/* رابط Mecd Chat */
 
 const mecdChatURL =
 "https://mecdjhjhnh37-collab.github.io/MecdChat/";
 
 
-/* =========================
-   الرسائل
-========================= */
+/* الرسائل */
 
 function hideMessages(){
 
@@ -1552,7 +1163,8 @@ successMessage.style.display =
 
 function showError(message){
 
-hideMessages();
+successMessage.style.display =
+"none";
 
 result.style.display =
 "none";
@@ -1567,7 +1179,8 @@ errorMessage.style.display =
 
 function showSuccess(message){
 
-hideMessages();
+errorMessage.style.display =
+"none";
 
 successMessage.textContent =
 message;
@@ -1578,15 +1191,11 @@ successMessage.style.display =
 }
 
 
-/* =========================
-   فحص تسجيل الدخول
-========================= */
+/* تسجيل الدخول */
 
 onAuthStateChanged(
-
 auth,
-
-(user)=>{
+async(user)=>{
 
 if(user){
 
@@ -1598,16 +1207,9 @@ loading.style.display =
 app.style.display =
 "block";
 
+await loadFriends();
 
-/* تشغيل طلبات الصداقة */
-
-listenForRequests();
-
-
-/* تشغيل قائمة الأصدقاء */
-
-listenForFriends();
-
+await loadRequestCount();
 
 }else{
 
@@ -1618,12 +1220,11 @@ mecdChatURL
 }
 
 }
-
 );
 
 
 /* =========================
-   البحث عن صديق
+   البحث
 ========================= */
 
 async function searchFriend(){
@@ -1672,13 +1273,11 @@ searchBtn.textContent =
 
 try{
 
-
 const usersRef =
 collection(
 db,
 "users"
 );
-
 
 const usersQuery =
 query(
@@ -1689,7 +1288,6 @@ where(
 id
 )
 );
-
 
 const snapshot =
 await getDocs(
@@ -1714,8 +1312,6 @@ snapshot.docs[0];
 const data =
 userDoc.data();
 
-
-/* منع إضافة نفسك */
 
 if(
 currentUser &&
@@ -1772,20 +1368,15 @@ userAvatar.textContent =
 }
 
 
-/* الاسم */
-
 userName.textContent =
 foundUser.name;
-
-
-/* ID */
 
 foundUserId.textContent =
 "ID: " +
 foundUser.chatID;
 
 
-/* فحص حالة العلاقة */
+/* فحص الحالة */
 
 const myFriendRef =
 doc(
@@ -1796,9 +1387,21 @@ currentUser.uid,
 foundUser.uid
 );
 
-const friendDoc =
-await getDoc(myFriendRef);
+const existingFriend =
+await getDoc(
+myFriendRef
+);
 
+
+if(existingFriend.exists()){
+
+addButton.textContent =
+"✓ أنتم أصدقاء بالفعل";
+
+addButton.disabled =
+true;
+
+}else{
 
 const requestRef =
 doc(
@@ -1809,26 +1412,25 @@ foundUser.uid,
 currentUser.uid
 );
 
-const requestDoc =
-await getDoc(requestRef);
+const existingRequest =
+await getDoc(
+requestRef
+);
 
 
-result.style.display =
-"block";
+if(existingRequest.exists()){
+
+const requestData =
+existingRequest.data();
 
 
-if(friendDoc.exists()){
+if(
+requestData.status ===
+"pending"
+){
 
 addButton.textContent =
-"✓ صديق بالفعل";
-
-addButton.disabled =
-true;
-
-}else if(requestDoc.exists()){
-
-addButton.textContent =
-"✓ تم إرسال الطلب";
+"✓ تم إرسال طلب الصداقة";
 
 addButton.disabled =
 true;
@@ -1843,12 +1445,38 @@ false;
 
 }
 
+}else{
+
+addButton.textContent =
+"📨 إرسال طلب صداقة";
+
+addButton.disabled =
+false;
+
+}
+
+}
+
+
+result.style.display =
+"block";
+
 
 }catch(error){
 
 console.error(
 "Search error:",
 error
+);
+
+console.error(
+"Error code:",
+error.code
+);
+
+console.error(
+"Error message:",
+error.message
 );
 
 showError(
@@ -1868,25 +1496,16 @@ searchBtn.textContent =
 }
 
 
-/* =========================
-   زر البحث
-========================= */
+/* زر البحث */
 
 searchBtn.addEventListener(
-
 "click",
-
 searchFriend
-
 );
 
 
-/* Enter */
-
 friendId.addEventListener(
-
 "keydown",
-
 (event)=>{
 
 if(
@@ -1898,18 +1517,15 @@ searchFriend();
 }
 
 }
-
 );
 
 
 /* =========================
-   إرسال طلب صداقة
+   إرسال طلب الصداقة
 ========================= */
 
 addButton.addEventListener(
-
 "click",
-
 async()=>{
 
 if(
@@ -1931,8 +1547,7 @@ addButton.textContent =
 
 try{
 
-
-/* التأكد أن الصداقة غير موجودة */
+/* تأكيد عدم وجود صداقة */
 
 const friendRef =
 doc(
@@ -1943,22 +1558,23 @@ currentUser.uid,
 foundUser.uid
 );
 
-
 const existingFriend =
-await getDoc(friendRef);
+await getDoc(
+friendRef
+);
 
 
 if(existingFriend.exists()){
 
 addButton.textContent =
-"✓ صديق بالفعل";
+"✓ أنتم أصدقاء بالفعل";
 
 return;
 
 }
 
 
-/* مكان الطلب عند الشخص الآخر */
+/* الطلب */
 
 const requestRef =
 doc(
@@ -1969,12 +1585,25 @@ foundUser.uid,
 currentUser.uid
 );
 
-
 const existingRequest =
-await getDoc(requestRef);
+await getDoc(
+requestRef
+);
 
 
 if(existingRequest.exists()){
+
+const requestData =
+existingRequest.data();
+
+if(
+requestData.status ===
+"pending"
+){
+
+showSuccess(
+"✓ تم إرسال طلب الصداقة مسبقًا."
+);
 
 addButton.textContent =
 "✓ تم إرسال الطلب";
@@ -1983,48 +1612,56 @@ return;
 
 }
 
+}
 
-/* إنشاء طلب الصداقة */
+
+/* إنشاء الطلب */
 
 await setDoc(
-
 requestRef,
-
 {
 
-senderUid:
+fromUid:
 currentUser.uid,
 
-senderName:
+toUid:
+foundUser.uid,
+
+fromName:
 currentUser.displayName ||
+currentUser.email?.split("@")[0] ||
 "مستخدم Mecd",
 
-senderPhoto:
+fromPhoto:
 currentUser.photoURL ||
 "",
 
-senderEmail:
-currentUser.email ||
+fromChatID:
+currentUser.chatID ||
 "",
 
-senderChatID:
-await getMyChatID(),
+toName:
+foundUser.name,
+
+toPhoto:
+foundUser.photo,
+
+toChatID:
+foundUser.chatID,
 
 status:
 "pending",
 
 createdAt:
-Date.now()
+serverTimestamp()
 
 }
-
 );
 
 
 showSuccess(
 "📨 تم إرسال طلب الصداقة بنجاح!"
 );
-
 
 addButton.textContent =
 "✓ تم إرسال الطلب";
@@ -2033,12 +1670,18 @@ addButton.textContent =
 }catch(error){
 
 console.error(
-"Friend request error:",
+"Request error:",
 error
 );
 
 console.error(
+"Request error code:",
 error.code
+);
+
+console.error(
+"Request error message:",
+error.message
 );
 
 showError(
@@ -2053,65 +1696,24 @@ addButton.textContent =
 
 }
 
-});
-
-
-/* =========================
-   الحصول على Chat ID الحالي
-========================= */
-
-async function getMyChatID(){
-
-try{
-
-const userRef =
-doc(
-db,
-"users",
-currentUser.uid
+}
 );
 
 
-const userDoc =
-await getDoc(userRef);
-
-
-if(userDoc.exists()){
-
-return (
-userDoc.data().chatID ||
-""
-);
-
-}
-
-return "";
-
-}catch(error){
-
-console.error(error);
-
-return "";
-
-}
-
-}
-
-
 /* =========================
-   الاستماع لطلبات الصداقة
+   عدد الطلبات
 ========================= */
 
-function listenForRequests(){
+async function loadRequestCount(){
 
-if(
-!currentUser
-){
+if(!currentUser){
 
 return;
 
 }
 
+
+try{
 
 const requestsRef =
 collection(
@@ -2121,104 +1723,106 @@ currentUser.uid,
 "friendRequests"
 );
 
-
-requestsUnsubscribe =
-onSnapshot(
-
+const requestsQuery =
+query(
 requestsRef,
+where(
+"status",
+"==",
+"pending"
+)
+);
 
-(snapshot)=>{
-
-const requests =
-[];
-
-
-snapshot.forEach(
-
-(docSnap)=>{
-
-const data =
-docSnap.data();
-
-
-if(
-data.status === "pending"
-){
-
-requests.push({
-
-id:
-docSnap.id,
-
-...data
-
-});
-
-}
-
-}
-
+const snapshot =
+await getDocs(
+requestsQuery
 );
 
 
-/* عدد الطلبات */
+const count =
+snapshot.size;
 
-if(
-requests.length > 0
-){
 
-requestCount.textContent =
-requests.length;
+if(count > 0){
 
-requestCount.style.display =
+notificationCount.textContent =
+count > 99 ? "99+" : count;
+
+notificationCount.style.display =
 "flex";
 
 }else{
 
-requestCount.style.display =
+notificationCount.style.display =
 "none";
 
 }
 
 
-/* عرض الطلبات */
-
-renderRequests(requests);
-
-},
-
-(error)=>{
+}catch(error){
 
 console.error(
-"Requests listener:",
+"Request count error:",
 error
 );
 
 }
 
-);
-
 }
 
 
 /* =========================
-   عرض طلبات الصداقة
+   عرض الطلبات
 ========================= */
 
-function renderRequests(requests){
+async function loadRequests(){
 
-if(
-requests.length === 0
-){
+if(!currentUser){
+
+return;
+
+}
+
 
 requestsList.innerHTML = `
-
 <div class="no-requests">
-
-لا توجد طلبات صداقة حالياً.
-
+جاري تحميل الطلبات...
 </div>
+`;
 
+
+try{
+
+const requestsRef =
+collection(
+db,
+"users",
+currentUser.uid,
+"friendRequests"
+);
+
+const requestsQuery =
+query(
+requestsRef,
+where(
+"status",
+"==",
+"pending"
+)
+);
+
+const snapshot =
+await getDocs(
+requestsQuery
+);
+
+
+if(snapshot.empty){
+
+requestsList.innerHTML = `
+<div class="no-requests">
+لا توجد طلبات صداقة حالياً.
+</div>
 `;
 
 return;
@@ -2226,101 +1830,88 @@ return;
 }
 
 
-requestsList.innerHTML =
-"";
+requestsList.innerHTML = "";
 
 
-requests.forEach(
+snapshot.forEach(
+(requestDoc)=>{
 
-(request)=>{
+const data =
+requestDoc.data();
 
-const card =
+const item =
 document.createElement("div");
 
-card.className =
-"request-card";
+item.className =
+"request-item";
 
 
-const photo =
-request.senderPhoto ||
-"";
+let avatar =
+"👤";
+
+if(data.fromPhoto){
+
+avatar = `
+<img
+src="${data.fromPhoto}"
+alt="صورة المستخدم"
+>
+`;
+
+}
 
 
-card.innerHTML = `
+item.innerHTML = `
 
 <div class="request-user">
 
 <div class="request-avatar">
-
-${
-photo
-?
-`<img src="${photo}" alt="صورة المستخدم">`
-:
-"👤"
-}
-
+${avatar}
 </div>
-
 
 <div class="request-info">
 
 <div class="request-name">
-
 ${escapeHTML(
-request.senderName ||
+data.fromName ||
 "مستخدم Mecd"
 )}
-
 </div>
 
 <div class="request-id">
-
-ID:
-${escapeHTML(
-request.senderChatID ||
+ID: ${escapeHTML(
+data.fromChatID ||
 ""
 )}
-
 </div>
 
 </div>
 
 </div>
-
 
 <div class="request-actions">
 
 <button
 class="accept-button"
-data-uid="${request.senderUid}"
-data-id="${request.id}"
+data-uid="${requestDoc.id}"
 >
-
 ✓ قبول
-
 </button>
-
 
 <button
 class="reject-button"
-data-uid="${request.senderUid}"
-data-id="${request.id}"
+data-uid="${requestDoc.id}"
 >
-
 ✕ رفض
-
 </button>
 
 </div>
-
 `;
 
 
-requestsList.appendChild(card);
+requestsList.appendChild(item);
 
 }
-
 );
 
 
@@ -2329,26 +1920,16 @@ requestsList.appendChild(card);
 document
 .querySelectorAll(".accept-button")
 .forEach(
-
-button=>{
+(button)=>{
 
 button.addEventListener(
-
 "click",
-
-()=>{
-
-acceptRequest(
-button.dataset.uid,
-button.dataset.id
+()=>acceptRequest(
+button.dataset.uid
+)
 );
 
 }
-
-);
-
-}
-
 );
 
 
@@ -2357,39 +1938,49 @@ button.dataset.id
 document
 .querySelectorAll(".reject-button")
 .forEach(
-
-button=>{
+(button)=>{
 
 button.addEventListener(
-
 "click",
-
-()=>{
-
-rejectRequest(
-button.dataset.uid,
-button.dataset.id
+()=>rejectRequest(
+button.dataset.uid
+)
 );
 
 }
-
 );
+
+
+}catch(error){
+
+console.error(
+"Load requests error:",
+error
+);
+
+requestsList.innerHTML = `
+<div class="no-requests">
+حدث خطأ أثناء تحميل الطلبات.
+</div>
+`;
 
 }
-
-);
 
 }
 
 
 /* =========================
-   قبول طلب الصداقة
+   قبول طلب
 ========================= */
 
-async function acceptRequest(
-senderUid,
-requestId
-){
+async function acceptRequest(senderUid){
+
+if(!currentUser){
+
+return;
+
+}
+
 
 try{
 
@@ -2399,26 +1990,49 @@ db,
 "users",
 currentUser.uid,
 "friendRequests",
-requestId
+senderUid
+);
+
+const requestSnapshot =
+await getDoc(
+requestRef
 );
 
 
-const requestDoc =
-await getDoc(requestRef);
+if(!requestSnapshot.exists()){
 
+showError(
+"طلب الصداقة لم يعد موجودًا."
+);
 
-if(!requestDoc.exists()){
+await loadRequests();
+
+await loadRequestCount();
 
 return;
 
 }
 
 
-const request =
-requestDoc.data();
+const requestData =
+requestSnapshot.data();
 
 
-/* بيانات المرسل */
+if(
+requestData.status !==
+"pending"
+){
+
+await loadRequests();
+
+return;
+
+}
+
+
+/*
+نحتاج معلومات المرسل
+*/
 
 const senderRef =
 doc(
@@ -2427,15 +2041,16 @@ db,
 senderUid
 );
 
+const senderSnapshot =
+await getDoc(
+senderRef
+);
 
-const senderDoc =
-await getDoc(senderRef);
 
-
-if(!senderDoc.exists()){
+if(!senderSnapshot.exists()){
 
 showError(
-"لم يعد حساب صاحب الطلب موجودًا."
+"حساب صاحب الطلب غير موجود."
 );
 
 return;
@@ -2444,10 +2059,12 @@ return;
 
 
 const senderData =
-senderDoc.data();
+senderSnapshot.data();
 
 
-/* إضافة المرسل إلى أصدقائي */
+/*
+إضافة الصديق عند الطرف الحالي
+*/
 
 const myFriendRef =
 doc(
@@ -2460,9 +2077,7 @@ senderUid
 
 
 await setDoc(
-
 myFriendRef,
-
 {
 
 uid:
@@ -2470,28 +2085,29 @@ senderUid,
 
 name:
 senderData.name ||
-request.senderName ||
+requestData.fromName ||
 "مستخدم Mecd",
 
 photo:
 senderData.photo ||
-request.senderPhoto ||
+requestData.fromPhoto ||
 "",
 
 chatID:
 senderData.chatID ||
-request.senderChatID ||
+requestData.fromChatID ||
 "",
 
 addedAt:
-Date.now()
+serverTimestamp()
 
 }
-
 );
 
 
-/* إضافة المستخدم الحالي إلى أصدقاء المرسل */
+/*
+إضافة الطرف الحالي عند المرسل
+*/
 
 const senderFriendRef =
 doc(
@@ -2504,9 +2120,7 @@ currentUser.uid
 
 
 await setDoc(
-
 senderFriendRef,
-
 {
 
 uid:
@@ -2521,32 +2135,51 @@ currentUser.photoURL ||
 "",
 
 chatID:
-await getMyChatID(),
+requestData.toChatID ||
+"",
 
 addedAt:
-Date.now()
+serverTimestamp()
 
 }
-
 );
 
 
-/* حذف الطلب */
+/*
+تغيير حالة الطلب
+*/
 
-await deleteDoc(requestRef);
+await updateDoc(
+requestRef,
+{
+
+status:
+"accepted",
+
+acceptedAt:
+serverTimestamp()
+
+}
+);
 
 
 showSuccess(
-"✅ تم قبول طلب الصداقة!"
+"🤝 تمت الموافقة على طلب الصداقة!"
 );
+
+
+await loadRequests();
+
+await loadRequestCount();
+
+await loadFriends();
 
 
 }catch(error){
 
 console.error(
-"Accept request error:",
-error
-);
+"Accept error:",
+error);
 
 showError(
 "حدث خطأ أثناء قبول طلب الصداقة."
@@ -2561,10 +2194,14 @@ showError(
    رفض الطلب
 ========================= */
 
-async function rejectRequest(
-senderUid,
-requestId
-){
+async function rejectRequest(senderUid){
+
+if(!currentUser){
+
+return;
+
+}
+
 
 try{
 
@@ -2574,11 +2211,13 @@ db,
 "users",
 currentUser.uid,
 "friendRequests",
-requestId
+senderUid
 );
 
 
-await deleteDoc(requestRef);
+await deleteDoc(
+requestRef
+);
 
 
 showSuccess(
@@ -2586,10 +2225,15 @@ showSuccess(
 );
 
 
+await loadRequests();
+
+await loadRequestCount();
+
+
 }catch(error){
 
 console.error(
-"Reject request error:",
+"Reject error:",
 error
 );
 
@@ -2603,19 +2247,19 @@ showError(
 
 
 /* =========================
-   قائمة الأصدقاء مباشرة
+   الأصدقاء
 ========================= */
 
-function listenForFriends(){
+async function loadFriends(){
 
-if(
-!currentUser
-){
+if(!currentUser){
 
 return;
 
 }
 
+
+try{
 
 const friendsRef =
 collection(
@@ -2626,45 +2270,39 @@ currentUser.uid,
 );
 
 
-friendsUnsubscribe =
-onSnapshot(
+const snapshot =
+await getDocs(
+friendsRef
+);
 
-friendsRef,
-
-(snapshot)=>{
 
 if(snapshot.empty){
 
-emptyFriends.style.display =
-"block";
+friendsList.innerHTML = `
 
-friendsList
-.querySelectorAll(".friend-item")
-.forEach(
-element=>element.remove()
-);
+<div class="empty">
+
+لا يوجد أصدقاء حتى الآن.
+<br>
+
+ابحث عن صديق باستخدام الـ ID لإضافته.
+
+</div>
+
+`;
 
 return;
 
 }
 
 
-emptyFriends.style.display =
-"none";
-
-
-friendsList
-.querySelectorAll(".friend-item")
-.forEach(
-element=>element.remove()
-);
+friendsList.innerHTML = "";
 
 
 snapshot.forEach(
-
 (friendDoc)=>{
 
-const friend =
+const data =
 friendDoc.data();
 
 
@@ -2675,40 +2313,42 @@ item.className =
 "friend-item";
 
 
-item.innerHTML = `
+let avatar =
+"👤";
 
-<div class="friend-item-avatar">
 
-${
-friend.photo
-?
-`<img src="${friend.photo}" alt="صورة الصديق">`
-:
-"👤"
+if(data.photo){
+
+avatar = `
+<img
+src="${data.photo}"
+alt="صورة الصديق"
+>
+`;
+
 }
 
+
+item.innerHTML = `
+
+<div class="friend-avatar">
+${avatar}
 </div>
 
+<div class="friend-info">
 
-<div class="friend-item-info">
-
-<div class="friend-item-name">
-
+<div class="friend-name">
 ${escapeHTML(
-friend.name ||
+data.name ||
 "مستخدم Mecd"
 )}
-
 </div>
 
-<div class="friend-item-id">
-
-ID:
-${escapeHTML(
-friend.chatID ||
+<div class="friend-id">
+ID: ${escapeHTML(
+data.chatID ||
 ""
 )}
-
 </div>
 
 </div>
@@ -2719,23 +2359,72 @@ friend.chatID ||
 friendsList.appendChild(item);
 
 }
-
 );
 
-},
 
-(error)=>{
+}catch(error){
 
 console.error(
-"Friends listener:",
+"Friends error:",
 error
 );
 
+friendsList.innerHTML = `
+
+<div class="empty">
+
+حدث خطأ أثناء تحميل الأصدقاء.
+
+</div>
+
+`;
+
 }
 
+}
+
+
+/* =========================
+   زر الإشعارات
+========================= */
+
+notificationBtn.addEventListener(
+"click",
+async()=>{
+
+if(
+requests.style.display ===
+"block"
+){
+
+requests.style.display =
+"none";
+
+return;
+
+}
+
+
+requests.style.display =
+"block";
+
+await loadRequests();
+
+}
 );
 
+
+/* إغلاق الطلبات */
+
+closeRequests.addEventListener(
+"click",
+()=>{
+
+requests.style.display =
+"none";
+
 }
+);
 
 
 /* =========================
@@ -2745,123 +2434,40 @@ error
 function escapeHTML(value){
 
 return String(value)
-
-.replace(
-/&/g,
-"&amp;"
-)
-
-.replace(
-/</g,
-"&lt;"
-)
-
-.replace(
-/>/g,
-"&gt;"
-)
-
-.replace(
-/"/g,
-"&quot;"
-)
-
-.replace(
-/'/g,
-"&#039;"
-);
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
 }
 
 
-/* =========================
-   زر 🔔
-========================= */
-
-requestsBtn.addEventListener(
-
-"click",
-
-()=>{
-
-if(
-requestsPanel.style.display === "block"
-){
-
-requestsPanel.style.display =
-"none";
-
-}else{
-
-requestsPanel.style.display =
-"block";
-
-requestsPanel.scrollIntoView({
-
-behavior:"smooth",
-
-block:"center"
-
-});
-
-}
-
-}
-
-);
-
-
-/* إغلاق الطلبات */
-
-closeRequests.addEventListener(
-
-"click",
-
-()=>{
-
-requestsPanel.style.display =
-"none";
-
-}
-
-);
-
-
-/* =========================
-   الرجوع
-========================= */
+/* الرجوع */
 
 backBtn.addEventListener(
-
 "click",
-
 ()=>{
 
 window.location.href =
 mecdChatURL;
 
 }
-
 );
 
 
-/* =========================
-   Service Worker
-========================= */
+/* Service Worker */
 
 if(
 "serviceWorker" in navigator
 ){
 
 window.addEventListener(
-
 "load",
-
 ()=>{
 
 navigator.serviceWorker
 .register("./sw.js")
-
 .then(
 registration=>{
 
@@ -2871,9 +2477,7 @@ registration.scope
 );
 
 }
-
 )
-
 .catch(
 error=>{
 
@@ -2883,18 +2487,14 @@ error
 );
 
 }
-
 );
 
 }
-
 );
 
 }
 
 </script>
 
-
 </body>
-
 </html>
