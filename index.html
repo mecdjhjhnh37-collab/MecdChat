@@ -57,7 +57,6 @@ overflow-x:hidden;
 .background{
 
 position:fixed;
-
 inset:0;
 
 overflow:hidden;
@@ -88,7 +87,6 @@ opacity:.18;
 background:#00e676;
 
 top:-100px;
-
 right:-100px;
 
 }
@@ -98,7 +96,6 @@ right:-100px;
 background:#2979ff;
 
 bottom:-100px;
-
 left:-100px;
 
 }
@@ -143,7 +140,7 @@ align-items:center;
 
 justify-content:space-between;
 
-margin-bottom:55px;
+margin-bottom:45px;
 
 }
 
@@ -165,7 +162,6 @@ height:52px;
 display:flex;
 
 align-items:center;
-
 justify-content:center;
 
 border-radius:16px;
@@ -243,14 +239,31 @@ box-shadow:
 
 
 /* =========================
-   الترحيب
+   القسم الرئيسي
 ========================= */
 
 .hero{
 
 text-align:center;
 
-margin-bottom:35px;
+margin-bottom:32px;
+
+}
+
+
+/* الوصف أولاً */
+
+.hero-description{
+
+max-width:440px;
+
+margin:0 auto 28px;
+
+color:#9ba7a4;
+
+line-height:1.8;
+
+font-size:16px;
 
 }
 
@@ -262,7 +275,7 @@ margin-bottom:35px;
 width:92px;
 height:92px;
 
-margin:0 auto 25px;
+margin:0 auto 18px;
 
 display:flex;
 
@@ -299,16 +312,16 @@ object-fit:cover;
 }
 
 
-/* العنوان */
+/* اسم الخدمة */
 
 .hero h1{
 
 font-size:
-clamp(30px,7vw,48px);
+clamp(32px,7vw,48px);
 
 line-height:1.2;
 
-margin-bottom:15px;
+margin-bottom:18px;
 
 letter-spacing:-.8px;
 
@@ -321,26 +334,7 @@ color:#00e676;
 }
 
 
-/* الوصف */
-
-.hero p{
-
-max-width:430px;
-
-margin:auto;
-
-color:#9ba7a4;
-
-line-height:1.8;
-
-font-size:15px;
-
-}
-
-
-/* =========================
-   معلومات الحساب
-========================= */
+/* اسم المستخدم */
 
 .account-info{
 
@@ -568,7 +562,6 @@ height:72px;
 display:flex;
 
 align-items:center;
-
 justify-content:center;
 
 border-radius:21px;
@@ -737,7 +730,7 @@ padding:20px 15px 35px;
 
 header{
 
-margin-bottom:42px;
+margin-bottom:38px;
 
 }
 
@@ -764,6 +757,14 @@ font-size:10px;
 
 }
 
+.hero-description{
+
+font-size:15px;
+
+margin-bottom:24px;
+
+}
+
 .avatar{
 
 width:82px;
@@ -771,17 +772,15 @@ height:82px;
 
 font-size:40px;
 
-}
-
-.hero{
-
-margin-bottom:28px;
+margin-bottom:15px;
 
 }
 
 .hero h1{
 
 font-size:31px;
+
+margin-bottom:16px;
 
 }
 
@@ -905,11 +904,23 @@ Mecd Chat
 
 
 <!-- =========================
-     Hero
+     الوصف ثم الصورة ثم الاسم
 ========================= -->
 
 <section class="hero">
 
+
+<!-- الوصف -->
+
+<p class="hero-description">
+
+تواصل مع أصدقائك وأنشئ غرف دردشة
+خاصة بسهولة وأمان.
+
+</p>
+
+
+<!-- الصورة -->
 
 <div
 id="avatar"
@@ -921,9 +932,9 @@ class="avatar"
 </div>
 
 
-<h1>
+<!-- اسم الخدمة -->
 
-أهلاً بك في<br>
+<h1>
 
 <span>
 Mecd Chat
@@ -932,22 +943,15 @@ Mecd Chat
 </h1>
 
 
-<p>
-
-تواصل مع أصدقائك وأنشئ غرف دردشة
-خاصة بسهولة وأمان.
-
-</p>
-
-
 </section>
 
 
 <!-- =========================
-     Account
+     اسم المستخدم و ID
 ========================= -->
 
 <div class="account-info">
+
 
 <div
 id="name"
@@ -967,6 +971,7 @@ class="account-id"
 جارٍ تحميل ID...
 
 </div>
+
 
 </div>
 
@@ -1404,12 +1409,6 @@ console.error(
 error
 );
 
-
-/*
-لا نغيّر ID الحقيقي
-إذا حصل خطأ
-*/
-
 return "MC-000001";
 
 }
@@ -1488,12 +1487,6 @@ mecdToolsURL
 
 }else{
 
-
-/*
-إذا غير مسجل الدخول
-يرجع إلى Mecd Tools
-*/
-
 window.location.replace(
 mecdToolsURL
 );
@@ -1506,13 +1499,6 @@ mecdToolsURL
 /* =========================
    العودة إلى Mecd Tools
 ========================= */
-
-/*
-مهم:
-لا يوجد signOut هنا.
-
-الحساب يبقى مسجل الدخول.
-*/
 
 backBtn.addEventListener(
 
@@ -1544,6 +1530,7 @@ window.addEventListener(
 
 navigator.serviceWorker
 .register("./sw.js")
+
 .then(
 registration=>{
 
@@ -1554,6 +1541,7 @@ registration.scope
 
 }
 )
+
 .catch(
 error=>{
 
