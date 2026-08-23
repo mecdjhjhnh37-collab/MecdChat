@@ -10,7 +10,6 @@
 <title>Mecd Chat - الأصدقاء</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -25,6 +24,10 @@ background:
 radial-gradient(circle at 50% 0%,#123d35 0%,transparent 35%),
 linear-gradient(180deg,#07110f 0%,#020504 100%);
 overflow-x:hidden;
+}
+
+button,input{
+font-family:inherit;
 }
 
 .background{
@@ -112,10 +115,6 @@ font-size:14px;
 cursor:pointer;
 }
 
-.back-button:active{
-transform:scale(.96);
-}
-
 .hero{
 text-align:center;
 margin-bottom:30px;
@@ -132,7 +131,6 @@ border-radius:26px;
 font-size:40px;
 background:rgba(0,255,145,.08);
 border:1px solid rgba(0,255,145,.15);
-box-shadow:0 20px 60px rgba(0,0,0,.3);
 }
 
 .hero h1{
@@ -150,13 +148,16 @@ font-size:15px;
 line-height:1.7;
 }
 
-.search-box{
+.search-box,
+.requests{
 padding:20px;
 border-radius:25px;
 background:
-linear-gradient(135deg,
+linear-gradient(
+135deg,
 rgba(0,85,58,.55),
-rgba(2,31,24,.75));
+rgba(2,31,24,.75)
+);
 border:1px solid rgba(0,255,145,.16);
 box-shadow:0 15px 45px rgba(0,0,0,.25);
 margin-bottom:22px;
@@ -183,7 +184,6 @@ outline:none;
 background:rgba(0,0,0,.25);
 color:white;
 font-size:15px;
-font-family:inherit;
 text-align:right;
 }
 
@@ -202,12 +202,11 @@ font-size:15px;
 cursor:pointer;
 }
 
-#searchBtn:active{
-transform:scale(.96);
-}
-
-#searchBtn:disabled{
-opacity:.6;
+#searchBtn:disabled,
+.add-button:disabled,
+.accept-button:disabled,
+.reject-button:disabled{
+opacity:.55;
 cursor:not-allowed;
 }
 
@@ -220,10 +219,26 @@ border:1px solid rgba(255,255,255,.08);
 margin-bottom:20px;
 }
 
-.user-card{
+.user-card,
+.request-user,
+.friend-item{
 display:flex;
 align-items:center;
+}
+
+.user-card{
 gap:15px;
+}
+
+.user-avatar,
+.request-avatar,
+.friend-avatar,
+.friend-menu-avatar{
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#303030;
 }
 
 .user-avatar{
@@ -231,13 +246,7 @@ width:65px;
 height:65px;
 flex-shrink:0;
 border-radius:20px;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
 font-size:28px;
-background:rgba(0,255,145,.1);
-border:1px solid rgba(0,255,145,.15);
 }
 
 .user-avatar img,
@@ -249,7 +258,10 @@ height:100%;
 object-fit:cover;
 }
 
-.user-info{
+.user-info,
+.request-info,
+.friend-info,
+.friend-menu-info{
 flex:1;
 min-width:0;
 }
@@ -263,7 +275,10 @@ text-overflow:ellipsis;
 white-space:nowrap;
 }
 
-.user-id{
+.user-id,
+.request-id,
+.friend-id,
+.friend-menu-id{
 color:#00e889;
 font-size:13px;
 }
@@ -279,11 +294,6 @@ color:#00150e;
 font-size:15px;
 font-weight:bold;
 cursor:pointer;
-}
-
-.add-button:disabled{
-opacity:.65;
-cursor:not-allowed;
 }
 
 .message{
@@ -352,14 +362,6 @@ border:2px solid #06100d;
 
 .requests{
 display:none;
-padding:20px;
-border-radius:25px;
-background:
-linear-gradient(135deg,
-rgba(0,85,58,.55),
-rgba(2,31,24,.75));
-border:1px solid rgba(0,255,145,.16);
-margin-bottom:20px;
 }
 
 .requests-header{
@@ -393,13 +395,7 @@ border:1px solid rgba(255,255,255,.07);
 margin-bottom:12px;
 }
 
-.request-item:last-child{
-margin-bottom:0;
-}
-
 .request-user{
-display:flex;
-align-items:center;
 gap:12px;
 }
 
@@ -407,17 +403,7 @@ gap:12px;
 width:55px;
 height:55px;
 border-radius:17px;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#303030;
 font-size:25px;
-}
-
-.request-info{
-flex:1;
-min-width:0;
 }
 
 .request-name{
@@ -431,7 +417,6 @@ white-space:nowrap;
 
 .request-id{
 font-size:12px;
-color:#00e889;
 }
 
 .request-actions{
@@ -462,16 +447,15 @@ border:1px solid rgba(255,70,70,.2);
 color:#ffaaaa;
 }
 
-.accept-button:disabled,
-.reject-button:disabled{
-opacity:.55;
-cursor:not-allowed;
-}
-
-.no-requests{
+.no-requests,
+.empty{
 text-align:center;
 color:#788680;
 font-size:14px;
+line-height:1.7;
+}
+
+.no-requests{
 padding:20px 5px;
 }
 
@@ -486,15 +470,9 @@ padding:25px;
 border-radius:22px;
 background:rgba(255,255,255,.03);
 border:1px solid rgba(255,255,255,.06);
-text-align:center;
-color:#788680;
-font-size:14px;
-line-height:1.7;
 }
 
 .friend-item{
-display:flex;
-align-items:center;
 gap:14px;
 padding:16px;
 border-radius:22px;
@@ -502,10 +480,6 @@ background:rgba(255,255,255,.035);
 border:1px solid rgba(255,255,255,.07);
 cursor:pointer;
 transition:.2s;
-}
-
-.friend-item:hover{
-transform:translateY(-2px);
 }
 
 .friend-item:active{
@@ -517,17 +491,7 @@ width:58px;
 height:58px;
 flex-shrink:0;
 border-radius:18px;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#303030;
 font-size:25px;
-}
-
-.friend-info{
-flex:1;
-min-width:0;
 }
 
 .friend-name{
@@ -540,7 +504,6 @@ white-space:nowrap;
 }
 
 .friend-id{
-color:#00e889;
 font-size:12px;
 }
 
@@ -584,17 +547,7 @@ width:58px;
 height:58px;
 flex-shrink:0;
 border-radius:18px;
-overflow:hidden;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#303030;
 font-size:25px;
-}
-
-.friend-menu-info{
-flex:1;
-min-width:0;
 }
 
 .friend-menu-name{
@@ -608,7 +561,6 @@ white-space:nowrap;
 .friend-menu-id{
 margin-top:5px;
 font-size:12px;
-color:#00e889;
 }
 
 .friend-menu-button{
@@ -707,7 +659,6 @@ height:50px;
 }
 
 }
-
 </style>
 </head>
 
@@ -729,9 +680,7 @@ height:50px;
 
 <div class="brand">
 
-<div class="logo">
-👥
-</div>
+<div class="logo">👥</div>
 
 <div>
 <h2>الأصدقاء</h2>
@@ -748,9 +697,7 @@ height:50px;
 
 <section class="hero">
 
-<div class="hero-icon">
-👥
-</div>
+<div class="hero-icon">👥</div>
 
 <h1>
 <span>الأصدقاء</span>
@@ -858,13 +805,9 @@ class="notification-count"
 <div id="friendsList" class="friends-list">
 
 <div class="empty">
-
 لا يوجد أصدقاء حتى الآن.
-
 <br>
-
 ابحث عن صديق باستخدام الـ ID لإضافته.
-
 </div>
 
 </div>
@@ -923,7 +866,6 @@ class="friend-menu-button close-friend-menu"
 
 </div>
 
-
 <script type="module">
 
 import {
@@ -949,16 +891,15 @@ getDoc,
 doc,
 setDoc,
 deleteDoc,
-serverTimestamp,
-writeBatch
+serverTimestamp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================
-   FIREBASE
-===================================== */
+/* =========================
+   Firebase
+========================= */
 
 const firebaseConfig = {
 
@@ -985,7 +926,6 @@ measurementId:
 
 };
 
-
 const firebaseApp =
 initializeApp(firebaseConfig);
 
@@ -996,9 +936,9 @@ const db =
 getFirestore(firebaseApp);
 
 
-/* =====================================
+/* =========================
    العناصر
-===================================== */
+========================= */
 
 const loading =
 document.getElementById("loading");
@@ -1079,19 +1019,14 @@ const closeFriendMenu =
 document.getElementById("closeFriendMenu");
 
 
-/* =====================================
+/* =========================
    المتغيرات
-===================================== */
+========================= */
 
 let currentUser = null;
 let currentUserData = null;
 let foundUser = null;
 let selectedFriend = null;
-
-
-/* =====================================
-   الروابط
-===================================== */
 
 const mecdChatURL =
 "https://mecdjhjhnh37-collab.github.io/MecdChat/";
@@ -1100,9 +1035,9 @@ const chatPageURL =
 "https://mecdjhjhnh37-collab.github.io/MecdChat/chat.html";
 
 
-/* =====================================
-   حماية النصوص
-===================================== */
+/* =========================
+   حماية HTML
+========================= */
 
 function escapeHTML(value){
 
@@ -1116,101 +1051,67 @@ return String(value || "")
 }
 
 
-/* =====================================
-   الصورة
-===================================== */
-
-function setAvatar(element,photo){
-
-element.innerHTML = "";
-
-if(photo){
-
-const img =
-document.createElement("img");
-
-img.src = photo;
-img.alt = "صورة المستخدم";
-
-img.onerror = () => {
-
-element.innerHTML = "👤";
-
-};
-
-element.appendChild(img);
-
-}else{
-
-element.textContent = "👤";
-
-}
-
-}
-
-
-/* =====================================
+/* =========================
    الرسائل
-===================================== */
+========================= */
 
 function hideMessages(){
 
-errorMessage.style.display = "none";
-successMessage.style.display = "none";
+errorMessage.style.display="none";
+successMessage.style.display="none";
 
 }
-
 
 function showError(message){
 
-successMessage.style.display = "none";
+successMessage.style.display="none";
 
-errorMessage.textContent = message;
+result.style.display="none";
 
-errorMessage.style.display = "block";
+errorMessage.textContent=message;
+
+errorMessage.style.display="block";
 
 }
-
 
 function showSuccess(message){
 
-errorMessage.style.display = "none";
+errorMessage.style.display="none";
 
-successMessage.textContent = message;
+successMessage.textContent=message;
 
-successMessage.style.display = "block";
+successMessage.style.display="block";
 
 }
 
 
-/* =====================================
+/* =========================
    بيانات المستخدم
-===================================== */
+========================= */
 
 async function loadCurrentUserData(){
 
 if(!currentUser){
-return null;
+return {};
 }
 
-const userRef =
+const ref =
 doc(
 db,
 "users",
 currentUser.uid
 );
 
-const snapshot =
-await getDoc(userRef);
+const snap =
+await getDoc(ref);
 
-if(snapshot.exists()){
+if(snap.exists()){
 
-currentUserData =
-snapshot.data();
+currentUserData=snap.data();
 
 }else{
 
-currentUserData = {};
+currentUserData={};
 
 }
 
@@ -1219,22 +1120,20 @@ return currentUserData;
 }
 
 
-/* =====================================
-   البحث عن صديق
-===================================== */
+/* =========================
+   البحث
+========================= */
 
 async function searchFriend(){
 
 hideMessages();
 
-result.style.display = "none";
+result.style.display="none";
 
-foundUser = null;
+foundUser=null;
 
 const id =
-friendId.value
-.trim()
-.toUpperCase();
+friendId.value.trim().toUpperCase();
 
 if(!id){
 
@@ -1246,7 +1145,6 @@ return;
 
 }
 
-
 if(!/^MC-\d{6}$/.test(id)){
 
 showError(
@@ -1256,7 +1154,6 @@ showError(
 return;
 
 }
-
 
 if(!currentUser){
 
@@ -1268,27 +1165,24 @@ return;
 
 }
 
-
-searchBtn.disabled = true;
-searchBtn.textContent = "جاري البحث...";
-
+searchBtn.disabled=true;
+searchBtn.textContent="جاري البحث...";
 
 try{
 
 const usersRef =
 collection(db,"users");
 
-const usersQuery =
+const q =
 query(
 usersRef,
 where("chatID","==",id)
 );
 
-const snapshot =
-await getDocs(usersQuery);
+const snap =
+await getDocs(q);
 
-
-if(snapshot.empty){
+if(snap.empty){
 
 showError(
 "لم يتم العثور على مستخدم بهذا الـ ID."
@@ -1298,26 +1192,21 @@ return;
 
 }
 
+const userDoc=snap.docs[0];
 
-const userDoc =
-snapshot.docs[0];
+const data=userDoc.data();
 
-const data =
-userDoc.data();
-
-
-if(userDoc.id === currentUser.uid){
+if(userDoc.id===currentUser.uid){
 
 showError(
-"لا يمكنك إرسال طلب صداقة لنفسك."
+"لا يمكنك إضافة نفسك."
 );
 
 return;
 
 }
 
-
-foundUser = {
+foundUser={
 
 uid:userDoc.id,
 
@@ -1336,24 +1225,27 @@ id
 
 };
 
+if(foundUser.photo){
 
-setAvatar(
-userAvatar,
-foundUser.photo
-);
+userAvatar.innerHTML=
+`<img src="${escapeHTML(foundUser.photo)}" alt="صورة">`;
 
-userName.textContent =
+}else{
+
+userAvatar.textContent="👤";
+
+}
+
+userName.textContent=
 foundUser.name;
 
-foundUserId.textContent =
-"ID: " + foundUser.chatID;
+foundUserId.textContent=
+"ID: "+foundUser.chatID;
 
 
-/* ===============================
-   هل هو صديق؟
-================================ */
+/* هل هو صديق؟ */
 
-const myFriendRef =
+const friendRef =
 doc(
 db,
 "users",
@@ -1362,27 +1254,24 @@ currentUser.uid,
 foundUser.uid
 );
 
-const existingFriend =
-await getDoc(myFriendRef);
+const friendSnap =
+await getDoc(friendRef);
 
+if(friendSnap.exists()){
 
-if(existingFriend.exists()){
-
-addButton.textContent =
+addButton.textContent=
 "✓ أنتم أصدقاء بالفعل";
 
-addButton.disabled = true;
+addButton.disabled=true;
 
-result.style.display = "block";
+result.style.display="block";
 
 return;
 
 }
 
 
-/* ===============================
-   هل يوجد طلب؟
-================================ */
+/* هل يوجد طلب؟ */
 
 const requestRef =
 doc(
@@ -1393,56 +1282,51 @@ foundUser.uid,
 currentUser.uid
 );
 
-const existingRequest =
+const requestSnap =
 await getDoc(requestRef);
 
+if(requestSnap.exists()){
 
-if(existingRequest.exists()){
+const requestData=
+requestSnap.data();
 
-const requestData =
-existingRequest.data();
+if(requestData.status==="pending"){
 
-
-if(requestData.status === "pending"){
-
-addButton.textContent =
+addButton.textContent=
 "✓ تم إرسال طلب الصداقة";
 
-addButton.disabled = true;
+addButton.disabled=true;
 
 }else{
 
-addButton.textContent =
+addButton.textContent=
 "📨 إرسال طلب صداقة";
 
-addButton.disabled = false;
+addButton.disabled=false;
 
 }
 
 }else{
 
-addButton.textContent =
+addButton.textContent=
 "📨 إرسال طلب صداقة";
 
-addButton.disabled = false;
+addButton.disabled=false;
 
 }
 
-
-result.style.display = "block";
-
+result.style.display="block";
 
 }catch(error){
 
-console.error(
-"Search error:",
-error
-);
+console.error(error);
 
-if(error.code === "permission-denied"){
+console.error(error.code);
+
+if(error.code==="permission-denied"){
 
 showError(
-"ليس لديك صلاحية البحث. يجب تعديل Firestore Rules."
+"ليس لديك صلاحية البحث. تأكد من وضع Firestore Rules الموجودة أسفل الكود."
 );
 
 }else{
@@ -1455,61 +1339,28 @@ showError(
 
 }finally{
 
-searchBtn.disabled = false;
-searchBtn.textContent = "بحث";
+searchBtn.disabled=false;
+searchBtn.textContent="بحث";
 
 }
 
 }
 
 
-/* =====================================
-   إرسال طلب صداقة
-===================================== */
+/* =========================
+   إرسال طلب
+========================= */
 
 async function sendFriendRequest(){
 
 if(!foundUser || !currentUser){
-
 return;
-
 }
 
-
-addButton.disabled = true;
-
-addButton.textContent =
-"جاري الإرسال...";
-
+addButton.disabled=true;
+addButton.textContent="جاري الإرسال...";
 
 try{
-
-/* فحص الصداقة مرة أخرى */
-
-const friendRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friends",
-foundUser.uid
-);
-
-const friendSnapshot =
-await getDoc(friendRef);
-
-
-if(friendSnapshot.exists()){
-
-addButton.textContent =
-"✓ أنتم أصدقاء بالفعل";
-
-return;
-
-}
-
-
-/* إنشاء الطلب */
 
 const requestRef =
 doc(
@@ -1520,7 +1371,6 @@ foundUser.uid,
 currentUser.uid
 );
 
-
 await setDoc(
 requestRef,
 {
@@ -1528,18 +1378,21 @@ requestRef,
 fromUid:
 currentUser.uid,
 
-fromName:
+toUid:
+foundUser.uid,
+
+name:
 currentUserData?.name ||
 currentUser.displayName ||
 "مستخدم Mecd",
 
-fromPhoto:
+photo:
 currentUserData?.photo ||
 currentUserData?.photoURL ||
 currentUser.photoURL ||
 "",
 
-fromChatID:
+chatID:
 currentUserData?.chatID ||
 "",
 
@@ -1552,37 +1405,25 @@ serverTimestamp()
 }
 );
 
-
-addButton.textContent =
-"✓ تم إرسال الطلب";
-
 showSuccess(
-"تم إرسال طلب الصداقة بنجاح."
+"تم إرسال طلب الصداقة بنجاح ✅"
 );
 
+addButton.textContent=
+"✓ تم إرسال الطلب";
 
 }catch(error){
 
-console.error(
-"Send request error:",
-error
-);
+console.error("Send request:",error);
 
-console.error(
-"Error code:",
-error.code
-);
-
-addButton.disabled = false;
-
-addButton.textContent =
+addButton.disabled=false;
+addButton.textContent=
 "📨 إرسال طلب صداقة";
 
-
-if(error.code === "permission-denied"){
+if(error.code==="permission-denied"){
 
 showError(
-"ليس لديك صلاحية إرسال طلب الصداقة. تحقق من Firestore Rules."
+"تم رفض العملية من Firestore Rules."
 );
 
 }else{
@@ -1598,24 +1439,352 @@ showError(
 }
 
 
-/* =====================================
-   تحميل الأصدقاء
-===================================== */
+/* =========================
+   تحميل الطلبات
+========================= */
 
-async function loadFriends(){
+async function loadRequests(){
 
 if(!currentUser){
+return;
+}
+
+requestsList.innerHTML="";
+
+try{
+
+const ref =
+collection(
+db,
+"users",
+currentUser.uid,
+"friendRequests"
+);
+
+const snap =
+await getDocs(ref);
+
+let count=0;
+
+snap.forEach(item=>{
+
+const data=item.data();
+
+if(data.status==="pending"){
+
+count++;
+
+const div=
+document.createElement("div");
+
+div.className="request-item";
+
+const photo =
+data.photo || "";
+
+div.innerHTML=`
+
+<div class="request-user">
+
+<div class="request-avatar">
+
+${
+photo
+?
+`<img src="${escapeHTML(photo)}" alt="صورة">`
+:
+"👤"
+}
+
+</div>
+
+<div class="request-info">
+
+<div class="request-name">
+${escapeHTML(data.name || "مستخدم Mecd")}
+</div>
+
+<div class="request-id">
+ID: ${escapeHTML(data.chatID || "غير معروف")}
+</div>
+
+</div>
+
+</div>
+
+<div class="request-actions">
+
+<button
+class="accept-button"
+data-uid="${escapeHTML(data.fromUid || item.id)}"
+>
+✓ قبول
+</button>
+
+<button
+class="reject-button"
+data-uid="${escapeHTML(data.fromUid || item.id)}"
+>
+✕ رفض
+</button>
+
+</div>
+
+`;
+
+requestsList.appendChild(div);
+
+}
+
+});
+
+if(count===0){
+
+requestsList.innerHTML=
+`<div class="no-requests">
+لا توجد طلبات صداقة حالياً.
+</div>`;
+
+}
+
+notificationCount.textContent=count;
+
+if(count>0){
+
+notificationCount.style.display="flex";
+
+}else{
+
+notificationCount.style.display="none";
+
+}
+
+}catch(error){
+
+console.error("Load requests:",error);
+
+requestsList.innerHTML=
+`<div class="no-requests">
+تعذر تحميل طلبات الصداقة.
+</div>`;
+
+}
+
+}
+
+
+/* =========================
+   عدد الطلبات
+========================= */
+
+async function loadRequestCount(){
+
+await loadRequests();
+
+}
+
+
+/* =========================
+   قبول طلب
+========================= */
+
+async function acceptFriend(uid){
+
+if(!currentUser || !uid){
+return;
+}
+
+try{
+
+const requestRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+uid
+);
+
+const requestSnap =
+await getDoc(requestRef);
+
+if(!requestSnap.exists()){
+
+showError(
+"طلب الصداقة غير موجود."
+);
 
 return;
 
 }
 
+const request =
+requestSnap.data();
 
-friendsList.innerHTML = "";
+if(request.status!=="pending"){
+
+showError(
+"هذا الطلب لم يعد متاحاً."
+);
+
+return;
+
+}
+
+const friendDataForMe={
+
+uid:uid,
+
+name:
+request.name ||
+"مستخدم Mecd",
+
+photo:
+request.photo ||
+"",
+
+chatID:
+request.chatID ||
+"",
+
+createdAt:
+serverTimestamp()
+
+};
+
+const myData={
+
+uid:
+currentUser.uid,
+
+name:
+currentUserData?.name ||
+currentUser.displayName ||
+"مستخدم Mecd",
+
+photo:
+currentUserData?.photo ||
+currentUserData?.photoURL ||
+currentUser.photoURL ||
+"",
+
+chatID:
+currentUserData?.chatID ||
+"",
+
+createdAt:
+serverTimestamp()
+
+};
+
+
+/*
+نضيف الصديق للطرفين
+*/
+
+await setDoc(
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+uid
+),
+friendDataForMe
+);
+
+await setDoc(
+doc(
+db,
+"users",
+uid,
+"friends",
+currentUser.uid
+),
+myData
+);
+
+
+/* حذف الطلب */
+
+await deleteDoc(requestRef);
+
+showSuccess(
+"تم قبول طلب الصداقة ✅"
+);
+
+await loadFriends();
+await loadRequests();
+
+}catch(error){
+
+console.error("Accept friend:",error);
+
+showError(
+"تعذر قبول طلب الصداقة. تأكد من Firestore Rules."
+);
+
+}
+
+}
+
+
+/* =========================
+   رفض طلب
+========================= */
+
+async function rejectFriend(uid){
+
+if(!currentUser || !uid){
+return;
+}
 
 try{
 
-const friendsRef =
+await deleteDoc(
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+uid
+)
+);
+
+showSuccess(
+"تم رفض طلب الصداقة."
+);
+
+await loadRequests();
+
+}catch(error){
+
+console.error("Reject:",error);
+
+showError(
+"تعذر رفض الطلب."
+);
+
+}
+
+}
+
+
+/* =========================
+   تحميل الأصدقاء
+========================= */
+
+async function loadFriends(){
+
+if(!currentUser){
+return;
+}
+
+friendsList.innerHTML="";
+
+try{
+
+const ref =
 collection(
 db,
 "users",
@@ -1623,13 +1792,12 @@ currentUser.uid,
 "friends"
 );
 
-const snapshot =
-await getDocs(friendsRef);
+const snap =
+await getDocs(ref);
 
+if(snap.empty){
 
-if(snapshot.empty){
-
-friendsList.innerHTML = `
+friendsList.innerHTML=`
 
 <div class="empty">
 
@@ -1647,58 +1815,94 @@ return;
 
 }
 
+snap.forEach(item=>{
 
-const friends = [];
+const data=item.data();
 
+const div =
+document.createElement("div");
 
-snapshot.forEach(
-(friendDoc)=>{
+div.className="friend-item";
 
-friends.push({
+div.dataset.uid=
+item.id;
 
-uid:
-friendDoc.id,
+const photo =
+data.photo || "";
 
-...friendDoc.data()
+div.innerHTML=`
+
+<div class="friend-avatar">
+
+${
+photo
+?
+`<img src="${escapeHTML(photo)}" alt="صورة">`
+:
+"👤"
+}
+
+</div>
+
+<div class="friend-info">
+
+<div class="friend-name">
+${escapeHTML(data.name || "مستخدم Mecd")}
+</div>
+
+<div class="friend-id">
+ID: ${escapeHTML(data.chatID || "")}
+</div>
+
+</div>
+
+<div class="friend-arrow">
+‹
+</div>
+
+`;
+
+div.addEventListener(
+"click",
+()=>{
+
+openFriendMenu({
+
+uid:item.id,
+
+name:
+data.name ||
+"مستخدم Mecd",
+
+photo:
+data.photo ||
+"",
+
+chatID:
+data.chatID ||
+""
 
 });
 
 });
 
-
-friends.sort(
-(a,b)=>
-String(a.name || "")
-.localeCompare(
-String(b.name || ""),
-"ar"
-)
-);
-
-
-friends.forEach(
-(friend)=>{
-
-createFriendElement(friend);
+friendsList.appendChild(div);
 
 });
 
 }catch(error){
 
-console.error(
-"Load friends error:",
-error
-);
+console.error("Load friends:",error);
 
-friendsList.innerHTML = `
+friendsList.innerHTML=`
 
 <div class="empty">
 
-حدث خطأ أثناء تحميل الأصدقاء.
+تعذر تحميل الأصدقاء.
 
 <br>
 
-حاول تحديث الصفحة.
+تأكد من Firestore Rules.
 
 </div>
 
@@ -1709,255 +1913,104 @@ friendsList.innerHTML = `
 }
 
 
-/* =====================================
-   إنشاء عنصر الصديق
-===================================== */
-
-function createFriendElement(friend){
-
-const item =
-document.createElement("div");
-
-item.className =
-"friend-item";
-
-
-const avatar =
-document.createElement("div");
-
-avatar.className =
-"friend-avatar";
-
-
-setAvatar(
-avatar,
-friend.photo ||
-friend.photoURL ||
-""
-);
-
-
-const info =
-document.createElement("div");
-
-info.className =
-"friend-info";
-
-
-const name =
-document.createElement("div");
-
-name.className =
-"friend-name";
-
-name.textContent =
-friend.name ||
-"مستخدم Mecd";
-
-
-const id =
-document.createElement("div");
-
-id.className =
-"friend-id";
-
-id.textContent =
-"ID: " +
-(friend.chatID || friend.uid);
-
-
-info.appendChild(name);
-info.appendChild(id);
-
-
-const arrow =
-document.createElement("div");
-
-arrow.className =
-"friend-arrow";
-
-arrow.textContent =
-"‹";
-
-
-item.appendChild(avatar);
-item.appendChild(info);
-item.appendChild(arrow);
-
-
-item.addEventListener(
-"click",
-()=>{
-
-openFriendMenu(friend);
-
-}
-);
-
-
-friendsList.appendChild(item);
-
-}
-
-
-/* =====================================
-   فتح قائمة الصديق
-===================================== */
+/* =========================
+   قائمة الصديق
+========================= */
 
 function openFriendMenu(friend){
 
-selectedFriend =
-friend;
+selectedFriend=friend;
 
+menuFriendName.textContent=
+friend.name;
 
-setAvatar(
-menuFriendAvatar,
-friend.photo ||
-friend.photoURL ||
-""
-);
+menuFriendId.textContent=
+"ID: "+friend.chatID;
 
+if(friend.photo){
 
-menuFriendName.textContent =
-friend.name ||
-"مستخدم Mecd";
+menuFriendAvatar.innerHTML=
+`<img src="${escapeHTML(friend.photo)}" alt="صورة">`;
 
+}else{
 
-menuFriendId.textContent =
-"ID: " +
-(friend.chatID || friend.uid);
-
-
-friendMenu.style.display =
-"flex";
-
-document.body.style.overflow =
-"hidden";
+menuFriendAvatar.textContent="👤";
 
 }
 
+friendMenu.style.display="flex";
 
-/* =====================================
-   إغلاق قائمة الصديق
-===================================== */
+}
 
 function closeMenu(){
 
-friendMenu.style.display =
-"none";
+friendMenu.style.display="none";
 
-document.body.style.overflow =
-"";
-
-selectedFriend =
-null;
+selectedFriend=null;
 
 }
 
 
-/* =====================================
+/* =========================
    فتح الدردشة
-===================================== */
+========================= */
 
 chatFriendButton.addEventListener(
 "click",
 ()=>{
 
 if(!selectedFriend){
-
 return;
-
 }
-
-const uid =
-selectedFriend.uid;
-
 
 window.location.href =
 chatPageURL +
 "?friend=" +
-encodeURIComponent(uid);
+encodeURIComponent(
+selectedFriend.uid
+);
 
 }
 );
 
 
-/* =====================================
+/* =========================
    إلغاء الصداقة
-===================================== */
+========================= */
 
-async function removeFriend(){
+removeFriendButton.addEventListener(
+"click",
+async()=>{
 
-if(!selectedFriend ||
-!currentUser){
-
+if(!selectedFriend || !currentUser){
 return;
-
 }
 
+const friend=selectedFriend;
 
-const friend =
-selectedFriend;
-
-
-const confirmed =
-confirm(
-"هل تريد إلغاء الصداقة مع " +
-(friend.name || "هذا المستخدم") +
-"؟"
-);
-
-
-if(!confirmed){
-
-return;
-
-}
-
-
-removeFriendButton.disabled =
-true;
-
-removeFriendButton.textContent =
-"جاري الحذف...";
-
+removeFriendButton.disabled=true;
 
 try{
 
-const batch =
-writeBatch(db);
-
-
-/* حذف الصديق من حسابي */
-
-const myFriendRef =
+await deleteDoc(
 doc(
 db,
 "users",
 currentUser.uid,
 "friends",
 friend.uid
+)
 );
 
-
-/* حذفني من حساب الصديق */
-
-const theirFriendRef =
+await deleteDoc(
 doc(
 db,
 "users",
 friend.uid,
 "friends",
 currentUser.uid
+)
 );
-
-
-batch.delete(myFriendRef);
-batch.delete(theirFriendRef);
-
-
-await batch.commit();
-
 
 closeMenu();
 
@@ -1967,116 +2020,60 @@ showSuccess(
 
 await loadFriends();
 
-
 }catch(error){
 
-console.error(
-"Remove friend error:",
-error
+console.error(error);
+
+showError(
+"تعذر إلغاء الصداقة."
 );
-
-if(error.code === "permission-denied"){
-
-alert(
-"ليس لديك صلاحية حذف الصداقة. تحقق من Firestore Rules."
-);
-
-}else{
-
-alert(
-"حدث خطأ أثناء إلغاء الصداقة."
-);
-
-}
 
 }finally{
 
-removeFriendButton.disabled =
-false;
-
-removeFriendButton.textContent =
-"❌ إلغاء الصداقة";
+removeFriendButton.disabled=false;
 
 }
 
 }
-
-
-/* =====================================
-   الحظر
-===================================== */
-
-async function blockFriend(){
-
-if(!selectedFriend ||
-!currentUser){
-
-return;
-
-}
-
-
-const friend =
-selectedFriend;
-
-
-const confirmed =
-confirm(
-"هل تريد حظر هذا المستخدم؟"
 );
 
 
-if(!confirmed){
+/* =========================
+   الحظر
+========================= */
 
+blockFriendButton.addEventListener(
+"click",
+async()=>{
+
+if(!selectedFriend || !currentUser){
 return;
-
 }
 
+const friend=selectedFriend;
 
-blockFriendButton.disabled =
-true;
-
-blockFriendButton.textContent =
-"جاري الحظر...";
-
+blockFriendButton.disabled=true;
 
 try{
 
-const batch =
-writeBatch(db);
-
-
-/* إضافة إلى قائمة الحظر */
-
-const blockRef =
+await setDoc(
 doc(
 db,
 "users",
 currentUser.uid,
 "blocked",
 friend.uid
-);
-
-
-batch.set(
-blockRef,
+),
 {
 
 uid:
 friend.uid,
 
 name:
-friend.name ||
-"مستخدم Mecd",
+friend.name,
 
 chatID:
-friend.chatID ||
-"",
-
-photo:
-friend.photo ||
-friend.photoURL ||
-"",
+friend.chatID,
 
 createdAt:
 serverTimestamp()
@@ -2084,35 +2081,25 @@ serverTimestamp()
 }
 );
 
-
-/* إزالة الصداقة */
-
-const myFriendRef =
+await deleteDoc(
 doc(
 db,
 "users",
 currentUser.uid,
 "friends",
 friend.uid
+)
 );
 
-
-const theirFriendRef =
+await deleteDoc(
 doc(
 db,
 "users",
 friend.uid,
 "friends",
 currentUser.uid
+)
 );
-
-
-batch.delete(myFriendRef);
-batch.delete(theirFriendRef);
-
-
-await batch.commit();
-
 
 closeMenu();
 
@@ -2122,776 +2109,83 @@ showSuccess(
 
 await loadFriends();
 
-
 }catch(error){
 
-console.error(
-"Block error:",
-error
+console.error(error);
+
+showError(
+"تعذر حظر المستخدم."
 );
-
-if(error.code === "permission-denied"){
-
-alert(
-"ليس لديك صلاحية الحظر. تحقق من Firestore Rules."
-);
-
-}else{
-
-alert(
-"حدث خطأ أثناء الحظر."
-);
-
-}
 
 }finally{
 
-blockFriendButton.disabled =
-false;
-
-blockFriendButton.textContent =
-"🚫 حظر";
+blockFriendButton.disabled=false;
 
 }
-
-}
-
-
-/* =====================================
-   تحميل عدد الطلبات
-===================================== */
-
-async function loadRequestCount(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-try{
-
-const requestsRef =
-collection(
-db,
-"users",
-currentUser.uid,
-"friendRequests"
-);
-
-const requestsQuery =
-query(
-requestsRef,
-where("status","==","pending")
-);
-
-const snapshot =
-await getDocs(requestsQuery);
-
-
-const count =
-snapshot.size;
-
-
-notificationCount.textContent =
-count;
-
-
-if(count > 0){
-
-notificationCount.style.display =
-"flex";
-
-}else{
-
-notificationCount.style.display =
-"none";
-
-}
-
-}catch(error){
-
-console.error(
-"Request count error:",
-error
-);
-
-}
-
-}
-
-
-/* =====================================
-   تحميل طلبات الصداقة
-===================================== */
-
-async function loadRequests(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-requestsList.innerHTML = "";
-
-try{
-
-const requestsRef =
-collection(
-db,
-"users",
-currentUser.uid,
-"friendRequests"
-);
-
-const requestsQuery =
-query(
-requestsRef,
-where("status","==","pending")
-);
-
-const snapshot =
-await getDocs(requestsQuery);
-
-
-if(snapshot.empty){
-
-requestsList.innerHTML = `
-
-<div class="no-requests">
-
-لا توجد طلبات صداقة جديدة.
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-const requestArray = [];
-
-
-snapshot.forEach(
-(requestDoc)=>{
-
-requestArray.push({
-
-id:
-requestDoc.id,
-
-...requestDoc.data()
-
-});
-
-});
-
-
-requestArray.sort(
-(a,b)=>{
-
-const aTime =
-a.createdAt?.seconds || 0;
-
-const bTime =
-b.createdAt?.seconds || 0;
-
-return bTime - aTime;
 
 }
 );
 
 
-requestArray.forEach(
-(request)=>{
+/* =========================
+   أحداث الطلبات
+========================= */
 
-createRequestElement(request);
-
-});
-
-
-}catch(error){
-
-console.error(
-"Load requests error:",
-error
-);
-
-requestsList.innerHTML = `
-
-<div class="no-requests">
-
-حدث خطأ أثناء تحميل الطلبات.
-
-</div>
-
-`;
-
-}
-
-}
-
-
-/* =====================================
-   إنشاء طلب
-===================================== */
-
-function createRequestElement(request){
-
-const item =
-document.createElement("div");
-
-item.className =
-"request-item";
-
-
-const user =
-document.createElement("div");
-
-user.className =
-"request-user";
-
-
-const avatar =
-document.createElement("div");
-
-avatar.className =
-"request-avatar";
-
-
-setAvatar(
-avatar,
-request.fromPhoto ||
-""
-);
-
-
-const info =
-document.createElement("div");
-
-info.className =
-"request-info";
-
-
-const name =
-document.createElement("div");
-
-name.className =
-"request-name";
-
-name.textContent =
-request.fromName ||
-"مستخدم Mecd";
-
-
-const id =
-document.createElement("div");
-
-id.className =
-"request-id";
-
-id.textContent =
-"ID: " +
-(request.fromChatID || request.fromUid);
-
-
-info.appendChild(name);
-info.appendChild(id);
-
-
-user.appendChild(avatar);
-user.appendChild(info);
-
-
-const actions =
-document.createElement("div");
-
-actions.className =
-"request-actions";
-
-
-const accept =
-document.createElement("button");
-
-accept.className =
-"accept-button";
-
-accept.textContent =
-"✓ قبول";
-
-
-const reject =
-document.createElement("button");
-
-reject.className =
-"reject-button";
-
-reject.textContent =
-"رفض";
-
-
-actions.appendChild(accept);
-actions.appendChild(reject);
-
-
-item.appendChild(user);
-item.appendChild(actions);
-
-
-accept.addEventListener(
+requestsList.addEventListener(
 "click",
-()=>{
+async(event)=>{
 
-acceptFriendRequest(
-request,
-accept,
-reject
-);
+const button =
+event.target.closest("button");
 
-}
-);
-
-
-reject.addEventListener(
-"click",
-()=>{
-
-rejectFriendRequest(
-request,
-accept,
-reject
-);
-
-}
-);
-
-
-requestsList.appendChild(item);
-
+if(!button){
+return;
 }
 
+const uid =
+button.dataset.uid;
 
-/* =====================================
-   قبول طلب الصداقة
-===================================== */
+if(!uid){
+return;
+}
 
-async function acceptFriendRequest(
-request,
-acceptButton,
-rejectButton
+button.disabled=true;
+
+if(button.classList.contains("accept-button")){
+
+await acceptFriend(uid);
+
+}else if(
+button.classList.contains("reject-button")
 ){
 
-if(!currentUser){
-
-return;
+await rejectFriend(uid);
 
 }
-
-
-acceptButton.disabled =
-true;
-
-rejectButton.disabled =
-true;
-
-acceptButton.textContent =
-"جاري القبول...";
-
-
-try{
-
-const senderUid =
-request.fromUid ||
-request.id;
-
-
-if(!senderUid){
-
-throw new Error(
-"Missing sender UID"
-);
-
-}
-
-
-/* بيانات الطرف الآخر */
-
-const senderRef =
-doc(
-db,
-"users",
-senderUid
-);
-
-const senderSnapshot =
-await getDoc(senderRef);
-
-
-let senderData =
-{};
-
-
-if(senderSnapshot.exists()){
-
-senderData =
-senderSnapshot.data();
-
-}
-
-
-/* بيانات الصديق للطرف الآخر */
-
-const friendForMe = {
-
-uid:
-senderUid,
-
-name:
-senderData.name ||
-request.fromName ||
-"مستخدم Mecd",
-
-chatID:
-senderData.chatID ||
-request.fromChatID ||
-"",
-
-photo:
-senderData.photo ||
-senderData.photoURL ||
-request.fromPhoto ||
-""
-
-};
-
-
-/* بياناتي للطرف الآخر */
-
-const friendForThem = {
-
-uid:
-currentUser.uid,
-
-name:
-currentUserData?.name ||
-currentUser.displayName ||
-"مستخدم Mecd",
-
-chatID:
-currentUserData?.chatID ||
-"",
-
-photo:
-currentUserData?.photo ||
-currentUserData?.photoURL ||
-currentUser.photoURL ||
-""
-
-};
-
-
-const batch =
-writeBatch(db);
-
-
-/* إضافة الصديق عندي */
-
-const myFriendRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friends",
-senderUid
-);
-
-
-batch.set(
-myFriendRef,
-{
-
-uid:
-friendForMe.uid,
-
-name:
-friendForMe.name,
-
-chatID:
-friendForMe.chatID,
-
-photo:
-friendForMe.photo,
-
-createdAt:
-serverTimestamp()
 
 }
 );
 
 
-/* إضافتي عنده */
-
-const theirFriendRef =
-doc(
-db,
-"users",
-senderUid,
-"friends",
-currentUser.uid
-);
-
-
-batch.set(
-theirFriendRef,
-{
-
-uid:
-friendForThem.uid,
-
-name:
-friendForThem.name,
-
-chatID:
-friendForThem.chatID,
-
-photo:
-friendForThem.photo,
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-
-/* حذف الطلب */
-
-const requestRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friendRequests",
-request.id
-);
-
-
-batch.delete(requestRef);
-
-
-await batch.commit();
-
-
-await loadRequests();
-await loadRequestCount();
-await loadFriends();
-
-
-showSuccess(
-"تم قبول طلب الصداقة."
-);
-
-
-}catch(error){
-
-console.error(
-"Accept request error:",
-error
-);
-
-console.error(
-"Error code:",
-error.code
-);
-
-acceptButton.disabled =
-false;
-
-rejectButton.disabled =
-false;
-
-acceptButton.textContent =
-"✓ قبول";
-
-
-if(error.code === "permission-denied"){
-
-alert(
-"تم رفض العملية بسبب Firestore Rules. تأكد من القواعد الموجودة أسفل الكود."
-);
-
-}else{
-
-alert(
-"حدث خطأ أثناء قبول الطلب."
-);
-
-}
-
-}
-
-}
-
-
-/* =====================================
-   رفض طلب الصداقة
-===================================== */
-
-async function rejectFriendRequest(
-request,
-acceptButton,
-rejectButton
-){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-acceptButton.disabled =
-true;
-
-rejectButton.disabled =
-true;
-
-rejectButton.textContent =
-"جاري الحذف...";
-
-
-try{
-
-const requestRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friendRequests",
-request.id
-);
-
-
-await deleteDoc(
-requestRef
-);
-
-
-await loadRequests();
-await loadRequestCount();
-
-
-showSuccess(
-"تم رفض طلب الصداقة."
-);
-
-
-}catch(error){
-
-console.error(
-"Reject request error:",
-error
-);
-
-acceptButton.disabled =
-false;
-
-rejectButton.disabled =
-false;
-
-rejectButton.textContent =
-"رفض";
-
-
-if(error.code === "permission-denied"){
-
-alert(
-"ليس لديك صلاحية رفض الطلب. تحقق من Firestore Rules."
-);
-
-}else{
-
-alert(
-"حدث خطأ أثناء رفض الطلب."
-);
-
-}
-
-}
-
-}
-
-
-/* =====================================
-   زر الإشعارات
-===================================== */
-
-notificationBtn.addEventListener(
-"click",
-async()=>{
-
-if(
-requests.style.display === "block"
-){
-
-requests.style.display =
-"none";
-
-return;
-
-}
-
-
-requests.style.display =
-"block";
-
-await loadRequests();
-
-}
-);
-
-
-/* =====================================
-   إغلاق الطلبات
-===================================== */
-
-closeRequests.addEventListener(
-"click",
-()=>{
-
-requests.style.display =
-"none";
-
-}
-);
-
-
-/* =====================================
+/* =========================
    الأزرار
-===================================== */
+========================= */
 
 searchBtn.addEventListener(
 "click",
 searchFriend
 );
 
-
 addButton.addEventListener(
 "click",
 sendFriendRequest
 );
 
-
 friendId.addEventListener(
 "keydown",
 (event)=>{
 
-if(event.key === "Enter"){
+if(event.key==="Enter"){
 
 searchFriend();
 
@@ -2900,18 +2194,46 @@ searchFriend();
 }
 );
 
+notificationBtn.addEventListener(
+"click",
+async()=>{
+
+if(
+requests.style.display==="block"
+){
+
+requests.style.display="none";
+
+}else{
+
+requests.style.display="block";
+
+await loadRequests();
+
+}
+
+}
+);
+
+closeRequests.addEventListener(
+"click",
+()=>{
+
+requests.style.display="none";
+
+}
+);
 
 closeFriendMenu.addEventListener(
 "click",
 closeMenu
 );
 
-
 friendMenu.addEventListener(
 "click",
 (event)=>{
 
-if(event.target === friendMenu){
+if(event.target===friendMenu){
 
 closeMenu();
 
@@ -2920,46 +2242,19 @@ closeMenu();
 }
 );
 
-
-removeFriendButton.addEventListener(
-"click",
-removeFriend
-);
-
-
-blockFriendButton.addEventListener(
-"click",
-blockFriend
-);
-
-
 backBtn.addEventListener(
 "click",
 ()=>{
 
-if(
-document.referrer &&
-document.referrer.includes(
-"mecdjhjhnh37-collab.github.io"
-)
-){
-
-history.back();
-
-}else{
-
-window.location.href =
-mecdChatURL;
-
-}
+window.location.href=mecdChatURL;
 
 }
 );
 
 
-/* =====================================
+/* =========================
    تسجيل الدخول
-===================================== */
+========================= */
 
 onAuthStateChanged(
 auth,
@@ -2975,48 +2270,39 @@ return;
 
 }
 
-
-currentUser =
-user;
-
+currentUser=user;
 
 try{
 
 await loadCurrentUserData();
 
+loading.style.display="none";
 
-loading.style.display =
-"none";
-
-app.style.display =
-"block";
-
+app.style.display="block";
 
 await loadFriends();
 
-await loadRequestCount();
-
+await loadRequests();
 
 }catch(error){
 
 console.error(
-"Initial loading error:",
+"Initial error:",
 error
 );
 
-loading.style.display =
-"none";
+loading.style.display="none";
 
-app.style.display =
-"block";
+app.style.display="block";
 
 showError(
-"حدث خطأ أثناء تحميل البيانات."
+"حدث خطأ أثناء تحميل البيانات. تأكد من Firestore Rules."
 );
 
 }
 
-});
+}
+);
 
 </script>
 
