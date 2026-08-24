@@ -2,41 +2,18 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#050807">
-
-<meta
-  name="mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-capable"
-  content="yes"
->
-
-<meta
-  name="apple-mobile-web-app-status-bar-style"
-  content="black-translucent"
->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
 <title>Mecd Tools</title>
 
-
 <style>
-
-/* =====================================================
-   RESET
-===================================================== */
 
 *{
   box-sizing:border-box;
@@ -44,737 +21,402 @@
   padding:0;
 }
 
-
-/* =====================================================
-   BODY
-===================================================== */
-
 body{
-
   min-height:100vh;
-
-  font-family:
-    Arial,
-    Tahoma,
-    sans-serif;
-
+  font-family:Arial,Tahoma,sans-serif;
   color:white;
 
   background:
-    radial-gradient(
-      circle at 50% 0%,
-      #123d35 0%,
-      transparent 35%
-    ),
-    linear-gradient(
-      180deg,
-      #07110f 0%,
-      #020504 100%
-    );
+    radial-gradient(circle at 50% 0%,#123d35 0%,transparent 35%),
+    linear-gradient(180deg,#07110f 0%,#020504 100%);
 
   overflow-x:hidden;
 }
 
-
-/* =====================================================
-   BACKGROUND
-===================================================== */
-
 .background{
-
   position:fixed;
-
   inset:0;
-
   overflow:hidden;
-
   pointer-events:none;
-
   z-index:0;
-
 }
-
 
 .glow{
-
   position:absolute;
-
   width:300px;
   height:300px;
-
   border-radius:50%;
-
   filter:blur(100px);
-
   opacity:.18;
-
 }
-
 
 .glow.one{
-
   background:#00e676;
-
   top:-100px;
-
   right:-100px;
-
 }
-
 
 .glow.two{
-
   background:#2979ff;
-
   bottom:-100px;
-
   left:-100px;
-
 }
-
-
-/* =====================================================
-   APP
-===================================================== */
 
 .app{
-
   position:relative;
-
   z-index:1;
-
   width:100%;
-
   max-width:650px;
-
   min-height:100vh;
-
   margin:auto;
-
   padding:22px 20px 45px;
-
   display:flex;
-
   flex-direction:column;
-
 }
 
-
-/* =====================================================
-   ACCOUNT
-===================================================== */
+/* الحساب */
 
 .account{
-
   display:flex;
-
   align-items:center;
-
   justify-content:flex-start;
-
-  margin-bottom:55px;
-
+  margin-bottom:40px;
 }
-
 
 .account-box{
-
   display:flex;
-
   align-items:center;
-
   gap:12px;
-
   padding:9px 13px;
-
   border-radius:22px;
-
   background:rgba(255,255,255,.035);
-
   border:1px solid rgba(0,230,118,.18);
-
 }
-
 
 .account-photo{
-
   width:48px;
-
   height:48px;
-
   border-radius:50%;
-
   object-fit:cover;
-
   border:2px solid #00e676;
-
 }
-
 
 .account-info{
-
   display:flex;
-
   flex-direction:column;
-
   gap:4px;
-
 }
-
 
 .account-name{
-
   font-size:17px;
-
   font-weight:bold;
-
 }
-
 
 .account-id{
-
   color:#00e676;
-
   font-size:12px;
-
 }
 
-
-/* =====================================================
-   HEADER
-===================================================== */
+/* الهيدر */
 
 header{
-
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
-  margin-bottom:55px;
-
+  margin-bottom:45px;
 }
-
 
 .brand{
-
   display:flex;
-
   align-items:center;
-
   gap:12px;
-
 }
 
-
 .logo{
-
   width:52px;
-
   height:52px;
-
   display:flex;
-
   align-items:center;
-
   justify-content:center;
-
   border-radius:16px;
-
   font-size:27px;
 
   background:
-    linear-gradient(
-      135deg,
-      #00e676,
-      #00a85a
-    );
+    linear-gradient(135deg,#00e676,#00a85a);
 
   box-shadow:
-    0 10px 30px
-    rgba(0,230,118,.22);
-
+    0 10px 30px rgba(0,230,118,.22);
 }
-
 
 .brand h2{
-
   font-size:21px;
-
 }
-
 
 .brand span{
-
   display:block;
-
   margin-top:4px;
-
   color:#8d9a97;
-
   font-size:12px;
-
 }
-
 
 .status{
-
   display:flex;
-
   align-items:center;
-
   gap:7px;
-
   padding:8px 12px;
-
-  border:1px solid
-    rgba(255,255,255,.08);
-
+  border:1px solid rgba(255,255,255,.08);
   border-radius:20px;
-
-  background:
-    rgba(255,255,255,.04);
-
+  background:rgba(255,255,255,.04);
   color:#aab5b2;
-
   font-size:12px;
-
 }
-
 
 .status-dot{
-
   width:8px;
-
   height:8px;
-
   border-radius:50%;
-
   background:#00e676;
-
-  box-shadow:
-    0 0 10px #00e676;
-
+  box-shadow:0 0 10px #00e676;
 }
 
-
-/* =====================================================
-   HERO
-===================================================== */
+/* الترحيب */
 
 .hero{
-
   text-align:center;
-
-  margin-bottom:42px;
-
+  margin-bottom:40px;
 }
 
-
 .tools-icon{
-
   width:92px;
-
   height:92px;
-
   margin:0 auto 25px;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
 
   border-radius:28px;
-
   font-size:47px;
 
-  background:
-    rgba(255,255,255,.055);
+  background:rgba(255,255,255,.055);
 
   border:
     1px solid
     rgba(255,255,255,.09);
 
   box-shadow:
-
-    0 20px 60px
-    rgba(0,0,0,.3),
-
-    inset 0 0 30px
-    rgba(255,255,255,.025);
-
+    0 20px 60px rgba(0,0,0,.3);
 }
-
 
 .hero h1{
-
-  font-size:
-    clamp(
-      30px,
-      7vw,
-      48px
-    );
-
+  font-size:clamp(30px,7vw,48px);
   line-height:1.2;
-
   margin-bottom:15px;
-
-  letter-spacing:-.8px;
-
 }
-
 
 .hero h1 span{
-
   color:#00e676;
-
 }
-
 
 .hero p{
-
   max-width:430px;
-
   margin:auto;
-
   color:#9ba7a4;
-
   line-height:1.8;
-
   font-size:15px;
-
 }
 
-
-/* =====================================================
-   SERVICES TITLE
-===================================================== */
+/* الخدمات */
 
 .services-title{
-
   font-size:22px;
-
   margin-bottom:18px;
-
   color:#d9e8e3;
-
 }
-
-
-/* =====================================================
-   SERVICES
-===================================================== */
 
 .services{
-
   display:flex;
-
   flex-direction:column;
-
   gap:18px;
-
 }
 
-
 .service{
-
   position:relative;
-
   width:100%;
-
   min-height:145px;
-
   padding:25px;
 
   border-radius:25px;
-
-  border:
-    1px solid
-    rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.09);
 
   color:white;
-
   text-decoration:none;
 
   overflow:hidden;
-
   transition:.25s ease;
 
   cursor:pointer;
-
 }
-
-
-.service::before{
-
-  content:"";
-
-  position:absolute;
-
-  width:180px;
-
-  height:180px;
-
-  border-radius:50%;
-
-  filter:blur(55px);
-
-  opacity:.13;
-
-  top:-100px;
-
-  left:-60px;
-
-}
-
 
 .service:hover{
-
-  transform:
-    translateY(-4px);
-
+  transform:translateY(-4px);
 }
-
 
 .service:active{
-
-  transform:
-    scale(.98);
-
+  transform:scale(.98);
 }
 
+.service::before{
+  content:"";
+  position:absolute;
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  filter:blur(55px);
+  opacity:.13;
+  top:-100px;
+  left:-60px;
+}
 
 .camera-service{
-
   background:
     linear-gradient(
       135deg,
       rgba(0,230,118,.16),
       rgba(0,230,118,.035)
     );
-
 }
-
 
 .camera-service::before{
-
   background:#00e676;
-
 }
 
-
 .chat-service{
-
   background:
     linear-gradient(
       135deg,
       rgba(0,230,118,.16),
       rgba(0,230,118,.035)
     );
-
 }
-
 
 .chat-service::before{
-
   background:#00e676;
-
 }
 
-
-/* =====================================================
-   ROOM SERVICE
-===================================================== */
-
 .room-service{
-
   background:
     linear-gradient(
       135deg,
       rgba(41,121,255,.18),
       rgba(41,121,255,.035)
     );
-
 }
-
 
 .room-service::before{
-
   background:#2979ff;
-
 }
 
-
-/* =====================================================
-   SERVICE CONTENT
-===================================================== */
-
 .service-content{
-
   position:relative;
-
   z-index:2;
 
   display:flex;
-
   align-items:center;
-
   gap:20px;
-
 }
 
-
 .service-icon{
-
   flex-shrink:0;
 
   width:72px;
-
   height:72px;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
 
   border-radius:21px;
-
   font-size:34px;
 
-  background:
-    rgba(255,255,255,.07);
-
+  background:rgba(255,255,255,.07);
 }
-
 
 .service-text{
-
   flex:1;
-
 }
-
 
 .service-text h3{
-
   font-size:21px;
-
   margin-bottom:8px;
-
 }
-
 
 .service-text p{
-
   color:#9ca9a6;
-
   font-size:13px;
-
   line-height:1.6;
-
 }
-
 
 .arrow{
-
   font-size:26px;
-
   color:#7d8986;
-
 }
 
-
-/* =====================================================
-   INFO
-===================================================== */
+/* المعلومات */
 
 .info{
-
   margin-top:30px;
-
   padding:18px;
-
   border-radius:20px;
 
-  background:
-    rgba(255,255,255,.035);
+  background:rgba(255,255,255,.035);
 
   border:
     1px solid
     rgba(255,255,255,.06);
 
   text-align:center;
-
   color:#798581;
-
   font-size:12px;
-
   line-height:1.7;
-
 }
-
-
-/* =====================================================
-   FOOTER
-===================================================== */
 
 footer{
-
   margin-top:auto;
-
   padding-top:45px;
-
   text-align:center;
-
   color:#58635f;
-
   font-size:11px;
-
 }
 
-
-/* =====================================================
-   MODAL
-===================================================== */
+/* =========================
+   نافذة إنشاء الغرفة
+========================= */
 
 .modal{
-
   position:fixed;
-
   inset:0;
-
-  z-index:9999;
 
   display:none;
 
   align-items:center;
-
   justify-content:center;
 
   padding:20px;
 
-  background:
-    rgba(0,0,0,.72);
+  background:rgba(0,0,0,.72);
 
-  backdrop-filter:
-    blur(8px);
+  backdrop-filter:blur(8px);
 
+  z-index:9999;
 }
-
 
 .modal.show{
-
   display:flex;
-
 }
 
-
 .modal-box{
-
   width:100%;
-
   max-width:430px;
 
   padding:25px;
@@ -784,123 +426,47 @@ footer{
   background:
     linear-gradient(
       180deg,
-      #0c1714,
-      #050908
+      #101916,
+      #070b09
     );
 
   border:
     1px solid
-    rgba(0,230,118,.18);
+    rgba(255,255,255,.1);
 
   box-shadow:
-    0 25px 80px
-    rgba(0,0,0,.6);
-
-  animation:
-    modalIn .2s ease;
-
+    0 25px 80px rgba(0,0,0,.6);
 }
-
-
-@keyframes modalIn{
-
-  from{
-
-    opacity:0;
-
-    transform:
-      scale(.94)
-      translateY(10px);
-
-  }
-
-  to{
-
-    opacity:1;
-
-    transform:
-      scale(1)
-      translateY(0);
-
-  }
-
-}
-
-
-.modal-header{
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  margin-bottom:22px;
-
-}
-
 
 .modal-title{
-
-  font-size:23px;
-
-  font-weight:bold;
-
+  text-align:center;
+  font-size:24px;
+  margin-bottom:8px;
 }
 
-
-.close-modal{
-
-  width:42px;
-
-  height:42px;
-
-  border:none;
-
-  border-radius:13px;
-
-  background:
-    rgba(255,255,255,.06);
-
-  color:white;
-
-  font-size:22px;
-
-  cursor:pointer;
-
+.modal-subtitle{
+  text-align:center;
+  color:#84918d;
+  font-size:13px;
+  margin-bottom:25px;
 }
-
 
 .form-group{
-
   margin-bottom:16px;
-
 }
-
 
 .form-group label{
-
   display:block;
-
   margin-bottom:8px;
-
-  color:#b7c3bf;
-
-  font-size:13px;
-
+  color:#c9d4d0;
+  font-size:14px;
 }
 
-
-.form-input{
-
+.form-group input{
   width:100%;
+  padding:15px;
 
-  height:53px;
-
-  padding:
-    0 15px;
-
-  border-radius:16px;
+  border-radius:15px;
 
   border:
     1px solid
@@ -908,285 +474,151 @@ footer{
 
   outline:none;
 
-  background:#111a17;
-
+  background:#111916;
   color:white;
 
-  font-family:inherit;
-
   font-size:15px;
-
-  transition:.2s;
-
 }
 
-
-.form-input:focus{
-
+.form-group input:focus{
   border-color:#00e676;
-
-  box-shadow:
-    0 0 0 3px
-    rgba(0,230,118,.08);
-
 }
-
-
-.form-input::placeholder{
-
-  color:#63716d;
-
-}
-
 
 .create-room-button{
-
   width:100%;
+  padding:16px;
 
-  height:54px;
+  border:0;
+  border-radius:16px;
 
-  margin-top:7px;
-
-  border:none;
-
-  border-radius:17px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #00e889,
-      #00b965
-    );
-
+  background:#00e889;
   color:#00150e;
 
-  font-family:inherit;
-
-  font-size:16px;
-
+  font-size:17px;
   font-weight:bold;
 
   cursor:pointer;
-
-  transition:.2s;
-
 }
 
-
-.create-room-button:active{
-
-  transform:
-    scale(.97);
-
-}
-
-
-.create-room-button:disabled{
-
-  opacity:.5;
-
-  cursor:not-allowed;
-
-}
-
-
-.modal-message{
-
-  display:none;
-
-  margin-top:16px;
-
+.cancel-button{
+  width:100%;
   padding:14px;
+
+  margin-top:10px;
+
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+
+  background:#161d1a;
+  color:white;
+
+  font-size:15px;
+
+  cursor:pointer;
+}
+
+/* نجاح */
+
+.room-created{
+  display:none;
+  text-align:center;
+}
+
+.room-created.show{
+  display:block;
+}
+
+.room-created h3{
+  font-size:22px;
+  margin-bottom:18px;
+  color:#00e889;
+}
+
+.room-data{
+  padding:15px;
+  margin-bottom:12px;
 
   border-radius:15px;
 
-  background:
-    rgba(0,230,118,.08);
+  background:#111916;
 
-  border:
-    1px solid
-    rgba(0,230,118,.15);
-
-  color:#8fffc3;
-
-  text-align:center;
-
-  line-height:1.7;
-
-  font-size:13px;
-
+  border:1px solid rgba(255,255,255,.08);
 }
 
-
-.modal-message.show{
-
+.room-data span{
   display:block;
-
+  color:#7e8c87;
+  font-size:12px;
+  margin-bottom:6px;
 }
 
-
-.room-code{
-
-  display:block;
-
-  margin-top:7px;
-
-  color:#00e889;
-
-  font-size:21px;
-
-  font-weight:bold;
-
-  direction:ltr;
-
-  letter-spacing:1px;
-
+.room-data strong{
+  color:white;
+  font-size:17px;
+  word-break:break-all;
 }
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
 
 @media(max-width:480px){
 
   .app{
-
-    padding:
-      20px
-      15px
-      35px;
-
+    padding:20px 15px 35px;
   }
-
-
-  .account{
-
-    margin-bottom:42px;
-
-  }
-
 
   .account-photo{
-
     width:44px;
-
     height:44px;
-
   }
-
 
   .account-name{
-
     font-size:15px;
-
   }
-
 
   header{
-
-    margin-bottom:42px;
-
+    margin-bottom:40px;
   }
-
 
   .logo{
-
     width:45px;
-
     height:45px;
-
     border-radius:14px;
-
     font-size:23px;
-
   }
-
 
   .brand h2{
-
     font-size:18px;
-
   }
-
 
   .status{
-
     font-size:10px;
-
   }
-
 
   .tools-icon{
-
     width:82px;
-
     height:82px;
-
     font-size:40px;
-
   }
-
-
-  .hero{
-
-    margin-bottom:32px;
-
-  }
-
 
   .hero h1{
-
     font-size:31px;
-
   }
-
 
   .service{
-
     min-height:130px;
-
     padding:19px;
-
   }
-
 
   .service-icon{
-
     width:61px;
-
     height:61px;
-
     font-size:29px;
-
   }
-
 
   .service-text h3{
-
     font-size:18px;
-
   }
-
 
   .service-text p{
-
     font-size:12px;
-
-  }
-
-
-  .arrow{
-
-    font-size:22px;
-
-  }
-
-
-  .modal-box{
-
-    padding:21px;
-
   }
 
 }
@@ -1195,313 +627,247 @@ footer{
 
 </head>
 
-
 <body>
 
-
-<!-- =====================================================
-     BACKGROUND
-===================================================== -->
-
 <div class="background">
-
   <div class="glow one"></div>
-
   <div class="glow two"></div>
-
 </div>
-
-
-<!-- =====================================================
-     APP
-===================================================== -->
 
 <main class="app">
 
+<!-- الحساب -->
 
-  <!-- الحساب -->
+<div class="account">
 
-  <div class="account">
+  <div class="account-box">
 
-    <div class="account-box">
+    <img
+      id="accountPhoto"
+      class="account-photo"
+      src=""
+      alt="الحساب"
+    >
 
-      <img
-        id="accountPhoto"
-        class="account-photo"
-        src=""
-        alt="الحساب"
+    <div class="account-info">
+
+      <div
+        id="accountName"
+        class="account-name"
       >
+        جاري التحميل...
+      </div>
 
-      <div class="account-info">
-
-        <div
-          id="accountName"
-          class="account-name"
-        >
-          جاري التحميل...
-        </div>
-
-        <div
-          id="accountId"
-          class="account-id"
-        >
-          ID: ...
-        </div>
-
+      <div
+        id="accountId"
+        class="account-id"
+      >
+        ID: ...
       </div>
 
     </div>
 
   </div>
 
+</div>
 
-  <!-- الهيدر -->
+<!-- الهيدر -->
 
-  <header>
+<header>
 
-    <div class="brand">
+  <div class="brand">
 
-      <div class="logo">
-        🛠️
-      </div>
-
-      <div>
-
-        <h2>
-          Mecd Tools
-        </h2>
-
-        <span>
-          أدوات وخدمات مجانية
-        </span>
-
-      </div>
-
-    </div>
-
-
-    <div class="status">
-
-      <div class="status-dot"></div>
-
-      متصل
-
-    </div>
-
-  </header>
-
-
-  <!-- الترحيب -->
-
-  <section class="hero">
-
-    <div class="tools-icon">
+    <div class="logo">
       🛠️
     </div>
 
+    <div>
 
-    <h1>
-
-      أهلاً بك في
-
-      <br>
+      <h2>Mecd Tools</h2>
 
       <span>
-        Mecd Tools
+        أدوات وخدمات مجانية
       </span>
 
-    </h1>
-
-
-    <p>
-
-      مجموعة من الأدوات والخدمات
-      المجانية المصممة لتكون سهلة
-      وسريعة الاستخدام.
-
-    </p>
-
-  </section>
-
-
-  <!-- =====================================================
-       الخدمات
-  ===================================================== -->
-
-  <section>
-
-    <div class="services-title">
-      🧰 الخدمات
     </div>
-
-
-    <div class="services">
-
-
-      <!-- =================================================
-           CAMERA CONNECT
-      ================================================= -->
-
-      <a
-        class="service camera-service"
-        href="https://mecdjhjhnh37-collab.github.io/walkie-talkie-telsiz/"
-      >
-
-        <div class="service-content">
-
-          <div class="service-icon">
-            📷
-          </div>
-
-
-          <div class="service-text">
-
-            <h3>
-              Camera Connect
-            </h3>
-
-
-            <p>
-
-              نظام مراقبة ذكي —
-              استخدم هاتفًا ككاميرا
-              واتصل بجهاز المراقبة.
-
-            </p>
-
-          </div>
-
-
-          <div class="arrow">
-            ←
-          </div>
-
-        </div>
-
-      </a>
-
-
-      <!-- =================================================
-           MECD CHAT
-      ================================================= -->
-
-      <a
-        class="service chat-service"
-        href="https://mecdjhjhnh37-collab.github.io/MecdChat/"
-      >
-
-        <div class="service-content">
-
-          <div class="service-icon">
-            💬
-          </div>
-
-
-          <div class="service-text">
-
-            <h3>
-              Mecd Chat
-            </h3>
-
-
-            <p>
-
-              دردشة وغرف خاصة
-              بين مستخدمي Mecd Tools.
-
-            </p>
-
-          </div>
-
-
-          <div class="arrow">
-            ←
-          </div>
-
-        </div>
-
-      </a>
-
-
-      <!-- =================================================
-           CREATE ROOM
-      ================================================= -->
-
-      <button
-        id="createRoomCard"
-        class="service room-service"
-        type="button"
-      >
-
-        <div class="service-content">
-
-          <div class="service-icon">
-            ➕
-          </div>
-
-
-          <div class="service-text">
-
-            <h3>
-              إنشاء غرفة دردشة
-            </h3>
-
-
-            <p>
-
-              أنشئ غرفة جديدة
-              وحدد اسمها وكلمة السر
-              وابدأ الدردشة مع الآخرين.
-
-            </p>
-
-          </div>
-
-
-          <div class="arrow">
-            ←
-          </div>
-
-        </div>
-
-      </button>
-
-
-    </div>
-
-  </section>
-
-
-  <!-- =====================================================
-       INFO
-  ===================================================== -->
-
-  <div class="info">
-
-    🔒 حسابك مرتبط بخدمة
-    <b>Mecd Tools</b>
-    وجميع الخدمات تستخدم نفس تسجيل الدخول.
 
   </div>
 
+  <div class="status">
 
-  <!-- =====================================================
-       FOOTER
-  ===================================================== -->
+    <div class="status-dot"></div>
 
-  <footer>
+    متصل
 
-    Mecd Tools © 2026
+  </div>
 
-  </footer>
+</header>
 
+<!-- الترحيب -->
+
+<section class="hero">
+
+  <div class="tools-icon">
+    🛠️
+  </div>
+
+  <h1>
+
+    أهلاً بك في
+    <br>
+
+    <span>
+      Mecd Tools
+    </span>
+
+  </h1>
+
+  <p>
+
+    مجموعة من الأدوات والخدمات
+    المجانية المصممة لتكون سهلة
+    وسريعة الاستخدام.
+
+  </p>
+
+</section>
+
+<!-- الخدمات -->
+
+<section>
+
+  <div class="services-title">
+    🧰 الخدمات
+  </div>
+
+  <div class="services">
+
+    <!-- Camera -->
+
+    <a
+      class="service camera-service"
+      href="https://mecdjhjhnh37-collab.github.io/walkie-talkie-telsiz/"
+    >
+
+      <div class="service-content">
+
+        <div class="service-icon">
+          📷
+        </div>
+
+        <div class="service-text">
+
+          <h3>
+            Camera Connect
+          </h3>
+
+          <p>
+            نظام مراقبة ذكي —
+            استخدم هاتفًا ككاميرا
+            واتصل بجهاز المراقبة.
+          </p>
+
+        </div>
+
+        <div class="arrow">
+          ←
+        </div>
+
+      </div>
+
+    </a>
+
+    <!-- Mecd Chat -->
+
+    <a
+      class="service chat-service"
+      href="https://mecdjhjhnh37-collab.github.io/MecdChat/"
+    >
+
+      <div class="service-content">
+
+        <div class="service-icon">
+          💬
+        </div>
+
+        <div class="service-text">
+
+          <h3>
+            Mecd Chat
+          </h3>
+
+          <p>
+            دردشة وغرف خاصة
+            بين مستخدمي Mecd Tools.
+          </p>
+
+        </div>
+
+        <div class="arrow">
+          ←
+        </div>
+
+      </div>
+
+    </a>
+
+    <!-- إنشاء غرفة -->
+
+    <button
+      id="createRoomService"
+      class="service room-service"
+      type="button"
+    >
+
+      <div class="service-content">
+
+        <div class="service-icon">
+          🏠
+        </div>
+
+        <div class="service-text">
+
+          <h3>
+            إنشاء غرفة دردشة
+          </h3>
+
+          <p>
+            أنشئ غرفة خاصة باسم
+            وكلمة سر وشاركها مع أصدقائك.
+          </p>
+
+        </div>
+
+        <div class="arrow">
+          ←
+        </div>
+
+      </div>
+
+    </button>
+
+  </div>
+
+</section>
+
+<div class="info">
+
+  🔒 حسابك مرتبط بخدمة
+  <b>Mecd Tools</b>
+  وجميع الخدمات تستخدم نفس تسجيل الدخول.
+
+</div>
+
+<footer>
+  Mecd Tools © 2026
+</footer>
 
 </main>
 
 
-<!-- =====================================================
-     CREATE ROOM MODAL
-===================================================== -->
+<!-- =========================
+     نافذة إنشاء غرفة
+========================= -->
 
 <div
   id="roomModal"
@@ -1510,157 +876,154 @@ footer{
 
   <div class="modal-box">
 
+    <!-- نموذج الإنشاء -->
 
-    <div class="modal-header">
+    <div id="roomForm">
 
       <div class="modal-title">
         🏠 إنشاء غرفة دردشة
       </div>
 
+      <div class="modal-subtitle">
+        أدخل اسم الغرفة وكلمة السر
+      </div>
+
+      <div class="form-group">
+
+        <label>
+          اسم الغرفة
+        </label>
+
+        <input
+          id="roomName"
+          type="text"
+          maxlength="40"
+          placeholder="مثال: أصدقاء المدرسة"
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label>
+          كلمة السر
+        </label>
+
+        <input
+          id="roomPassword"
+          type="password"
+          maxlength="50"
+          placeholder="أدخل كلمة سر الغرفة"
+        >
+
+      </div>
 
       <button
-        id="closeRoomModal"
-        class="close-modal"
+        id="createRoomButton"
+        class="create-room-button"
         type="button"
       >
-        ×
+        إنشاء غرفة
+      </button>
+
+      <button
+        id="cancelRoomButton"
+        class="cancel-button"
+        type="button"
+      >
+        إلغاء
       </button>
 
     </div>
 
 
-    <!-- اسم الغرفة -->
-
-    <div class="form-group">
-
-      <label for="roomName">
-        اسم الغرفة
-      </label>
-
-
-      <input
-        id="roomName"
-        class="form-input"
-        type="text"
-        maxlength="40"
-        placeholder="مثلاً: أصدقاء Mecd"
-        autocomplete="off"
-      >
-
-    </div>
-
-
-    <!-- كلمة السر -->
-
-    <div class="form-group">
-
-      <label for="roomPassword">
-        كلمة السر
-      </label>
-
-
-      <input
-        id="roomPassword"
-        class="form-input"
-        type="password"
-        maxlength="50"
-        placeholder="أدخل كلمة سر الغرفة"
-        autocomplete="new-password"
-      >
-
-    </div>
-
-
-    <!-- زر إنشاء -->
-
-    <button
-      id="createRoomButton"
-      class="create-room-button"
-      type="button"
-    >
-
-      إنشاء الغرفة
-
-    </button>
-
-
-    <!-- رسالة النتيجة -->
+    <!-- بعد إنشاء الغرفة -->
 
     <div
-      id="roomMessage"
-      class="modal-message"
-    ></div>
+      id="roomCreated"
+      class="room-created"
+    >
 
+      <h3>
+        🟢 تم إنشاء الغرفة
+      </h3>
+
+      <div class="room-data">
+
+        <span>
+          اسم الغرفة
+        </span>
+
+        <strong id="createdRoomName"></strong>
+
+      </div>
+
+      <div class="room-data">
+
+        <span>
+          رقم الغرفة
+        </span>
+
+        <strong id="createdRoomId"></strong>
+
+      </div>
+
+      <div class="room-data">
+
+        <span>
+          كلمة السر
+        </span>
+
+        <strong id="createdRoomPassword"></strong>
+
+      </div>
+
+      <button
+        id="closeCreatedRoom"
+        class="create-room-button"
+        type="button"
+      >
+        تم
+      </button>
+
+    </div>
 
   </div>
 
 </div>
 
 
-<!-- =====================================================
-     FIREBASE
-===================================================== -->
+<!-- Firebase -->
 
 <script type="module">
 
-
-/* =====================================================
-   Firebase App
-===================================================== */
-
 import {
-
   initializeApp
-
 }
-
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-/* =====================================================
-   Firebase Authentication
-===================================================== */
-
 import {
-
   getAuth,
-
   onAuthStateChanged
-
 }
-
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-/* =====================================================
-   Firebase Firestore
-===================================================== */
-
 import {
-
   getFirestore,
-
   doc,
-
   getDoc,
-
   setDoc,
-
-  collection,
-
   serverTimestamp
-
 }
-
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =====================================================
-   Firebase Config
-===================================================== */
+/* Firebase */
 
 const firebaseConfig = {
 
@@ -1688,10 +1051,6 @@ const firebaseConfig = {
 };
 
 
-/* =====================================================
-   تشغيل Firebase
-===================================================== */
-
 const firebaseApp =
   initializeApp(firebaseConfig);
 
@@ -1704,84 +1063,345 @@ const db =
   getFirestore(firebaseApp);
 
 
-/* =====================================================
-   عناصر الحساب
-===================================================== */
+/* عناصر الحساب */
 
 const accountPhoto =
-  document.getElementById(
-    "accountPhoto"
-  );
-
+  document.getElementById("accountPhoto");
 
 const accountName =
-  document.getElementById(
-    "accountName"
-  );
-
+  document.getElementById("accountName");
 
 const accountId =
-  document.getElementById(
-    "accountId"
-  );
+  document.getElementById("accountId");
 
 
-/* =====================================================
-   عناصر الغرفة
-===================================================== */
+/* عناصر الغرفة */
 
-const createRoomCard =
-  document.getElementById(
-    "createRoomCard"
-  );
-
+const createRoomService =
+  document.getElementById("createRoomService");
 
 const roomModal =
-  document.getElementById(
-    "roomModal"
-  );
+  document.getElementById("roomModal");
 
+const roomForm =
+  document.getElementById("roomForm");
 
-const closeRoomModal =
-  document.getElementById(
-    "closeRoomModal"
-  );
-
+const roomCreated =
+  document.getElementById("roomCreated");
 
 const roomName =
-  document.getElementById(
-    "roomName"
-  );
-
+  document.getElementById("roomName");
 
 const roomPassword =
-  document.getElementById(
-    "roomPassword"
-  );
-
+  document.getElementById("roomPassword");
 
 const createRoomButton =
-  document.getElementById(
-    "createRoomButton"
-  );
+  document.getElementById("createRoomButton");
+
+const cancelRoomButton =
+  document.getElementById("cancelRoomButton");
+
+const closeCreatedRoom =
+  document.getElementById("closeCreatedRoom");
+
+const createdRoomName =
+  document.getElementById("createdRoomName");
+
+const createdRoomId =
+  document.getElementById("createdRoomId");
+
+const createdRoomPassword =
+  document.getElementById("createdRoomPassword");
 
 
-const roomMessage =
-  document.getElementById(
-    "roomMessage"
-  );
-
-
-/* =====================================================
-   المستخدم الحالي
-===================================================== */
+/* المستخدم الحالي */
 
 let currentUser = null;
 
 
-/* =====================================================
+/* =========================
+   فتح نافذة الغرفة
+========================= */
+
+createRoomService.addEventListener(
+  "click",
+  () => {
+
+    roomModal.classList.add("show");
+
+    roomForm.style.display = "block";
+
+    roomCreated.classList.remove("show");
+
+    roomName.value = "";
+    roomPassword.value = "";
+
+    setTimeout(() => {
+      roomName.focus();
+    }, 100);
+
+  }
+);
+
+
+/* إغلاق */
+
+cancelRoomButton.addEventListener(
+  "click",
+  () => {
+
+    roomModal.classList.remove("show");
+
+  }
+);
+
+
+/* إغلاق بعد الإنشاء */
+
+closeCreatedRoom.addEventListener(
+  "click",
+  () => {
+
+    roomModal.classList.remove("show");
+
+  }
+);
+
+
+/* الضغط خارج النافذة */
+
+roomModal.addEventListener(
+  "click",
+  (event) => {
+
+    if(event.target === roomModal){
+
+      roomModal.classList.remove("show");
+
+    }
+
+  }
+);
+
+
+/* =========================
+   إنشاء رقم غرفة
+========================= */
+
+function generateRoomID(){
+
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let result = "";
+
+  for(let i = 0; i < 8; i++){
+
+    result +=
+      chars.charAt(
+        Math.floor(
+          Math.random() * chars.length
+        )
+      );
+
+  }
+
+  return result;
+
+}
+
+
+/* =========================
+   إنشاء الغرفة
+========================= */
+
+async function createRoom(){
+
+  if(!currentUser){
+
+    alert(
+      "يجب تسجيل الدخول أولاً."
+    );
+
+    return;
+
+  }
+
+
+  const name =
+    roomName.value.trim();
+
+  const password =
+    roomPassword.value.trim();
+
+
+  if(!name){
+
+    alert(
+      "اكتب اسم الغرفة."
+    );
+
+    roomName.focus();
+
+    return;
+
+  }
+
+
+  if(!password){
+
+    alert(
+      "اكتب كلمة سر الغرفة."
+    );
+
+    roomPassword.focus();
+
+    return;
+
+  }
+
+
+  if(password.length < 4){
+
+    alert(
+      "كلمة السر يجب أن تكون 4 أحرف على الأقل."
+    );
+
+    roomPassword.focus();
+
+    return;
+
+  }
+
+
+  createRoomButton.disabled = true;
+
+  createRoomButton.textContent =
+    "جاري إنشاء الغرفة...";
+
+
+  try{
+
+    const id =
+      generateRoomID();
+
+
+    const roomRef =
+      doc(
+        db,
+        "rooms",
+        id
+      );
+
+
+    await setDoc(
+      roomRef,
+      {
+
+        roomId:
+          id,
+
+        name:
+          name,
+
+        password:
+          password,
+
+        ownerId:
+          currentUser.uid,
+
+        ownerName:
+          currentUser.displayName ||
+          "مستخدم Mecd",
+
+        members:[
+          currentUser.uid
+        ],
+
+        createdAt:
+          serverTimestamp(),
+
+        active:
+          true
+
+      }
+    );
+
+
+    /* عرض النتيجة */
+
+    createdRoomName.textContent =
+      name;
+
+    createdRoomId.textContent =
+      id;
+
+    createdRoomPassword.textContent =
+      password;
+
+
+    roomForm.style.display =
+      "none";
+
+    roomCreated.classList.add(
+      "show"
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "Create room error:",
+      error
+    );
+
+    alert(
+      "تعذر إنشاء الغرفة:\n" +
+      error.message
+    );
+
+  }finally{
+
+    createRoomButton.disabled =
+      false;
+
+    createRoomButton.textContent =
+      "إنشاء غرفة";
+
+  }
+
+}
+
+
+/* زر إنشاء الغرفة */
+
+createRoomButton.addEventListener(
+  "click",
+  createRoom
+);
+
+
+/* Enter */
+
+roomPassword.addEventListener(
+  "keydown",
+  (event) => {
+
+    if(event.key === "Enter"){
+
+      event.preventDefault();
+
+      createRoom();
+
+    }
+
+  }
+);
+
+
+/* =========================
    إنشاء / جلب ID المستخدم
-===================================================== */
+========================= */
 
 async function getUserID(user){
 
@@ -1794,26 +1414,17 @@ async function getUserID(user){
 
 
   const userDoc =
-    await getDoc(
-      userRef
-    );
+    await getDoc(userRef);
 
 
-  if(
-    userDoc.exists()
-  ){
+  if(userDoc.exists()){
 
     const data =
       userDoc.data();
 
 
-    if(
-      data.chatID
-    ){
-
-      return data.chatID;
-
-    }
+    return data.chatID ||
+      "MC-000001";
 
   }
 
@@ -1826,9 +1437,7 @@ async function getUserID(user){
 
 
   await setDoc(
-
     userRef,
-
     {
 
       name:
@@ -1847,13 +1456,9 @@ async function getUserID(user){
         newID
 
     },
-
     {
-
       merge:true
-
     }
-
   );
 
 
@@ -1862,486 +1467,17 @@ async function getUserID(user){
 }
 
 
-/* =====================================================
-   SHA-256 لكلمة السر
-   حتى لا نخزن كلمة السر نفسها
-===================================================== */
-
-async function hashPassword(password){
-
-  const encoder =
-    new TextEncoder();
-
-
-  const data =
-    encoder.encode(
-      password
-    );
-
-
-  const hashBuffer =
-    await crypto.subtle.digest(
-      "SHA-256",
-      data
-    );
-
-
-  const hashArray =
-    Array.from(
-      new Uint8Array(
-        hashBuffer
-      )
-    );
-
-
-  return hashArray
-    .map(
-      byte =>
-        byte
-          .toString(16)
-          .padStart(2,"0")
-    )
-    .join("");
-
-}
-
-
-/* =====================================================
-   إنشاء رمز الغرفة
-===================================================== */
-
-function generateRoomID(){
-
-  const chars =
-    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-
-  let result =
-    "";
-
-
-  for(
-    let i = 0;
-    i < 6;
-    i++
-  ){
-
-    result +=
-      chars[
-        Math.floor(
-          Math.random() *
-          chars.length
-        )
-      ];
-
-  }
-
-
-  return result;
-
-}
-
-
-/* =====================================================
-   فتح نافذة إنشاء الغرفة
-===================================================== */
-
-createRoomCard.addEventListener(
-
-  "click",
-
-  () => {
-
-    roomMessage.classList.remove(
-      "show"
-    );
-
-    roomMessage.innerHTML =
-      "";
-
-    roomName.value =
-      "";
-
-    roomPassword.value =
-      "";
-
-    createRoomButton.disabled =
-      false;
-
-    createRoomButton.textContent =
-      "إنشاء الغرفة";
-
-
-    roomModal.classList.add(
-      "show"
-    );
-
-
-    setTimeout(
-      () => {
-
-        roomName.focus();
-
-      },
-      100
-    );
-
-  }
-
-);
-
-
-/* =====================================================
-   إغلاق النافذة
-===================================================== */
-
-closeRoomModal.addEventListener(
-
-  "click",
-
-  () => {
-
-    roomModal.classList.remove(
-      "show"
-    );
-
-  }
-
-);
-
-
-/* =====================================================
-   الضغط خارج النافذة
-===================================================== */
-
-roomModal.addEventListener(
-
-  "click",
-
-  (event) => {
-
-    if(
-      event.target ===
-      roomModal
-    ){
-
-      roomModal.classList.remove(
-        "show"
-      );
-
-    }
-
-  }
-
-);
-
-
-/* =====================================================
-   زر ESC
-===================================================== */
-
-document.addEventListener(
-
-  "keydown",
-
-  (event) => {
-
-    if(
-      event.key === "Escape"
-    ){
-
-      roomModal.classList.remove(
-        "show"
-      );
-
-    }
-
-  }
-
-);
-
-
-/* =====================================================
-   إنشاء الغرفة
-===================================================== */
-
-createRoomButton.addEventListener(
-
-  "click",
-
-  async () => {
-
-
-    /* ---------------------------------------------
-       التأكد من تسجيل الدخول
-    --------------------------------------------- */
-
-    if(
-      !currentUser
-    ){
-
-      roomMessage.innerHTML =
-        "يجب تسجيل الدخول أولاً.";
-
-      roomMessage.classList.add(
-        "show"
-      );
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       قراءة البيانات
-    --------------------------------------------- */
-
-    const name =
-      roomName.value.trim();
-
-
-    const password =
-      roomPassword.value.trim();
-
-
-    /* ---------------------------------------------
-       فحص اسم الغرفة
-    --------------------------------------------- */
-
-    if(
-      name.length < 2
-    ){
-
-      roomMessage.innerHTML =
-        "⚠️ اكتب اسم غرفة صحيح.";
-
-      roomMessage.classList.add(
-        "show"
-      );
-
-      roomName.focus();
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       فحص كلمة السر
-    --------------------------------------------- */
-
-    if(
-      password.length < 4
-    ){
-
-      roomMessage.innerHTML =
-        "⚠️ كلمة السر يجب أن تكون 4 أحرف أو أكثر.";
-
-      roomMessage.classList.add(
-        "show"
-      );
-
-      roomPassword.focus();
-
-      return;
-
-    }
-
-
-    /* ---------------------------------------------
-       حالة التحميل
-    --------------------------------------------- */
-
-    createRoomButton.disabled =
-      true;
-
-    createRoomButton.textContent =
-      "جارٍ إنشاء الغرفة...";
-
-
-    try{
-
-
-      /* -------------------------------------------
-         توليد ID للغرفة
-      ------------------------------------------- */
-
-      const roomID =
-        generateRoomID();
-
-
-      /* -------------------------------------------
-         تشفير كلمة السر
-      ------------------------------------------- */
-
-      const passwordHash =
-        await hashPassword(
-          password
-        );
-
-
-      /* -------------------------------------------
-         إنشاء الغرفة
-      ------------------------------------------- */
-
-      const roomRef =
-        doc(
-          collection(
-            db,
-            "rooms"
-          ),
-          roomID
-        );
-
-
-      await setDoc(
-
-        roomRef,
-
-        {
-
-          roomID:
-            roomID,
-
-          name:
-            name,
-
-          passwordHash:
-            passwordHash,
-
-          ownerId:
-            currentUser.uid,
-
-          ownerName:
-            currentUser.displayName ||
-            "مستخدم Mecd",
-
-          members:[
-
-            currentUser.uid
-
-          ],
-
-          createdAt:
-            serverTimestamp(),
-
-          lastMessage:
-            "",
-
-          lastMessageAt:
-            serverTimestamp()
-
-        }
-
-      );
-
-
-      /* -------------------------------------------
-         نجاح
-      ------------------------------------------- */
-
-      roomMessage.innerHTML =
-
-        "✅ تم إنشاء الغرفة بنجاح!"
-
-        +
-
-        "<span class='room-code'>"
-
-        +
-
-        "رمز الغرفة: "
-
-        +
-
-        roomID
-
-        +
-
-        "</span>"
-
-        +
-
-        "<div style='margin-top:8px;color:#9ca9a6;'>"
-
-        +
-
-        "احتفظ بهذا الرمز للانضمام إلى الغرفة."
-
-        +
-
-        "</div>";
-
-
-      roomMessage.classList.add(
-        "show"
-      );
-
-
-      createRoomButton.textContent =
-        "تم إنشاء الغرفة ✓";
-
-
-      /* -------------------------------------------
-         تفريغ كلمة السر
-      ------------------------------------------- */
-
-      roomPassword.value =
-        "";
-
-
-    }catch(error){
-
-      console.error(
-        "Create room error:",
-        error
-      );
-
-
-      roomMessage.innerHTML =
-
-        "❌ تعذر إنشاء الغرفة.<br><br>"
-
-        +
-
-        "تأكد من أن Firestore Rules تسمح بإنشاء الغرف.";
-
-      roomMessage.classList.add(
-        "show"
-      );
-
-
-      createRoomButton.disabled =
-        false;
-
-      createRoomButton.textContent =
-        "إنشاء الغرفة";
-
-    }
-
-  }
-
-);
-
-
-/* =====================================================
+/* =========================
    تسجيل الدخول
-===================================================== */
+========================= */
 
 onAuthStateChanged(
 
   auth,
 
-  async (user) => {
+  async(user) => {
 
-
-    /* ---------------------------------------------
-       لا يوجد تسجيل دخول
-    --------------------------------------------- */
-
-    if(
-      !user
-    ){
+    if(!user){
 
       window.location.href =
         "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
@@ -2351,43 +1487,24 @@ onAuthStateChanged(
     }
 
 
-    /* ---------------------------------------------
-       حفظ المستخدم الحالي
-    --------------------------------------------- */
-
     currentUser =
       user;
 
 
     try{
 
-
-      /* -------------------------------------------
-         الاسم
-      ------------------------------------------- */
-
       accountName.textContent =
         user.displayName ||
         "مستخدم Mecd";
 
-
-      /* -------------------------------------------
-         الصورة
-      ------------------------------------------- */
 
       accountPhoto.src =
         user.photoURL ||
         "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
 
-      /* -------------------------------------------
-         ID
-      ------------------------------------------- */
-
       const id =
-        await getUserID(
-          user
-        );
+        await getUserID(user);
 
 
       accountId.textContent =
@@ -2401,11 +1518,9 @@ onAuthStateChanged(
         error
       );
 
-
       accountName.textContent =
         user.displayName ||
         "مستخدم Mecd";
-
 
       accountId.textContent =
         "ID: MC-000001";
@@ -2419,37 +1534,30 @@ onAuthStateChanged(
 </script>
 
 
-<!-- =====================================================
-     SERVICE WORKER
-===================================================== -->
+<!-- Service Worker -->
 
 <script>
 
 if(
-  "serviceWorker"
-  in navigator
+  "serviceWorker" in navigator
 ){
 
   window.addEventListener(
-
     "load",
-
     () => {
 
       navigator.serviceWorker
         .register("./sw.js")
-
         .then(
           registration => {
 
             console.log(
-              "Mecd Tools Service Worker:",
+              "Service Worker:",
               registration.scope
             );
 
           }
         )
-
         .catch(
           error => {
 
@@ -2462,14 +1570,11 @@ if(
         );
 
     }
-
   );
 
 }
 
 </script>
 
-
 </body>
-
 </html>
