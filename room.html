@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>إنشاء غرفة - Mecd Chat</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  font-family:Arial,Tahoma,sans-serif;
+  color:white;
+  background:
+    radial-gradient(circle at 50% 0%,#123d35 0%,transparent 35%),
+    linear-gradient(180deg,#07110f 0%,#020504 100%);
+}
+
+.app{
+  width:100%;
+  max-width:650px;
+  min-height:100vh;
+  margin:auto;
+  padding:25px 18px 40px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:45px;
+}
+
+.back{
+  width:45px;
+  height:45px;
+  border:0;
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  color:white;
+  font-size:23px;
+  cursor:pointer;
+}
+
+.logo{
+  width:48px;
+  height:48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:15px;
+  background:linear-gradient(135deg,#00e676,#00a85a);
+  font-size:25px;
+}
+
+.title{
+  font-size:20px;
+  font-weight:bold;
+}
+
+.subtitle{
+  margin-top:4px;
+  color:#899692;
+  font-size:12px;
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.icon{
+  width:90px;
+  height:90px;
+  margin:0 auto 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:28px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:45px;
+}
+
+h1{
+  font-size:30px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:#8f9b97;
+  line-height:1.7;
+  font-size:14px;
+}
+
+.card{
+  padding:22px;
+  border-radius:25px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  color:#cbd5d1;
+  font-size:14px;
+}
+
+input{
+  width:100%;
+  height:55px;
+  margin-bottom:20px;
+  padding:0 16px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  outline:none;
+  background:#111916;
+  color:white;
+  font-family:inherit;
+  font-size:16px;
+}
+
+input:focus{
+  border-color:#00e676;
+  box-shadow:0 0 0 2px rgba(0,230,118,.1);
+}
+
+button.create{
+  width:100%;
+  height:56px;
+  border:0;
+  border-radius:17px;
+  background:#00e889;
+  color:#00150e;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button.create:active{
+  transform:scale(.98);
+}
+
+button.create:disabled{
+  opacity:.5;
+}
+
+.result{
+  display:none;
+  margin-top:22px;
+  padding:20px;
+  border-radius:20px;
+  background:rgba(0,230,118,.08);
+  border:1px solid rgba(0,230,118,.2);
+  text-align:center;
+}
+
+.result h2{
+  color:#00e889;
+  font-size:20px;
+  margin-bottom:15px;
+}
+
+.room-code{
+  direction:ltr;
+  padding:15px;
+  border-radius:14px;
+  background:#08100d;
+  color:#00e889;
+  font-size:22px;
+  font-weight:bold;
+  letter-spacing:2px;
+  word-break:break-all;
+  margin-bottom:12px;
+}
+
+.room-password{
+  color:#aebbb6;
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+.copy{
+  width:100%;
+  height:48px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  background:rgba(255,255,255,.06);
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.error{
+  display:none;
+  margin-top:15px;
+  padding:13px;
+  border-radius:14px;
+  background:rgba(255,60,60,.1);
+  color:#ff8d8d;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.loading{
+  display:none;
+  margin-top:15px;
+  color:#8e9995;
+  text-align:center;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+
+<button
+  class="back"
+  id="backButton"
+>
+→
+</button>
+
+<div class="logo">
+💬
+</div>
+
+<div>
+<div class="title">
+Mecd Chat
+</div>
+
+<div class="subtitle">
+إنشاء غرفة دردشة
+</div>
+</div>
+
+</header>
+
+
+<section class="hero">
+
+<div class="icon">
+🏠
+</div>
+
+<h1>
+إنشاء غرفة
+</h1>
+
+<p>
+أنشئ غرفة خاصة وشارك اسم الغرفة
+وكلمة السر مع أصدقائك.
+</p>
+
+</section>
+
+
+<div class="card">
+
+<label for="roomName">
+اسم الغرفة
+</label>
+
+<input
+  id="roomName"
+  type="text"
+  maxlength="40"
+  placeholder="مثلاً: أصدقاء المدرسة"
+  autocomplete="off"
+/>
+
+
+<label for="roomPassword">
+كلمة السر
+</label>
+
+<input
+  id="roomPassword"
+  type="password"
+  maxlength="40"
+  placeholder="اكتب كلمة سر للغرفة"
+  autocomplete="new-password"
+/>
+
+
+<button
+  id="createButton"
+  class="create"
+>
+إنشاء غرفة
+</button>
+
+
+<div
+  id="loading"
+  class="loading"
+>
+جاري إنشاء الغرفة...
+</div>
+
+
+<div
+  id="error"
+  class="error"
+></div>
+
+
+<div
+  id="result"
+  class="result"
+>
+
+<h2>
+🟢 تم إنشاء الغرفة
+</h2>
+
+<div
+  id="roomCode"
+  class="room-code"
+>
+</div>
+
+<div
+  id="roomPasswordResult"
+  class="room-password"
+>
+</div>
+
+<button
+  id="copyButton"
+  class="copy"
+>
+📋 نسخ معلومات الغرفة
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {
+  initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================
+   Firebase
+========================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+  authDomain:
+    "mecd-tools.firebaseapp.com",
+
+  projectId:
+    "mecd-tools",
+
+  storageBucket:
+    "mecd-tools.firebasestorage.app",
+
+  messagingSenderId:
+    "643005547408",
+
+  appId:
+    "1:643005547408:web:b1719060ec340dd0e0a915",
+
+  measurementId:
+    "G-0VKYR3TQV2"
+
+};
+
+
+const firebaseApp =
+  initializeApp(firebaseConfig);
+
+const auth =
+  getAuth(firebaseApp);
+
+const db =
+  getFirestore(firebaseApp);
+
+
+/* =========================
+   Elements
+========================= */
+
+const roomName =
+  document.getElementById("roomName");
+
+const roomPassword =
+  document.getElementById("roomPassword");
+
+const createButton =
+  document.getElementById("createButton");
+
+const loading =
+  document.getElementById("loading");
+
+const errorBox =
+  document.getElementById("error");
+
+const result =
+  document.getElementById("result");
+
+const roomCode =
+  document.getElementById("roomCode");
+
+const roomPasswordResult =
+  document.getElementById(
+    "roomPasswordResult"
+  );
+
+const copyButton =
+  document.getElementById("copyButton");
+
+const backButton =
+  document.getElementById("backButton");
+
+
+let currentUser = null;
+let createdRoomInfo = null;
+
+
+/* =========================
+   تسجيل الدخول
+========================= */
+
+onAuthStateChanged(
+  auth,
+  (user) => {
+
+    if(!user){
+
+      showError(
+        "يجب تسجيل الدخول إلى Mecd Tools أولاً."
+      );
+
+      createButton.disabled = true;
+
+      return;
+    }
+
+    currentUser = user;
+
+    createButton.disabled = false;
+
+  }
+);
+
+
+/* =========================
+   إظهار الخطأ
+========================= */
+
+function showError(message){
+
+  errorBox.textContent = message;
+  errorBox.style.display = "block";
+
+}
+
+
+/* =========================
+   إنشاء رمز الغرفة
+========================= */
+
+function generateRoomCode(){
+
+  const characters =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+  let code = "";
+
+  for(let i = 0; i < 6; i++){
+
+    code +=
+      characters[
+        Math.floor(
+          Math.random() *
+          characters.length
+        )
+      ];
+
+  }
+
+  return code;
+
+}
+
+
+/* =========================
+   إنشاء الغرفة
+========================= */
+
+async function createRoom(){
+
+  errorBox.style.display = "none";
+  result.style.display = "none";
+
+  if(!currentUser){
+
+    showError(
+      "يجب تسجيل الدخول أولاً."
+    );
+
+    return;
+  }
+
+
+  const name =
+    roomName.value.trim();
+
+  const password =
+    roomPassword.value.trim();
+
+
+  if(!name){
+
+    showError(
+      "اكتب اسم الغرفة أولاً."
+    );
+
+    roomName.focus();
+
+    return;
+  }
+
+
+  if(!password){
+
+    showError(
+      "اكتب كلمة سر للغرفة."
+    );
+
+    roomPassword.focus();
+
+    return;
+  }
+
+
+  if(password.length < 4){
+
+    showError(
+      "كلمة السر يجب أن تكون 4 أحرف أو أرقام على الأقل."
+    );
+
+    roomPassword.focus();
+
+    return;
+  }
+
+
+  createButton.disabled = true;
+  loading.style.display = "block";
+
+
+  try{
+
+    const code =
+      generateRoomCode();
+
+
+    const roomData = {
+
+      name: name,
+
+      password: password,
+
+      code: code,
+
+      ownerId:
+        currentUser.uid,
+
+      ownerName:
+        currentUser.displayName ||
+        "مستخدم Mecd",
+
+      createdAt:
+        serverTimestamp(),
+
+      members: [
+        currentUser.uid
+      ],
+
+      active: true
+
+    };
+
+
+    await addDoc(
+
+      collection(
+        db,
+        "rooms"
+      ),
+
+      roomData
+
+    );
+
+
+    createdRoomInfo = {
+
+      name: name,
+
+      password: password,
+
+      code: code
+
+    };
+
+
+    roomCode.textContent =
+      code;
+
+
+    roomPasswordResult.textContent =
+      "🔑 كلمة السر: " + password;
+
+
+    result.style.display =
+      "block";
+
+
+    loading.style.display =
+      "none";
+
+
+    createButton.textContent =
+      "تم إنشاء الغرفة ✓";
+
+
+  }catch(error){
+
+    console.error(
+      "Create room error:",
+      error
+    );
+
+    loading.style.display =
+      "none";
+
+    showError(
+      "تعذر إنشاء الغرفة: " +
+      error.message
+    );
+
+    createButton.disabled =
+      false;
+
+  }
+
+}
+
+
+/* =========================
+   زر إنشاء الغرفة
+========================= */
+
+createButton.addEventListener(
+  "click",
+  createRoom
+);
+
+
+/* =========================
+   Enter
+========================= */
+
+roomName.addEventListener(
+  "keydown",
+  (event) => {
+
+    if(event.key === "Enter"){
+
+      roomPassword.focus();
+
+    }
+
+  }
+);
+
+
+roomPassword.addEventListener(
+  "keydown",
+  (event) => {
+
+    if(event.key === "Enter"){
+
+      createRoom();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   نسخ المعلومات
+========================= */
+
+copyButton.addEventListener(
+  "click",
+  async() => {
+
+    if(!createdRoomInfo){
+      return;
+    }
+
+
+    const text =
+      "اسم الغرفة: " +
+      createdRoomInfo.name +
+      "\n" +
+      "رمز الغرفة: " +
+      createdRoomInfo.code +
+      "\n" +
+      "كلمة السر: " +
+      createdRoomInfo.password;
+
+
+    try{
+
+      await navigator.clipboard.writeText(
+        text
+      );
+
+      copyButton.textContent =
+        "✅ تم النسخ";
+
+      setTimeout(
+        () => {
+
+          copyButton.textContent =
+            "📋 نسخ معلومات الغرفة";
+
+        },
+        1800
+      );
+
+    }catch(error){
+
+      alert(text);
+
+    }
+
+  }
+);
+
+
+/* =========================
+   رجوع
+========================= */
+
+backButton.addEventListener(
+  "click",
+  () => {
+
+    history.back();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
