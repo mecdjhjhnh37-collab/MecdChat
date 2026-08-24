@@ -677,8 +677,10 @@ async function createRoom(){
     "block";
 
 
-  createButton.textContent =
-    "جاري الإنشاء...";
+  createButton.textContent = "جاري فتح الغرفة...";
+
+window.location.href =
+  "./room-chat.html?room=" + encodeURIComponent(code);
 
 
   try{
