@@ -2,16 +2,27 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#050807">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Mecd Chat">
+
+<meta name="mobile-web-app-capable"
+content="yes">
+
+<meta name="apple-mobile-web-app-capable"
+content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+content="black-translucent">
+
+<meta name="apple-mobile-web-app-title"
+content="Mecd Chat">
 
 <title>Mecd Chat</title>
 
@@ -25,7 +36,12 @@ padding:0;
 
 body{
 min-height:100vh;
-font-family:Arial,Tahoma,sans-serif;
+
+font-family:
+Arial,
+Tahoma,
+sans-serif;
+
 color:white;
 
 background:
@@ -75,11 +91,15 @@ left:-100px;
 .app{
 position:relative;
 z-index:1;
+
 width:100%;
 max-width:650px;
 min-height:100vh;
+
 margin:auto;
+
 padding:28px 20px 45px;
+
 display:flex;
 flex-direction:column;
 }
@@ -88,6 +108,7 @@ header{
 display:flex;
 align-items:center;
 justify-content:space-between;
+
 margin-bottom:45px;
 }
 
@@ -100,10 +121,13 @@ gap:12px;
 .logo{
 width:52px;
 height:52px;
+
 display:flex;
 align-items:center;
 justify-content:center;
+
 border-radius:16px;
+
 font-size:27px;
 
 background:
@@ -124,8 +148,11 @@ font-size:21px;
 
 .brand span{
 display:block;
+
 margin-top:4px;
+
 color:#8d9a97;
+
 font-size:12px;
 }
 
@@ -133,6 +160,7 @@ font-size:12px;
 display:flex;
 align-items:center;
 gap:7px;
+
 padding:8px 12px;
 
 border:1px solid
@@ -144,13 +172,16 @@ background:
 rgba(255,255,255,.04);
 
 color:#aab5b2;
+
 font-size:12px;
 }
 
 .status-dot{
 width:8px;
 height:8px;
+
 border-radius:50%;
+
 background:#00e676;
 
 box-shadow:
@@ -159,6 +190,7 @@ box-shadow:
 
 .hero{
 text-align:center;
+
 margin-bottom:32px;
 }
 
@@ -167,7 +199,9 @@ font-size:
 clamp(32px,7vw,48px);
 
 line-height:1.2;
+
 margin-bottom:18px;
+
 letter-spacing:-.8px;
 }
 
@@ -177,10 +211,13 @@ color:#00e676;
 
 .hero-description{
 max-width:440px;
+
 margin:0 auto 28px;
 
 color:#9ba7a4;
+
 line-height:1.8;
+
 font-size:16px;
 }
 
@@ -195,6 +232,7 @@ align-items:center;
 justify-content:center;
 
 border-radius:28px;
+
 overflow:hidden;
 
 font-size:45px;
@@ -214,6 +252,7 @@ rgba(255,255,255,.025);
 .avatar img{
 width:100%;
 height:100%;
+
 object-fit:cover;
 }
 
@@ -221,7 +260,9 @@ object-fit:cover;
 display:flex;
 flex-direction:column;
 align-items:center;
+
 gap:7px;
+
 margin-bottom:35px;
 }
 
@@ -233,6 +274,8 @@ font-weight:bold;
 .account-id{
 font-size:18px;
 color:#00e676;
+font-weight:bold;
+direction:ltr;
 }
 
 .choices{
@@ -257,6 +300,7 @@ rgba(255,255,255,.09);
 color:white;
 
 text-align:right;
+
 cursor:pointer;
 
 overflow:hidden;
@@ -335,6 +379,7 @@ z-index:2;
 
 display:flex;
 align-items:center;
+
 gap:20px;
 }
 
@@ -362,17 +407,21 @@ flex:1;
 
 .choice-text h3{
 font-size:21px;
+
 margin-bottom:8px;
 }
 
 .choice-text p{
 color:#9ca9a6;
+
 font-size:13px;
+
 line-height:1.6;
 }
 
 .arrow{
 font-size:26px;
+
 color:#7d8986;
 }
 
@@ -394,28 +443,34 @@ text-align:center;
 color:#798581;
 
 font-size:12px;
+
 line-height:1.7;
 }
 
 footer{
 margin-top:auto;
+
 padding-top:45px;
 
 text-align:center;
 
 color:#58635f;
+
 font-size:11px;
 }
 
 .loading{
 position:fixed;
+
 inset:0;
 
 z-index:999;
 
 display:flex;
+
 align-items:center;
 justify-content:center;
+
 flex-direction:column;
 
 gap:20px;
@@ -428,6 +483,7 @@ linear-gradient(
 );
 
 color:#a8bdb6;
+
 font-size:18px;
 }
 
@@ -442,13 +498,16 @@ border-top-color:#00e889;
 
 border-radius:50%;
 
-animation:spin .8s linear infinite;
+animation:
+spin .8s linear infinite;
 }
 
 @keyframes spin{
+
 to{
 transform:rotate(360deg);
 }
+
 }
 
 @media(max-width:480px){
@@ -464,7 +523,9 @@ margin-bottom:38px;
 .logo{
 width:45px;
 height:45px;
+
 border-radius:14px;
+
 font-size:23px;
 }
 
@@ -478,18 +539,22 @@ font-size:10px;
 
 .hero-description{
 font-size:15px;
+
 margin-bottom:24px;
 }
 
 .avatar{
 width:82px;
 height:82px;
+
 font-size:40px;
+
 margin-bottom:15px;
 }
 
 .hero h1{
 font-size:31px;
+
 margin-bottom:16px;
 }
 
@@ -497,14 +562,20 @@ margin-bottom:16px;
 font-size:23px;
 }
 
+.account-id{
+font-size:17px;
+}
+
 .choice{
 min-height:130px;
+
 padding:19px;
 }
 
 .choice-icon{
 width:61px;
 height:61px;
+
 font-size:29px;
 }
 
@@ -525,11 +596,18 @@ font-size:12px;
 <body>
 
 <div class="background">
+
 <div class="glow one"></div>
+
 <div class="glow two"></div>
+
 </div>
 
-<div id="loading" class="loading">
+
+<div
+id="loading"
+class="loading"
+>
 
 <div class="spinner"></div>
 
@@ -538,6 +616,7 @@ font-size:12px;
 </div>
 
 </div>
+
 
 <main
 id="app"
@@ -567,6 +646,7 @@ Mecd Chat
 
 </div>
 
+
 <div class="status">
 
 <div class="status-dot"></div>
@@ -576,6 +656,7 @@ Mecd Chat
 </div>
 
 </header>
+
 
 <section class="hero">
 
@@ -593,6 +674,7 @@ Mecd Chat
 
 </p>
 
+
 <div
 id="avatar"
 class="avatar"
@@ -603,6 +685,7 @@ class="avatar"
 </div>
 
 </section>
+
 
 <div class="account-info">
 
@@ -615,6 +698,7 @@ class="account-name"
 
 </div>
 
+
 <div
 id="userId"
 class="account-id"
@@ -626,7 +710,9 @@ class="account-id"
 
 </div>
 
+
 <section class="choices">
+
 
 <button
 type="button"
@@ -660,6 +746,7 @@ id="friendsBtn"
 
 </button>
 
+
 <button
 type="button"
 class="choice search-choice"
@@ -691,6 +778,7 @@ id="searchFriendBtn"
 </div>
 
 </button>
+
 
 <button
 type="button"
@@ -726,44 +814,72 @@ id="backBtn"
 
 </section>
 
+
 <div class="info">
 
 🔒 حسابك مرتبط بـ Mecd Tools.
+
 <br>
 
 لن يتم تسجيل خروجك عند العودة إلى Mecd Tools.
 
 </div>
 
+
 <footer>
+
 Mecd Chat © 2026
+
 </footer>
 
 </main>
 
+
 <script type="module">
 
+
+/* =========================
+   Firebase
+========================= */
+
 import {
+
 initializeApp
+
 }
+
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
 import {
+
 getAuth,
 onAuthStateChanged
+
 }
+
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
 import {
+
 getFirestore,
 doc,
 getDoc,
-setDoc
+setDoc,
+runTransaction
+
 }
+
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================
+   Firebase Config
+========================= */
 
 const firebaseConfig = {
 
@@ -790,6 +906,11 @@ measurementId:
 
 };
 
+
+/* =========================
+   تشغيل Firebase
+========================= */
+
 const firebaseApp =
 initializeApp(firebaseConfig);
 
@@ -798,6 +919,11 @@ getAuth(firebaseApp);
 
 const db =
 getFirestore(firebaseApp);
+
+
+/* =========================
+   عناصر الصفحة
+========================= */
 
 const loading =
 document.getElementById("loading");
@@ -823,6 +949,11 @@ document.getElementById("searchFriendBtn");
 const backBtn =
 document.getElementById("backBtn");
 
+
+/* =========================
+   الروابط
+========================= */
+
 const mecdToolsURL =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
 
@@ -832,10 +963,18 @@ const friendsURL =
 const searchFriendURL =
 "./search.html";
 
+
+/* ==================================================
+   إنشاء ID المستخدم
+================================================== */
+
 async function getChatID(user){
 
 try{
 
+/*
+   مرجع حساب المستخدم
+*/
 const userRef =
 doc(
 db,
@@ -843,15 +982,25 @@ db,
 user.uid
 );
 
+
+/*
+   أولاً نتحقق هل لديه ID مسبق
+*/
 const userDoc =
 await getDoc(userRef);
+
 
 if(userDoc.exists()){
 
 const data =
 userDoc.data();
 
-if(data.chatID){
+
+if(
+data.chatID &&
+typeof data.chatID === "string" &&
+data.chatID.startsWith("MC-")
+){
 
 return data.chatID;
 
@@ -859,6 +1008,10 @@ return data.chatID;
 
 }
 
+
+/*
+   مرجع العداد العام
+*/
 const counterRef =
 doc(
 db,
@@ -866,24 +1019,82 @@ db,
 "chatCounter"
 );
 
-const counterDoc =
-await getDoc(counterRef);
 
-let number = 1;
+/*
+   استخدام Transaction
+   لمنع تكرار الـ ID
+*/
+const newNumber =
+await runTransaction(
+
+db,
+
+async(transaction)=>{
+
+const counterDoc =
+await transaction.get(
+counterRef
+);
+
+let number = 0;
+
 
 if(counterDoc.exists()){
 
 number =
 Number(
 counterDoc.data().number || 0
-) + 1;
+);
 
 }
 
+
+/*
+   زيادة الرقم
+*/
+number++;
+
+
+/*
+   حفظ الرقم الجديد
+*/
+transaction.set(
+
+counterRef,
+
+{
+number:number
+},
+
+{
+merge:true
+}
+
+);
+
+
+/*
+   إرجاع الرقم
+*/
+return number;
+
+}
+
+);
+
+
+/*
+   إنشاء ID
+*/
 const newID =
 "MC-" +
-String(number).padStart(6,"0");
+String(newNumber)
+.padStart(6,"0");
 
+
+/*
+   حفظ بيانات المستخدم
+*/
 await setDoc(
 
 userRef,
@@ -915,25 +1126,12 @@ merge:true
 
 );
 
-await setDoc(
 
-counterRef,
-
-{
-
-number:number
-
-},
-
-{
-
-merge:true
-
-}
-
-);
-
+/*
+   إرجاع ID
+*/
 return newID;
+
 
 }catch(error){
 
@@ -942,11 +1140,16 @@ console.error(
 error
 );
 
-return "MC-000001";
+throw error;
 
 }
 
 }
+
+
+/* ==================================================
+   مراقبة تسجيل الدخول
+================================================== */
 
 onAuthStateChanged(
 
@@ -954,6 +1157,10 @@ auth,
 
 async(user)=>{
 
+
+/*
+   إذا لم يسجل الدخول
+*/
 if(!user){
 
 window.location.replace(
@@ -964,12 +1171,21 @@ return;
 
 }
 
+
 try{
 
+
+/*
+   اسم المستخدم
+*/
 name.textContent =
 user.displayName ||
 "مستخدم Mecd";
 
+
+/*
+   صورة المستخدم
+*/
 if(user.photoURL){
 
 avatar.innerHTML = `
@@ -988,17 +1204,34 @@ avatar.textContent =
 
 }
 
+
+/*
+   الحصول على ID
+*/
 const id =
 await getChatID(user);
 
+
+/*
+   عرض ID
+*/
 userId.textContent =
 "ID: " + id;
 
+
+/*
+   إخفاء التحميل
+*/
 loading.style.display =
 "none";
 
+
+/*
+   إظهار التطبيق
+*/
 app.style.display =
 "flex";
+
 
 }catch(error){
 
@@ -1007,10 +1240,25 @@ console.error(
 error
 );
 
+
 loading.innerHTML = `
 
 <div>
+
 ⚠️ حدث خطأ أثناء تحميل الحساب
+
+</div>
+
+<div
+style="
+font-size:12px;
+color:#777;
+margin-top:8px;
+"
+>
+
+${error.message || ""}
+
 </div>
 
 `;
@@ -1019,48 +1267,80 @@ loading.innerHTML = `
 
 });
 
+
+/* =========================
+   زر الأصدقاء
+========================= */
+
 friendsBtn.addEventListener(
+
 "click",
+
 ()=>{
 
 window.location.href =
 friendsURL;
 
 }
+
 );
 
+
+/* =========================
+   زر البحث
+========================= */
+
 searchFriendBtn.addEventListener(
+
 "click",
+
 ()=>{
 
 window.location.href =
 searchFriendURL;
 
 }
+
 );
 
+
+/* =========================
+   العودة إلى Mecd Tools
+========================= */
+
 backBtn.addEventListener(
+
 "click",
+
 ()=>{
 
 window.location.href =
 mecdToolsURL;
 
 }
+
 );
+
+
+/* =========================
+   Service Worker
+========================= */
 
 if(
 "serviceWorker" in navigator
 ){
 
 window.addEventListener(
+
 "load",
+
 ()=>{
 
 navigator.serviceWorker
 .register("./sw.js")
 
 .then(
+
 registration=>{
 
 console.log(
@@ -1073,6 +1353,7 @@ registration.scope
 )
 
 .catch(
+
 error=>{
 
 console.error(
@@ -1085,6 +1366,7 @@ error
 );
 
 }
+
 );
 
 }
