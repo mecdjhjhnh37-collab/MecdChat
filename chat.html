@@ -48,11 +48,6 @@ linear-gradient(
 overflow:hidden;
 }
 
-
-/* =========================
-   التطبيق
-========================= */
-
 .app{
 
 width:100%;
@@ -69,11 +64,6 @@ flex-direction:column;
 
 position:relative;
 }
-
-
-/* =========================
-   الهيدر
-========================= */
 
 header{
 
@@ -97,9 +87,6 @@ rgba(255,255,255,.08);
 
 flex-shrink:0;
 }
-
-
-/* زر الرجوع */
 
 .back{
 
@@ -131,11 +118,6 @@ justify-content:center;
 
 transform:scale(.94);
 }
-
-
-/* =========================
-   صورة الصديق
-========================= */
 
 .avatar{
 
@@ -173,11 +155,6 @@ height:100%;
 object-fit:cover;
 }
 
-
-/* =========================
-   معلومات الصديق
-========================= */
-
 .user-info{
 
 flex:1;
@@ -202,15 +179,17 @@ white-space:nowrap;
 
 font-size:11px;
 
-color:#00e889;
+color:#7d8985;
 
 margin-top:4px;
+
+transition:.2s ease;
 }
 
+.user-status.online{
 
-/* =========================
-   الرسائل
-========================= */
+color:#00e889;
+}
 
 .messages{
 
@@ -231,11 +210,6 @@ gap:10px;
 scroll-behavior:smooth;
 }
 
-
-/* =========================
-   لا توجد رسائل
-========================= */
-
 .empty{
 
 margin:auto;
@@ -248,11 +222,6 @@ line-height:1.8;
 
 font-size:14px;
 }
-
-
-/* =========================
-   الرسالة
-========================= */
 
 .message{
 
@@ -274,9 +243,6 @@ overflow-wrap:anywhere;
 white-space:pre-wrap;
 }
 
-
-/* رسائلي */
-
 .message.mine{
 
 align-self:flex-start;
@@ -287,9 +253,6 @@ color:#00150e;
 
 border-bottom-left-radius:5px;
 }
-
-
-/* رسائل الصديق */
 
 .message.other{
 
@@ -306,9 +269,6 @@ rgba(255,255,255,.07);
 border-bottom-right-radius:5px;
 }
 
-
-/* الوقت */
-
 .time{
 
 display:block;
@@ -319,11 +279,6 @@ opacity:.55;
 
 margin-top:4px;
 }
-
-
-/* =========================
-   منطقة الكتابة
-========================= */
 
 .input-area{
 
@@ -355,11 +310,6 @@ rgba(255,255,255,.08);
 
 z-index:20;
 }
-
-
-/* =========================
-   مربع الرسالة
-========================= */
 
 #messageInput{
 
@@ -403,11 +353,6 @@ rgba(0,230,118,.07);
 color:#63716d;
 }
 
-
-/* =========================
-   زر الإرسال
-========================= */
-
 #sendButton{
 
 width:52px;
@@ -441,11 +386,6 @@ opacity:.5;
 cursor:not-allowed;
 }
 
-
-/* =========================
-   التحميل
-========================= */
-
 .loading{
 
 position:fixed;
@@ -470,11 +410,6 @@ font-size:15px;
 
 z-index:100;
 }
-
-
-/* =========================
-   الخطأ
-========================= */
 
 .error-screen{
 
@@ -532,11 +467,6 @@ line-height:1.8;
 font-size:14px;
 }
 
-
-/* =========================
-   Spinner
-========================= */
-
 .spinner{
 
 width:35px;
@@ -564,11 +494,6 @@ transform:rotate(360deg);
 }
 
 }
-
-
-/* =========================
-   الموبايل
-========================= */
 
 @media(max-width:480px){
 
@@ -641,7 +566,6 @@ height:50px;
 
 </head>
 
-
 <body>
 
 
@@ -664,7 +588,7 @@ class="loading"
 
 
 <!-- =========================
-     شاشة الخطأ
+     Error
 ========================= -->
 
 <div
@@ -687,7 +611,7 @@ style="display:none;"
 
 
 <!-- =========================
-     التطبيق
+     App
 ========================= -->
 
 <main
@@ -702,7 +626,6 @@ style="display:none;"
 ========================= -->
 
 <header>
-
 
 <button
 id="backButton"
@@ -727,7 +650,6 @@ class="avatar"
 
 <div class="user-info">
 
-
 <div
 id="friendName"
 class="user-name"
@@ -738,21 +660,22 @@ class="user-name"
 </div>
 
 
-<div class="user-status">
+<div
+id="friendStatus"
+class="user-status"
+>
 
-● متصل
+● غير متصل
 
 </div>
 
-
 </div>
-
 
 </header>
 
 
 <!-- =========================
-     الرسائل
+     Messages
 ========================= -->
 
 <div
@@ -774,11 +697,10 @@ class="messages"
 
 
 <!-- =========================
-     إدخال الرسالة
+     Input
 ========================= -->
 
 <div class="input-area">
-
 
 <input
 id="messageInput"
@@ -787,7 +709,6 @@ placeholder="اكتب رسالة..."
 autocomplete="off"
 maxlength="2000"
 >
-
 
 <button
 id="sendButton"
@@ -798,9 +719,7 @@ type="button"
 
 </button>
 
-
 </div>
-
 
 </main>
 
@@ -810,11 +729,6 @@ type="button"
 ========================= -->
 
 <script type="module">
-
-
-/* =========================
-   Firebase Imports
-========================= */
 
 import {
 
@@ -850,7 +764,8 @@ query,
 orderBy,
 onSnapshot,
 addDoc,
-serverTimestamp
+serverTimestamp,
+updateDoc
 
 }
 
@@ -898,12 +813,10 @@ initializeApp(
 firebaseConfig
 );
 
-
 const auth =
 getAuth(
 firebaseApp
 );
-
 
 const db =
 getFirestore(
@@ -912,7 +825,7 @@ firebaseApp
 
 
 /* =========================
-   عناصر الصفحة
+   Elements
 ========================= */
 
 const loading =
@@ -945,6 +858,11 @@ document.getElementById(
 "friendName"
 );
 
+const friendStatus =
+document.getElementById(
+"friendStatus"
+);
+
 const messages =
 document.getElementById(
 "messages"
@@ -967,7 +885,7 @@ document.getElementById(
 
 
 /* =========================
-   المتغيرات
+   Variables
 ========================= */
 
 let currentUser = null;
@@ -978,9 +896,21 @@ let chatID = null;
 
 let unsubscribeMessages = null;
 
+let unsubscribeFriend = null;
+
+let presenceInterval = null;
+
+
+/*
+   إذا لم يحدث نشاط خلال 45 ثانية
+   يعتبر المستخدم غير متصل
+*/
+
+const ONLINE_TIMEOUT = 45000;
+
 
 /* =========================
-   إظهار الخطأ
+   Error
 ========================= */
 
 function showError(text){
@@ -1001,14 +931,19 @@ errorScreen.style.display =
 
 
 /* =========================
-   إنشاء Chat ID
+   Chat ID
 ========================= */
 
-function createChatID(uid1,uid2){
-
-return [
+function createChatID(
 uid1,
 uid2
+){
+
+return [
+
+uid1,
+uid2
+
 ]
 .sort()
 .join("_");
@@ -1017,7 +952,350 @@ uid2
 
 
 /* =========================
-   جلب الصديق
+   تحديث حالة المستخدم
+========================= */
+
+async function setMyPresence(
+isOnline
+){
+
+if(
+!currentUser
+){
+
+return;
+
+}
+
+try{
+
+await setDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+),
+
+{
+
+online:
+isOnline,
+
+lastSeen:
+serverTimestamp()
+
+},
+
+{
+
+merge:true
+
+}
+
+);
+
+}catch(error){
+
+console.error(
+"Presence error:",
+error
+);
+
+}
+
+}
+
+
+/* =========================
+   بدء Presence
+========================= */
+
+function startPresence(){
+
+/*
+   أول دخول
+*/
+
+setMyPresence(true);
+
+
+/*
+   تحديث الحالة كل 20 ثانية
+*/
+
+presenceInterval =
+setInterval(
+
+()=>{
+
+setMyPresence(true);
+
+},
+
+20000
+
+);
+
+}
+
+
+/* =========================
+   إيقاف Presence
+========================= */
+
+function stopPresence(){
+
+if(
+presenceInterval
+){
+
+clearInterval(
+presenceInterval
+);
+
+presenceInterval =
+null;
+
+}
+
+setMyPresence(false);
+
+}
+
+
+/* =========================
+   عند إخفاء الصفحة
+========================= */
+
+document.addEventListener(
+
+"visibilitychange",
+
+()=>{
+
+if(
+document.visibilityState ===
+"visible"
+){
+
+setMyPresence(true);
+
+}else{
+
+setMyPresence(false);
+
+}
+
+}
+
+);
+
+
+/* =========================
+   عند الخروج
+========================= */
+
+window.addEventListener(
+
+"pagehide",
+
+()=>{
+
+setMyPresence(false);
+
+}
+
+);
+
+
+/* =========================
+   حالة الصديق
+========================= */
+
+function updateFriendStatus(
+data
+){
+
+if(
+!data
+){
+
+friendStatus.textContent =
+"● غير متصل";
+
+friendStatus.classList.remove(
+"online"
+);
+
+return;
+
+}
+
+
+let online = false;
+
+
+/*
+   يجب أن يكون online = true
+*/
+
+if(
+data.online === true
+){
+
+online = true;
+
+}
+
+
+/*
+   فحص lastSeen أيضاً
+*/
+
+if(
+data.lastSeen &&
+typeof data.lastSeen.toDate ===
+"function"
+){
+
+try{
+
+const lastSeen =
+data.lastSeen
+.toDate()
+.getTime();
+
+const now =
+Date.now();
+
+const difference =
+now - lastSeen;
+
+
+/*
+   إذا مر أكثر من 45 ثانية
+   يعتبر غير متصل
+*/
+
+if(
+difference >
+ONLINE_TIMEOUT
+){
+
+online = false;
+
+}
+
+}catch(error){
+
+console.error(
+"Last seen error:",
+error
+);
+
+}
+
+}
+
+
+if(online){
+
+friendStatus.textContent =
+"● متصل";
+
+friendStatus.classList.add(
+"online"
+);
+
+}else{
+
+friendStatus.textContent =
+"● غير متصل";
+
+friendStatus.classList.remove(
+"online"
+);
+
+}
+
+}
+
+
+/* =========================
+   الاستماع لحالة الصديق
+========================= */
+
+function listenFriendStatus(){
+
+if(
+!friendUser
+){
+
+return;
+
+}
+
+
+const friendRef =
+doc(
+db,
+"users",
+friendUser.uid
+);
+
+
+unsubscribeFriend =
+onSnapshot(
+
+friendRef,
+
+(snapshot)=>{
+
+if(
+!snapshot.exists()
+){
+
+updateFriendStatus(
+null
+);
+
+return;
+
+}
+
+const data =
+snapshot.data();
+
+updateFriendStatus(
+data
+);
+
+},
+
+(error)=>{
+
+console.error(
+"Friend status listener error:",
+error
+);
+
+friendStatus.textContent =
+"● غير متصل";
+
+friendStatus.classList.remove(
+"online"
+);
+
+}
+
+);
+
+}
+
+
+/* =========================
+   تحميل الصديق
 ========================= */
 
 async function loadFriend(){
@@ -1027,12 +1305,9 @@ new URLSearchParams(
 window.location.search
 );
 
-
 const friendUID =
 params.get("friend");
 
-
-/* لا يوجد UID */
 
 if(!friendUID){
 
@@ -1044,8 +1319,6 @@ return false;
 
 }
 
-
-/* لا يمكن الدردشة مع نفسك */
 
 if(
 friendUID ===
@@ -1062,7 +1335,7 @@ return false;
 
 
 /* =========================
-   جلب المستخدم
+   جلب بيانات الصديق
 ========================= */
 
 const friendRef =
@@ -1072,14 +1345,15 @@ db,
 friendUID
 );
 
-
 const friendDoc =
 await getDoc(
 friendRef
 );
 
 
-if(!friendDoc.exists()){
+if(
+!friendDoc.exists()
+){
 
 showError(
 "لم يتم العثور على هذا المستخدم."
@@ -1115,17 +1389,13 @@ data.chatID ||
 };
 
 
-/* =========================
-   الاسم
-========================= */
+/* الاسم */
 
 friendName.textContent =
 friendUser.name;
 
 
-/* =========================
-   الصورة
-========================= */
+/* الصورة */
 
 if(
 friendUser.photo
@@ -1134,7 +1404,7 @@ friendUser.photo
 friendAvatar.innerHTML = `
 
 <img
-src="${friendUser.photo
+src="${String(friendUser.photo)
 .replace(/"/g,"&quot;")}"
 alt=""
 >
@@ -1149,9 +1419,19 @@ friendAvatar.textContent =
 }
 
 
-/* =========================
-   Chat ID
-========================= */
+/* الحالة */
+
+updateFriendStatus(
+data
+);
+
+
+/* الاستماع للحالة */
+
+listenFriendStatus();
+
+
+/* Chat ID */
 
 chatID =
 createChatID(
@@ -1171,7 +1451,6 @@ db,
 chatID
 );
 
-
 const chatDoc =
 await getDoc(
 chatRef
@@ -1183,7 +1462,9 @@ if(
 ){
 
 await setDoc(
+
 chatRef,
+
 {
 
 members:[
@@ -1201,6 +1482,7 @@ lastMessageAt:
 serverTimestamp()
 
 }
+
 );
 
 }
@@ -1212,7 +1494,7 @@ return true;
 
 
 /* =========================
-   الاستماع للرسائل
+   Listen Messages
 ========================= */
 
 function listenMessages(){
@@ -1237,12 +1519,14 @@ chatID,
 
 const messagesQuery =
 query(
+
 messagesRef,
 
 orderBy(
 "createdAt",
 "asc"
 )
+
 );
 
 
@@ -1280,11 +1564,8 @@ return;
 }
 
 
-/* =========================
-   عرض الرسائل
-========================= */
-
 snapshot.forEach(
+
 (messageDoc)=>{
 
 const data =
@@ -1299,7 +1580,9 @@ document.createElement(
 
 message.className =
 "message " +
+
 (
+
 data.senderId ===
 currentUser.uid
 
@@ -1320,7 +1603,6 @@ const text =
 document.createTextNode(
 data.text || ""
 );
-
 
 message.appendChild(
 text
@@ -1350,7 +1632,9 @@ time.textContent =
 data.createdAt
 .toDate()
 .toLocaleTimeString(
+
 "ar",
+
 {
 
 hour:
@@ -1360,6 +1644,7 @@ minute:
 "2-digit"
 
 }
+
 );
 
 }catch(error){
@@ -1381,18 +1666,21 @@ message
 );
 
 }
+
 );
 
 
-/* النزول لآخر رسالة */
+/* النزول للأسفل */
 
 requestAnimationFrame(
+
 ()=>{
 
 messages.scrollTop =
 messages.scrollHeight;
 
 }
+
 );
 
 },
@@ -1451,11 +1739,6 @@ true;
 
 try{
 
-
-/* =========================
-   إضافة الرسالة
-========================= */
-
 const messagesRef =
 collection(
 db,
@@ -1472,19 +1755,15 @@ messagesRef,
 {
 
 text:
-
 text,
 
 senderId:
-
 currentUser.uid,
 
 receiverId:
-
 friendUser.uid,
 
 createdAt:
-
 serverTimestamp()
 
 }
@@ -1531,6 +1810,13 @@ merge:true
 messageInput.value =
 "";
 
+
+/*
+   نرجع التركيز فقط بعد الإرسال
+   حتى يستطيع المستخدم كتابة رسالة
+   بدون فتح الكيبورد عند الدخول
+*/
+
 messageInput.focus();
 
 
@@ -1557,7 +1843,7 @@ false;
 
 
 /* =========================
-   زر الإرسال
+   Send Button
 ========================= */
 
 sendButton.addEventListener(
@@ -1596,7 +1882,7 @@ sendMessage();
 
 
 /* =========================
-   الرجوع
+   Back
 ========================= */
 
 backButton.addEventListener(
@@ -1624,7 +1910,7 @@ window.location.href =
 
 
 /* =========================
-   تسجيل الدخول
+   Authentication
 ========================= */
 
 onAuthStateChanged(
@@ -1632,7 +1918,6 @@ onAuthStateChanged(
 auth,
 
 async(user)=>{
-
 
 if(
 !user
@@ -1653,6 +1938,12 @@ user;
 
 try{
 
+/*
+   تشغيل حالة المستخدم
+*/
+
+startPresence();
+
 
 const success =
 await loadFriend();
@@ -1662,17 +1953,23 @@ if(
 !success
 ){
 
+stopPresence();
+
 return;
 
 }
 
 
-/* الاستماع للرسائل */
+/*
+   الرسائل
+*/
 
 listenMessages();
 
 
-/* إظهار التطبيق */
+/*
+   إظهار التطبيق
+*/
 
 loading.style.display =
 "none";
@@ -1681,14 +1978,13 @@ app.style.display =
 "flex";
 
 
-setTimeout(
-()=>{
+/*
+   مهم جداً:
+   لا يوجد focus هنا.
+   لذلك الكيبورد لن يفتح تلقائياً.
+*/
 
-messageInput.focus();
-
-},
-100
-);
+messageInput.blur();
 
 
 }catch(error){
@@ -1709,7 +2005,7 @@ error.message
 
 
 /* =========================
-   تنظيف المستمع
+   Cleanup
 ========================= */
 
 window.addEventListener(
@@ -1725,6 +2021,26 @@ unsubscribeMessages
 unsubscribeMessages();
 
 }
+
+if(
+unsubscribeFriend
+){
+
+unsubscribeFriend();
+
+}
+
+if(
+presenceInterval
+){
+
+clearInterval(
+presenceInterval
+);
+
+}
+
+setMyPresence(false);
 
 }
 
