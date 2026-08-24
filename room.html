@@ -112,12 +112,9 @@ header{
 
   border-radius:28px;
 
-  background:
-    rgba(255,255,255,.05);
+  background:rgba(255,255,255,.05);
 
-  border:
-    1px solid
-    rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
 
   font-size:45px;
 }
@@ -138,12 +135,9 @@ h1{
 
   border-radius:25px;
 
-  background:
-    rgba(255,255,255,.045);
+  background:rgba(255,255,255,.045);
 
-  border:
-    1px solid
-    rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08);
 }
 
 label{
@@ -162,9 +156,7 @@ input{
   margin-bottom:20px;
   padding:0 16px;
 
-  border:
-    1px solid
-    rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.1);
 
   border-radius:16px;
 
@@ -226,8 +218,7 @@ button.create:disabled{
 
   border-radius:14px;
 
-  background:
-    rgba(255,60,60,.1);
+  background:rgba(255,60,60,.1);
 
   color:#ff8d8d;
 
@@ -534,7 +525,7 @@ let currentUser = null;
 
 
 /* =====================================
-   تسجيل الدخول
+   حالة تسجيل الدخول
 ===================================== */
 
 onAuthStateChanged(
@@ -547,8 +538,7 @@ onAuthStateChanged(
 
       currentUser = null;
 
-      createButton.disabled =
-        true;
+      createButton.disabled = true;
 
       showError(
         "يجب تسجيل الدخول إلى Mecd Tools أولاً."
@@ -558,16 +548,11 @@ onAuthStateChanged(
     }
 
 
-    currentUser =
-      user;
+    currentUser = user;
 
+    createButton.disabled = false;
 
-    createButton.disabled =
-      false;
-
-
-    errorBox.style.display =
-      "none";
+    errorBox.style.display = "none";
 
   }
 
@@ -575,29 +560,26 @@ onAuthStateChanged(
 
 
 /* =====================================
-   إظهار الخطأ
+   عرض الخطأ
 ===================================== */
 
 function showError(message){
 
-  errorBox.textContent =
-    message;
+  errorBox.textContent = message;
 
-  errorBox.style.display =
-    "block";
+  errorBox.style.display = "block";
 
 }
 
 
 /* =====================================
-   إنشاء كود الغرفة
+   توليد كود الغرفة
 ===================================== */
 
 function generateRoomCode(){
 
   const characters =
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
 
   let code = "";
 
@@ -634,7 +616,7 @@ function generateRoomCode(){
 
 async function createRoom(){
 
-  /* إخفاء الأخطاء القديمة */
+  /* إخفاء الخطأ القديم */
 
   errorBox.style.display =
     "none";
@@ -653,11 +635,13 @@ async function createRoom(){
   }
 
 
-  /* قراءة البيانات */
+  /* قراءة اسم الغرفة */
 
   const name =
     roomName.value.trim();
 
+
+  /* قراءة كلمة السر */
 
   const password =
     roomPassword.value.trim();
@@ -728,7 +712,6 @@ async function createRoom(){
 
   try{
 
-
     /* =====================================
        إنشاء كود الغرفة
     ===================================== */
@@ -795,18 +778,18 @@ async function createRoom(){
 
 
     /* =====================================
-       إنشاء رابط الغرفة
+       رابط الغرفة
        
-       مهم:
-       لا نفتح chat.html
+       مهم جداً:
+       نفتح room.html
        
-       chat.html خاص بالأصدقاء.
-       
-       نفتح room-chat.html
+       وليس:
+       chat.html
+       room-chat.html
     ===================================== */
 
     const targetURL =
-      "./room-chat.html" +
+      "./room.html" +
       "?roomId=" +
       encodeURIComponent(
         roomRef.id
@@ -818,7 +801,7 @@ async function createRoom(){
 
 
     /* =====================================
-       الانتقال إلى الغرفة
+       الانتقال إلى room.html
     ===================================== */
 
     window.location.replace(
@@ -847,7 +830,7 @@ async function createRoom(){
 
 
     showError(
-      "تعذر إنشاء الغرفة. حاول مرة أخرى."
+      "تعذر إنشاء الغرفة. تأكد من اتصال الإنترنت وإعدادات Firebase ثم حاول مرة أخرى."
     );
 
   }
