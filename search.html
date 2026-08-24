@@ -4,14 +4,22 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#050807">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="mobile-web-app-capable"
+content="yes">
+
+<meta name="apple-mobile-web-app-capable"
+content="yes">
+
+<meta name="apple-mobile-web-app-status-bar-style"
+content="black-translucent">
 
 <title>بحث عن صديق - Mecd Chat</title>
 
@@ -24,6 +32,7 @@ padding:0;
 }
 
 body{
+
 min-height:100vh;
 
 font-family:
@@ -637,6 +646,24 @@ transform:scale(.98);
 
 
 /* =========================
+   الفوتر
+========================= */
+
+footer{
+
+margin-top:auto;
+
+padding-top:40px;
+
+text-align:center;
+
+color:#58635f;
+
+font-size:11px;
+}
+
+
+/* =========================
    Loading
 ========================= */
 
@@ -769,6 +796,7 @@ font-size:17px;
 <div class="background">
 
 <div class="glow one"></div>
+
 <div class="glow two"></div>
 
 </div>
@@ -1022,6 +1050,10 @@ Mecd Chat © 2026
 <script type="module">
 
 
+/* =========================
+   Firebase imports
+========================= */
+
 import {
 
 initializeApp
@@ -1054,7 +1086,8 @@ where,
 getDocs,
 doc,
 getDoc,
-setDoc
+setDoc,
+serverTimestamp
 
 }
 
@@ -1102,12 +1135,10 @@ initializeApp(
 firebaseConfig
 );
 
-
 const auth =
 getAuth(
 firebaseApp
 );
-
 
 const db =
 getFirestore(
@@ -1124,54 +1155,45 @@ document.getElementById(
 "friendId"
 );
 
-
 const searchButton =
 document.getElementById(
 "searchButton"
 );
-
 
 const result =
 document.getElementById(
 "result"
 );
 
-
 const message =
 document.getElementById(
 "message"
 );
-
 
 const userPhoto =
 document.getElementById(
 "userPhoto"
 );
 
-
 const userName =
 document.getElementById(
 "userName"
 );
-
 
 const userId =
 document.getElementById(
 "userId"
 );
 
-
 const addButton =
 document.getElementById(
 "addButton"
 );
 
-
 const backButton =
 document.getElementById(
 "backButton"
 );
-
 
 const loading =
 document.getElementById(
@@ -1186,7 +1208,9 @@ document.getElementById(
 let currentUser = null;
 
 
-/* المستخدم الذي تم العثور عليه */
+/* =========================
+   المستخدم الذي تم العثور عليه
+========================= */
 
 let foundUser = null;
 
@@ -1197,7 +1221,7 @@ let foundUser = null;
 
 function cleanID(value){
 
-return value
+return String(value || "")
 .trim()
 .toUpperCase();
 
@@ -1256,12 +1280,11 @@ addButton.textContent =
 }
 
 
-/* =========================
+/* ==================================================
    البحث عن المستخدم
-========================= */
+================================================== */
 
 async function searchFriend(){
-
 
 if(!currentUser){
 
@@ -1299,11 +1322,9 @@ hideMessage();
 
 hideResult();
 
-
 loading.classList.add(
 "show"
 );
-
 
 searchButton.disabled =
 true;
@@ -1313,7 +1334,7 @@ try{
 
 
 /* =========================
-   البحث داخل users
+   البحث في users
 ========================= */
 
 const usersRef =
@@ -1361,7 +1382,6 @@ return;
 
 const userDoc =
 snapshot.docs[0];
-
 
 const data =
 userDoc.data();
@@ -1430,9 +1450,7 @@ foundUser.chatID;
    عرض الصورة
 ========================= */
 
-if(
-foundUser.photo
-){
+if(foundUser.photo){
 
 userPhoto.src =
 foundUser.photo;
@@ -1440,7 +1458,10 @@ foundUser.photo;
 }else{
 
 userPhoto.src =
-"https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
+"";
+
+userPhoto.alt =
+"👤";
 
 }
 
@@ -1453,6 +1474,94 @@ result.classList.add(
 "show"
 );
 
+
+/* =========================
+   التحقق من الصداقة
+========================= */
+
+const friendRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+foundUser.uid
+);
+
+
+const friendDoc =
+await getDoc(
+friendRef
+);
+
+
+if(friendDoc.exists()){
+
+addButton.disabled =
+true;
+
+addButton.textContent =
+"✅ أنتم أصدقاء بالفعل";
+
+return;
+
+}
+
+
+/* =========================
+   التحقق من طلب موجود
+========================= */
+
+const incomingRequestRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+currentUser.uid
+);
+
+
+/* لا نستخدم هذا المرجع للتحقق من الصادر */
+
+
+const outgoingRequestRef =
+doc(
+db,
+"users",
+foundUser.uid,
+"friendRequests",
+currentUser.uid
+);
+
+
+const outgoingRequest =
+await getDoc(
+outgoingRequestRef
+);
+
+
+if(outgoingRequest.exists()){
+
+const requestData =
+outgoingRequest.data();
+
+if(
+requestData.status ===
+"pending"
+){
+
+addButton.disabled =
+true;
+
+addButton.textContent =
+"✅ تم إرسال الطلب مسبقًا";
+
+return;
+
+}
+
+}
 
 }catch(error){
 
@@ -1467,11 +1576,9 @@ showMessage(
 
 }finally{
 
-
 loading.classList.remove(
 "show"
 );
-
 
 searchButton.disabled =
 false;
@@ -1481,12 +1588,11 @@ false;
 }
 
 
-/* =========================
-   إرسال طلب صداقة
-========================= */
+/* ==================================================
+   إرسال طلب الصداقة
+================================================== */
 
 async function sendFriendRequest(){
-
 
 if(!currentUser){
 
@@ -1538,25 +1644,54 @@ addButton.textContent =
 try{
 
 
-/* =========================
-   إنشاء ID للطلب
-========================= */
+/* ==================================================
+   التحقق من الصداقة
+================================================== */
 
-const requestId =
-currentUser.uid +
-"_" +
-foundUser.uid;
+const friendRef =
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+foundUser.uid
+);
 
 
-/* =========================
-   مرجع الطلب
-========================= */
+const friendDoc =
+await getDoc(
+friendRef
+);
+
+
+if(friendDoc.exists()){
+
+addButton.textContent =
+"✅ أنتم أصدقاء بالفعل";
+
+return;
+
+}
+
+
+/* ==================================================
+   المكان الصحيح لطلب الصداقة
+==================================================
+
+   users
+      └── UID المستلم
+           └── friendRequests
+                └── UID المرسل
+
+================================================== */
 
 const requestRef =
 doc(
 db,
+"users",
+foundUser.uid,
 "friendRequests",
-requestId
+currentUser.uid
 );
 
 
@@ -1570,9 +1705,7 @@ requestRef
 );
 
 
-if(
-requestDoc.exists()
-){
+if(requestDoc.exists()){
 
 const oldData =
 requestDoc.data();
@@ -1606,15 +1739,18 @@ return;
 }
 
 
-/* =========================
+/* ==================================================
    إنشاء طلب الصداقة
-========================= */
+================================================== */
 
 await setDoc(
 
 requestRef,
 
 {
+
+uid:
+currentUser.uid,
 
 fromUid:
 currentUser.uid,
@@ -1640,7 +1776,7 @@ status:
 "pending",
 
 createdAt:
-new Date()
+serverTimestamp()
 
 }
 
@@ -1662,16 +1798,13 @@ console.error(
 error
 );
 
-
 alert(
 "تعذر إرسال طلب الصداقة:\n" +
 error.message
 );
 
-
 addButton.disabled =
 false;
-
 
 addButton.textContent =
 "🤝 إرسال طلب صداقة";
@@ -1695,7 +1828,7 @@ searchFriend
 
 
 /* =========================
-   زر Enter
+   Enter
 ========================= */
 
 friendId.addEventListener(
@@ -1734,7 +1867,7 @@ sendFriendRequest
 
 
 /* =========================
-   العودة إلى Home
+   العودة
 ========================= */
 
 backButton.addEventListener(
@@ -1761,7 +1894,6 @@ auth,
 
 (user)=>{
 
-
 if(!user){
 
 window.location.href =
@@ -1771,7 +1903,6 @@ return;
 
 }
 
-
 currentUser =
 user;
 
@@ -1779,8 +1910,40 @@ user;
 
 );
 
-</script>
 
+/* =========================
+   Service Worker
+========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+navigator.serviceWorker
+.register("./sw.js")
+.catch(
+error=>{
+console.error(
+"Service Worker:",
+error
+);
+}
+
+);
+
+}
+
+);
+
+}
+
+</script>
 
 </body>
 
