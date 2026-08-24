@@ -4,13 +4,9 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
-
-<title>الغرفة - Mecd Chat</title>
+<title>غرفة الدردشة - Mecd Chat</title>
 
 <style>
 
@@ -20,8 +16,13 @@
   padding:0;
 }
 
+html,
 body{
+  width:100%;
+  min-height:100%;
+}
 
+body{
   min-height:100vh;
 
   font-family:
@@ -35,14 +36,19 @@ body{
     radial-gradient(
       circle at 50% 0%,
       #123d35 0%,
-      transparent 35%
+      transparent 38%
     ),
     linear-gradient(
       180deg,
       #07110f 0%,
       #020504 100%
     );
+}
 
+button,
+input,
+textarea{
+  font-family:inherit;
 }
 
 
@@ -51,21 +57,14 @@ body{
 ========================= */
 
 .app{
-
   width:100%;
-
   max-width:700px;
-
-  height:100vh;
+  min-height:100vh;
 
   margin:auto;
 
   display:flex;
-
   flex-direction:column;
-
-  overflow:hidden;
-
 }
 
 
@@ -74,44 +73,39 @@ body{
 ========================= */
 
 header{
+  position:sticky;
+  top:0;
 
-  flex-shrink:0;
+  z-index:20;
 
-  height:78px;
+  min-height:78px;
 
-  padding:
-    12px
-    16px;
+  padding:14px 16px;
 
   display:flex;
-
   align-items:center;
 
   gap:12px;
 
+  background:
+    rgba(5,16,14,.94);
+
+  backdrop-filter:
+    blur(16px);
+
   border-bottom:
     1px solid
     rgba(255,255,255,.07);
-
-  background:
-    rgba(4,10,8,.85);
-
-  backdrop-filter:
-    blur(15px);
-
 }
 
 
 .back{
+  width:45px;
+  height:45px;
 
-  width:44px;
-
-  height:44px;
-
-  flex-shrink:0;
+  flex:none;
 
   border:0;
-
   border-radius:14px;
 
   background:
@@ -119,32 +113,25 @@ header{
 
   color:white;
 
-  font-size:22px;
+  font-size:23px;
 
   cursor:pointer;
-
 }
 
 
 .back:active{
-
-  transform:scale(.94);
-
+  transform:scale(.95);
 }
 
 
-.room-icon{
+.logo{
+  width:47px;
+  height:47px;
 
-  width:46px;
-
-  height:46px;
-
-  flex-shrink:0;
+  flex:none;
 
   display:flex;
-
   align-items:center;
-
   justify-content:center;
 
   border-radius:15px;
@@ -156,24 +143,18 @@ header{
       #00a85a
     );
 
-  font-size:23px;
-
+  font-size:25px;
 }
 
 
-.room-info{
-
+.header-info{
   min-width:0;
-
   flex:1;
-
 }
 
 
 .room-name{
-
-  font-size:17px;
-
+  font-size:18px;
   font-weight:bold;
 
   white-space:nowrap;
@@ -181,66 +162,86 @@ header{
   overflow:hidden;
 
   text-overflow:ellipsis;
-
 }
 
 
 .room-code{
-
-  direction:ltr;
-
-  text-align:right;
-
   margin-top:4px;
 
-  color:#00e676;
+  color:#00e889;
 
-  font-size:11px;
-
-  letter-spacing:1px;
-
+  font-size:12px;
 }
 
 
-.online{
+.members-button{
+  min-width:45px;
+  height:45px;
 
-  display:flex;
+  padding:0 10px;
 
-  align-items:center;
+  border:0;
+  border-radius:14px;
 
-  gap:6px;
+  background:
+    rgba(255,255,255,.06);
 
-  padding:
-    7px
-    10px;
+  color:white;
+
+  font-size:18px;
+
+  cursor:pointer;
+}
+
+
+/* =========================
+   معلومات الغرفة
+========================= */
+
+.room-info{
+  margin:16px;
+
+  padding:16px;
+
+  border-radius:20px;
+
+  background:
+    rgba(255,255,255,.045);
 
   border:
     1px solid
     rgba(255,255,255,.07);
 
-  border-radius:20px;
-
-  color:#91a09b;
-
-  font-size:11px;
-
+  text-align:center;
 }
 
 
-.online-dot{
+.room-info-title{
+  color:#cbd5d1;
 
-  width:7px;
+  font-size:13px;
+}
 
-  height:7px;
 
-  border-radius:50%;
+.room-info-code{
+  margin-top:7px;
 
-  background:#00e676;
+  color:#00e889;
 
-  box-shadow:
-    0 0 8px
-    #00e676;
+  font-size:21px;
 
+  font-weight:bold;
+
+  letter-spacing:2px;
+}
+
+
+.owner{
+  margin-top:7px;
+
+  color:#7f8d88;
+
+  font-size:12px;
 }
 
 
@@ -249,76 +250,54 @@ header{
 ========================= */
 
 .messages{
-
   flex:1;
+
+  padding:
+    8px
+    16px
+    125px;
 
   overflow-y:auto;
 
-  padding:
-    20px
-    15px
-    25px;
+  scroll-behavior:smooth;
+}
+
+
+.empty{
+  min-height:45vh;
 
   display:flex;
 
   flex-direction:column;
 
-  gap:10px;
+  align-items:center;
 
-  scroll-behavior:smooth;
-
-}
-
-
-.messages::-webkit-scrollbar{
-
-  width:5px;
-
-}
-
-
-.messages::-webkit-scrollbar-thumb{
-
-  background:
-    rgba(255,255,255,.1);
-
-  border-radius:10px;
-
-}
-
-
-/* =========================
-   رسالة النظام
-========================= */
-
-.system-message{
-
-  align-self:center;
-
-  max-width:90%;
-
-  margin:
-    8px
-    auto
-    15px;
-
-  padding:
-    9px
-    14px;
-
-  border-radius:15px;
-
-  background:
-    rgba(255,255,255,.04);
-
-  color:#71807b;
-
-  font-size:11px;
+  justify-content:center;
 
   text-align:center;
 
-  line-height:1.6;
+  color:#74817c;
+}
 
+
+.empty-icon{
+  font-size:48px;
+
+  margin-bottom:12px;
+}
+
+
+.empty-title{
+  color:#b7c2be;
+
+  font-size:18px;
+
+  margin-bottom:6px;
+}
+
+
+.empty-text{
+  font-size:13px;
 }
 
 
@@ -326,215 +305,180 @@ header{
    الرسالة
 ========================= */
 
+.message-row{
+  display:flex;
+
+  margin:8px 0;
+}
+
+
+.message-row.mine{
+  justify-content:flex-start;
+}
+
+
+.message-row.other{
+  justify-content:flex-end;
+}
+
+
 .message{
+  max-width:82%;
 
-  max-width:78%;
-
-  padding:
-    10px
-    13px;
+  padding:10px 13px;
 
   border-radius:18px;
 
-  position:relative;
-
-  animation:
-    messageIn
-    .2s
-    ease;
-
-}
-
-
-@keyframes messageIn{
-
-  from{
-
-    opacity:0;
-
-    transform:
-      translateY(6px);
-
-  }
-
-  to{
-
-    opacity:1;
-
-    transform:
-      translateY(0);
-
-  }
-
-}
-
-
-.message.mine{
-
-  align-self:flex-start;
-
-  background:
-    linear-gradient(
-      135deg,
-      #00a85a,
-      #007d48
-    );
-
-  border-bottom-left-radius:5px;
-
-}
-
-
-.message.other{
-
-  align-self:flex-end;
-
-  background:
-    rgba(255,255,255,.075);
+  background:#101b18;
 
   border:
     1px solid
     rgba(255,255,255,.06);
-
-  border-bottom-right-radius:5px;
-
 }
 
 
-.sender{
+.message-row.mine .message{
+  background:#006b49;
 
-  margin-bottom:5px;
+  border-bottom-left-radius:6px;
+}
 
-  color:#00e676;
+
+.message-row.other .message{
+  border-bottom-right-radius:6px;
+}
+
+
+.message-name{
+  margin-bottom:4px;
+
+  color:#8debc4;
 
   font-size:11px;
 
   font-weight:bold;
-
 }
 
 
-.mine .sender{
-
-  color:#d8ffe9;
-
+.message-row.mine .message-name{
+  color:#d6fff0;
 }
 
 
 .message-text{
-
-  color:white;
-
-  font-size:14px;
-
-  line-height:1.6;
+  white-space:pre-wrap;
 
   word-break:break-word;
 
+  line-height:1.55;
+
+  font-size:15px;
 }
 
 
 .message-time{
-
   margin-top:5px;
 
   color:
     rgba(255,255,255,.5);
 
   font-size:9px;
-
 }
 
 
 /* =========================
-   إدخال الرسالة
+   منطقة الكتابة
 ========================= */
 
-.input-area{
+.composer{
+  position:fixed;
 
-  flex-shrink:0;
+  right:0;
+  bottom:0;
+  left:0;
+
+  z-index:30;
+
+  display:flex;
+
+  justify-content:center;
 
   padding:
     10px
     12px
     14px;
 
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2,5,4,0),
+      rgba(2,5,4,.96) 35%
+    );
+}
+
+
+.composer-inner{
+  width:100%;
+
+  max-width:700px;
+
   display:flex;
 
-  align-items:center;
+  align-items:flex-end;
 
   gap:8px;
-
-  border-top:
-    1px solid
-    rgba(255,255,255,.07);
-
-  background:
-    rgba(4,10,8,.92);
-
-  backdrop-filter:
-    blur(15px);
-
 }
 
 
 .message-input{
-
   flex:1;
 
-  min-width:0;
-
-  height:50px;
+  min-height:52px;
+  max-height:130px;
 
   padding:
-    0
+    15px
     16px;
+
+  resize:none;
 
   border:
     1px solid
-    rgba(255,255,255,.09);
+    rgba(255,255,255,.1);
 
-  border-radius:17px;
+  border-radius:18px;
 
   outline:none;
 
-  background:
-    #101815;
+  background:#111916;
 
   color:white;
 
-  font-family:inherit;
-
   font-size:15px;
 
+  line-height:1.4;
 }
 
 
 .message-input::placeholder{
-
-  color:#68746f;
-
+  color:#69746f;
 }
 
 
 .message-input:focus{
-
   border-color:#00e676;
 
   box-shadow:
     0 0 0 2px
-    rgba(0,230,118,.08);
-
+    rgba(0,230,118,.1);
 }
 
 
 .send{
+  width:52px;
+  height:52px;
 
-  width:50px;
-
-  height:50px;
-
-  flex-shrink:0;
+  flex:none;
 
   border:0;
 
@@ -546,141 +490,49 @@ header{
 
   font-size:21px;
 
-  cursor:pointer;
+  font-weight:bold;
 
+  cursor:pointer;
 }
 
 
 .send:active{
-
-  transform:scale(.94);
-
+  transform:scale(.96);
 }
 
 
 .send:disabled{
-
-  opacity:.4;
+  opacity:.45;
 
   cursor:not-allowed;
-
 }
 
 
 /* =========================
-   شاشة التحميل
+   شاشة التحميل والخطأ
 ========================= */
 
-.loading-screen{
-
-  position:fixed;
-
-  inset:0;
-
-  z-index:100;
+.center-screen{
+  min-height:100vh;
 
   display:flex;
-
-  flex-direction:column;
-
-  align-items:center;
-
-  justify-content:center;
-
-  gap:18px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #07110f,
-      #020504
-    );
-
-}
-
-
-.spinner{
-
-  width:38px;
-
-  height:38px;
-
-  border:
-    4px solid
-    rgba(255,255,255,.12);
-
-  border-top-color:
-    #00e889;
-
-  border-radius:50%;
-
-  animation:
-    spin
-    .8s
-    linear
-    infinite;
-
-}
-
-
-@keyframes spin{
-
-  to{
-
-    transform:
-      rotate(360deg);
-
-  }
-
-}
-
-
-.loading-text{
-
-  color:#9aaba4;
-
-  font-size:14px;
-
-}
-
-
-/* =========================
-   خطأ
-========================= */
-
-.error-screen{
-
-  position:fixed;
-
-  inset:0;
-
-  z-index:101;
-
-  display:none;
 
   align-items:center;
 
   justify-content:center;
 
   padding:25px;
-
-  background:
-    #020504;
-
 }
 
 
-.error-card{
-
+.panel{
   width:100%;
 
-  max-width:430px;
+  max-width:420px;
 
-  padding:28px;
+  padding:30px 22px;
 
   border-radius:25px;
-
-  text-align:center;
 
   background:
     rgba(255,255,255,.045);
@@ -689,47 +541,43 @@ header{
     1px solid
     rgba(255,255,255,.08);
 
+  text-align:center;
 }
 
 
-.error-icon{
-
+.panel-icon{
   font-size:45px;
 
-  margin-bottom:18px;
-
+  margin-bottom:14px;
 }
 
 
-.error-card h2{
+.panel h1{
+  font-size:23px;
 
-  margin-bottom:10px;
-
+  margin-bottom:9px;
 }
 
 
-.error-card p{
-
-  color:#8f9b97;
-
-  font-size:13px;
+.panel p{
+  color:#899692;
 
   line-height:1.7;
 
-  margin-bottom:20px;
-
+  font-size:14px;
 }
 
 
-.error-back{
-
+.panel-button{
   width:100%;
 
-  height:50px;
+  height:52px;
+
+  margin-top:20px;
 
   border:0;
 
-  border-radius:15px;
+  border-radius:16px;
 
   background:#00e889;
 
@@ -739,6 +587,44 @@ header{
 
   font-weight:bold;
 
+  cursor:pointer;
+}
+
+
+.spinner{
+  display:inline-block;
+
+  width:17px;
+  height:17px;
+
+  margin-left:7px;
+
+  vertical-align:middle;
+
+  border:
+    2px solid
+    rgba(255,255,255,.2);
+
+  border-top-color:#00e889;
+
+  border-radius:50%;
+
+  animation:
+    spin .7s linear infinite;
+}
+
+
+@keyframes spin{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+.hidden{
+  display:none !important;
 }
 
 
@@ -748,61 +634,17 @@ header{
 
 @media(max-width:480px){
 
-  header{
-
-    height:72px;
-
-    padding:
-      10px
-      12px;
-
-  }
-
-  .back{
-
-    width:42px;
-
-    height:42px;
-
-  }
-
-  .room-icon{
-
-    width:42px;
-
-    height:42px;
-
-  }
-
-  .room-name{
-
-    font-size:15px;
-
-  }
-
-  .online{
-
-    padding:
-      6px
-      8px;
-
-    font-size:9px;
-
+  .room-info{
+    margin:12px;
   }
 
   .messages{
-
-    padding:
-      15px
-      10px
-      20px;
-
+    padding-right:12px;
+    padding-left:12px;
   }
 
   .message{
-
-    max-width:85%;
-
+    max-width:88%;
   }
 
 }
@@ -815,54 +657,49 @@ header{
 <body>
 
 
-<!-- =========================
+<!-- =================================
      شاشة التحميل
-========================= -->
+================================= -->
 
 <div
-  id="loadingScreen"
-  class="loading-screen"
+  id="statusScreen"
+  class="center-screen"
 >
 
-<div class="spinner"></div>
+<div class="panel">
 
-<div class="loading-text">
+<div
+  id="statusIcon"
+  class="panel-icon"
+>
+💬
+</div>
+
+
+<h1 id="statusTitle">
+
+<span class="spinner"></span>
+
 جاري فتح الغرفة...
-</div>
 
-</div>
+</h1>
 
 
-<!-- =========================
-     شاشة الخطأ
-========================= -->
+<p id="statusText">
 
-<div
-  id="errorScreen"
-  class="error-screen"
->
+لحظة واحدة...
 
-<div class="error-card">
-
-<div class="error-icon">
-⚠️
-</div>
-
-<h2>
-تعذر فتح الغرفة
-</h2>
-
-<p
-  id="errorText"
->
-حدث خطأ أثناء تحميل الغرفة.
 </p>
 
+
 <button
-  id="errorBack"
-  class="error-back"
+  id="statusButton"
+  class="panel-button hidden"
+  type="button"
 >
+
 العودة
+
 </button>
 
 </div>
@@ -870,44 +707,46 @@ header{
 </div>
 
 
-<!-- =========================
-     التطبيق
-========================= -->
 
-<main
+<!-- =================================
+     التطبيق
+================================= -->
+
+<div
   id="app"
-  class="app"
-  style="display:none;"
+  class="app hidden"
 >
 
 
-<!-- =========================
-     الهيدر
-========================= -->
+<!-- =================================
+     Header
+================================= -->
 
 <header>
+
 
 <button
   id="backButton"
   class="back"
   type="button"
 >
-→
+←
 </button>
 
 
-<div class="room-icon">
-🏠
+<div class="logo">
+💬
 </div>
 
 
-<div class="room-info">
+<div class="header-info">
+
 
 <div
   id="roomName"
   class="room-name"
 >
-جاري التحميل...
+غرفة الدردشة
 </div>
 
 
@@ -915,76 +754,140 @@ header{
   id="roomCode"
   class="room-code"
 >
-ROOM
+...
 </div>
 
-</div>
-
-
-<div class="online">
-
-<span class="online-dot"></span>
-
-متصل
 
 </div>
+
+
+<button
+  id="membersButton"
+  class="members-button"
+  type="button"
+  title="الأعضاء"
+>
+👥
+</button>
+
 
 </header>
 
 
-<!-- =========================
-     الرسائل
-========================= -->
 
-<section
-  id="messages"
-  class="messages"
->
+<!-- =================================
+     معلومات الغرفة
+================================= -->
 
-<div class="system-message">
+<section class="room-info">
 
-🔒 هذه غرفة دردشة خاصة.
 
-<br>
+<div class="room-info-title">
 
-ابدأ بإرسال رسالة!
+رمز الغرفة
 
 </div>
+
+
+<div
+  id="roomInfoCode"
+  class="room-info-code"
+>
+
+------
+
+</div>
+
+
+<div
+  id="ownerText"
+  class="owner"
+>
+
+جاري تحميل معلومات الغرفة...
+
+</div>
+
 
 </section>
 
 
-<!-- =========================
-     إدخال الرسالة
-========================= -->
 
-<form
-  id="messageForm"
-  class="input-area"
+<!-- =================================
+     الرسائل
+================================= -->
+
+<main
+  id="messages"
+  class="messages"
 >
 
-<input
+
+<div
+  id="empty"
+  class="empty"
+>
+
+
+<div class="empty-icon">
+💬
+</div>
+
+
+<div class="empty-title">
+لا توجد رسائل بعد
+</div>
+
+
+<div class="empty-text">
+ابدأ المحادثة مع أعضاء الغرفة.
+</div>
+
+
+</div>
+
+
+</main>
+
+
+
+<!-- =================================
+     كتابة الرسالة
+================================= -->
+
+<div class="composer">
+
+
+<div class="composer-inner">
+
+
+<textarea
   id="messageInput"
   class="message-input"
-  type="text"
-  maxlength="1000"
-  autocomplete="off"
+  rows="1"
+  maxlength="2000"
   placeholder="اكتب رسالة..."
-/>
+></textarea>
 
 
 <button
   id="sendButton"
   class="send"
-  type="submit"
+  type="button"
+  title="إرسال"
 >
 ➤
 </button>
 
-</form>
+
+</div>
 
 
-</main>
+</div>
+
+
+</div>
+
 
 
 <script type="module">
@@ -1015,13 +918,16 @@ import {
   getDoc,
   collection,
   addDoc,
+  onSnapshot,
   query,
   orderBy,
-  onSnapshot,
-  serverTimestamp
+  serverTimestamp,
+  updateDoc,
+  arrayUnion
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 
 /* =====================================
@@ -1054,10 +960,6 @@ const firebaseConfig = {
 };
 
 
-/* =====================================
-   تشغيل Firebase
-===================================== */
-
 const firebaseApp =
   initializeApp(
     firebaseConfig
@@ -1076,31 +978,38 @@ const db =
   );
 
 
+
 /* =====================================
    العناصر
 ===================================== */
 
-const loadingScreen =
+const statusScreen =
   document.getElementById(
-    "loadingScreen"
+    "statusScreen"
   );
 
 
-const errorScreen =
+const statusIcon =
   document.getElementById(
-    "errorScreen"
+    "statusIcon"
   );
 
 
-const errorText =
+const statusTitle =
   document.getElementById(
-    "errorText"
+    "statusTitle"
   );
 
 
-const errorBack =
+const statusText =
   document.getElementById(
-    "errorBack"
+    "statusText"
+  );
+
+
+const statusButton =
+  document.getElementById(
+    "statusButton"
   );
 
 
@@ -1122,15 +1031,21 @@ const roomCodeElement =
   );
 
 
-const messagesElement =
+const roomInfoCode =
   document.getElementById(
-    "messages"
+    "roomInfoCode"
   );
 
 
-const messageForm =
+const ownerText =
   document.getElementById(
-    "messageForm"
+    "ownerText"
+  );
+
+
+const messagesElement =
+  document.getElementById(
+    "messages"
   );
 
 
@@ -1152,139 +1067,429 @@ const backButton =
   );
 
 
+const membersButton =
+  document.getElementById(
+    "membersButton"
+  );
+
+
+
 /* =====================================
-   معلومات الرابط
+   بيانات الرابط
 ===================================== */
 
-const urlParams =
+const params =
   new URLSearchParams(
     window.location.search
   );
 
 
 const roomId =
-  urlParams.get(
+  params.get(
     "roomId"
   );
 
 
-const roomCode =
-  urlParams.get(
+const urlCode =
+  params.get(
     "code"
   );
 
 
-/* =====================================
-   المستخدم
-===================================== */
-
-let currentUser = null;
-
 
 /* =====================================
-   معلومات الغرفة
+   المتغيرات
 ===================================== */
 
-let currentRoom = null;
+let currentUser =
+  null;
+
+
+let currentRoom =
+  null;
+
+
+let unsubscribeMessages =
+  null;
+
+
+let joinedRoom =
+  false;
+
 
 
 /* =====================================
-   مراقبة الرسائل
+   شاشة الحالة
 ===================================== */
 
-let unsubscribeMessages = null;
+function showStatus(
+  icon,
+  title,
+  text,
+  showButton = false
+){
+
+  statusIcon.textContent =
+    icon;
 
 
-/* =====================================
-   عرض الخطأ
-===================================== */
+  statusTitle.textContent =
+    title;
 
-function showError(message){
 
-  loadingScreen.style.display =
-    "none";
+  statusText.textContent =
+    text;
 
-  app.style.display =
-    "none";
 
-  errorText.textContent =
-    message;
+  statusButton.classList.toggle(
+    "hidden",
+    !showButton
+  );
 
-  errorScreen.style.display =
-    "flex";
+
+  statusScreen.classList.remove(
+    "hidden"
+  );
+
+
+  app.classList.add(
+    "hidden"
+  );
 
 }
 
 
+
 /* =====================================
-   إغلاق شاشة التحميل
+   إظهار التطبيق
 ===================================== */
 
 function showApp(){
 
-  loadingScreen.style.display =
-    "none";
-
-  errorScreen.style.display =
-    "none";
-
-  app.style.display =
-    "flex";
-
-}
+  statusScreen.classList.add(
+    "hidden"
+  );
 
 
-/* =====================================
-   الهروب من HTML
-===================================== */
-
-function escapeHTML(text){
-
-  const div =
-    document.createElement(
-      "div"
-    );
-
-  div.textContent =
-    text;
-
-  return div.innerHTML;
+  app.classList.remove(
+    "hidden"
+  );
 
 }
 
 
+
 /* =====================================
-   تنسيق الوقت
+   الوقت
 ===================================== */
 
-function formatTime(timestamp){
+function formatTime(
+  timestamp
+){
 
   if(!timestamp){
     return "";
   }
 
 
+  const date =
+    timestamp.toDate
+      ? timestamp.toDate()
+      : new Date(timestamp);
+
+
+  return date.toLocaleTimeString(
+    "ar",
+    {
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+
+
+/* =====================================
+   عرض رسالة
+===================================== */
+
+function renderMessage(
+  message
+){
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+
+  const mine =
+    message.userId ===
+    currentUser.uid;
+
+
+  row.className =
+    "message-row " +
+    (
+      mine
+        ? "mine"
+        : "other"
+    );
+
+
+  const bubble =
+    document.createElement(
+      "div"
+    );
+
+
+  bubble.className =
+    "message";
+
+
+  const name =
+    document.createElement(
+      "div"
+    );
+
+
+  name.className =
+    "message-name";
+
+
+  name.textContent =
+    mine
+      ? "أنت"
+      : (
+          message.userName ||
+          "مستخدم Mecd"
+        );
+
+
+  const text =
+    document.createElement(
+      "div"
+    );
+
+
+  text.className =
+    "message-text";
+
+
+  text.textContent =
+    message.text ||
+    "";
+
+
+  const time =
+    document.createElement(
+      "div"
+    );
+
+
+  time.className =
+    "message-time";
+
+
+  time.textContent =
+    formatTime(
+      message.createdAt
+    );
+
+
+  bubble.appendChild(
+    name
+  );
+
+
+  bubble.appendChild(
+    text
+  );
+
+
+  bubble.appendChild(
+    time
+  );
+
+
+  row.appendChild(
+    bubble
+  );
+
+
+  messagesElement.appendChild(
+    row
+  );
+
+}
+
+
+
+/* =====================================
+   الاستماع للرسائل
+===================================== */
+
+function listenToMessages(){
+
+  if(unsubscribeMessages){
+
+    unsubscribeMessages();
+
+  }
+
+
+  const messagesRef =
+    collection(
+      db,
+      "rooms",
+      roomId,
+      "messages"
+    );
+
+
+  const messagesQuery =
+    query(
+      messagesRef,
+      orderBy(
+        "createdAt",
+        "asc"
+      )
+    );
+
+
+  unsubscribeMessages =
+    onSnapshot(
+
+      messagesQuery,
+
+      (snapshot) => {
+
+        messagesElement.innerHTML =
+          "";
+
+
+        if(snapshot.empty){
+
+          const empty =
+            document.createElement(
+              "div"
+            );
+
+
+          empty.className =
+            "empty";
+
+
+          empty.innerHTML = `
+            <div class="empty-icon">💬</div>
+            <div class="empty-title">لا توجد رسائل بعد</div>
+            <div class="empty-text">ابدأ المحادثة مع أعضاء الغرفة.</div>
+          `;
+
+
+          messagesElement.appendChild(
+            empty
+          );
+
+
+          return;
+
+        }
+
+
+        snapshot.forEach(
+          (messageDoc) => {
+
+            renderMessage(
+              {
+                id:
+                  messageDoc.id,
+
+                ...messageDoc.data()
+
+              }
+            );
+
+          }
+        );
+
+
+        requestAnimationFrame(
+          () => {
+
+            messagesElement.scrollTop =
+              messagesElement.scrollHeight;
+
+          }
+        );
+
+      },
+
+      (error) => {
+
+        console.error(
+          "Messages listener error:",
+          error
+        );
+
+      }
+
+    );
+
+}
+
+
+
+/* =====================================
+   إضافة المستخدم للغرفة
+===================================== */
+
+async function joinRoom(){
+
+  if(joinedRoom){
+
+    return;
+
+  }
+
+
+  joinedRoom =
+    true;
+
+
   try{
 
-    const date =
-      timestamp.toDate();
+    const roomRef =
+      doc(
+        db,
+        "rooms",
+        roomId
+      );
 
 
-    return date.toLocaleTimeString(
-      "ar",
+    await updateDoc(
+      roomRef,
       {
-        hour:"2-digit",
-        minute:"2-digit"
+        members:
+          arrayUnion(
+            currentUser.uid
+          )
       }
     );
 
+
   }catch(error){
 
-    return "";
+    console.warn(
+      "Members update error:",
+      error
+    );
 
   }
 
 }
+
 
 
 /* =====================================
@@ -1295,8 +1500,11 @@ async function loadRoom(){
 
   if(!roomId){
 
-    showError(
-      "رابط الغرفة غير صحيح."
+    showStatus(
+      "⚠️",
+      "تعذر فتح الغرفة",
+      "رابط الغرفة غير صحيح.",
+      true
     );
 
     return;
@@ -1322,8 +1530,11 @@ async function loadRoom(){
 
     if(!roomSnapshot.exists()){
 
-      showError(
-        "هذه الغرفة غير موجودة."
+      showStatus(
+        "⚠️",
+        "الغرفة غير موجودة",
+        "ربما تم حذف الغرفة أو أن الرابط غير صحيح.",
+        true
       );
 
       return;
@@ -1340,12 +1551,16 @@ async function loadRoom(){
     ================================= */
 
     if(
-      roomCode &&
-      room.code !== roomCode
+      urlCode &&
+      room.code &&
+      urlCode !== room.code
     ){
 
-      showError(
-        "بيانات الغرفة غير صحيحة."
+      showStatus(
+        "🔒",
+        "رمز الغرفة غير صحيح",
+        "لا يمكن فتح هذه الغرفة بهذا الرابط.",
+        true
       );
 
       return;
@@ -1353,23 +1568,17 @@ async function loadRoom(){
     }
 
 
-    currentRoom = {
-
-      id:
-        roomSnapshot.id,
-
-      ...room
-
-    };
+    currentRoom =
+      room;
 
 
     /* =================================
-       عرض معلومات الغرفة
+       معلومات الغرفة
     ================================= */
 
     roomNameElement.textContent =
       room.name ||
-      "غرفة دردشة";
+      "غرفة الدردشة";
 
 
     roomCodeElement.textContent =
@@ -1380,20 +1589,37 @@ async function loadRoom(){
       );
 
 
-    showApp();
+    roomInfoCode.textContent =
+      room.code ||
+      "------";
+
+
+    ownerText.textContent =
+      "أنشأها: " +
+      (
+        room.ownerName ||
+        "مستخدم Mecd"
+      );
 
 
     /* =================================
-       تشغيل الرسائل
+       إضافة العضو
     ================================= */
+
+    await joinRoom();
+
+
+    /* =================================
+       فتح الصفحة
+    ================================= */
+
+    showApp();
+
 
     listenToMessages();
 
-
-    messageInput.focus();
-
-
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
       "Load room error:",
@@ -1401,202 +1627,17 @@ async function loadRoom(){
     );
 
 
-    showError(
-      "تعذر تحميل الغرفة."
+    showStatus(
+      "⚠️",
+      "تعذر فتح الغرفة",
+      "حدث خطأ أثناء الاتصال بـ Firebase. حاول مرة أخرى.",
+      true
     );
 
   }
 
 }
 
-
-/* =====================================
-   الاستماع للرسائل
-===================================== */
-
-function listenToMessages(){
-
-  if(!currentRoom){
-    return;
-  }
-
-
-  if(unsubscribeMessages){
-
-    unsubscribeMessages();
-
-  }
-
-
-  const messagesRef =
-    collection(
-      db,
-      "rooms",
-      currentRoom.id,
-      "messages"
-    );
-
-
-  const messagesQuery =
-    query(
-      messagesRef,
-      orderBy(
-        "createdAt",
-        "asc"
-      )
-    );
-
-
-  unsubscribeMessages =
-    onSnapshot(
-
-      messagesQuery,
-
-      (snapshot) => {
-
-        /*
-         * نحافظ على رسالة النظام
-         */
-
-        messagesElement.innerHTML = `
-
-          <div class="system-message">
-
-            🔒 هذه غرفة دردشة خاصة.
-
-            <br>
-
-            ابدأ بالدردشة!
-
-          </div>
-
-        `;
-
-
-        snapshot.forEach(
-          (messageDoc) => {
-
-            const message =
-              messageDoc.data();
-
-
-            addMessageToScreen(
-              message
-            );
-
-          }
-        );
-
-
-        scrollToBottom();
-
-      },
-
-      (error) => {
-
-        console.error(
-          "Messages error:",
-          error
-        );
-
-      }
-
-    );
-
-}
-
-
-/* =====================================
-   إضافة رسالة للشاشة
-===================================== */
-
-function addMessageToScreen(message){
-
-  const isMine =
-    currentUser &&
-    message.senderId ===
-    currentUser.uid;
-
-
-  const messageElement =
-    document.createElement(
-      "div"
-    );
-
-
-  messageElement.className =
-    "message " +
-    (
-      isMine
-      ? "mine"
-      : "other"
-    );
-
-
-  const sender =
-    escapeHTML(
-      message.senderName ||
-      "مستخدم Mecd"
-    );
-
-
-  const text =
-    escapeHTML(
-      message.text ||
-      ""
-    );
-
-
-  const time =
-    formatTime(
-      message.createdAt
-    );
-
-
-  messageElement.innerHTML = `
-
-    <div class="sender">
-      ${sender}
-    </div>
-
-    <div class="message-text">
-      ${text}
-    </div>
-
-    ${
-      time
-      ?
-      `<div class="message-time">${time}</div>`
-      :
-      ""
-    }
-
-  `;
-
-
-  messagesElement.appendChild(
-    messageElement
-  );
-
-}
-
-
-/* =====================================
-   النزول لآخر رسالة
-===================================== */
-
-function scrollToBottom(){
-
-  requestAnimationFrame(
-    () => {
-
-      messagesElement.scrollTop =
-        messagesElement.scrollHeight;
-
-    }
-  );
-
-}
 
 
 /* =====================================
@@ -1610,17 +1651,23 @@ async function sendMessage(){
 
 
   if(!text){
+
     return;
+
   }
 
 
   if(!currentUser){
+
     return;
+
   }
 
 
-  if(!currentRoom){
+  if(!roomId){
+
     return;
+
   }
 
 
@@ -1628,38 +1675,30 @@ async function sendMessage(){
     true;
 
 
-  messageInput.disabled =
-    true;
-
-
   try{
-
-    const messagesRef =
-      collection(
-        db,
-        "rooms",
-        currentRoom.id,
-        "messages"
-      );
-
 
     await addDoc(
 
-      messagesRef,
+      collection(
+        db,
+        "rooms",
+        roomId,
+        "messages"
+      ),
 
       {
 
         text:
           text,
 
-        senderId:
+        userId:
           currentUser.uid,
 
-        senderName:
+        userName:
           currentUser.displayName ||
           "مستخدم Mecd",
 
-        senderPhoto:
+        userPhoto:
           currentUser.photoURL ||
           "",
 
@@ -1675,10 +1714,11 @@ async function sendMessage(){
       "";
 
 
-    messageInput.focus();
+    resizeInput();
 
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
       "Send message error:",
@@ -1687,38 +1727,84 @@ async function sendMessage(){
 
 
     alert(
-      "تعذر إرسال الرسالة. حاول مرة أخرى."
+      "تعذر إرسال الرسالة. تأكد من صلاحيات Firestore."
     );
 
   }
+  finally{
+
+    sendButton.disabled =
+      false;
 
 
-  sendButton.disabled =
-    false;
+    messageInput.focus();
 
-  messageInput.disabled =
-    false;
+  }
 
 }
 
 
+
 /* =====================================
-   إرسال النموذج
+   تغيير حجم الكتابة
 ===================================== */
 
-messageForm.addEventListener(
+function resizeInput(){
 
-  "submit",
+  messageInput.style.height =
+    "auto";
 
+
+  messageInput.style.height =
+    Math.min(
+      messageInput.scrollHeight,
+      130
+    ) +
+    "px";
+
+}
+
+
+
+/* =====================================
+   زر الإرسال
+===================================== */
+
+sendButton.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+
+/* =====================================
+   الكتابة
+===================================== */
+
+messageInput.addEventListener(
+  "input",
+  resizeInput
+);
+
+
+messageInput.addEventListener(
+  "keydown",
   (event) => {
 
-    event.preventDefault();
+    if(
+      event.key === "Enter" &&
+      !event.shiftKey
+    ){
 
-    sendMessage();
+      event.preventDefault();
+
+      sendMessage();
+
+    }
 
   }
-
 );
+
 
 
 /* =====================================
@@ -1726,12 +1812,12 @@ messageForm.addEventListener(
 ===================================== */
 
 backButton.addEventListener(
-
   "click",
-
   () => {
 
-    if(unsubscribeMessages){
+    if(
+      unsubscribeMessages
+    ){
 
       unsubscribeMessages();
 
@@ -1741,42 +1827,81 @@ backButton.addEventListener(
     history.back();
 
   }
-
 );
 
 
+
 /* =====================================
-   زر الرجوع عند الخطأ
+   الأعضاء
 ===================================== */
 
-errorBack.addEventListener(
-
+membersButton.addEventListener(
   "click",
+  () => {
 
+    if(!currentRoom){
+
+      return;
+
+    }
+
+
+    const members =
+      Array.isArray(
+        currentRoom.members
+      )
+        ? currentRoom.members.length
+        : 1;
+
+
+    alert(
+      "عدد أعضاء الغرفة: " +
+      members
+    );
+
+  }
+);
+
+
+
+/* =====================================
+   زر العودة من الخطأ
+===================================== */
+
+statusButton.addEventListener(
+  "click",
   () => {
 
     history.back();
 
   }
-
 );
 
 
+
 /* =====================================
-   فحص تسجيل الدخول
+   تسجيل الدخول
 ===================================== */
 
 onAuthStateChanged(
 
   auth,
 
-  async(user) => {
+  async (user) => {
 
     if(!user){
 
-      showError(
-        "يجب تسجيل الدخول إلى Mecd Tools أولاً."
+      currentUser =
+        null;
+
+
+      showStatus(
+        "🔐",
+        "يجب تسجيل الدخول",
+        "سجّل الدخول إلى Mecd Tools أولاً.",
+        true
       );
+
 
       return;
 
@@ -1794,7 +1919,6 @@ onAuthStateChanged(
 );
 
 </script>
-
 
 </body>
 
