@@ -4,24 +4,50 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
 <link rel="manifest" href="manifest.json">
 
 <meta name="theme-color" content="#050807">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta
+  name="mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-capable"
+  content="yes"
+>
+
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+>
 
 <title>Mecd Tools</title>
 
+
 <style>
+
+/* =====================================================
+   RESET
+===================================================== */
 
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
 }
+
+
+/* =====================================================
+   BODY
+===================================================== */
 
 body{
 
@@ -50,9 +76,9 @@ body{
 }
 
 
-/* =========================
-   Background
-========================= */
+/* =====================================================
+   BACKGROUND
+===================================================== */
 
 .background{
 
@@ -107,9 +133,9 @@ body{
 }
 
 
-/* =========================
-   App
-========================= */
+/* =====================================================
+   APP
+===================================================== */
 
 .app{
 
@@ -134,9 +160,9 @@ body{
 }
 
 
-/* =========================
-   Account
-========================= */
+/* =====================================================
+   ACCOUNT
+===================================================== */
 
 .account{
 
@@ -214,9 +240,9 @@ body{
 }
 
 
-/* =========================
-   Header
-========================= */
+/* =====================================================
+   HEADER
+===================================================== */
 
 header{
 
@@ -333,9 +359,9 @@ header{
 }
 
 
-/* =========================
-   Hero
-========================= */
+/* =====================================================
+   HERO
+===================================================== */
 
 .hero{
 
@@ -422,9 +448,9 @@ header{
 }
 
 
-/* =========================
-   Services title
-========================= */
+/* =====================================================
+   SERVICES TITLE
+===================================================== */
 
 .services-title{
 
@@ -437,9 +463,9 @@ header{
 }
 
 
-/* =========================
-   Services
-========================= */
+/* =====================================================
+   SERVICES
+===================================================== */
 
 .services{
 
@@ -475,6 +501,8 @@ header{
   overflow:hidden;
 
   transition:.25s ease;
+
+  cursor:pointer;
 
 }
 
@@ -518,8 +546,6 @@ header{
 }
 
 
-/* Camera */
-
 .camera-service{
 
   background:
@@ -539,8 +565,6 @@ header{
 }
 
 
-/* Chat */
-
 .chat-service{
 
   background:
@@ -559,6 +583,33 @@ header{
 
 }
 
+
+/* =====================================================
+   ROOM SERVICE
+===================================================== */
+
+.room-service{
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(41,121,255,.18),
+      rgba(41,121,255,.035)
+    );
+
+}
+
+
+.room-service::before{
+
+  background:#2979ff;
+
+}
+
+
+/* =====================================================
+   SERVICE CONTENT
+===================================================== */
 
 .service-content{
 
@@ -635,9 +686,9 @@ header{
 }
 
 
-/* =========================
-   Info
-========================= */
+/* =====================================================
+   INFO
+===================================================== */
 
 .info{
 
@@ -665,9 +716,9 @@ header{
 }
 
 
-/* =========================
-   Footer
-========================= */
+/* =====================================================
+   FOOTER
+===================================================== */
 
 footer{
 
@@ -684,9 +735,318 @@ footer{
 }
 
 
-/* =========================
-   Mobile
-========================= */
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal{
+
+  position:fixed;
+
+  inset:0;
+
+  z-index:9999;
+
+  display:none;
+
+  align-items:center;
+
+  justify-content:center;
+
+  padding:20px;
+
+  background:
+    rgba(0,0,0,.72);
+
+  backdrop-filter:
+    blur(8px);
+
+}
+
+
+.modal.show{
+
+  display:flex;
+
+}
+
+
+.modal-box{
+
+  width:100%;
+
+  max-width:430px;
+
+  padding:25px;
+
+  border-radius:27px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #0c1714,
+      #050908
+    );
+
+  border:
+    1px solid
+    rgba(0,230,118,.18);
+
+  box-shadow:
+    0 25px 80px
+    rgba(0,0,0,.6);
+
+  animation:
+    modalIn .2s ease;
+
+}
+
+
+@keyframes modalIn{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      scale(.94)
+      translateY(10px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+      scale(1)
+      translateY(0);
+
+  }
+
+}
+
+
+.modal-header{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  margin-bottom:22px;
+
+}
+
+
+.modal-title{
+
+  font-size:23px;
+
+  font-weight:bold;
+
+}
+
+
+.close-modal{
+
+  width:42px;
+
+  height:42px;
+
+  border:none;
+
+  border-radius:13px;
+
+  background:
+    rgba(255,255,255,.06);
+
+  color:white;
+
+  font-size:22px;
+
+  cursor:pointer;
+
+}
+
+
+.form-group{
+
+  margin-bottom:16px;
+
+}
+
+
+.form-group label{
+
+  display:block;
+
+  margin-bottom:8px;
+
+  color:#b7c3bf;
+
+  font-size:13px;
+
+}
+
+
+.form-input{
+
+  width:100%;
+
+  height:53px;
+
+  padding:
+    0 15px;
+
+  border-radius:16px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.1);
+
+  outline:none;
+
+  background:#111a17;
+
+  color:white;
+
+  font-family:inherit;
+
+  font-size:15px;
+
+  transition:.2s;
+
+}
+
+
+.form-input:focus{
+
+  border-color:#00e676;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(0,230,118,.08);
+
+}
+
+
+.form-input::placeholder{
+
+  color:#63716d;
+
+}
+
+
+.create-room-button{
+
+  width:100%;
+
+  height:54px;
+
+  margin-top:7px;
+
+  border:none;
+
+  border-radius:17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00e889,
+      #00b965
+    );
+
+  color:#00150e;
+
+  font-family:inherit;
+
+  font-size:16px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+
+.create-room-button:active{
+
+  transform:
+    scale(.97);
+
+}
+
+
+.create-room-button:disabled{
+
+  opacity:.5;
+
+  cursor:not-allowed;
+
+}
+
+
+.modal-message{
+
+  display:none;
+
+  margin-top:16px;
+
+  padding:14px;
+
+  border-radius:15px;
+
+  background:
+    rgba(0,230,118,.08);
+
+  border:
+    1px solid
+    rgba(0,230,118,.15);
+
+  color:#8fffc3;
+
+  text-align:center;
+
+  line-height:1.7;
+
+  font-size:13px;
+
+}
+
+
+.modal-message.show{
+
+  display:block;
+
+}
+
+
+.room-code{
+
+  display:block;
+
+  margin-top:7px;
+
+  color:#00e889;
+
+  font-size:21px;
+
+  font-weight:bold;
+
+  direction:ltr;
+
+  letter-spacing:1px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
 
 @media(max-width:480px){
 
@@ -815,6 +1175,20 @@ footer{
 
   }
 
+
+  .arrow{
+
+    font-size:22px;
+
+  }
+
+
+  .modal-box{
+
+    padding:21px;
+
+  }
+
 }
 
 </style>
@@ -825,6 +1199,10 @@ footer{
 <body>
 
 
+<!-- =====================================================
+     BACKGROUND
+===================================================== -->
+
 <div class="background">
 
   <div class="glow one"></div>
@@ -833,6 +1211,10 @@ footer{
 
 </div>
 
+
+<!-- =====================================================
+     APP
+===================================================== -->
 
 <main class="app">
 
@@ -913,7 +1295,6 @@ footer{
 
   <section class="hero">
 
-
     <div class="tools-icon">
       🛠️
     </div>
@@ -940,14 +1321,14 @@ footer{
 
     </p>
 
-
   </section>
 
 
-  <!-- الخدمات -->
+  <!-- =====================================================
+       الخدمات
+  ===================================================== -->
 
   <section>
-
 
     <div class="services-title">
       🧰 الخدمات
@@ -957,7 +1338,9 @@ footer{
     <div class="services">
 
 
-      <!-- Camera Connect -->
+      <!-- =================================================
+           CAMERA CONNECT
+      ================================================= -->
 
       <a
         class="service camera-service"
@@ -965,7 +1348,6 @@ footer{
       >
 
         <div class="service-content">
-
 
           <div class="service-icon">
             📷
@@ -980,9 +1362,11 @@ footer{
 
 
             <p>
+
               نظام مراقبة ذكي —
               استخدم هاتفًا ككاميرا
               واتصل بجهاز المراقبة.
+
             </p>
 
           </div>
@@ -992,13 +1376,14 @@ footer{
             ←
           </div>
 
-
         </div>
 
       </a>
 
 
-      <!-- Mecd Chat -->
+      <!-- =================================================
+           MECD CHAT
+      ================================================= -->
 
       <a
         class="service chat-service"
@@ -1006,7 +1391,6 @@ footer{
       >
 
         <div class="service-content">
-
 
           <div class="service-icon">
             💬
@@ -1021,8 +1405,10 @@ footer{
 
 
             <p>
+
               دردشة وغرف خاصة
               بين مستخدمي Mecd Tools.
+
             </p>
 
           </div>
@@ -1032,16 +1418,63 @@ footer{
             ←
           </div>
 
-
         </div>
 
       </a>
+
+
+      <!-- =================================================
+           CREATE ROOM
+      ================================================= -->
+
+      <button
+        id="createRoomCard"
+        class="service room-service"
+        type="button"
+      >
+
+        <div class="service-content">
+
+          <div class="service-icon">
+            ➕
+          </div>
+
+
+          <div class="service-text">
+
+            <h3>
+              إنشاء غرفة دردشة
+            </h3>
+
+
+            <p>
+
+              أنشئ غرفة جديدة
+              وحدد اسمها وكلمة السر
+              وابدأ الدردشة مع الآخرين.
+
+            </p>
+
+          </div>
+
+
+          <div class="arrow">
+            ←
+          </div>
+
+        </div>
+
+      </button>
 
 
     </div>
 
   </section>
 
+
+  <!-- =====================================================
+       INFO
+  ===================================================== -->
 
   <div class="info">
 
@@ -1051,6 +1484,10 @@ footer{
 
   </div>
 
+
+  <!-- =====================================================
+       FOOTER
+  ===================================================== -->
 
   <footer>
 
@@ -1062,16 +1499,128 @@ footer{
 </main>
 
 
-<!-- Firebase -->
+<!-- =====================================================
+     CREATE ROOM MODAL
+===================================================== -->
+
+<div
+  id="roomModal"
+  class="modal"
+>
+
+  <div class="modal-box">
+
+
+    <div class="modal-header">
+
+      <div class="modal-title">
+        🏠 إنشاء غرفة دردشة
+      </div>
+
+
+      <button
+        id="closeRoomModal"
+        class="close-modal"
+        type="button"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- اسم الغرفة -->
+
+    <div class="form-group">
+
+      <label for="roomName">
+        اسم الغرفة
+      </label>
+
+
+      <input
+        id="roomName"
+        class="form-input"
+        type="text"
+        maxlength="40"
+        placeholder="مثلاً: أصدقاء Mecd"
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <!-- كلمة السر -->
+
+    <div class="form-group">
+
+      <label for="roomPassword">
+        كلمة السر
+      </label>
+
+
+      <input
+        id="roomPassword"
+        class="form-input"
+        type="password"
+        maxlength="50"
+        placeholder="أدخل كلمة سر الغرفة"
+        autocomplete="new-password"
+      >
+
+    </div>
+
+
+    <!-- زر إنشاء -->
+
+    <button
+      id="createRoomButton"
+      class="create-room-button"
+      type="button"
+    >
+
+      إنشاء الغرفة
+
+    </button>
+
+
+    <!-- رسالة النتيجة -->
+
+    <div
+      id="roomMessage"
+      class="modal-message"
+    ></div>
+
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
 
 <script type="module">
 
 
-import { initializeApp }
+/* =====================================================
+   Firebase App
+===================================================== */
+
+import {
+
+  initializeApp
+
+}
 
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
+/* =====================================================
+   Firebase Authentication
+===================================================== */
 
 import {
 
@@ -1085,6 +1634,10 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
+/* =====================================================
+   Firebase Firestore
+===================================================== */
+
 import {
 
   getFirestore,
@@ -1093,7 +1646,11 @@ import {
 
   getDoc,
 
-  setDoc
+  setDoc,
+
+  collection,
+
+  serverTimestamp
 
 }
 
@@ -1101,7 +1658,9 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* Firebase Config */
+/* =====================================================
+   Firebase Config
+===================================================== */
 
 const firebaseConfig = {
 
@@ -1129,7 +1688,9 @@ const firebaseConfig = {
 };
 
 
-/* Firebase */
+/* =====================================================
+   تشغيل Firebase
+===================================================== */
 
 const firebaseApp =
   initializeApp(firebaseConfig);
@@ -1143,7 +1704,9 @@ const db =
   getFirestore(firebaseApp);
 
 
-/* Elements */
+/* =====================================================
+   عناصر الحساب
+===================================================== */
 
 const accountPhoto =
   document.getElementById(
@@ -1163,7 +1726,62 @@ const accountId =
   );
 
 
-/* إنشاء / جلب ID */
+/* =====================================================
+   عناصر الغرفة
+===================================================== */
+
+const createRoomCard =
+  document.getElementById(
+    "createRoomCard"
+  );
+
+
+const roomModal =
+  document.getElementById(
+    "roomModal"
+  );
+
+
+const closeRoomModal =
+  document.getElementById(
+    "closeRoomModal"
+  );
+
+
+const roomName =
+  document.getElementById(
+    "roomName"
+  );
+
+
+const roomPassword =
+  document.getElementById(
+    "roomPassword"
+  );
+
+
+const createRoomButton =
+  document.getElementById(
+    "createRoomButton"
+  );
+
+
+const roomMessage =
+  document.getElementById(
+    "roomMessage"
+  );
+
+
+/* =====================================================
+   المستخدم الحالي
+===================================================== */
+
+let currentUser = null;
+
+
+/* =====================================================
+   إنشاء / جلب ID المستخدم
+===================================================== */
 
 async function getUserID(user){
 
@@ -1176,17 +1794,26 @@ async function getUserID(user){
 
 
   const userDoc =
-    await getDoc(userRef);
+    await getDoc(
+      userRef
+    );
 
 
-  if(userDoc.exists()){
+  if(
+    userDoc.exists()
+  ){
 
     const data =
       userDoc.data();
 
 
-    return data.chatID ||
-      "MC-000001";
+    if(
+      data.chatID
+    ){
+
+      return data.chatID;
+
+    }
 
   }
 
@@ -1199,7 +1826,9 @@ async function getUserID(user){
 
 
   await setDoc(
+
     userRef,
+
     {
 
       name:
@@ -1218,9 +1847,13 @@ async function getUserID(user){
         newID
 
     },
+
     {
+
       merge:true
+
     }
+
   );
 
 
@@ -1229,22 +1862,486 @@ async function getUserID(user){
 }
 
 
-/* فحص تسجيل الدخول */
+/* =====================================================
+   SHA-256 لكلمة السر
+   حتى لا نخزن كلمة السر نفسها
+===================================================== */
+
+async function hashPassword(password){
+
+  const encoder =
+    new TextEncoder();
+
+
+  const data =
+    encoder.encode(
+      password
+    );
+
+
+  const hashBuffer =
+    await crypto.subtle.digest(
+      "SHA-256",
+      data
+    );
+
+
+  const hashArray =
+    Array.from(
+      new Uint8Array(
+        hashBuffer
+      )
+    );
+
+
+  return hashArray
+    .map(
+      byte =>
+        byte
+          .toString(16)
+          .padStart(2,"0")
+    )
+    .join("");
+
+}
+
+
+/* =====================================================
+   إنشاء رمز الغرفة
+===================================================== */
+
+function generateRoomID(){
+
+  const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+
+  let result =
+    "";
+
+
+  for(
+    let i = 0;
+    i < 6;
+    i++
+  ){
+
+    result +=
+      chars[
+        Math.floor(
+          Math.random() *
+          chars.length
+        )
+      ];
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =====================================================
+   فتح نافذة إنشاء الغرفة
+===================================================== */
+
+createRoomCard.addEventListener(
+
+  "click",
+
+  () => {
+
+    roomMessage.classList.remove(
+      "show"
+    );
+
+    roomMessage.innerHTML =
+      "";
+
+    roomName.value =
+      "";
+
+    roomPassword.value =
+      "";
+
+    createRoomButton.disabled =
+      false;
+
+    createRoomButton.textContent =
+      "إنشاء الغرفة";
+
+
+    roomModal.classList.add(
+      "show"
+    );
+
+
+    setTimeout(
+      () => {
+
+        roomName.focus();
+
+      },
+      100
+    );
+
+  }
+
+);
+
+
+/* =====================================================
+   إغلاق النافذة
+===================================================== */
+
+closeRoomModal.addEventListener(
+
+  "click",
+
+  () => {
+
+    roomModal.classList.remove(
+      "show"
+    );
+
+  }
+
+);
+
+
+/* =====================================================
+   الضغط خارج النافذة
+===================================================== */
+
+roomModal.addEventListener(
+
+  "click",
+
+  (event) => {
+
+    if(
+      event.target ===
+      roomModal
+    ){
+
+      roomModal.classList.remove(
+        "show"
+      );
+
+    }
+
+  }
+
+);
+
+
+/* =====================================================
+   زر ESC
+===================================================== */
+
+document.addEventListener(
+
+  "keydown",
+
+  (event) => {
+
+    if(
+      event.key === "Escape"
+    ){
+
+      roomModal.classList.remove(
+        "show"
+      );
+
+    }
+
+  }
+
+);
+
+
+/* =====================================================
+   إنشاء الغرفة
+===================================================== */
+
+createRoomButton.addEventListener(
+
+  "click",
+
+  async () => {
+
+
+    /* ---------------------------------------------
+       التأكد من تسجيل الدخول
+    --------------------------------------------- */
+
+    if(
+      !currentUser
+    ){
+
+      roomMessage.innerHTML =
+        "يجب تسجيل الدخول أولاً.";
+
+      roomMessage.classList.add(
+        "show"
+      );
+
+      return;
+
+    }
+
+
+    /* ---------------------------------------------
+       قراءة البيانات
+    --------------------------------------------- */
+
+    const name =
+      roomName.value.trim();
+
+
+    const password =
+      roomPassword.value.trim();
+
+
+    /* ---------------------------------------------
+       فحص اسم الغرفة
+    --------------------------------------------- */
+
+    if(
+      name.length < 2
+    ){
+
+      roomMessage.innerHTML =
+        "⚠️ اكتب اسم غرفة صحيح.";
+
+      roomMessage.classList.add(
+        "show"
+      );
+
+      roomName.focus();
+
+      return;
+
+    }
+
+
+    /* ---------------------------------------------
+       فحص كلمة السر
+    --------------------------------------------- */
+
+    if(
+      password.length < 4
+    ){
+
+      roomMessage.innerHTML =
+        "⚠️ كلمة السر يجب أن تكون 4 أحرف أو أكثر.";
+
+      roomMessage.classList.add(
+        "show"
+      );
+
+      roomPassword.focus();
+
+      return;
+
+    }
+
+
+    /* ---------------------------------------------
+       حالة التحميل
+    --------------------------------------------- */
+
+    createRoomButton.disabled =
+      true;
+
+    createRoomButton.textContent =
+      "جارٍ إنشاء الغرفة...";
+
+
+    try{
+
+
+      /* -------------------------------------------
+         توليد ID للغرفة
+      ------------------------------------------- */
+
+      const roomID =
+        generateRoomID();
+
+
+      /* -------------------------------------------
+         تشفير كلمة السر
+      ------------------------------------------- */
+
+      const passwordHash =
+        await hashPassword(
+          password
+        );
+
+
+      /* -------------------------------------------
+         إنشاء الغرفة
+      ------------------------------------------- */
+
+      const roomRef =
+        doc(
+          collection(
+            db,
+            "rooms"
+          ),
+          roomID
+        );
+
+
+      await setDoc(
+
+        roomRef,
+
+        {
+
+          roomID:
+            roomID,
+
+          name:
+            name,
+
+          passwordHash:
+            passwordHash,
+
+          ownerId:
+            currentUser.uid,
+
+          ownerName:
+            currentUser.displayName ||
+            "مستخدم Mecd",
+
+          members:[
+
+            currentUser.uid
+
+          ],
+
+          createdAt:
+            serverTimestamp(),
+
+          lastMessage:
+            "",
+
+          lastMessageAt:
+            serverTimestamp()
+
+        }
+
+      );
+
+
+      /* -------------------------------------------
+         نجاح
+      ------------------------------------------- */
+
+      roomMessage.innerHTML =
+
+        "✅ تم إنشاء الغرفة بنجاح!"
+
+        +
+
+        "<span class='room-code'>"
+
+        +
+
+        "رمز الغرفة: "
+
+        +
+
+        roomID
+
+        +
+
+        "</span>"
+
+        +
+
+        "<div style='margin-top:8px;color:#9ca9a6;'>"
+
+        +
+
+        "احتفظ بهذا الرمز للانضمام إلى الغرفة."
+
+        +
+
+        "</div>";
+
+
+      roomMessage.classList.add(
+        "show"
+      );
+
+
+      createRoomButton.textContent =
+        "تم إنشاء الغرفة ✓";
+
+
+      /* -------------------------------------------
+         تفريغ كلمة السر
+      ------------------------------------------- */
+
+      roomPassword.value =
+        "";
+
+
+    }catch(error){
+
+      console.error(
+        "Create room error:",
+        error
+      );
+
+
+      roomMessage.innerHTML =
+
+        "❌ تعذر إنشاء الغرفة.<br><br>"
+
+        +
+
+        "تأكد من أن Firestore Rules تسمح بإنشاء الغرف.";
+
+      roomMessage.classList.add(
+        "show"
+      );
+
+
+      createRoomButton.disabled =
+        false;
+
+      createRoomButton.textContent =
+        "إنشاء الغرفة";
+
+    }
+
+  }
+
+);
+
+
+/* =====================================================
+   تسجيل الدخول
+===================================================== */
 
 onAuthStateChanged(
 
   auth,
 
-  async(user) => {
+  async (user) => {
 
 
-    if(!user){
+    /* ---------------------------------------------
+       لا يوجد تسجيل دخول
+    --------------------------------------------- */
 
-      /*
-       * إذا فتح شخص Home مباشرة
-       * بدون تسجيل دخول يرجع
-       * إلى صفحة تسجيل الدخول
-       */
+    if(
+      !user
+    ){
 
       window.location.href =
         "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
@@ -1254,45 +2351,61 @@ onAuthStateChanged(
     }
 
 
+    /* ---------------------------------------------
+       حفظ المستخدم الحالي
+    --------------------------------------------- */
+
+    currentUser =
+      user;
+
+
     try{
 
 
-      /* الاسم */
+      /* -------------------------------------------
+         الاسم
+      ------------------------------------------- */
 
       accountName.textContent =
         user.displayName ||
         "مستخدم Mecd";
 
 
-      /* الصورة */
+      /* -------------------------------------------
+         الصورة
+      ------------------------------------------- */
 
       accountPhoto.src =
         user.photoURL ||
         "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg";
 
 
-      /* ID */
+      /* -------------------------------------------
+         ID
+      ------------------------------------------- */
 
       const id =
-        await getUserID(user);
+        await getUserID(
+          user
+        );
 
 
       accountId.textContent =
         "ID: " + id;
 
 
-    }
-
-    catch(error){
+    }catch(error){
 
       console.error(
         "Account error:",
         error
       );
 
+
       accountName.textContent =
         user.displayName ||
         "مستخدم Mecd";
+
 
       accountId.textContent =
         "ID: MC-000001";
@@ -1306,7 +2419,9 @@ onAuthStateChanged(
 </script>
 
 
-<!-- Service Worker -->
+<!-- =====================================================
+     SERVICE WORKER
+===================================================== -->
 
 <script>
 
@@ -1316,6 +2431,7 @@ if(
 ){
 
   window.addEventListener(
+
     "load",
 
     () => {
