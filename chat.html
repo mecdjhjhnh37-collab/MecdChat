@@ -2,8 +2,11 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color" content="#050807">
 
 <title>Mecd Chat - الدردشة</title>
 
@@ -19,230 +22,612 @@ body{
 min-height:100vh;
 font-family:Arial,Tahoma,sans-serif;
 color:white;
+
 background:
-radial-gradient(circle at 50% 0%,#123d35 0%,transparent 35%),
-linear-gradient(180deg,#07110f 0%,#020504 100%);
+radial-gradient(
+circle at 50% 0%,
+#123d35 0%,
+transparent 35%
+),
+
+linear-gradient(
+180deg,
+#07110f 0%,
+#020504 100%
+);
+
+overflow:hidden;
 }
+
+
+/* =========================
+   التطبيق
+========================= */
 
 .app{
+
 width:100%;
 max-width:650px;
+
 height:100vh;
+
 margin:auto;
+
 display:flex;
 flex-direction:column;
+
+position:relative;
 }
+
+
+/* =========================
+   الهيدر
+========================= */
 
 header{
+
 height:75px;
-padding:12px 18px;
+
+padding:12px 15px;
+
 display:flex;
 align-items:center;
+
 gap:12px;
-background:rgba(5,10,8,.95);
-border-bottom:1px solid rgba(255,255,255,.08);
+
+background:
+rgba(5,10,8,.96);
+
+border-bottom:
+1px solid
+rgba(255,255,255,.08);
+
+flex-shrink:0;
 }
+
+
+/* زر الرجوع */
 
 .back{
+
 width:45px;
 height:45px;
-border:none;
-border-radius:14px;
-background:rgba(255,255,255,.06);
-color:white;
-font-size:24px;
-cursor:pointer;
-}
 
-.avatar{
-width:48px;
-height:48px;
-border-radius:16px;
-overflow:hidden;
+border:none;
+
+border-radius:14px;
+
+background:
+rgba(255,255,255,.06);
+
+color:white;
+
+font-size:24px;
+
+cursor:pointer;
+
 display:flex;
 align-items:center;
 justify-content:center;
-background:#12352c;
-font-size:24px;
+}
+
+.back:active{
+
+transform:scale(.94);
+}
+
+
+/* =========================
+   الصورة
+========================= */
+
+.avatar{
+
+width:48px;
+height:48px;
+
+border-radius:50%;
+
+overflow:hidden;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:
+linear-gradient(
+135deg,
+#293b37,
+#15211e
+);
+
+border:
+2px solid
+rgba(0,230,118,.55);
+
+font-size:23px;
+
 flex-shrink:0;
 }
 
 .avatar img{
+
 width:100%;
 height:100%;
+
 object-fit:cover;
 }
 
+
+/* =========================
+   معلومات المستخدم
+========================= */
+
 .user-info{
+
 flex:1;
+
 min-width:0;
 }
 
 .user-name{
+
 font-size:17px;
+
 font-weight:bold;
-overflow:hidden;
-text-overflow:ellipsis;
+
 white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
 }
 
 .user-status{
+
 font-size:11px;
+
 color:#00e889;
-margin-top:4px;
+
+margin-top:5px;
 }
+
+
+/* =========================
+   الرسائل
+========================= */
 
 .messages{
+
 flex:1;
+
 overflow-y:auto;
-padding:20px 15px 100px;
+
+padding:
+20px
+15px
+95px;
+
 display:flex;
+
 flex-direction:column;
-gap:10px;
+
+gap:9px;
+
+scroll-behavior:smooth;
 }
+
+
+/* رسالة البداية */
 
 .empty{
+
 margin:auto;
+
 text-align:center;
+
 color:#72817c;
-line-height:1.8;
+
+font-size:14px;
+
+line-height:1.9;
 }
+
+
+/* =========================
+   الرسالة
+========================= */
 
 .message{
+
 max-width:78%;
-padding:11px 14px;
+
+padding:
+11px
+14px;
+
 border-radius:18px;
+
 font-size:15px;
+
 line-height:1.5;
-word-wrap:break-word;
+
+word-break:break-word;
+
+white-space:pre-wrap;
 }
 
+
+/* رسائلي */
+
 .message.mine{
+
 align-self:flex-start;
+
 background:#00c96b;
+
 color:#00150e;
+
 border-bottom-left-radius:5px;
 }
 
+
+/* رسائل الصديق */
+
 .message.other{
+
 align-self:flex-end;
+
 background:#18231f;
+
 color:white;
-border:1px solid rgba(255,255,255,.07);
+
+border:
+1px solid
+rgba(255,255,255,.07);
+
 border-bottom-right-radius:5px;
 }
 
+
+/* الوقت */
+
 .time{
+
 display:block;
+
 font-size:9px;
+
 opacity:.55;
+
 margin-top:4px;
 }
 
+
+/* =========================
+   منطقة الكتابة
+========================= */
+
 .input-area{
+
 position:fixed;
+
 bottom:0;
+
 left:50%;
+
 transform:translateX(-50%);
+
 width:100%;
+
 max-width:650px;
-padding:12px;
+
+padding:10px 12px;
+
 display:flex;
+
 gap:9px;
-background:rgba(5,8,7,.96);
-border-top:1px solid rgba(255,255,255,.08);
+
+background:
+rgba(5,8,7,.97);
+
+border-top:
+1px solid
+rgba(255,255,255,.08);
+
+z-index:20;
 }
 
+
+/* حقل الرسالة */
+
 #messageInput{
+
 flex:1;
+
 min-width:0;
-padding:14px 16px;
+
+height:52px;
+
+padding:
+14px
+16px;
+
 border-radius:17px;
-border:1px solid rgba(255,255,255,.09);
+
+border:
+1px solid
+rgba(255,255,255,.09);
+
 outline:none;
+
 background:#111916;
+
 color:white;
+
 font-family:inherit;
+
 font-size:15px;
 }
 
+#messageInput:focus{
+
+border-color:#00e676;
+
+box-shadow:
+0 0 0 3px
+rgba(0,230,118,.07);
+}
+
 #messageInput::placeholder{
+
 color:#63716d;
 }
 
+
+/* زر الإرسال */
+
 #sendButton{
+
 width:52px;
+
 height:52px;
+
+flex-shrink:0;
+
 border:none;
+
 border-radius:17px;
+
 background:#00e889;
+
 color:#00150e;
+
 font-size:22px;
+
 cursor:pointer;
+
+transition:.15s;
 }
 
 #sendButton:active{
-transform:scale(.94);
+
+transform:scale(.93);
 }
 
 #sendButton:disabled{
+
 opacity:.5;
+
+cursor:not-allowed;
 }
 
-.loading,
-.error-screen{
+
+/* =========================
+   Loading
+========================= */
+
+.loading{
+
 position:fixed;
+
 inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-gap:15px;
-background:#020504;
-text-align:center;
-padding:30px;
+
 z-index:100;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+flex-direction:column;
+
+gap:16px;
+
+background:
+linear-gradient(
+180deg,
+#07110f,
+#020504
+);
+
+color:#a8bdb6;
+
+font-size:15px;
 }
 
-.error-box{
-max-width:500px;
-padding:30px;
-border-radius:25px;
-background:#0b100e;
-border:1px solid rgba(255,255,255,.08);
-}
 
-.error-box h2{
-font-size:25px;
-margin-bottom:15px;
-}
-
-.error-box p{
-color:#9aa7a3;
-line-height:1.8;
-}
+/* =========================
+   Spinner
+========================= */
 
 .spinner{
-width:35px;
-height:35px;
-border:4px solid rgba(255,255,255,.15);
+
+width:36px;
+height:36px;
+
+border:
+4px solid
+rgba(255,255,255,.15);
+
 border-top-color:#00e889;
+
 border-radius:50%;
-animation:spin .8s linear infinite;
+
+animation:
+spin .8s linear infinite;
 }
 
 @keyframes spin{
+
 to{
 transform:rotate(360deg);
 }
+
+}
+
+
+/* =========================
+   الخطأ
+========================= */
+
+.error-screen{
+
+position:fixed;
+
+inset:0;
+
+z-index:200;
+
+display:none;
+
+align-items:center;
+
+justify-content:center;
+
+padding:25px;
+
+background:#020504;
+
+text-align:center;
+}
+
+.error-box{
+
+width:100%;
+
+max-width:450px;
+
+padding:30px;
+
+border-radius:25px;
+
+background:#0b100e;
+
+border:
+1px solid
+rgba(255,255,255,.08);
+}
+
+.error-box h2{
+
+font-size:23px;
+
+margin-bottom:14px;
+}
+
+.error-box p{
+
+color:#9aa7a3;
+
+line-height:1.8;
+
+font-size:14px;
+}
+
+
+/* =========================
+   موبايل
+========================= */
+
+@media(max-width:480px){
+
+header{
+
+height:70px;
+
+padding:
+10px 12px;
+}
+
+.back{
+
+width:43px;
+height:43px;
+}
+
+.avatar{
+
+width:45px;
+height:45px;
+}
+
+.user-name{
+
+font-size:16px;
+}
+
+.message{
+
+max-width:84%;
+
+font-size:14px;
+}
+
+.messages{
+
+padding:
+15px
+12px
+90px;
+}
+
+.input-area{
+
+padding:
+9px;
+}
+
+#messageInput{
+
+height:50px;
+}
+
+#sendButton{
+
+width:50px;
+height:50px;
+}
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
-<div id="loading" class="loading">
+
+<!-- =========================
+     التحميل
+========================= -->
+
+<div
+id="loading"
+class="loading"
+>
 
 <div class="spinner"></div>
 
@@ -253,11 +638,20 @@ transform:rotate(360deg);
 </div>
 
 
-<div id="errorScreen" class="error-screen" style="display:none;">
+<!-- =========================
+     الخطأ
+========================= -->
+
+<div
+id="errorScreen"
+class="error-screen"
+>
 
 <div class="error-box">
 
-<h2>⚠️ تعذر فتح الدردشة</h2>
+<h2>
+⚠️ تعذر فتح الدردشة
+</h2>
 
 <p id="errorText"></p>
 
@@ -266,77 +660,157 @@ transform:rotate(360deg);
 </div>
 
 
-<main id="app" class="app" style="display:none;">
+<!-- =========================
+     التطبيق
+========================= -->
+
+<main
+id="app"
+class="app"
+style="display:none;"
+>
+
+
+<!-- =========================
+     الهيدر
+========================= -->
 
 <header>
 
-<button id="backButton" class="back">
+
+<button
+id="backButton"
+class="back"
+type="button"
+>
+
 →
+
 </button>
 
-<div id="friendAvatar" class="avatar">
+
+<div
+id="friendAvatar"
+class="avatar"
+>
+
 👤
+
 </div>
+
 
 <div class="user-info">
 
-<div id="friendName" class="user-name">
+
+<div
+id="friendName"
+class="user-name"
+>
+
 جارٍ التحميل...
+
 </div>
+
 
 <div class="user-status">
+
 ● متصل
-</div>
 
 </div>
+
+
+</div>
+
 
 </header>
 
 
-<div id="messages" class="messages">
+<!-- =========================
+     الرسائل
+========================= -->
+
+<div
+id="messages"
+class="messages"
+>
 
 <div class="empty">
-💬<br>
+
+💬
+
+<br>
+
 ابدأ المحادثة الآن
-</div>
 
 </div>
 
+</div>
+
+
+<!-- =========================
+     إدخال الرسالة
+========================= -->
 
 <div class="input-area">
+
 
 <input
 id="messageInput"
 type="text"
 placeholder="اكتب رسالة..."
 autocomplete="off"
+maxlength="2000"
 >
 
-<button id="sendButton">
+
+<button
+id="sendButton"
+type="button"
+>
+
 ➤
+
 </button>
 
+
 </div>
+
 
 </main>
 
 
 <script type="module">
 
+
+/* ==================================================
+   Firebase
+================================================== */
+
 import {
+
 initializeApp
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-getAuth,
-onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
+
+getAuth,
+onAuthStateChanged
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
 getFirestore,
 doc,
 getDoc,
@@ -347,14 +821,17 @@ orderBy,
 onSnapshot,
 addDoc,
 serverTimestamp
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =========================
-   Firebase
-========================= */
+/* ==================================================
+   Firebase Config
+================================================== */
 
 const firebaseConfig = {
 
@@ -382,96 +859,139 @@ measurementId:
 };
 
 
+/* ==================================================
+   تشغيل Firebase
+================================================== */
+
 const firebaseApp =
-initializeApp(firebaseConfig);
+initializeApp(
+firebaseConfig
+);
 
 const auth =
-getAuth(firebaseApp);
+getAuth(
+firebaseApp
+);
 
 const db =
-getFirestore(firebaseApp);
+getFirestore(
+firebaseApp
+);
 
 
-/* =========================
-   العناصر
-========================= */
+/* ==================================================
+   عناصر الصفحة
+================================================== */
 
 const loading =
-document.getElementById("loading");
+document.getElementById(
+"loading"
+);
 
 const errorScreen =
-document.getElementById("errorScreen");
+document.getElementById(
+"errorScreen"
+);
 
 const errorText =
-document.getElementById("errorText");
+document.getElementById(
+"errorText"
+);
 
 const app =
-document.getElementById("app");
+document.getElementById(
+"app"
+);
 
 const friendAvatar =
-document.getElementById("friendAvatar");
+document.getElementById(
+"friendAvatar"
+);
 
 const friendName =
-document.getElementById("friendName");
+document.getElementById(
+"friendName"
+);
 
 const messages =
-document.getElementById("messages");
+document.getElementById(
+"messages"
+);
 
 const messageInput =
-document.getElementById("messageInput");
+document.getElementById(
+"messageInput"
+);
 
 const sendButton =
-document.getElementById("sendButton");
+document.getElementById(
+"sendButton"
+);
 
 const backButton =
-document.getElementById("backButton");
+document.getElementById(
+"backButton"
+);
 
 
-/* =========================
+/* ==================================================
    المتغيرات
-========================= */
+================================================== */
 
 let currentUser = null;
+
 let friendUser = null;
+
 let chatID = null;
 
+let unsubscribeMessages = null;
 
-/* =========================
-   تنظيف النص
-========================= */
+
+/* ==================================================
+   حماية HTML
+================================================== */
 
 function escapeHTML(value){
 
 return String(value || "")
+
 .replace(/&/g,"&amp;")
+
 .replace(/</g,"&lt;")
+
 .replace(/>/g,"&gt;")
+
 .replace(/"/g,"&quot;")
+
 .replace(/'/g,"&#039;");
 
 }
 
 
-/* =========================
-   إظهار الخطأ
-========================= */
+/* ==================================================
+   عرض الخطأ
+================================================== */
 
-function showError(message){
+function showError(text){
 
-loading.style.display = "none";
+loading.style.display =
+"none";
 
-app.style.display = "none";
+app.style.display =
+"none";
 
-errorText.textContent = message;
+errorText.textContent =
+text;
 
-errorScreen.style.display = "flex";
+errorScreen.style.display =
+"flex";
 
 }
 
 
-/* =========================
-   ID المحادثة
-========================= */
+/* ==================================================
+   إنشاء ID المحادثة
+================================================== */
 
 function createChatID(uid1,uid2){
 
@@ -485,9 +1005,9 @@ uid2
 }
 
 
-/* =========================
-   قراءة الصديق
-========================= */
+/* ==================================================
+   جلب بيانات الصديق
+================================================== */
 
 async function loadFriend(){
 
@@ -495,6 +1015,13 @@ const params =
 new URLSearchParams(
 window.location.search
 );
+
+
+/*
+   يجب أن يكون الرابط:
+
+   chat.html?friend=UID
+*/
 
 const friendUID =
 params.get("friend");
@@ -511,7 +1038,12 @@ return false;
 }
 
 
-if(friendUID === currentUser.uid){
+/* منع الدردشة مع نفسك */
+
+if(
+friendUID ===
+currentUser.uid
+){
 
 showError(
 "لا يمكنك فتح دردشة مع نفسك."
@@ -522,7 +1054,7 @@ return false;
 }
 
 
-/* جلب بيانات الصديق */
+/* جلب المستخدم */
 
 const friendRef =
 doc(
@@ -532,13 +1064,15 @@ friendUID
 );
 
 const friendDoc =
-await getDoc(friendRef);
+await getDoc(
+friendRef
+);
 
 
 if(!friendDoc.exists()){
 
 showError(
-"لم يتم العثور على هذا المستخدم."
+"لم يتم العثور على حساب الصديق."
 );
 
 return false;
@@ -552,7 +1086,8 @@ friendDoc.data();
 
 friendUser = {
 
-uid:friendUID,
+uid:
+friendUID,
 
 name:
 data.name ||
@@ -570,31 +1105,38 @@ data.chatID ||
 };
 
 
-/* عرض البيانات */
+/* عرض الاسم */
 
 friendName.textContent =
 friendUser.name;
 
 
-if(friendUser.photo){
+/* عرض الصورة */
+
+if(
+friendUser.photo
+){
 
 friendAvatar.innerHTML = `
 
 <img
-src="${escapeHTML(friendUser.photo)}"
-alt="صورة المستخدم"
+src="${escapeHTML(
+friendUser.photo
+)}"
+alt=""
 >
 
 `;
 
 }else{
 
-friendAvatar.textContent = "👤";
+friendAvatar.textContent =
+"👤";
 
 }
 
 
-/* إنشاء Chat ID */
+/* إنشاء ID المحادثة */
 
 chatID =
 createChatID(
@@ -603,7 +1145,7 @@ friendUser.uid
 );
 
 
-/* إنشاء المحادثة */
+/* إنشاء مستند المحادثة */
 
 const chatRef =
 doc(
@@ -613,7 +1155,9 @@ chatID
 );
 
 const chatDoc =
-await getDoc(chatRef);
+await getDoc(
+chatRef
+);
 
 
 if(!chatDoc.exists()){
@@ -637,6 +1181,7 @@ lastMessageAt:
 serverTimestamp()
 
 }
+
 );
 
 }
@@ -647,11 +1192,18 @@ return true;
 }
 
 
-/* =========================
-   تحميل الرسائل
-========================= */
+/* ==================================================
+   الاستماع للرسائل
+================================================== */
 
 function listenMessages(){
+
+if(unsubscribeMessages){
+
+unsubscribeMessages();
+
+}
+
 
 const messagesRef =
 collection(
@@ -665,19 +1217,24 @@ chatID,
 const messagesQuery =
 query(
 messagesRef,
+
 orderBy(
 "createdAt",
 "asc"
 )
+
 );
 
 
+unsubscribeMessages =
 onSnapshot(
+
 messagesQuery,
 
 (snapshot)=>{
 
-messages.innerHTML = "";
+messages.innerHTML =
+"";
 
 
 if(snapshot.empty){
@@ -686,7 +1243,9 @@ messages.innerHTML = `
 
 <div class="empty">
 
-💬<br>
+💬
+
+<br>
 
 ابدأ المحادثة الآن
 
@@ -705,13 +1264,22 @@ snapshot.forEach(
 const data =
 messageDoc.data();
 
-const message =
-document.createElement("div");
 
-message.className =
+const messageElement =
+document.createElement(
+"div"
+);
+
+
+const isMine =
+data.senderId ===
+currentUser.uid;
+
+
+messageElement.className =
 "message " +
 (
-data.senderId === currentUser.uid
+isMine
 ?
 "mine"
 :
@@ -727,9 +1295,12 @@ data.text
 
 let time = "";
 
-if(data.createdAt){
 
-try{
+if(
+data.createdAt &&
+typeof data.createdAt.toDate ===
+"function"
+){
 
 time =
 data.createdAt
@@ -737,35 +1308,47 @@ data.createdAt
 .toLocaleTimeString(
 "ar",
 {
+
 hour:"2-digit",
+
 minute:"2-digit"
+
 }
 );
 
-}catch(e){}
-
 }
 
 
-message.innerHTML = `
+messageElement.innerHTML = `
 
 ${text}
 
 <span class="time">
+
 ${time}
+
 </span>
 
 `;
 
 
-messages.appendChild(message);
-
-}
+messages.appendChild(
+messageElement
 );
 
+});
+
+
+/* النزول لآخر رسالة */
+
+requestAnimationFrame(
+()=>{
 
 messages.scrollTop =
 messages.scrollHeight;
+
+}
+);
 
 },
 
@@ -777,7 +1360,7 @@ error
 );
 
 showError(
-"ليس لديك صلاحية قراءة هذه المحادثة. تأكد من وضع Firestore Rules التي أعطيتك إياها."
+"تعذر تحميل الرسائل. تحقق من Firestore Rules."
 );
 
 }
@@ -787,9 +1370,9 @@ showError(
 }
 
 
-/* =========================
+/* ==================================================
    إرسال رسالة
-========================= */
+================================================== */
 
 async function sendMessage(){
 
@@ -798,42 +1381,61 @@ messageInput.value.trim();
 
 
 if(!text){
+
 return;
+
 }
 
 
-if(!currentUser || !chatID){
+if(
+!currentUser ||
+!friendUser ||
+!chatID
+){
+
 return;
+
 }
 
 
-sendButton.disabled = true;
+sendButton.disabled =
+true;
 
 
 try{
 
-const messagesRef =
+
+/* إضافة الرسالة */
+
+await addDoc(
+
 collection(
 db,
 "chats",
 chatID,
 "messages"
-);
+),
 
-
-await addDoc(
-messagesRef,
 {
 
-text:text,
+text:
+
+text,
 
 senderId:
+
 currentUser.uid,
 
+receiverId:
+
+friendUser.uid,
+
 createdAt:
+
 serverTimestamp()
 
 }
+
 );
 
 
@@ -849,10 +1451,14 @@ chatID
 
 {
 
-lastMessage:text,
+lastMessage:
+text,
 
 lastMessageAt:
-serverTimestamp()
+serverTimestamp(),
+
+lastSenderId:
+currentUser.uid
 
 },
 
@@ -865,7 +1471,10 @@ merge:true
 );
 
 
-messageInput.value = "";
+/* تنظيف الحقل */
+
+messageInput.value =
+"";
 
 messageInput.focus();
 
@@ -878,97 +1487,36 @@ error
 );
 
 alert(
-"تعذر إرسال الرسالة: " +
+"تعذر إرسال الرسالة:\n" +
 error.message
 );
 
 }finally{
 
-sendButton.disabled = false;
+sendButton.disabled =
+false;
 
 }
 
 }
 
 
-/* =========================
-   تسجيل الدخول
-========================= */
-
-onAuthStateChanged(
-
-auth,
-
-async(user)=>{
-
-if(!user){
-
-showError(
-"يجب تسجيل الدخول أولاً من Mecd Tools."
-);
-
-return;
-
-}
-
-
-currentUser = user;
-
-
-try{
-
-const success =
-await loadFriend();
-
-
-if(!success){
-return;
-}
-
-
-listenMessages();
-
-
-loading.style.display =
-"none";
-
-app.style.display =
-"flex";
-
-messageInput.focus();
-
-
-}catch(error){
-
-console.error(
-"Chat loading error:",
-error
-);
-
-showError(
-"حدث خطأ أثناء فتح الدردشة. تأكد من Firestore Rules."
-);
-
-}
-
-}
-
-);
-
-
-/* =========================
+/* ==================================================
    زر الإرسال
-========================= */
+================================================== */
 
 sendButton.addEventListener(
+
 "click",
+
 sendMessage
+
 );
 
 
-/* =========================
+/* ==================================================
    Enter
-========================= */
+================================================== */
 
 messageInput.addEventListener(
 
@@ -976,7 +1524,10 @@ messageInput.addEventListener(
 
 (event)=>{
 
-if(event.key === "Enter"){
+if(
+event.key ===
+"Enter"
+){
 
 event.preventDefault();
 
@@ -989,9 +1540,9 @@ sendMessage();
 );
 
 
-/* =========================
-   رجوع
-========================= */
+/* ==================================================
+   العودة
+================================================== */
 
 backButton.addEventListener(
 
@@ -999,13 +1550,127 @@ backButton.addEventListener(
 
 ()=>{
 
+if(unsubscribeMessages){
+
+unsubscribeMessages();
+
+}
+
 history.back();
 
 }
 
 );
 
+
+/* ==================================================
+   تسجيل الدخول
+================================================== */
+
+onAuthStateChanged(
+
+auth,
+
+async(user)=>{
+
+if(!user){
+
+showError(
+"يجب تسجيل الدخول أولاً."
+);
+
+return;
+
+}
+
+
+currentUser =
+user;
+
+
+try{
+
+
+const success =
+await loadFriend();
+
+
+if(!success){
+
+return;
+
+}
+
+
+listenMessages();
+
+
+loading.style.display =
+"none";
+
+app.style.display =
+"flex";
+
+
+setTimeout(
+()=>{
+
+messageInput.focus();
+
+},
+100
+);
+
+
+}catch(error){
+
+console.error(
+"Chat loading error:",
+error
+);
+
+showError(
+"حدث خطأ أثناء فتح الدردشة:\n" +
+error.message
+);
+
+}
+
+});
+
+
+/* ==================================================
+   Service Worker
+================================================== */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+navigator.serviceWorker
+.register("./sw.js")
+.catch(
+error=>{
+
+console.error(
+"Service Worker error:",
+error
+);
+
+});
+
+});
+
+}
+
 </script>
 
 </body>
+
 </html>
