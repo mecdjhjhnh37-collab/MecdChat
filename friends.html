@@ -21,6 +21,9 @@ content="yes">
 <meta name="apple-mobile-web-app-status-bar-style"
 content="black-translucent">
 
+<meta name="apple-mobile-web-app-title"
+content="Mecd Chat">
+
 <title>Mecd Chat - الأصدقاء</title>
 
 <style>
@@ -32,14 +35,8 @@ padding:0;
 }
 
 body{
-
 min-height:100vh;
-
-font-family:
-Arial,
-Tahoma,
-sans-serif;
-
+font-family:Arial,Tahoma,sans-serif;
 color:white;
 
 background:
@@ -58,101 +55,66 @@ overflow-x:hidden;
 }
 
 .background{
-
 position:fixed;
 inset:0;
-
 overflow:hidden;
-
 pointer-events:none;
-
 z-index:0;
 }
 
 .glow{
-
 position:absolute;
-
 width:300px;
 height:300px;
-
 border-radius:50%;
-
 filter:blur(100px);
-
 opacity:.18;
 }
 
 .glow.one{
-
 background:#00e676;
-
 top:-100px;
 right:-100px;
 }
 
 .glow.two{
-
 background:#2979ff;
-
 bottom:-100px;
 left:-100px;
 }
 
 .app{
-
 position:relative;
-
 z-index:1;
-
 width:100%;
-
 max-width:650px;
-
 min-height:100vh;
-
 margin:auto;
-
 padding:22px 20px 45px;
-
 display:flex;
-
 flex-direction:column;
 }
 
 header{
-
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
-
 margin-bottom:35px;
 }
 
 .brand{
-
 display:flex;
-
 align-items:center;
-
 gap:12px;
 }
 
 .logo{
-
 width:52px;
 height:52px;
-
 display:flex;
-
 align-items:center;
-
 justify-content:center;
-
 border-radius:16px;
-
 font-size:27px;
 
 background:
@@ -168,23 +130,17 @@ rgba(0,230,118,.22);
 }
 
 .brand h2{
-
 font-size:21px;
 }
 
 .brand span{
-
 display:block;
-
 margin-top:4px;
-
 color:#8d9a97;
-
 font-size:12px;
 }
 
 .notification-button{
-
 position:relative;
 
 width:50px;
@@ -205,16 +161,13 @@ font-size:23px;
 cursor:pointer;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
 transition:.2s ease;
 }
 
 .notification-button:hover{
-
 transform:translateY(-2px);
 
 border-color:
@@ -222,20 +175,16 @@ rgba(0,230,118,.35);
 }
 
 .notification-button:active{
-
 transform:scale(.95);
 }
 
 .notification-count{
-
 position:absolute;
 
 top:-5px;
-
 right:-5px;
 
 min-width:21px;
-
 height:21px;
 
 padding:0 5px;
@@ -243,36 +192,29 @@ padding:0 5px;
 display:none;
 
 align-items:center;
-
 justify-content:center;
 
 border-radius:50%;
 
 background:#ff3b30;
-
 color:white;
 
 font-size:11px;
-
 font-weight:bold;
 
 border:2px solid #07110f;
 }
 
 .notification-count.show{
-
 display:flex;
 }
 
 .page-title{
-
 text-align:center;
-
 margin-bottom:30px;
 }
 
 .page-title h1{
-
 font-size:
 clamp(30px,7vw,45px);
 
@@ -280,52 +222,38 @@ margin-bottom:12px;
 }
 
 .page-title h1 span{
-
 color:#00e676;
 }
 
 .page-title p{
-
 color:#9ba7a4;
-
 font-size:14px;
-
 line-height:1.7;
 }
 
 .section-title{
-
 display:flex;
-
 align-items:center;
-
 justify-content:space-between;
 
 margin-bottom:15px;
 
 font-size:21px;
-
 color:#d9e8e3;
 }
 
 .friend-count{
-
 color:#00e676;
-
 font-size:13px;
 }
 
 .friends-list{
-
 display:flex;
-
 flex-direction:column;
-
 gap:12px;
 }
 
 .friend{
-
 width:100%;
 
 padding:15px 17px;
@@ -339,7 +267,6 @@ background:
 rgba(255,255,255,.035);
 
 display:flex;
-
 align-items:center;
 
 gap:14px;
@@ -347,12 +274,10 @@ gap:14px;
 transition:.2s ease;
 
 cursor:pointer;
-
 user-select:none;
 }
 
 .friend:hover{
-
 transform:translateY(-2px);
 
 border-color:
@@ -363,14 +288,11 @@ rgba(255,255,255,.055);
 }
 
 .friend:active{
-
 transform:scale(.98);
 }
 
 .friend-avatar{
-
 width:58px;
-
 height:58px;
 
 flex-shrink:0;
@@ -380,9 +302,7 @@ border-radius:50%;
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
 background:
@@ -399,52 +319,37 @@ font-size:25px;
 }
 
 .friend-avatar img{
-
 width:100%;
-
 height:100%;
-
 object-fit:cover;
 }
 
 .friend-info{
-
 flex:1;
-
 min-width:0;
 }
 
 .friend-name{
-
 font-size:17px;
-
 font-weight:bold;
 
 white-space:nowrap;
-
 overflow:hidden;
-
 text-overflow:ellipsis;
 }
 
 .friend-id{
-
 font-size:11px;
-
 color:#00e676;
-
 margin-top:5px;
 }
 
 .friend-arrow{
-
 font-size:24px;
-
 color:#71807b;
 }
 
 .empty{
-
 padding:35px 20px;
 
 border-radius:22px;
@@ -465,16 +370,14 @@ line-height:1.8;
 }
 
 .empty-icon{
-
 font-size:42px;
-
 margin-bottom:12px;
 }
 
+/* Friend Modal */
+
 .friend-modal{
-
 position:fixed;
-
 inset:0;
 
 z-index:9000;
@@ -482,7 +385,6 @@ z-index:9000;
 display:none;
 
 align-items:center;
-
 justify-content:center;
 
 padding:20px;
@@ -494,16 +396,13 @@ backdrop-filter:blur(9px);
 }
 
 .friend-modal.show{
-
 display:flex;
 }
 
 .friend-modal-box{
-
 position:relative;
 
 width:100%;
-
 max-width:400px;
 
 padding:28px 22px 22px;
@@ -526,40 +425,31 @@ rgba(0,0,0,.65);
 
 text-align:center;
 
-animation:
-modalIn .2s ease;
+animation:modalIn .2s ease;
 }
 
 @keyframes modalIn{
 
 from{
-
 opacity:0;
-
 transform:
 scale(.92)
 translateY(10px);
-
 }
 
 to{
-
 opacity:1;
-
 transform:
 scale(1)
 translateY(0);
-
 }
 
 }
 
 .friend-modal-close{
-
 position:absolute;
 
 top:15px;
-
 right:15px;
 
 width:42px;
@@ -581,7 +471,6 @@ cursor:pointer;
 }
 
 .selected-avatar{
-
 width:100px;
 height:100px;
 
@@ -592,9 +481,7 @@ border-radius:50%;
 overflow:hidden;
 
 display:flex;
-
 align-items:center;
-
 justify-content:center;
 
 background:
@@ -614,45 +501,31 @@ font-size:40px;
 }
 
 .selected-avatar img{
-
 width:100%;
 height:100%;
-
 object-fit:cover;
 }
 
 .selected-name{
-
 font-size:23px;
-
 font-weight:bold;
-
-margin-bottom:25px;
+margin-bottom:8px;
 }
 
 .selected-id{
-
 font-size:13px;
-
 color:#00e676;
-
-margin-top:-18px;
-
-margin-bottom:22px;
+margin-bottom:25px;
 }
 
 .friend-modal-actions{
-
 display:flex;
-
 flex-direction:column;
-
 gap:11px;
 }
 
 .chat-button,
 .remove-friend-button{
-
 width:100%;
 
 padding:16px;
@@ -662,7 +535,6 @@ border-radius:16px;
 font-family:inherit;
 
 font-size:16px;
-
 font-weight:bold;
 
 cursor:pointer;
@@ -671,23 +543,18 @@ transition:.2s ease;
 }
 
 .chat-button{
-
 border:none;
 
 background:#00e889;
-
 color:#00150e;
 }
 
 .chat-button:hover{
-
 background:#00f294;
-
 transform:translateY(-2px);
 }
 
 .remove-friend-button{
-
 border:1px solid
 rgba(255,90,90,.2);
 
@@ -698,21 +565,19 @@ color:#ff9b9b;
 }
 
 .remove-friend-button:hover{
-
 background:
 rgba(255,70,70,.13);
 }
 
 .chat-button:active,
 .remove-friend-button:active{
-
 transform:scale(.98);
 }
 
+/* Notification Modal */
+
 .modal{
-
 position:fixed;
-
 inset:0;
 
 z-index:9999;
@@ -720,7 +585,6 @@ z-index:9999;
 display:none;
 
 align-items:center;
-
 justify-content:center;
 
 padding:20px;
@@ -732,14 +596,11 @@ backdrop-filter:blur(8px);
 }
 
 .modal.show{
-
 display:flex;
 }
 
 .modal-box{
-
 width:100%;
-
 max-width:480px;
 
 max-height:80vh;
@@ -766,23 +627,19 @@ rgba(0,0,0,.6);
 }
 
 .modal-header{
-
 display:flex;
 
 align-items:center;
-
 justify-content:space-between;
 
 margin-bottom:22px;
 }
 
 .modal-header h2{
-
 font-size:22px;
 }
 
 .close-button{
-
 width:40px;
 height:40px;
 
@@ -801,16 +658,12 @@ cursor:pointer;
 }
 
 .request-list{
-
 display:flex;
-
 flex-direction:column;
-
 gap:12px;
 }
 
 .request{
-
 padding:15px;
 
 border-radius:19px;
@@ -823,7 +676,6 @@ rgba(255,255,255,.07);
 }
 
 .request-user{
-
 display:flex;
 
 align-items:center;
@@ -834,7 +686,6 @@ margin-bottom:13px;
 }
 
 .request-avatar{
-
 width:52px;
 height:52px;
 
@@ -852,72 +703,57 @@ rgba(0,230,118,.5);
 display:flex;
 
 align-items:center;
-
 justify-content:center;
 
 font-size:22px;
 }
 
 .request-avatar img{
-
 width:100%;
 height:100%;
-
 object-fit:cover;
 }
 
 .request-name{
-
 font-size:16px;
-
 font-weight:bold;
 }
 
 .request-id{
-
 font-size:12px;
-
 color:#00e676;
-
 margin-top:4px;
 }
 
 .request-actions{
-
 display:flex;
-
 gap:9px;
 }
 
 .accept-button,
 .reject-button{
-
 flex:1;
 
 padding:13px;
 
 border-radius:14px;
 
-border:none;
-
 font-family:inherit;
 
 font-size:14px;
-
 font-weight:bold;
 
 cursor:pointer;
 }
 
 .accept-button{
-
 background:#00e889;
-
 color:#00150e;
+
+border:none;
 }
 
 .reject-button{
-
 background:#171e1b;
 
 color:#ff8e8e;
@@ -928,16 +764,14 @@ rgba(255,100,100,.18);
 
 .accept-button:disabled,
 .reject-button:disabled{
-
 opacity:.5;
-
 cursor:not-allowed;
 }
 
+/* Loading */
+
 .loading{
-
 position:fixed;
-
 inset:0;
 
 z-index:10000;
@@ -945,7 +779,6 @@ z-index:10000;
 display:flex;
 
 align-items:center;
-
 justify-content:center;
 
 flex-direction:column;
@@ -965,7 +798,6 @@ font-size:16px;
 }
 
 .spinner{
-
 width:35px;
 height:35px;
 
@@ -981,15 +813,12 @@ spin .8s linear infinite;
 }
 
 @keyframes spin{
-
 to{
 transform:rotate(360deg);
 }
-
 }
 
 .back-button{
-
 width:100%;
 
 margin-top:30px;
@@ -1016,13 +845,11 @@ transition:.2s ease;
 }
 
 .back-button:hover{
-
 border-color:
 rgba(0,230,118,.3);
 }
 
 footer{
-
 margin-top:auto;
 
 padding-top:40px;
@@ -1037,12 +864,10 @@ font-size:11px;
 @media(max-width:480px){
 
 .app{
-
 padding:18px 15px 35px;
 }
 
 .logo{
-
 width:45px;
 height:45px;
 
@@ -1052,12 +877,10 @@ font-size:23px;
 }
 
 .brand h2{
-
 font-size:18px;
 }
 
 .notification-button{
-
 width:45px;
 height:45px;
 
@@ -1065,49 +888,40 @@ font-size:21px;
 }
 
 .page-title h1{
-
 font-size:31px;
 }
 
 .friend{
-
 padding:13px;
 }
 
 .friend-avatar{
-
 width:54px;
 height:54px;
 }
 
 .friend-name{
-
 font-size:16px;
 }
 
 .friend-arrow{
-
 font-size:21px;
 }
 
 .modal-box{
-
 padding:19px;
 }
 
 .friend-modal-box{
-
 padding:25px 18px 20px;
 }
 
 .selected-avatar{
-
 width:90px;
 height:90px;
 }
 
 .selected-name{
-
 font-size:21px;
 }
 
@@ -1128,6 +942,8 @@ font-size:21px;
 </div>
 
 
+<!-- Loading -->
+
 <div
 id="loading"
 class="loading"
@@ -1141,6 +957,8 @@ class="loading"
 
 </div>
 
+
+<!-- App -->
 
 <main
 id="app"
@@ -1232,1387 +1050,10 @@ class="friend-count"
 id="friendsList"
 class="friends-list"
 >
-
 </div>
 
 </section>
 
 
 <button
-id="backBtn"
-class="back-button"
-type="button"
->
-
-← العودة إلى Mecd Chat
-
-</button>
-
-
-<footer>
-
-Mecd Chat © 2026
-
-</footer>
-
-</main>
-
-
-<div
-id="friendModal"
-class="friend-modal"
->
-
-<div class="friend-modal-box">
-
-<button
-id="closeFriendModal"
-class="friend-modal-close"
-type="button"
->
-×
-</button>
-
-
-<div
-id="selectedAvatar"
-class="selected-avatar"
->
-👤
-</div>
-
-
-<div
-id="selectedName"
-class="selected-name"
->
-مستخدم Mecd
-</div>
-
-
-<div
-id="selectedId"
-class="selected-id"
->
-</div>
-
-
-<div class="friend-modal-actions">
-
-<button
-id="chatButton"
-class="chat-button"
-type="button"
->
-
-💬 دردشة
-
-</button>
-
-
-<button
-id="removeFriendButton"
-class="remove-friend-button"
-type="button"
->
-
-❌ إلغاء الصداقة
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div
-id="notificationModal"
-class="modal"
->
-
-<div class="modal-box">
-
-<div class="modal-header">
-
-<h2>
-🔔 طلبات الصداقة
-</h2>
-
-<button
-id="closeModalBtn"
-class="close-button"
-type="button"
->
-×
-</button>
-
-</div>
-
-
-<div
-id="requestList"
-class="request-list"
->
-
-</div>
-
-</div>
-
-</div>
-
-
-<script type="module">
-
-import {
-initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getAuth,
-onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-getFirestore,
-doc,
-getDoc,
-setDoc,
-deleteDoc,
-collection,
-getDocs,
-serverTimestamp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-apiKey:
-"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
-
-authDomain:
-"mecd-tools.firebaseapp.com",
-
-projectId:
-"mecd-tools",
-
-storageBucket:
-"mecd-tools.firebasestorage.app",
-
-messagingSenderId:
-"643005547408",
-
-appId:
-"1:643005547408:web:b1719060ec340dd0e0a915",
-
-measurementId:
-"G-0VKYR3TQV2"
-
-};
-
-
-const firebaseApp =
-initializeApp(
-firebaseConfig
-);
-
-const auth =
-getAuth(
-firebaseApp
-);
-
-const db =
-getFirestore(
-firebaseApp
-);
-
-
-const loading =
-document.getElementById(
-"loading"
-);
-
-const app =
-document.getElementById(
-"app"
-);
-
-const friendsList =
-document.getElementById(
-"friendsList"
-);
-
-const friendCount =
-document.getElementById(
-"friendCount"
-);
-
-const notificationsBtn =
-document.getElementById(
-"notificationsBtn"
-);
-
-const notificationCount =
-document.getElementById(
-"notificationCount"
-);
-
-const notificationModal =
-document.getElementById(
-"notificationModal"
-);
-
-const closeModalBtn =
-document.getElementById(
-"closeModalBtn"
-);
-
-const requestList =
-document.getElementById(
-"requestList"
-);
-
-const backBtn =
-document.getElementById(
-"backBtn"
-);
-
-const friendModal =
-document.getElementById(
-"friendModal"
-);
-
-const closeFriendModal =
-document.getElementById(
-"closeFriendModal"
-);
-
-const selectedAvatar =
-document.getElementById(
-"selectedAvatar"
-);
-
-const selectedName =
-document.getElementById(
-"selectedName"
-);
-
-const selectedId =
-document.getElementById(
-"selectedId"
-);
-
-const chatButton =
-document.getElementById(
-"chatButton"
-);
-
-const removeFriendButton =
-document.getElementById(
-"removeFriendButton"
-);
-
-
-let currentUser = null;
-
-let selectedFriend = null;
-
-
-const mecdChatURL =
-"./index.html";
-
-
-const chatURL =
-"./chat.html";
-
-
-function defaultAvatar(){
-
-return `
-<div
-style="
-width:100%;
-height:100%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:25px;
-"
->
-👤
-</div>
-`;
-
-}
-
-
-async function getUserData(uid){
-
-try{
-
-const userRef =
-doc(
-db,
-"users",
-uid
-);
-
-const userDoc =
-await getDoc(
-userRef
-);
-
-if(!userDoc.exists()){
-
-return {
-
-name:
-"مستخدم Mecd",
-
-photo:
-"",
-
-chatID:
-""
-
-};
-
-}
-
-const data =
-userDoc.data();
-
-return {
-
-name:
-data.name ||
-"مستخدم Mecd",
-
-photo:
-data.photo ||
-data.photoURL ||
-"",
-
-chatID:
-data.chatID ||
-""
-
-};
-
-}catch(error){
-
-console.error(
-"Get user error:",
-error
-);
-
-return {
-
-name:
-"مستخدم Mecd",
-
-photo:
-"",
-
-chatID:
-""
-
-};
-
-}
-
-}
-
-
-function escapeHTML(text){
-
-return String(text || "")
-
-.replaceAll(
-"&",
-"&amp;"
-)
-
-.replaceAll(
-"<",
-"&lt;"
-)
-
-.replaceAll(
-">",
-"&gt;"
-)
-
-.replaceAll(
-'"',
-"&quot;"
-)
-
-.replaceAll(
-"'",
-"&#039;"
-);
-
-}
-
-
-/* =========================
-   تحميل الأصدقاء
-========================= */
-
-async function loadFriends(){
-
-friendsList.innerHTML = "";
-
-try{
-
-const friendsRef =
-collection(
-db,
-"users",
-currentUser.uid,
-"friends"
-);
-
-const friendsSnapshot =
-await getDocs(
-friendsRef
-);
-
-if(friendsSnapshot.empty){
-
-friendCount.textContent =
-"0";
-
-friendsList.innerHTML = `
-
-<div class="empty">
-
-<div class="empty-icon">
-👥
-</div>
-
-لا يوجد لديك أصدقاء حتى الآن.
-
-<br>
-
-يمكنك البحث عن مستخدم وإرسال طلب صداقة.
-
-</div>
-
-`;
-
-return;
-
-}
-
-let count = 0;
-
-for(
-const friendDoc
-of friendsSnapshot.docs
-){
-
-const friendUID =
-friendDoc.id;
-
-const data =
-await getUserData(
-friendUID
-);
-
-const friendElement =
-document.createElement(
-"div"
-);
-
-friendElement.className =
-"friend";
-
-let avatarHTML =
-defaultAvatar();
-
-if(data.photo){
-
-avatarHTML = `
-
-<img
-src="${escapeHTML(data.photo)}"
-alt="صورة المستخدم"
->
-
-`;
-
-}
-
-friendElement.innerHTML = `
-
-<div class="friend-avatar">
-
-${avatarHTML}
-
-</div>
-
-<div class="friend-info">
-
-<div class="friend-name">
-
-${escapeHTML(data.name)}
-
-</div>
-
-<div class="friend-id">
-
-${escapeHTML(
-data.chatID
-?
-"ID: " + data.chatID
-:
-""
-)}
-
-</div>
-
-</div>
-
-<div class="friend-arrow">
-
-←
-
-</div>
-
-`;
-
-friendElement.addEventListener(
-
-"click",
-
-()=>{
-
-selectedFriend = {
-
-uid:
-friendUID,
-
-name:
-data.name,
-
-photo:
-data.photo,
-
-chatID:
-data.chatID
-
-};
-
-selectedName.textContent =
-data.name;
-
-selectedId.textContent =
-data.chatID
-?
-"ID: " + data.chatID
-:
-"";
-
-if(data.photo){
-
-selectedAvatar.innerHTML = `
-
-<img
-src="${escapeHTML(data.photo)}"
-alt="صورة المستخدم"
->
-
-`;
-
-}else{
-
-selectedAvatar.innerHTML =
-"👤";
-
-}
-
-friendModal.classList.add(
-"show"
-);
-
-}
-
-);
-
-friendsList.appendChild(
-friendElement
-);
-
-count++;
-
-}
-
-friendCount.textContent =
-count;
-
-}catch(error){
-
-console.error(
-"Load friends error:",
-error
-);
-
-friendCount.textContent =
-"0";
-
-friendsList.innerHTML = `
-
-<div class="empty">
-
-<div class="empty-icon">
-⚠️
-</div>
-
-تعذر تحميل قائمة الأصدقاء.
-
-<br>
-
-${escapeHTML(error.message)}
-
-</div>
-
-`;
-
-}
-
-}
-
-
-/* =========================
-   فتح الدردشة
-========================= */
-
-chatButton.addEventListener(
-
-"click",
-
-()=>{
-
-if(!selectedFriend){
-
-return;
-
-}
-
-window.location.href =
-chatURL +
-"?friend=" +
-encodeURIComponent(
-selectedFriend.uid
-);
-
-}
-
-);
-
-
-/* =========================
-   إلغاء الصداقة
-========================= */
-
-removeFriendButton.addEventListener(
-
-"click",
-
-async()=>{
-
-if(!currentUser ||
-!selectedFriend){
-
-return;
-
-}
-
-const confirmed =
-confirm(
-"هل تريد إلغاء الصداقة مع " +
-selectedFriend.name +
-"؟"
-);
-
-if(!confirmed){
-
-return;
-
-}
-
-removeFriendButton.disabled =
-true;
-
-removeFriendButton.textContent =
-"جاري الإلغاء...";
-
-try{
-
-const myFriendRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friends",
-selectedFriend.uid
-);
-
-const otherFriendRef =
-doc(
-db,
-"users",
-selectedFriend.uid,
-"friends",
-currentUser.uid
-);
-
-await deleteDoc(
-myFriendRef
-);
-
-await deleteDoc(
-otherFriendRef
-);
-
-friendModal.classList.remove(
-"show"
-);
-
-selectedFriend = null;
-
-await loadFriends();
-
-}catch(error){
-
-console.error(
-"Remove friend error:",
-error
-);
-
-alert(
-"تعذر إلغاء الصداقة:\n" +
-error.message
-);
-
-}finally{
-
-removeFriendButton.disabled =
-false;
-
-removeFriendButton.textContent =
-"❌ إلغاء الصداقة";
-
-}
-
-}
-);
-
-
-/* =========================
-   تحميل طلبات الصداقة
-========================= */
-
-async function loadFriendRequests(){
-
-requestList.innerHTML = "";
-
-try{
-
-const requestsRef =
-collection(
-db,
-"friendRequests"
-);
-
-const requestsSnapshot =
-await getDocs(
-requestsRef
-);
-
-const requests = [];
-
-requestsSnapshot.forEach(
-(requestDoc)=>{
-
-const data =
-requestDoc.data();
-
-if(
-data.toUid ===
-currentUser.uid &&
-data.status ===
-"pending"
-){
-
-requests.push({
-
-id:
-requestDoc.id,
-
-...data
-
-});
-
-}
-
-}
-);
-
-notificationCount.textContent =
-requests.length;
-
-if(requests.length > 0){
-
-notificationCount.classList.add(
-"show"
-);
-
-}else{
-
-notificationCount.classList.remove(
-"show"
-);
-
-}
-
-if(requests.length === 0){
-
-requestList.innerHTML = `
-
-<div class="empty">
-
-<div class="empty-icon">
-🔔
-</div>
-
-لا توجد طلبات صداقة جديدة.
-
-</div>
-
-`;
-
-return;
-
-}
-
-for(
-const request
-of requests
-){
-
-const requestElement =
-document.createElement(
-"div"
-);
-
-requestElement.className =
-"request";
-
-let avatarHTML =
-"👤";
-
-if(request.fromPhoto){
-
-avatarHTML = `
-
-<img
-src="${escapeHTML(request.fromPhoto)}"
-alt="صورة المستخدم"
->
-
-`;
-
-}
-
-requestElement.innerHTML = `
-
-<div class="request-user">
-
-<div class="request-avatar">
-
-${avatarHTML}
-
-</div>
-
-<div>
-
-<div class="request-name">
-
-${escapeHTML(
-request.fromName ||
-"مستخدم Mecd"
-)}
-
-</div>
-
-<div class="request-id">
-
-${escapeHTML(
-request.fromUid
-)}
-
-</div>
-
-</div>
-
-</div>
-
-<div class="request-actions">
-
-<button
-class="accept-button"
-type="button"
->
-قبول
-</button>
-
-<button
-class="reject-button"
-type="button"
->
-رفض
-</button>
-
-</div>
-
-`;
-
-const acceptButton =
-requestElement.querySelector(
-".accept-button"
-);
-
-const rejectButton =
-requestElement.querySelector(
-".reject-button"
-);
-
-
-acceptButton.addEventListener(
-
-"click",
-
-async()=>{
-
-acceptButton.disabled =
-true;
-
-rejectButton.disabled =
-true;
-
-try{
-
-const myFriendRef =
-doc(
-db,
-"users",
-currentUser.uid,
-"friends",
-request.fromUid
-);
-
-const otherFriendRef =
-doc(
-db,
-"users",
-request.fromUid,
-"friends",
-currentUser.uid
-);
-
-await setDoc(
-myFriendRef,
-{
-
-uid:
-request.fromUid,
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-await setDoc(
-otherFriendRef,
-{
-
-uid:
-currentUser.uid,
-
-createdAt:
-serverTimestamp()
-
-}
-);
-
-await setDoc(
-
-doc(
-db,
-"friendRequests",
-request.id
-),
-
-{
-
-status:
-"accepted",
-
-acceptedAt:
-serverTimestamp()
-
-},
-
-{
-
-merge:true
-
-}
-
-);
-
-await loadFriendRequests();
-
-await loadFriends();
-
-}catch(error){
-
-console.error(
-"Accept request error:",
-error
-);
-
-alert(
-"تعذر قبول طلب الصداقة:\n" +
-error.message
-);
-
-acceptButton.disabled =
-false;
-
-rejectButton.disabled =
-false;
-
-}
-
-}
-
-);
-
-
-rejectButton.addEventListener(
-
-"click",
-
-async()=>{
-
-acceptButton.disabled =
-true;
-
-rejectButton.disabled =
-true;
-
-try{
-
-await setDoc(
-
-doc(
-db,
-"friendRequests",
-request.id
-),
-
-{
-
-status:
-"rejected",
-
-rejectedAt:
-serverTimestamp()
-
-},
-
-{
-
-merge:true
-
-}
-
-);
-
-await loadFriendRequests();
-
-}catch(error){
-
-console.error(
-"Reject request error:",
-error
-);
-
-alert(
-"تعذر رفض الطلب:\n" +
-error.message
-);
-
-acceptButton.disabled =
-false;
-
-rejectButton.disabled =
-false;
-
-}
-
-}
-
-);
-
-requestList.appendChild(
-requestElement
-);
-
-}
-
-}catch(error){
-
-console.error(
-"Load requests error:",
-error
-);
-
-requestList.innerHTML = `
-
-<div class="empty">
-
-<div class="empty-icon">
-⚠️
-</div>
-
-تعذر تحميل طلبات الصداقة.
-
-<br>
-
-${escapeHTML(error.message)}
-
-</div>
-
-`;
-
-}
-
-}
-
-
-/* =========================
-   زر الإشعارات
-========================= */
-
-notificationsBtn.addEventListener(
-
-"click",
-
-async()=>{
-
-notificationModal.classList.add(
-"show"
-);
-
-await loadFriendRequests();
-
-}
-
-);
-
-
-/* =========================
-   إغلاق الطلبات
-========================= */
-
-closeModalBtn.addEventListener(
-
-"click",
-
-()=>{
-
-notificationModal.classList.remove(
-"show"
-);
-
-}
-
-);
-
-
-/* =========================
-   إغلاق نافذة الصديق
-========================= */
-
-closeFriendModal.addEventListener(
-
-"click",
-
-()=>{
-
-friendModal.classList.remove(
-"show"
-);
-
-selectedFriend = null;
-
-}
-
-);
-
-
-/* =========================
-   الضغط خارج النافذة
-========================= */
-
-friendModal.addEventListener(
-
-"click",
-
-(event)=>{
-
-if(
-event.target ===
-friendModal
-){
-
-friendModal.classList.remove(
-"show"
-);
-
-selectedFriend = null;
-
-}
-
-}
-);
-
-
-notificationModal.addEventListener(
-
-"click",
-
-(event)=>{
-
-if(
-event.target ===
-notificationModal
-){
-
-notificationModal.classList.remove(
-"show"
-);
-
-}
-
-}
-);
-
-
-/* =========================
-   زر العودة
-========================= */
-
-backBtn.addEventListener(
-
-"click",
-
-()=>{
-
-window.location.href =
-mecdChatURL;
-
-}
-
-);
-
-
-/* =========================
-   تسجيل الدخول
-========================= */
-
-onAuthStateChanged(
-
-auth,
-
-async(user)=>{
-
-if(!user){
-
-window.location.href =
-"https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
-
-return;
-
-}
-
-currentUser =
-user;
-
-try{
-
-await loadFriends();
-
-await loadFriendRequests();
-
-loading.style.display =
-"none";
-
-app.style.display =
-"flex";
-
-}catch(error){
-
-console.error(
-"Initialization error:",
-error
-);
-
-loading.style.display =
-"none";
-
-app.style.display =
-"flex";
-
-friendsList.innerHTML = `
-
-<div class="empty">
-
-<div class="empty-icon">
-⚠️
-</div>
-
-حدث خطأ أثناء تحميل الصفحة.
-
-<br>
-
-${escapeHTML(error.message)}
-
-</div>
-
-`;
-
-}
-
-}
-
-);
-
-</script>
-
-</body>
-
-</html>
+id
