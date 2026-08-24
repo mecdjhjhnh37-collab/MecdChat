@@ -241,13 +241,7 @@ transform:rotate(360deg);
 </style>
 </head>
 
-
 <body>
-
-
-<!-- =========================
-     شاشة التحميل
-========================= -->
 
 <div id="loading" class="loading">
 
@@ -259,10 +253,6 @@ transform:rotate(360deg);
 
 </div>
 
-
-<!-- =========================
-     شاشة الخطأ
-========================= -->
 
 <div id="errorScreen"
 class="error-screen"
@@ -279,76 +269,46 @@ style="display:none;">
 </div>
 
 
-<!-- =========================
-     التطبيق
-========================= -->
-
 <main id="app"
 class="app"
 style="display:none;">
 
-
 <header>
 
-
-<button id="backButton"
-class="back">
+<button id="backButton" class="back">
 →
 </button>
 
-
-<div id="friendAvatar"
-class="avatar">
+<div id="friendAvatar" class="avatar">
 👤
 </div>
 
-
 <div class="user-info">
 
-
-<div id="friendName"
-class="user-name">
+<div id="friendName" class="user-name">
 جارٍ التحميل...
 </div>
 
-
-<div id="friendStatus"
-class="user-status">
-● غير متصل
+<div id="friendStatus" class="user-status">
+● جاري التحقق...
 </div>
 
-
 </div>
-
 
 </header>
 
 
-<!-- =========================
-     الرسائل
-========================= -->
-
-<div id="messages"
-class="messages">
+<div id="messages" class="messages">
 
 <div class="empty">
-
-💬
-<br>
-
+💬<br>
 ابدأ المحادثة الآن
-
 </div>
 
 </div>
 
-
-<!-- =========================
-     إدخال الرسالة
-========================= -->
 
 <div class="input-area">
-
 
 <input
 id="messageInput"
@@ -357,14 +317,11 @@ placeholder="اكتب رسالة..."
 autocomplete="off"
 >
 
-
 <button id="sendButton">
 ➤
 </button>
 
-
 </div>
-
 
 </main>
 
@@ -373,7 +330,7 @@ autocomplete="off"
 
 
 /* =====================================================
-   Firebase App
+   Firebase
 ===================================================== */
 
 import {
@@ -383,10 +340,6 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-/* =====================================================
-   Firebase Authentication
-===================================================== */
-
 import {
 getAuth,
 onAuthStateChanged
@@ -394,10 +347,6 @@ onAuthStateChanged
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
-/* =====================================================
-   Firebase Firestore
-===================================================== */
 
 import {
 getFirestore,
@@ -414,10 +363,6 @@ serverTimestamp
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-/* =====================================================
-   Firebase Realtime Database
-===================================================== */
 
 import {
 getDatabase,
@@ -468,20 +413,11 @@ measurementId:
 const firebaseApp =
 initializeApp(firebaseConfig);
 
-
-/* Authentication */
-
 const auth =
 getAuth(firebaseApp);
 
-
-/* Firestore */
-
 const db =
 getFirestore(firebaseApp);
-
-
-/* Realtime Database */
 
 const realtimeDB =
 getDatabase(firebaseApp);
@@ -494,42 +430,32 @@ getDatabase(firebaseApp);
 const loading =
 document.getElementById("loading");
 
-
 const errorScreen =
 document.getElementById("errorScreen");
-
 
 const errorText =
 document.getElementById("errorText");
 
-
 const app =
 document.getElementById("app");
-
 
 const friendAvatar =
 document.getElementById("friendAvatar");
 
-
 const friendName =
 document.getElementById("friendName");
-
 
 const friendStatus =
 document.getElementById("friendStatus");
 
-
 const messages =
 document.getElementById("messages");
-
 
 const messageInput =
 document.getElementById("messageInput");
 
-
 const sendButton =
 document.getElementById("sendButton");
-
 
 const backButton =
 document.getElementById("backButton");
@@ -547,7 +473,7 @@ let chatID = null;
 
 
 /* =====================================================
-   تنظيف النص
+   تنظيف HTML
 ===================================================== */
 
 function escapeHTML(value){
@@ -555,50 +481,40 @@ function escapeHTML(value){
 return String(value || "")
 
 .replace(/&/g,"&amp;")
-
 .replace(/</g,"&lt;")
-
 .replace(/>/g,"&gt;")
-
 .replace(/"/g,"&quot;")
-
 .replace(/'/g,"&#039;");
 
 }
 
 
 /* =====================================================
-   إظهار الخطأ
+   عرض الخطأ
 ===================================================== */
 
 function showError(message){
 
-loading.style.display =
-"none";
+loading.style.display = "none";
 
-app.style.display =
-"none";
+app.style.display = "none";
 
-errorText.textContent =
-message;
+errorText.textContent = message;
 
-errorScreen.style.display =
-"flex";
+errorScreen.style.display = "flex";
 
 }
 
 
 /* =====================================================
-   إنشاء Chat ID
+   Chat ID
 ===================================================== */
 
 function createChatID(uid1,uid2){
 
 return [
-
 uid1,
 uid2
-
 ]
 .sort()
 .join("_");
@@ -607,60 +523,65 @@ uid2
 
 
 /* =====================================================
-   🟢 نظام متصل / غير متصل
+   🟢 تسجيل المستخدم كـ متصل
 ===================================================== */
 
-function setMyPresence(){
+async function setupPresence(){
 
 if(!currentUser){
+
 return;
+
 }
 
+const uid =
+currentUser.uid;
 
-/* مكان حالة المستخدم */
+
+/*
+   مرجع حالة المستخدم:
+   presence/UID
+*/
 
 const presenceRef =
 ref(
 realtimeDB,
-"presence/" +
-currentUser.uid
-);
-
-
-/* تسجيل المستخدم متصل */
-
-set(
-presenceRef,
-{
-
-uid:
-currentUser.uid,
-
-online:
-true,
-
-lastSeen:
-realtimeServerTimestamp()
-
-}
+"presence/" + uid
 );
 
 
 /*
-عند إغلاق الصفحة أو انقطاع الاتصال
-Firebase سيغير الحالة تلقائيًا
+   أولاً نخبر Firebase:
+   عند انقطاع الاتصال
+   اجعل المستخدم غير متصل
 */
 
-onDisconnect(
+await onDisconnect(
 presenceRef
 )
 .set({
 
-uid:
-currentUser.uid,
+uid:uid,
 
-online:
-false,
+online:false,
+
+lastSeen:
+realtimeServerTimestamp()
+
+});
+
+
+/*
+   ثم نسجل أنه متصل الآن
+*/
+
+await set(
+presenceRef,
+{
+
+uid:uid,
+
+online:true,
 
 lastSeen:
 realtimeServerTimestamp()
@@ -671,22 +592,29 @@ realtimeServerTimestamp()
 
 
 /* =====================================================
-   مراقبة حالة الصديق
+   🟢 مراقبة الصديق
 ===================================================== */
 
-function listenFriendStatus(friendUID){
+function listenFriendPresence(){
 
-const statusRef =
+if(!friendUser){
+
+return;
+
+}
+
+
+const presenceRef =
 ref(
 realtimeDB,
 "presence/" +
-friendUID
+friendUser.uid
 );
 
 
 onValue(
 
-statusRef,
+presenceRef,
 
 (snapshot)=>{
 
@@ -699,18 +627,13 @@ data &&
 data.online === true
 ){
 
-/* 🟢 متصل */
-
 friendStatus.textContent =
 "● متصل";
 
 friendStatus.style.color =
 "#00e889";
 
-
 }else{
-
-/* ⚫ غير متصل */
 
 friendStatus.textContent =
 "● غير متصل";
@@ -743,17 +666,15 @@ friendStatus.style.color =
 
 
 /* =====================================================
-   قراءة بيانات الصديق
+   تحميل الصديق
 ===================================================== */
 
 async function loadFriend(){
-
 
 const params =
 new URLSearchParams(
 window.location.search
 );
-
 
 const friendUID =
 params.get("friend");
@@ -783,9 +704,7 @@ return false;
 }
 
 
-/* =====================================================
-   جلب المستخدم
-===================================================== */
+/* جلب المستخدم */
 
 const friendRef =
 doc(
@@ -793,7 +712,6 @@ db,
 "users",
 friendUID
 );
-
 
 const friendDoc =
 await getDoc(
@@ -818,8 +736,7 @@ friendDoc.data();
 
 friendUser = {
 
-uid:
-friendUID,
+uid:friendUID,
 
 name:
 data.name ||
@@ -837,32 +754,21 @@ data.chatID ||
 };
 
 
-/* =====================================================
-   عرض اسم الصديق
-===================================================== */
+/* عرض الاسم */
 
 friendName.textContent =
 friendUser.name;
 
 
-/* =====================================================
-   عرض صورة الصديق
-===================================================== */
+/* عرض الصورة */
 
-if(
-friendUser.photo
-){
+if(friendUser.photo){
 
 friendAvatar.innerHTML = `
 
 <img
-
-src="${escapeHTML(
-friendUser.photo
-)}"
-
+src="${escapeHTML(friendUser.photo)}"
 alt="صورة المستخدم"
-
 >
 
 `;
@@ -875,23 +781,16 @@ friendAvatar.textContent =
 }
 
 
-/* =====================================================
-   إنشاء معرف المحادثة
-===================================================== */
+/* إنشاء Chat ID */
 
 chatID =
 createChatID(
-
 currentUser.uid,
-
 friendUser.uid
-
 );
 
 
-/* =====================================================
-   إنشاء المحادثة إذا لم تكن موجودة
-===================================================== */
+/* إنشاء المحادثة */
 
 const chatRef =
 doc(
@@ -900,29 +799,21 @@ db,
 chatID
 );
 
-
 const chatDoc =
 await getDoc(
 chatRef
 );
 
 
-if(
-!chatDoc.exists()
-){
+if(!chatDoc.exists()){
 
 await setDoc(
-
 chatRef,
-
 {
 
 members:[
-
 currentUser.uid,
-
 friendUser.uid
-
 ],
 
 createdAt:
@@ -935,7 +826,6 @@ lastMessageAt:
 serverTimestamp()
 
 }
-
 );
 
 }
@@ -952,31 +842,22 @@ return true;
 
 function listenMessages(){
 
-
 const messagesRef =
 collection(
-
 db,
-
 "chats",
-
 chatID,
-
 "messages"
-
 );
 
 
 const messagesQuery =
 query(
-
 messagesRef,
-
 orderBy(
 "createdAt",
 "asc"
 )
-
 );
 
 
@@ -986,21 +867,16 @@ messagesQuery,
 
 (snapshot)=>{
 
-
-messages.innerHTML =
-"";
+messages.innerHTML = "";
 
 
-if(
-snapshot.empty
-){
+if(snapshot.empty){
 
 messages.innerHTML = `
 
 <div class="empty">
 
-💬
-<br>
+💬<br>
 
 ابدأ المحادثة الآن
 
@@ -1017,40 +893,24 @@ snapshot.forEach(
 
 (messageDoc)=>{
 
-
 const data =
 messageDoc.data();
 
-
 const message =
-document.createElement(
-"div"
-);
-
+document.createElement("div");
 
 message.className =
-
 "message " +
 
 (
-
 data.senderId ===
 currentUser.uid
-
 ?
-
 "mine"
-
 :
-
 "other"
-
 );
 
-
-/* =====================================================
-   نص الرسالة
-===================================================== */
 
 const text =
 escapeHTML(
@@ -1058,40 +918,22 @@ data.text
 );
 
 
-/* =====================================================
-   الوقت
-===================================================== */
-
-let time =
-"";
+let time = "";
 
 
-if(
-data.createdAt
-){
+if(data.createdAt){
 
 try{
 
 time =
-
 data.createdAt
-
 .toDate()
-
 .toLocaleTimeString(
-
 "ar",
-
 {
-
-hour:
-"2-digit",
-
-minute:
-"2-digit"
-
+hour:"2-digit",
+minute:"2-digit"
 }
-
 );
 
 }catch(e){}
@@ -1099,18 +941,12 @@ minute:
 }
 
 
-/* =====================================================
-   بناء الرسالة
-===================================================== */
-
 message.innerHTML = `
 
 ${text}
 
 <span class="time">
-
 ${time}
-
 </span>
 
 `;
@@ -1120,13 +956,8 @@ messages.appendChild(
 message
 );
 
-}
+});
 
-
-);
-
-
-/* النزول لآخر رسالة */
 
 messages.scrollTop =
 messages.scrollHeight;
@@ -1157,13 +988,14 @@ showError(
 
 async function sendMessage(){
 
-
 const text =
 messageInput.value.trim();
 
 
 if(!text){
+
 return;
+
 }
 
 
@@ -1183,33 +1015,20 @@ true;
 
 try{
 
-
 const messagesRef =
 collection(
-
 db,
-
 "chats",
-
 chatID,
-
 "messages"
-
 );
 
 
-/* =====================================================
-   إضافة الرسالة
-===================================================== */
-
 await addDoc(
-
 messagesRef,
-
 {
 
-text:
-text,
+text:text,
 
 senderId:
 currentUser.uid,
@@ -1218,13 +1037,10 @@ createdAt:
 serverTimestamp()
 
 }
-
 );
 
 
-/* =====================================================
-   تحديث آخر رسالة
-===================================================== */
+/* تحديث آخر رسالة */
 
 await setDoc(
 
@@ -1246,17 +1062,12 @@ serverTimestamp()
 
 {
 
-merge:
-true
+merge:true
 
 }
 
 );
 
-
-/* =====================================================
-   تنظيف الإدخال
-===================================================== */
 
 messageInput.value =
 "";
@@ -1275,7 +1086,6 @@ alert(
 "تعذر إرسال الرسالة: " +
 error.message
 );
-
 
 }finally{
 
@@ -1297,7 +1107,6 @@ auth,
 
 async(user)=>{
 
-
 if(!user){
 
 showError(
@@ -1309,25 +1118,22 @@ return;
 }
 
 
-/* حفظ المستخدم */
-
 currentUser =
 user;
 
 
-/* =====================================================
-   بدء حالة المستخدم
-===================================================== */
-
-setMyPresence();
-
-
 try{
 
+/*
+   تسجيل هذا المستخدم كـ متصل
+*/
 
-/* =====================================================
+await setupPresence();
+
+
+/*
    تحميل الصديق
-===================================================== */
+*/
 
 const success =
 await loadFriend();
@@ -1340,32 +1146,29 @@ return;
 }
 
 
-/* =====================================================
+/*
    مراقبة حالة الصديق
-===================================================== */
+*/
 
-listenFriendStatus(
-friendUser.uid
-);
+listenFriendPresence();
 
 
-/* =====================================================
-   تحميل الرسائل
-===================================================== */
+/*
+   مراقبة الرسائل
+*/
 
 listenMessages();
 
 
-/* =====================================================
+/*
    إظهار التطبيق
-===================================================== */
+*/
 
 loading.style.display =
 "none";
 
 app.style.display =
 "flex";
-
 
 messageInput.focus();
 
@@ -1378,7 +1181,8 @@ error
 );
 
 showError(
-"حدث خطأ أثناء فتح الدردشة. تأكد من Firestore Rules."
+"حدث خطأ أثناء فتح الدردشة: " +
+error.message
 );
 
 }
@@ -1391,16 +1195,13 @@ showError(
 ===================================================== */
 
 sendButton.addEventListener(
-
 "click",
-
 sendMessage
-
 );
 
 
 /* =====================================================
-   زر Enter
+   Enter
 ===================================================== */
 
 messageInput.addEventListener(
@@ -1409,10 +1210,7 @@ messageInput.addEventListener(
 
 (event)=>{
 
-
-if(
-event.key === "Enter"
-){
+if(event.key === "Enter"){
 
 event.preventDefault();
 
@@ -1426,7 +1224,7 @@ sendMessage();
 
 
 /* =====================================================
-   زر الرجوع
+   الرجوع
 ===================================================== */
 
 backButton.addEventListener(
@@ -1444,5 +1242,4 @@ history.back();
 </script>
 
 </body>
-
 </html>
