@@ -1,23 +1,25 @@
 {
-  "name": "Mecd Chat",
-  "short_name": "Mecd Chat",
-  "description": "دردشة وغرف خاصة بين المستخدمين",
-  "start_url": "./",
+  "name": "Mecd Tools",
+  "short_name": "Mecd Tools",
+  "description": "مجموعة أدوات وخدمات Mecd",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#050807",
-  "theme_color": "#050807",
+  "background_color": "#020707",
+  "theme_color": "#061712",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512-17.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
