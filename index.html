@@ -1376,6 +1376,19 @@ error
 }
 
 </script>
+   <script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => {
+        console.log("Service Worker جاهز");
+      })
+      .catch(error => {
+        console.error("Service Worker:", error);
+      });
+  });
+}
+</script>
 
 </body>
 
