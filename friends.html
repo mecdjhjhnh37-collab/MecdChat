@@ -1,1 +1,2064 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#050807">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Mecd Chat - الأصدقاء</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+min-height:100vh;
+font-family:Arial,Tahoma,sans-serif;
+color:white;
+
+background:
+radial-gradient(
+circle at 50% 0%,
+#123d35 0%,
+transparent 35%
+),
+linear-gradient(
+180deg,
+#07110f 0%,
+#020504 100%
+);
+
+overflow-x:hidden;
+}
+
+
+/* =========================
+   الخلفية
+========================= */
+
+.background{
+position:fixed;
+inset:0;
+overflow:hidden;
+pointer-events:none;
+z-index:0;
+}
+
+.glow{
+position:absolute;
+width:300px;
+height:300px;
+border-radius:50%;
+filter:blur(100px);
+opacity:.18;
+}
+
+.glow.one{
+background:#00e676;
+top:-100px;
+right:-100px;
+}
+
+.glow.two{
+background:#2979ff;
+bottom:-100px;
+left:-100px;
+}
+
+
+/* =========================
+   التطبيق
+========================= */
+
+.app{
+position:relative;
+z-index:1;
+
+width:100%;
+max-width:650px;
+
+min-height:100vh;
+
+margin:auto;
+
+padding:22px 20px 45px;
+
+display:flex;
+flex-direction:column;
+}
+
+
+/* =========================
+   الهيدر
+========================= */
+
+header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+margin-bottom:35px;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.logo{
+width:52px;
+height:52px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:16px;
+
+font-size:27px;
+
+background:
+linear-gradient(
+135deg,
+#00e676,
+#00a85a
+);
+
+box-shadow:
+0 10px 30px
+rgba(0,230,118,.22);
+}
+
+.brand h2{
+font-size:21px;
+}
+
+.brand span{
+display:block;
+margin-top:4px;
+
+color:#8d9a97;
+font-size:12px;
+}
+
+
+/* =========================
+   الجرس
+========================= */
+
+.notification-button{
+
+position:relative;
+
+width:50px;
+height:50px;
+
+border-radius:17px;
+
+border:1px solid
+rgba(255,255,255,.09);
+
+background:
+rgba(255,255,255,.045);
+
+color:white;
+
+font-size:23px;
+
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+transition:.2s ease;
+}
+
+.notification-button:hover{
+transform:translateY(-2px);
+
+border-color:
+rgba(0,230,118,.35);
+}
+
+.notification-button:active{
+transform:scale(.95);
+}
+
+
+/* عدد الطلبات */
+
+.notification-count{
+
+position:absolute;
+
+top:-5px;
+right:-5px;
+
+min-width:21px;
+height:21px;
+
+padding:0 5px;
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+border-radius:50%;
+
+background:#ff3b30;
+
+color:white;
+
+font-size:11px;
+font-weight:bold;
+
+border:2px solid #07110f;
+}
+
+.notification-count.show{
+display:flex;
+}
+
+
+/* =========================
+   العنوان
+========================= */
+
+.page-title{
+text-align:center;
+
+margin-bottom:30px;
+}
+
+.page-title h1{
+
+font-size:
+clamp(30px,7vw,45px);
+
+margin-bottom:12px;
+}
+
+.page-title h1 span{
+color:#00e676;
+}
+
+.page-title p{
+
+color:#9ba7a4;
+
+font-size:14px;
+
+line-height:1.7;
+}
+
+
+/* =========================
+   عنوان القائمة
+========================= */
+
+.section-title{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:15px;
+
+font-size:21px;
+
+color:#d9e8e3;
+}
+
+.friend-count{
+
+color:#00e676;
+
+font-size:13px;
+}
+
+
+/* =========================
+   قائمة الأصدقاء
+========================= */
+
+.friends-list{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+}
+
+
+/* =========================
+   صديق
+========================= */
+
+.friend{
+
+width:100%;
+
+padding:15px 17px;
+
+border-radius:20px;
+
+border:1px solid
+rgba(255,255,255,.08);
+
+background:
+rgba(255,255,255,.035);
+
+display:flex;
+
+align-items:center;
+
+gap:14px;
+
+transition:.2s ease;
+}
+
+.friend:hover{
+
+transform:translateY(-2px);
+
+border-color:
+rgba(0,230,118,.25);
+}
+
+
+/* الصورة */
+
+.friend-avatar{
+
+width:58px;
+height:58px;
+
+flex-shrink:0;
+
+border-radius:50%;
+
+overflow:hidden;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+background:
+linear-gradient(
+135deg,
+#293b37,
+#15211e
+);
+
+border:2px solid
+rgba(0,230,118,.55);
+
+font-size:25px;
+}
+
+.friend-avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+}
+
+
+/* الاسم */
+
+.friend-info{
+
+flex:1;
+
+min-width:0;
+}
+
+.friend-name{
+
+font-size:17px;
+
+font-weight:bold;
+
+white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+}
+
+
+/* =========================
+   لا يوجد أصدقاء
+========================= */
+
+.empty{
+
+padding:35px 20px;
+
+border-radius:22px;
+
+border:1px solid
+rgba(255,255,255,.07);
+
+background:
+rgba(255,255,255,.025);
+
+text-align:center;
+
+color:#7f8c88;
+
+font-size:14px;
+
+line-height:1.8;
+}
+
+.empty-icon{
+
+font-size:42px;
+
+margin-bottom:12px;
+}
+
+
+/* =========================
+   نافذة الطلبات
+========================= */
+
+.modal{
+
+position:fixed;
+
+inset:0;
+
+z-index:9999;
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+padding:20px;
+
+background:
+rgba(0,0,0,.72);
+
+backdrop-filter:blur(8px);
+}
+
+.modal.show{
+display:flex;
+}
+
+
+.modal-box{
+
+width:100%;
+
+max-width:480px;
+
+max-height:80vh;
+
+overflow-y:auto;
+
+padding:23px;
+
+border-radius:27px;
+
+background:
+linear-gradient(
+180deg,
+#101916,
+#070b09
+);
+
+border:1px solid
+rgba(255,255,255,.1);
+
+box-shadow:
+0 25px 80px
+rgba(0,0,0,.6);
+}
+
+
+/* عنوان النافذة */
+
+.modal-header{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+margin-bottom:22px;
+}
+
+.modal-header h2{
+
+font-size:22px;
+}
+
+.close-button{
+
+width:40px;
+height:40px;
+
+border-radius:13px;
+
+border:1px solid
+rgba(255,255,255,.08);
+
+background:#161d1a;
+
+color:white;
+
+font-size:20px;
+
+cursor:pointer;
+}
+
+
+/* =========================
+   طلب الصداقة
+========================= */
+
+.request-list{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+}
+
+.request{
+
+padding:15px;
+
+border-radius:19px;
+
+background:
+rgba(255,255,255,.035);
+
+border:1px solid
+rgba(255,255,255,.07);
+}
+
+.request-user{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+margin-bottom:13px;
+}
+
+.request-avatar{
+
+width:52px;
+height:52px;
+
+border-radius:50%;
+
+overflow:hidden;
+
+flex-shrink:0;
+
+background:#17221f;
+
+border:2px solid
+rgba(0,230,118,.5);
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:22px;
+}
+
+.request-avatar img{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+}
+
+.request-name{
+
+font-size:16px;
+
+font-weight:bold;
+}
+
+.request-id{
+
+font-size:12px;
+
+color:#00e676;
+
+margin-top:4px;
+}
+
+
+/* أزرار الطلب */
+
+.request-actions{
+
+display:flex;
+
+gap:9px;
+}
+
+.accept-button,
+.reject-button{
+
+flex:1;
+
+padding:13px;
+
+border-radius:14px;
+
+border:none;
+
+font-family:inherit;
+
+font-size:14px;
+
+font-weight:bold;
+
+cursor:pointer;
+}
+
+.accept-button{
+
+background:#00e889;
+
+color:#00150e;
+}
+
+.reject-button{
+
+background:#171e1b;
+
+color:#ff8e8e;
+
+border:1px solid
+rgba(255,100,100,.18);
+}
+
+.accept-button:disabled,
+.reject-button:disabled{
+
+opacity:.5;
+
+cursor:not-allowed;
+}
+
+
+/* =========================
+   Loading
+========================= */
+
+.loading{
+
+position:fixed;
+
+inset:0;
+
+z-index:10000;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+flex-direction:column;
+
+gap:18px;
+
+background:
+linear-gradient(
+180deg,
+#07110f,
+#020504
+);
+
+color:#a8bdb6;
+
+font-size:16px;
+}
+
+.spinner{
+
+width:35px;
+height:35px;
+
+border:4px solid
+rgba(255,255,255,.15);
+
+border-top-color:#00e889;
+
+border-radius:50%;
+
+animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+
+to{
+transform:rotate(360deg);
+}
+
+}
+
+
+/* =========================
+   العودة
+========================= */
+
+.back-button{
+
+width:100%;
+
+margin-top:30px;
+
+padding:17px;
+
+border-radius:18px;
+
+border:1px solid
+rgba(255,255,255,.08);
+
+background:
+rgba(255,255,255,.035);
+
+color:white;
+
+font-family:inherit;
+
+font-size:15px;
+
+cursor:pointer;
+
+transition:.2s ease;
+}
+
+.back-button:hover{
+
+border-color:
+rgba(0,230,118,.3);
+}
+
+
+/* =========================
+   الفوتر
+========================= */
+
+footer{
+
+margin-top:auto;
+
+padding-top:40px;
+
+text-align:center;
+
+color:#58635f;
+
+font-size:11px;
+}
+
+
+/* =========================
+   الموبايل
+========================= */
+
+@media(max-width:480px){
+
+.app{
+
+padding:18px 15px 35px;
+}
+
+.logo{
+
+width:45px;
+height:45px;
+
+border-radius:14px;
+
+font-size:23px;
+}
+
+.brand h2{
+
+font-size:18px;
+}
+
+.notification-button{
+
+width:45px;
+height:45px;
+
+font-size:21px;
+}
+
+.page-title h1{
+
+font-size:31px;
+}
+
+.friend{
+
+padding:13px;
+}
+
+.friend-avatar{
+
+width:54px;
+height:54px;
+}
+
+.friend-name{
+
+font-size:16px;
+}
+
+.modal-box{
+
+padding:19px;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     الخلفية
+========================= -->
+
+<div class="background">
+
+<div class="glow one"></div>
+
+<div class="glow two"></div>
+
+</div>
+
+
+<!-- =========================
+     Loading
+========================= -->
+
+<div
+id="loading"
+class="loading"
+>
+
+<div class="spinner"></div>
+
+<div>
+جارٍ تحميل الأصدقاء...
+</div>
+
+</div>
+
+
+<!-- =========================
+     التطبيق
+========================= -->
+
+<main
+id="app"
+class="app"
+style="display:none;"
+>
+
+
+<!-- =========================
+     Header
+========================= -->
+
+<header>
+
+<div class="brand">
+
+<div class="logo">
+💬
+</div>
+
+<div>
+
+<h2>
+Mecd Chat
+</h2>
+
+<span>
+الأصدقاء
+</span>
+
+</div>
+
+</div>
+
+
+<!-- 🔔 الإشعارات -->
+
+<button
+id="notificationsBtn"
+class="notification-button"
+type="button"
+aria-label="طلبات الصداقة"
+>
+
+🔔
+
+<span
+id="notificationCount"
+class="notification-count"
+>
+0
+</span>
+
+</button>
+
+</header>
+
+
+<!-- =========================
+     العنوان
+========================= -->
+
+<section class="page-title">
+
+<h1>
+
+أصدقائي
+<span>👥</span>
+
+</h1>
+
+<p>
+
+الأشخاص الذين أصبحوا أصدقاء معك في Mecd Chat.
+
+</p>
+
+</section>
+
+
+<!-- =========================
+     قائمة الأصدقاء
+========================= -->
+
+<section>
+
+<div class="section-title">
+
+<span>
+👥 الأصدقاء
+</span>
+
+<span
+id="friendCount"
+class="friend-count"
+>
+0
+</span>
+
+</div>
+
+
+<div
+id="friendsList"
+class="friends-list"
+>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     العودة
+========================= -->
+
+<button
+id="backBtn"
+class="back-button"
+type="button"
+>
+
+← العودة إلى Mecd Chat
+
+</button>
+
+
+<footer>
+
+Mecd Chat © 2026
+
+</footer>
+
+
+</main>
+
+
+<!-- =========================
+     نافذة الإشعارات
+========================= -->
+
+<div
+id="notificationModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+
+<div class="modal-header">
+
+<h2>
+🔔 طلبات الصداقة
+</h2>
+
+<button
+id="closeModalBtn"
+class="close-button"
+type="button"
+>
+×
+</button>
+
+</div>
+
+
+<div
+id="requestList"
+class="request-list"
+>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     Firebase
+========================= -->
+
+<script type="module">
+
+
+/* =========================
+   Firebase imports
+========================= */
+
+import {
+
+initializeApp
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+
+getAuth,
+onAuthStateChanged
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
+getFirestore,
+doc,
+getDoc,
+setDoc,
+deleteDoc,
+collection,
+getDocs,
+serverTimestamp
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================
+   Firebase Config
+========================= */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain:
+"mecd-tools.firebaseapp.com",
+
+projectId:
+"mecd-tools",
+
+storageBucket:
+"mecd-tools.firebasestorage.app",
+
+messagingSenderId:
+"643005547408",
+
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915",
+
+measurementId:
+"G-0VKYR3TQV2"
+
+};
+
+
+/* =========================
+   تشغيل Firebase
+========================= */
+
+const firebaseApp =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(firebaseApp);
+
+const db =
+getFirestore(firebaseApp);
+
+
+/* =========================
+   عناصر الصفحة
+========================= */
+
+const loading =
+document.getElementById("loading");
+
+const app =
+document.getElementById("app");
+
+const friendsList =
+document.getElementById("friendsList");
+
+const friendCount =
+document.getElementById("friendCount");
+
+const notificationsBtn =
+document.getElementById("notificationsBtn");
+
+const notificationCount =
+document.getElementById("notificationCount");
+
+const notificationModal =
+document.getElementById("notificationModal");
+
+const closeModalBtn =
+document.getElementById("closeModalBtn");
+
+const requestList =
+document.getElementById("requestList");
+
+const backBtn =
+document.getElementById("backBtn");
+
+
+/* =========================
+   المستخدم
+========================= */
+
+let currentUser = null;
+
+
+/* =========================
+   رابط Mecd Chat
+========================= */
+
+const mecdChatURL =
+"./index.html";
+
+
+/* =========================
+   صورة افتراضية
+========================= */
+
+function defaultAvatar(){
+
+return `
+<div
+style="
+width:100%;
+height:100%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:25px;
+"
+>
+👤
+</div>
+`;
+
+}
+
+
+/* =========================
+   جلب معلومات مستخدم
+========================= */
+
+async function getUserData(uid){
+
+try{
+
+const userRef =
+doc(
+db,
+"users",
+uid
+);
+
+const userDoc =
+await getDoc(userRef);
+
+
+if(!userDoc.exists()){
+
+return {
+
+name:
+"مستخدم Mecd",
+
+photo:
+"",
+
+chatID:
+""
+
+};
+
+}
+
+
+const data =
+userDoc.data();
+
+
+return {
+
+name:
+data.name ||
+"مستخدم Mecd",
+
+photo:
+data.photo ||
+"",
+
+chatID:
+data.chatID ||
+""
+
+};
+
+
+}catch(error){
+
+console.error(
+"Get user error:",
+error
+);
+
+return {
+
+name:
+"مستخدم Mecd",
+
+photo:
+"",
+
+chatID:
+""
+
+};
+
+}
+
+}
+
+
+/* =========================
+   تحميل الأصدقاء
+========================= */
+
+async function loadFriends(){
+
+friendsList.innerHTML = "";
+
+
+try{
+
+const friendsRef =
+collection(
+db,
+"users",
+currentUser.uid,
+"friends"
+);
+
+
+const friendsSnapshot =
+await getDocs(friendsRef);
+
+
+if(friendsSnapshot.empty){
+
+friendCount.textContent =
+"0";
+
+friendsList.innerHTML = `
+
+<div class="empty">
+
+<div class="empty-icon">
+👥
+</div>
+
+لا يوجد لديك أصدقاء حتى الآن.
+
+<br>
+
+يمكنك البحث عن مستخدم وإرسال طلب صداقة.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+let count = 0;
+
+
+for(
+const friendDoc of friendsSnapshot.docs
+){
+
+const friendUID =
+friendDoc.id;
+
+
+const data =
+await getUserData(friendUID);
+
+
+const friendElement =
+document.createElement("div");
+
+friendElement.className =
+"friend";
+
+
+let avatarHTML =
+defaultAvatar();
+
+
+if(data.photo){
+
+avatarHTML = `
+
+<img
+src="${data.photo}"
+alt=""
+>
+
+`;
+
+}
+
+
+friendElement.innerHTML = `
+
+<div class="friend-avatar">
+
+${avatarHTML}
+
+</div>
+
+<div class="friend-info">
+
+<div class="friend-name">
+
+${escapeHTML(data.name)}
+
+</div>
+
+</div>
+
+`;
+
+
+friendsList.appendChild(
+friendElement
+);
+
+count++;
+
+}
+
+
+friendCount.textContent =
+count;
+
+
+}catch(error){
+
+console.error(
+"Load friends error:",
+error
+);
+
+friendsList.innerHTML = `
+
+<div class="empty">
+
+<div class="empty-icon">
+⚠️
+</div>
+
+تعذر تحميل قائمة الأصدقاء.
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================
+   تحميل طلبات الصداقة
+========================= */
+
+async function loadFriendRequests(){
+
+requestList.innerHTML = "";
+
+
+try{
+
+const requestsRef =
+collection(
+db,
+"users",
+currentUser.uid,
+"friendRequests"
+);
+
+
+const snapshot =
+await getDocs(requestsRef);
+
+
+if(snapshot.empty){
+
+notificationCount.classList.remove(
+"show"
+);
+
+notificationCount.textContent =
+"0";
+
+
+requestList.innerHTML = `
+
+<div class="empty">
+
+<div class="empty-icon">
+🔔
+</div>
+
+لا توجد طلبات صداقة جديدة.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+notificationCount.textContent =
+snapshot.size;
+
+notificationCount.classList.add(
+"show"
+);
+
+
+for(
+const requestDoc of snapshot.docs
+){
+
+const senderUID =
+requestDoc.id;
+
+
+const sender =
+await getUserData(senderUID);
+
+
+const requestElement =
+document.createElement("div");
+
+requestElement.className =
+"request";
+
+
+let avatarHTML =
+defaultAvatar();
+
+
+if(sender.photo){
+
+avatarHTML = `
+
+<img
+src="${sender.photo}"
+alt=""
+>
+
+`;
+
+}
+
+
+requestElement.innerHTML = `
+
+<div class="request-user">
+
+<div class="request-avatar">
+
+${avatarHTML}
+
+</div>
+
+<div>
+
+<div class="request-name">
+
+${escapeHTML(sender.name)}
+
+</div>
+
+<div class="request-id">
+
+ID: ${escapeHTML(sender.chatID)}
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="request-actions">
+
+<button
+class="accept-button"
+type="button"
+>
+قبول ✅
+</button>
+
+<button
+class="reject-button"
+type="button"
+>
+رفض ❌
+</button>
+
+</div>
+
+`;
+
+
+const acceptButton =
+requestElement.querySelector(
+".accept-button"
+);
+
+const rejectButton =
+requestElement.querySelector(
+".reject-button"
+);
+
+
+/* =========================
+   قبول
+========================= */
+
+acceptButton.addEventListener(
+
+"click",
+
+async()=>{
+
+acceptButton.disabled =
+true;
+
+rejectButton.disabled =
+true;
+
+acceptButton.textContent =
+"جاري القبول...";
+
+
+try{
+
+/* إضافة المرسل إلى أصدقائي */
+
+await setDoc(
+
+doc(
+db,
+"users",
+currentUser.uid,
+"friends",
+senderUID
+),
+
+{
+
+uid:
+senderUID,
+
+addedAt:
+serverTimestamp()
+
+}
+
+);
+
+
+/* إضافة المستقبل إلى أصدقاء المرسل */
+
+await setDoc(
+
+doc(
+db,
+"users",
+senderUID,
+"friends",
+currentUser.uid
+),
+
+{
+
+uid:
+currentUser.uid,
+
+addedAt:
+serverTimestamp()
+
+}
+
+);
+
+
+/* حذف الطلب */
+
+await deleteDoc(
+
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+senderUID
+
+)
+
+);
+
+
+/* تحديث */
+
+requestElement.remove();
+
+await loadFriends();
+
+await loadFriendRequests();
+
+
+}catch(error){
+
+console.error(
+"Accept request error:",
+error
+);
+
+alert(
+"تعذر قبول طلب الصداقة:\n" +
+error.message
+);
+
+acceptButton.disabled =
+false;
+
+rejectButton.disabled =
+false;
+
+acceptButton.textContent =
+"قبول ✅";
+
+}
+
+}
+
+);
+
+
+/* =========================
+   رفض
+========================= */
+
+rejectButton.addEventListener(
+
+"click",
+
+async()=>{
+
+acceptButton.disabled =
+true;
+
+rejectButton.disabled =
+true;
+
+rejectButton.textContent =
+"جاري الرفض...";
+
+
+try{
+
+await deleteDoc(
+
+doc(
+db,
+"users",
+currentUser.uid,
+"friendRequests",
+senderUID
+)
+
+);
+
+
+requestElement.remove();
+
+await loadFriendRequests();
+
+
+}catch(error){
+
+console.error(
+"Reject request error:",
+error
+);
+
+alert(
+"تعذر رفض الطلب:\n" +
+error.message
+);
+
+acceptButton.disabled =
+false;
+
+rejectButton.disabled =
+false;
+
+rejectButton.textContent =
+"رفض ❌";
+
+}
+
+}
+
+
+);
+
+requestList.appendChild(
+requestElement
+);
+
+}
+
+
+}catch(error){
+
+console.error(
+"Load requests error:",
+error
+);
+
+requestList.innerHTML = `
+
+<div class="empty">
+
+<div class="empty-icon">
+⚠️
+</div>
+
+تعذر تحميل طلبات الصداقة.
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================
+   حماية HTML
+========================= */
+
+function escapeHTML(text){
+
+return String(text || "")
+
+.replaceAll("&","&amp;")
+
+.replaceAll("<","&lt;")
+
+.replaceAll(">","&gt;")
+
+.replaceAll('"',"&quot;")
+
+.replaceAll("'","&#039;");
+
+}
+
+
+/* =========================
+   فتح الإشعارات
+========================= */
+
+notificationsBtn.addEventListener(
+
+"click",
+
+async()=>{
+
+notificationModal.classList.add(
+"show"
+);
+
+await loadFriendRequests();
+
+}
+
+);
+
+
+/* =========================
+   إغلاق
+========================= */
+
+closeModalBtn.addEventListener(
+
+"click",
+
+()=>{
+
+notificationModal.classList.remove(
+"show"
+);
+
+}
+
+);
+
+
+/* =========================
+   الضغط خارج النافذة
+========================= */
+
+notificationModal.addEventListener(
+
+"click",
+
+(event)=>{
+
+if(
+event.target ===
+notificationModal
+){
+
+notificationModal.classList.remove(
+"show"
+);
+
+}
+
+}
+
+);
+
+
+/* =========================
+   العودة
+========================= */
+
+backBtn.addEventListener(
+
+"click",
+
+()=>{
+
+window.location.href =
+mecdChatURL;
+
+}
+
+);
+
+
+/* =========================
+   تسجيل الدخول
+========================= */
+
+onAuthStateChanged(
+
+auth,
+
+async(user)=>{
+
+if(!user){
+
+window.location.replace(
+"./index.html"
+);
+
+return;
+
+}
+
+
+currentUser =
+user;
+
+
+try{
+
+await loadFriends();
+
+await loadFriendRequests();
+
+
+loading.style.display =
+"none";
+
+app.style.display =
+"flex";
+
+
+}catch(error){
+
+console.error(error);
+
+loading.innerHTML = `
+
+<div>
+⚠️ حدث خطأ أثناء تحميل الصفحة
+</div>
+
+`;
+
+}
+
+}
+
+);
+
+
+/* =========================
+   Service Worker
+========================= */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+
+"load",
+
+()=>{
+
+navigator.serviceWorker
+.register("./sw.js")
+
+.catch(
+error=>{
+
+console.error(
+"Service Worker:",
+error
+);
+
+}
+
+);
+
+}
+
+);
+
+}
+
+</script>
+
+</body>
+
+</html>
