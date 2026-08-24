@@ -60,19 +60,27 @@ header{
   cursor:pointer;
 }
 
+.back:active{
+  transform:scale(.95);
+}
+
 .logo{
   width:48px;
   height:48px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   border-radius:15px;
+
   background:
     linear-gradient(
       135deg,
       #00e676,
       #00a85a
     );
+
   font-size:25px;
 }
 
@@ -95,6 +103,7 @@ header{
 .icon{
   width:90px;
   height:90px;
+
   margin:0 auto 20px;
 
   display:flex;
@@ -126,6 +135,7 @@ h1{
 
 .card{
   padding:22px;
+
   border-radius:25px;
 
   background:
@@ -138,6 +148,7 @@ h1{
 
 label{
   display:block;
+
   margin-bottom:8px;
 
   color:#cbd5d1;
@@ -166,6 +177,10 @@ input{
   font-size:16px;
 }
 
+input::placeholder{
+  color:#69746f;
+}
+
 input:focus{
   border-color:#00e676;
 
@@ -188,6 +203,10 @@ button.create{
   font-weight:bold;
 
   cursor:pointer;
+
+  transition:
+    transform .15s,
+    opacity .15s;
 }
 
 button.create:active{
@@ -222,6 +241,7 @@ button.create:disabled{
   margin-top:15px;
 
   color:#8e9995;
+
   text-align:center;
 
   font-size:13px;
@@ -355,9 +375,7 @@ Mecd Chat
   id="createButton"
   class="create"
 >
-
 إنشاء غرفة
-
 </button>
 
 
@@ -387,9 +405,9 @@ Mecd Chat
 <script type="module">
 
 
-/* =========================
+/* =====================================
    Firebase
-========================= */
+===================================== */
 
 import {
   initializeApp
@@ -416,9 +434,9 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* =========================
+/* =====================================
    Firebase Config
-========================= */
+===================================== */
 
 const firebaseConfig = {
 
@@ -446,21 +464,31 @@ const firebaseConfig = {
 };
 
 
+/* =====================================
+   تشغيل Firebase
+===================================== */
+
 const firebaseApp =
-  initializeApp(firebaseConfig);
+  initializeApp(
+    firebaseConfig
+  );
 
 
 const auth =
-  getAuth(firebaseApp);
+  getAuth(
+    firebaseApp
+  );
 
 
 const db =
-  getFirestore(firebaseApp);
+  getFirestore(
+    firebaseApp
+  );
 
 
-/* =========================
+/* =====================================
    العناصر
-========================= */
+===================================== */
 
 const roomName =
   document.getElementById(
@@ -498,34 +526,29 @@ const backButton =
   );
 
 
-/* =========================
+/* =====================================
    المستخدم الحالي
-========================= */
+===================================== */
 
 let currentUser = null;
 
 
-/* =========================
-   صفحة الدردشة
-========================= */
-
-const chatURL =
-  "./chat.html";
-
-
-/* =========================
+/* =====================================
    تسجيل الدخول
-========================= */
+===================================== */
 
 onAuthStateChanged(
+
   auth,
+
   (user) => {
 
     if(!user){
 
       currentUser = null;
 
-      createButton.disabled = true;
+      createButton.disabled =
+        true;
 
       showError(
         "يجب تسجيل الدخول إلى Mecd Tools أولاً."
@@ -535,20 +558,25 @@ onAuthStateChanged(
     }
 
 
-    currentUser = user;
+    currentUser =
+      user;
 
-    createButton.disabled = false;
+
+    createButton.disabled =
+      false;
+
 
     errorBox.style.display =
       "none";
 
   }
+
 );
 
 
-/* =========================
-   عرض الخطأ
-========================= */
+/* =====================================
+   إظهار الخطأ
+===================================== */
 
 function showError(message){
 
@@ -561,14 +589,15 @@ function showError(message){
 }
 
 
-/* =========================
-   توليد كود الغرفة
-========================= */
+/* =====================================
+   إنشاء كود الغرفة
+===================================== */
 
 function generateRoomCode(){
 
   const characters =
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
 
   let code = "";
 
@@ -579,12 +608,16 @@ function generateRoomCode(){
     i++
   ){
 
+    const randomIndex =
+      Math.floor(
+        Math.random() *
+        characters.length
+      );
+
+
     code +=
       characters[
-        Math.floor(
-          Math.random() *
-          characters.length
-        )
+        randomIndex
       ];
 
   }
@@ -595,15 +628,19 @@ function generateRoomCode(){
 }
 
 
-/* =========================
+/* =====================================
    إنشاء الغرفة
-========================= */
+===================================== */
 
 async function createRoom(){
+
+  /* إخفاء الأخطاء القديمة */
 
   errorBox.style.display =
     "none";
 
+
+  /* التأكد من تسجيل الدخول */
 
   if(!currentUser){
 
@@ -616,6 +653,8 @@ async function createRoom(){
   }
 
 
+  /* قراءة البيانات */
+
   const name =
     roomName.value.trim();
 
@@ -624,7 +663,9 @@ async function createRoom(){
     roomPassword.value.trim();
 
 
-  /* اسم الغرفة */
+  /* =====================================
+     التحقق من اسم الغرفة
+  ===================================== */
 
   if(!name){
 
@@ -639,7 +680,9 @@ async function createRoom(){
   }
 
 
-  /* كلمة السر */
+  /* =====================================
+     التحقق من كلمة السر
+  ===================================== */
 
   if(!password){
 
@@ -667,7 +710,9 @@ async function createRoom(){
   }
 
 
-  /* منع الضغط المتكرر */
+  /* =====================================
+     منع الضغط المتكرر
+  ===================================== */
 
   createButton.disabled =
     true;
@@ -677,26 +722,24 @@ async function createRoom(){
     "block";
 
 
-  createButton.textContent = "جاري فتح الغرفة...";
-
-window.location.href =
-  "./room-chat.html?room=" + encodeURIComponent(code);
+  createButton.textContent =
+    "جاري إنشاء الغرفة...";
 
 
   try{
 
 
-    /* =========================
-       إنشاء كود فريد
-    ========================= */
+    /* =====================================
+       إنشاء كود الغرفة
+    ===================================== */
 
     const code =
       generateRoomCode();
 
 
-    /* =========================
+    /* =====================================
        بيانات الغرفة
-    ========================= */
+    ===================================== */
 
     const roomData = {
 
@@ -734,9 +777,9 @@ window.location.href =
     };
 
 
-    /* =========================
+    /* =====================================
        حفظ الغرفة في Firestore
-    ========================= */
+    ===================================== */
 
     const roomRef =
       await addDoc(
@@ -751,16 +794,19 @@ window.location.href =
       );
 
 
-    /* =========================
-       الدخول المباشر إلى الغرفة
+    /* =====================================
+       إنشاء رابط الغرفة
        
-       نرسل:
-       roomId
-       code
-    ========================= */
+       مهم:
+       لا نفتح chat.html
+       
+       chat.html خاص بالأصدقاء.
+       
+       نفتح room-chat.html
+    ===================================== */
 
     const targetURL =
-      chatURL +
+      "./room-chat.html" +
       "?roomId=" +
       encodeURIComponent(
         roomRef.id
@@ -771,10 +817,9 @@ window.location.href =
       );
 
 
-    /*
-     * الانتقال مباشرة
-     * بدون إظهار نتيجة الإنشاء
-     */
+    /* =====================================
+       الانتقال إلى الغرفة
+    ===================================== */
 
     window.location.replace(
       targetURL
@@ -810,9 +855,9 @@ window.location.href =
 }
 
 
-/* =========================
+/* =====================================
    زر إنشاء الغرفة
-========================= */
+===================================== */
 
 createButton.addEventListener(
 
@@ -823,9 +868,9 @@ createButton.addEventListener(
 );
 
 
-/* =========================
-   Enter
-========================= */
+/* =====================================
+   Enter في اسم الغرفة
+===================================== */
 
 roomName.addEventListener(
 
@@ -848,6 +893,10 @@ roomName.addEventListener(
 );
 
 
+/* =====================================
+   Enter في كلمة السر
+===================================== */
+
 roomPassword.addEventListener(
 
   "keydown",
@@ -869,9 +918,9 @@ roomPassword.addEventListener(
 );
 
 
-/* =========================
+/* =====================================
    زر الرجوع
-========================= */
+===================================== */
 
 backButton.addEventListener(
 
@@ -887,6 +936,7 @@ backButton.addEventListener(
 
 
 </script>
+
 
 </body>
 
