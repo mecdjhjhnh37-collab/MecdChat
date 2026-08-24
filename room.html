@@ -54,8 +54,10 @@ header{
   height:45px;
   border:0;
   border-radius:14px;
+
   background:rgba(255,255,255,.06);
   color:white;
+
   font-size:23px;
   cursor:pointer;
 }
@@ -361,6 +363,8 @@ Mecd Chat
 />
 
 
+<!-- مهم: type="button" حتى لا تعمل الصفحة Reload -->
+
 <button
   type="button"
   id="createButton"
@@ -525,6 +529,36 @@ let currentUser = null;
 
 
 /* =====================================
+   عرض الخطأ
+===================================== */
+
+function showError(message){
+
+  errorBox.textContent =
+    message;
+
+  errorBox.style.display =
+    "block";
+
+}
+
+
+/* =====================================
+   إخفاء الخطأ
+===================================== */
+
+function hideError(){
+
+  errorBox.textContent =
+    "";
+
+  errorBox.style.display =
+    "none";
+
+}
+
+
+/* =====================================
    حالة تسجيل الدخول
 ===================================== */
 
@@ -538,38 +572,31 @@ onAuthStateChanged(
 
       currentUser = null;
 
-      createButton.disabled = true;
+      createButton.disabled =
+        true;
 
       showError(
         "يجب تسجيل الدخول إلى Mecd Tools أولاً."
       );
 
       return;
+
     }
 
 
-    currentUser = user;
+    currentUser =
+      user;
 
-    createButton.disabled = false;
 
-    errorBox.style.display = "none";
+    createButton.disabled =
+      false;
+
+
+    hideError();
 
   }
 
 );
-
-
-/* =====================================
-   عرض الخطأ
-===================================== */
-
-function showError(message){
-
-  errorBox.textContent = message;
-
-  errorBox.style.display = "block";
-
-}
 
 
 /* =====================================
@@ -580,6 +607,7 @@ function generateRoomCode(){
 
   const characters =
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
 
   let code = "";
 
@@ -614,15 +642,26 @@ function generateRoomCode(){
    إنشاء الغرفة
 ===================================== */
 
-async function createRoom(){
+async function createRoom(event){
 
-  /* إخفاء الخطأ القديم */
+  /*
+   * منع أي سلوك افتراضي
+   * مثل Reload للصفحة
+   */
 
-  errorBox.style.display =
-    "none";
+  if(event){
+
+    event.preventDefault();
+
+  }
 
 
-  /* التأكد من تسجيل الدخول */
+  hideError();
+
+
+  /* =====================================
+     التأكد من تسجيل الدخول
+  ===================================== */
 
   if(!currentUser){
 
@@ -635,13 +674,13 @@ async function createRoom(){
   }
 
 
-  /* قراءة اسم الغرفة */
+  /* =====================================
+     قراءة البيانات
+  ===================================== */
 
   const name =
     roomName.value.trim();
 
-
-  /* قراءة كلمة السر */
 
   const password =
     roomPassword.value.trim();
@@ -702,15 +741,16 @@ async function createRoom(){
     true;
 
 
-  loading.style.display =
-    "block";
-
-
   createButton.textContent =
     "جاري إنشاء الغرفة...";
 
 
+  loading.style.display =
+    "block";
+
+
   try{
+
 
     /* =====================================
        إنشاء كود الغرفة
@@ -777,15 +817,27 @@ async function createRoom(){
       );
 
 
+    /*
+     * نتأكد أن Firebase أعطانا ID
+     */
+
+    if(!roomRef || !roomRef.id){
+
+      throw new Error(
+        "لم يتم الحصول على معرف الغرفة."
+      );
+
+    }
+
+
     /* =====================================
-       رابط الغرفة
+       إنشاء رابط room.html
        
-       مهم جداً:
-       نفتح room.html
+       مهم:
+       لا chat.html
+       لا room-chat.html
        
-       وليس:
-       chat.html
-       room-chat.html
+       فقط room.html
     ===================================== */
 
     const targetURL =
@@ -804,9 +856,8 @@ async function createRoom(){
        الانتقال إلى room.html
     ===================================== */
 
-    window.location.replace(
-      targetURL
-    );
+    window.location.href =
+      targetURL;
 
 
   }catch(error){
@@ -830,7 +881,7 @@ async function createRoom(){
 
 
     showError(
-      "تعذر إنشاء الغرفة. تأكد من اتصال الإنترنت وإعدادات Firebase ثم حاول مرة أخرى."
+      "تعذر إنشاء الغرفة. تأكد من اتصال الإنترنت وصلاحيات Firebase."
     );
 
   }
@@ -892,7 +943,7 @@ roomPassword.addEventListener(
 
       event.preventDefault();
 
-      createRoom();
+      createRoom(event);
 
     }
 
@@ -909,7 +960,9 @@ backButton.addEventListener(
 
   "click",
 
-  () => {
+  (event) => {
+
+    event.preventDefault();
 
     history.back();
 
