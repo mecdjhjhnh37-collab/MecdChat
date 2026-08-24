@@ -236,7 +236,6 @@ animation:spin .8s linear infinite;
 to{
 transform:rotate(360deg);
 }
-
 }
 
 </style>
@@ -244,7 +243,10 @@ transform:rotate(360deg);
 
 <body>
 
-<!-- شاشة التحميل -->
+
+<!-- =====================================================
+     شاشة التحميل
+===================================================== -->
 
 <div id="loading" class="loading">
 
@@ -257,11 +259,15 @@ transform:rotate(360deg);
 </div>
 
 
-<!-- شاشة الخطأ -->
+<!-- =====================================================
+     شاشة الخطأ
+===================================================== -->
 
-<div id="errorScreen"
+<div
+id="errorScreen"
 class="error-screen"
-style="display:none;">
+style="display:none;"
+>
 
 <div class="error-box">
 
@@ -274,47 +280,68 @@ style="display:none;">
 </div>
 
 
-<!-- التطبيق -->
+<!-- =====================================================
+     التطبيق
+===================================================== -->
 
-<main id="app"
+<main
+id="app"
 class="app"
-style="display:none;">
+style="display:none;"
+>
+
 
 <header>
 
-<button id="backButton"
-class="back">
+
+<button
+id="backButton"
+class="back"
+>
 →
 </button>
 
 
-<div id="friendAvatar"
-class="avatar">
+<div
+id="friendAvatar"
+class="avatar"
+>
 👤
 </div>
 
 
 <div class="user-info">
 
-<div id="friendName"
-class="user-name">
+
+<div
+id="friendName"
+class="user-name"
+>
 جارٍ التحميل...
 </div>
 
-<div id="friendStatus"
-class="user-status">
+
+<div
+id="friendStatus"
+class="user-status"
+>
 ● غير متصل
 </div>
+
 
 </div>
 
 </header>
 
 
-<!-- الرسائل -->
+<!-- =====================================================
+     الرسائل
+===================================================== -->
 
-<div id="messages"
-class="messages">
+<div
+id="messages"
+class="messages"
+>
 
 <div class="empty">
 
@@ -328,9 +355,12 @@ class="messages">
 </div>
 
 
-<!-- إدخال الرسالة -->
+<!-- =====================================================
+     إدخال الرسالة
+===================================================== -->
 
 <div class="input-area">
+
 
 <input
 id="messageInput"
@@ -339,11 +369,16 @@ placeholder="اكتب رسالة..."
 autocomplete="off"
 >
 
-<button id="sendButton">
+
+<button
+id="sendButton"
+>
 ➤
 </button>
 
+
 </div>
+
 
 </main>
 
@@ -435,7 +470,14 @@ appId:
 "1:643005547408:web:b1719060ec340dd0e0a915",
 
 measurementId:
-"G-0VKYR3TQV2"
+"G-0VKYR3TQV2",
+
+/*
+   مهم جدًا لنظام متصل / غير متصل
+*/
+
+databaseURL:
+"https://mecd-tools-default-rtdb.firebaseio.com"
 
 };
 
@@ -576,17 +618,21 @@ uid2
 
 
 /* =====================================================
-   🟢 نظام الحضور Presence
+   🟢 نظام متصل / غير متصل
 ===================================================== */
 
 function setMyPresence(){
 
 if(!currentUser){
+
 return;
+
 }
 
 
-/* مسار حالة المستخدم */
+/* =====================================================
+   مسار حالة المستخدم
+===================================================== */
 
 const presenceRef =
 ref(
@@ -596,7 +642,7 @@ realtimeDB,
 
 
 /* =====================================================
-   مراقبة اتصال Firebase نفسه
+   معرفة هل Firebase متصل فعليًا
 ===================================================== */
 
 const connectedRef =
@@ -607,8 +653,15 @@ realtimeDB,
 
 
 onValue(
+
 connectedRef,
-(snapshot)=>{
+
+async(snapshot)=>{
+
+
+/*
+   إذا لم يوجد اتصال
+*/
 
 if(snapshot.val() !== true){
 
@@ -618,10 +671,13 @@ return;
 
 
 /* =====================================================
-   عند الاتصال يصبح المستخدم متصل
+   أولًا:
+   ماذا يحدث عند انقطاع الاتصال؟
 ===================================================== */
 
-onDisconnect(
+try{
+
+await onDisconnect(
 presenceRef
 )
 .set({
@@ -638,8 +694,15 @@ realtimeServerTimestamp()
 });
 
 
-set(
+/* =====================================================
+   ثانيًا:
+   تسجيل المستخدم كمتصل
+===================================================== */
+
+await set(
+
 presenceRef,
+
 {
 
 uid:
@@ -652,6 +715,21 @@ lastSeen:
 realtimeServerTimestamp()
 
 });
+
+
+console.log(
+"🟢 المستخدم متصل الآن"
+);
+
+
+}catch(error){
+
+console.error(
+"Presence error:",
+error
+);
+
+}
 
 });
 
@@ -677,16 +755,19 @@ statusRef,
 
 (snapshot)=>{
 
+
 const data =
 snapshot.val();
 
+
+/* =====================================================
+   🟢 الصديق متصل
+===================================================== */
 
 if(
 data &&
 data.online === true
 ){
-
-/* 🟢 متصل */
 
 friendStatus.textContent =
 "● متصل";
@@ -694,9 +775,12 @@ friendStatus.textContent =
 friendStatus.style.color =
 "#00e889";
 
-}else{
 
-/* ⚫ غير متصل */
+/* =====================================================
+   ⚫ الصديق غير متصل
+===================================================== */
+
+}else{
 
 friendStatus.textContent =
 "● غير متصل";
@@ -711,7 +795,7 @@ friendStatus.style.color =
 (error)=>{
 
 console.error(
-"Presence error:",
+"Friend presence error:",
 error
 );
 
@@ -734,10 +818,12 @@ friendStatus.style.color =
 
 async function loadFriend(){
 
+
 const params =
 new URLSearchParams(
 window.location.search
 );
+
 
 const friendUID =
 params.get("friend");
@@ -777,6 +863,7 @@ db,
 "users",
 friendUID
 );
+
 
 const friendDoc =
 await getDoc(
@@ -873,7 +960,7 @@ friendUser.uid
 
 
 /* =====================================================
-   إنشاء المحادثة
+   إنشاء المحادثة إذا لم تكن موجودة
 ===================================================== */
 
 const chatRef =
@@ -882,6 +969,7 @@ db,
 "chats",
 chatID
 );
+
 
 const chatDoc =
 await getDoc(
@@ -902,6 +990,7 @@ chatRef,
 members:[
 
 currentUser.uid,
+
 friendUser.uid
 
 ],
@@ -932,6 +1021,7 @@ return true;
 ===================================================== */
 
 function listenMessages(){
+
 
 const messagesRef =
 collection(
@@ -966,6 +1056,7 @@ messagesQuery,
 
 (snapshot)=>{
 
+
 messages.innerHTML =
 "";
 
@@ -995,6 +1086,7 @@ return;
 snapshot.forEach(
 
 (messageDoc)=>{
+
 
 const data =
 messageDoc.data();
@@ -1026,7 +1118,9 @@ currentUser.uid
 );
 
 
-/* نص الرسالة */
+/* =====================================================
+   نص الرسالة
+===================================================== */
 
 const text =
 escapeHTML(
@@ -1034,7 +1128,9 @@ data.text
 );
 
 
-/* الوقت */
+/* =====================================================
+   الوقت
+===================================================== */
 
 let time =
 "";
@@ -1049,7 +1145,9 @@ try{
 time =
 
 data.createdAt
+
 .toDate()
+
 .toLocaleTimeString(
 
 "ar",
@@ -1071,7 +1169,9 @@ minute:
 }
 
 
-/* بناء الرسالة */
+/* =====================================================
+   بناء الرسالة
+===================================================== */
 
 message.innerHTML = `
 
@@ -1092,10 +1192,13 @@ message
 
 }
 
+
 );
 
 
-/* النزول لآخر رسالة */
+/* =====================================================
+   النزول لآخر رسالة
+===================================================== */
 
 messages.scrollTop =
 messages.scrollHeight;
@@ -1126,12 +1229,15 @@ showError(
 
 async function sendMessage(){
 
+
 const text =
 messageInput.value.trim();
 
 
 if(!text){
+
 return;
+
 }
 
 
@@ -1151,6 +1257,7 @@ true;
 
 try{
 
+
 const messagesRef =
 collection(
 
@@ -1165,7 +1272,9 @@ chatID,
 );
 
 
-/* إضافة الرسالة */
+/* =====================================================
+   إضافة الرسالة
+===================================================== */
 
 await addDoc(
 
@@ -1187,7 +1296,9 @@ serverTimestamp()
 );
 
 
-/* تحديث آخر رسالة */
+/* =====================================================
+   تحديث آخر رسالة
+===================================================== */
 
 await setDoc(
 
@@ -1217,7 +1328,9 @@ true
 );
 
 
-/* تنظيف الإدخال */
+/* =====================================================
+   تنظيف الإدخال
+===================================================== */
 
 messageInput.value =
 "";
@@ -1236,6 +1349,7 @@ alert(
 "تعذر إرسال الرسالة: " +
 error.message
 );
+
 
 }finally{
 
@@ -1257,6 +1371,11 @@ auth,
 
 async(user)=>{
 
+
+/* =====================================================
+   لا يوجد تسجيل دخول
+===================================================== */
+
 if(!user){
 
 showError(
@@ -1268,14 +1387,19 @@ return;
 }
 
 
+/* =====================================================
+   حفظ المستخدم الحالي
+===================================================== */
+
 currentUser =
 user;
 
 
 try{
 
+
 /* =====================================================
-   بدء Presence
+   بدء نظام Presence
 ===================================================== */
 
 setMyPresence();
@@ -1322,6 +1446,7 @@ loading.style.display =
 app.style.display =
 "flex";
 
+
 messageInput.focus();
 
 
@@ -1356,7 +1481,7 @@ sendMessage
 
 
 /* =====================================================
-   Enter
+   زر Enter
 ===================================================== */
 
 messageInput.addEventListener(
@@ -1364,6 +1489,7 @@ messageInput.addEventListener(
 "keydown",
 
 (event)=>{
+
 
 if(
 event.key === "Enter"
