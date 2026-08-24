@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -44,11 +43,6 @@ linear-gradient(
 overflow-x:hidden;
 }
 
-
-/* =========================
-   الخلفية
-========================= */
-
 .background{
 position:fixed;
 inset:0;
@@ -78,11 +72,6 @@ bottom:-100px;
 left:-100px;
 }
 
-
-/* =========================
-   التطبيق
-========================= */
-
 .app{
 position:relative;
 z-index:1;
@@ -94,11 +83,6 @@ padding:28px 20px 45px;
 display:flex;
 flex-direction:column;
 }
-
-
-/* =========================
-   الهيدر
-========================= */
 
 header{
 display:flex;
@@ -173,11 +157,6 @@ box-shadow:
 0 0 10px #00e676;
 }
 
-
-/* =========================
-   القسم الرئيسي
-========================= */
-
 .hero{
 text-align:center;
 margin-bottom:32px;
@@ -204,11 +183,6 @@ color:#9ba7a4;
 line-height:1.8;
 font-size:16px;
 }
-
-
-/* =========================
-   صورة الحساب
-========================= */
 
 .avatar{
 width:92px;
@@ -243,11 +217,6 @@ height:100%;
 object-fit:cover;
 }
 
-
-/* =========================
-   معلومات الحساب
-========================= */
-
 .account-info{
 display:flex;
 flex-direction:column;
@@ -266,21 +235,11 @@ font-size:18px;
 color:#00e676;
 }
 
-
-/* =========================
-   الخيارات
-========================= */
-
 .choices{
 display:flex;
 flex-direction:column;
 gap:18px;
 }
-
-
-/* =========================
-   البطاقة
-========================= */
 
 .choice{
 position:relative;
@@ -333,11 +292,6 @@ transform:translateY(-4px);
 transform:scale(.98);
 }
 
-
-/* =========================
-   الأصدقاء
-========================= */
-
 .friends-choice{
 background:
 linear-gradient(
@@ -351,30 +305,7 @@ rgba(0,230,118,.035)
 background:#00e676;
 }
 
-
-/* =========================
-   إنشاء غرفة
-========================= */
-
-.room-choice{
-background:
-linear-gradient(
-135deg,
-rgba(0,230,118,.16),
-rgba(0,230,118,.035)
-);
-}
-
-.room-choice::before{
-background:#00e676;
-}
-
-
-/* =========================
-   دخول ID
-========================= */
-
-.join-choice{
+.search-choice{
 background:
 linear-gradient(
 135deg,
@@ -383,28 +314,9 @@ rgba(41,121,255,.035)
 );
 }
 
-.join-choice::before{
+.search-choice::before{
 background:#2979ff;
 }
-
-
-/* =========================
-   الإعدادات
-========================= */
-
-.settings-choice{
-background:
-linear-gradient(
-135deg,
-rgba(255,255,255,.08),
-rgba(255,255,255,.025)
-);
-}
-
-
-/* =========================
-   العودة
-========================= */
 
 .back-choice{
 background:
@@ -416,11 +328,6 @@ rgba(120,30,30,.04)
 
 color:#ffaaaa;
 }
-
-
-/* =========================
-   محتوى البطاقة
-========================= */
 
 .choice-content{
 position:relative;
@@ -469,11 +376,6 @@ font-size:26px;
 color:#7d8986;
 }
 
-
-/* =========================
-   معلومات
-========================= */
-
 .info{
 margin-top:30px;
 
@@ -495,11 +397,6 @@ font-size:12px;
 line-height:1.7;
 }
 
-
-/* =========================
-   الفوتر
-========================= */
-
 footer{
 margin-top:auto;
 padding-top:45px;
@@ -509,11 +406,6 @@ text-align:center;
 color:#58635f;
 font-size:11px;
 }
-
-
-/* =========================
-   Loading
-========================= */
 
 .loading{
 position:fixed;
@@ -558,11 +450,6 @@ to{
 transform:rotate(360deg);
 }
 }
-
-
-/* =========================
-   الموبايل
-========================= */
 
 @media(max-width:480px){
 
@@ -635,30 +522,14 @@ font-size:12px;
 
 </head>
 
-
 <body>
 
-
-<!-- =========================
-     الخلفية
-========================= -->
-
 <div class="background">
-
 <div class="glow one"></div>
 <div class="glow two"></div>
-
 </div>
 
-
-<!-- =========================
-     Loading
-========================= -->
-
-<div
-id="loading"
-class="loading"
->
+<div id="loading" class="loading">
 
 <div class="spinner"></div>
 
@@ -668,21 +539,11 @@ class="loading"
 
 </div>
 
-
-<!-- =========================
-     التطبيق
-========================= -->
-
 <main
 id="app"
 class="app"
 style="display:none;"
 >
-
-
-<!-- =========================
-     Header
-========================= -->
 
 <header>
 
@@ -706,7 +567,6 @@ Mecd Chat
 
 </div>
 
-
 <div class="status">
 
 <div class="status-dot"></div>
@@ -717,13 +577,7 @@ Mecd Chat
 
 </header>
 
-
-<!-- =========================
-     القسم الرئيسي
-========================= -->
-
 <section class="hero">
-
 
 <h1>
 
@@ -733,14 +587,11 @@ Mecd Chat
 
 </h1>
 
-
 <p class="hero-description">
 
-تواصل مع أصدقائك وأنشئ غرف دردشة
-خاصة بسهولة وأمان.
+تواصل مع أصدقائك بسهولة وأمان.
 
 </p>
-
 
 <div
 id="avatar"
@@ -751,13 +602,7 @@ class="avatar"
 
 </div>
 
-
 </section>
-
-
-<!-- =========================
-     الحساب
-========================= -->
 
 <div class="account-info">
 
@@ -770,7 +615,6 @@ class="account-name"
 
 </div>
 
-
 <div
 id="userId"
 class="account-id"
@@ -782,17 +626,7 @@ class="account-id"
 
 </div>
 
-
-<!-- =========================
-     الخيارات
-========================= -->
-
 <section class="choices">
-
-
-<!-- =========================
-     الأصدقاء
-========================= -->
 
 <button
 type="button"
@@ -826,31 +660,26 @@ id="friendsBtn"
 
 </button>
 
-
-<!-- =========================
-     إنشاء غرفة دردشة
-========================= -->
-
 <button
 type="button"
-id="createRoomBtn"
-class="choice room-choice"
+class="choice search-choice"
+id="searchFriendBtn"
 >
 
 <div class="choice-content">
 
 <div class="choice-icon">
-➕
+🔎
 </div>
 
 <div class="choice-text">
 
 <h3>
-إنشاء غرفة دردشة
+بحث عن صديق
 </h3>
 
 <p>
-أنشئ غرفة جديدة وابدأ الدردشة مع الآخرين.
+ابحث عن صديق باستخدام ID الخاص به.
 </p>
 
 </div>
@@ -863,89 +692,10 @@ class="choice room-choice"
 
 </button>
 
-
-<!-- =========================
-     دخول عبر ID
-========================= -->
-
 <button
 type="button"
-id="joinRoomBtn"
-class="choice join-choice"
->
-
-<div class="choice-content">
-
-<div class="choice-icon">
-🔑
-</div>
-
-<div class="choice-text">
-
-<h3>
-دخول دردشة عبر ID
-</h3>
-
-<p>
-أدخل ID للانضمام إلى غرفة دردشة.
-</p>
-
-</div>
-
-<div class="arrow">
-←
-</div>
-
-</div>
-
-</button>
-
-
-<!-- =========================
-     الإعدادات
-========================= -->
-
-<button
-type="button"
-id="settingsBtn"
-class="choice settings-choice"
->
-
-<div class="choice-content">
-
-<div class="choice-icon">
-⚙️
-</div>
-
-<div class="choice-text">
-
-<h3>
-الإعدادات
-</h3>
-
-<p>
-إدارة إعدادات حسابك في Mecd Chat.
-</p>
-
-</div>
-
-<div class="arrow">
-←
-</div>
-
-</div>
-
-</button>
-
-
-<!-- =========================
-     العودة
-========================= -->
-
-<button
-type="button"
-id="backBtn"
 class="choice back-choice"
+id="backBtn"
 >
 
 <div class="choice-content">
@@ -974,13 +724,7 @@ class="choice back-choice"
 
 </button>
 
-
 </section>
-
-
-<!-- =========================
-     معلومات
-========================= -->
 
 <div class="info">
 
@@ -991,23 +735,13 @@ class="choice back-choice"
 
 </div>
 
-
 <footer>
-
 Mecd Chat © 2026
-
 </footer>
-
 
 </main>
 
-
 <script type="module">
-
-
-/* =========================
-   Firebase
-========================= */
 
 import {
 initializeApp
@@ -1015,14 +749,12 @@ initializeApp
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
 getAuth,
 onAuthStateChanged
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 
 import {
 getFirestore,
@@ -1032,11 +764,6 @@ setDoc
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-/* =========================
-   Firebase Config
-========================= */
 
 const firebaseConfig = {
 
@@ -1063,11 +790,6 @@ measurementId:
 
 };
 
-
-/* =========================
-   Firebase تشغيل
-========================= */
-
 const firebaseApp =
 initializeApp(firebaseConfig);
 
@@ -1076,11 +798,6 @@ getAuth(firebaseApp);
 
 const db =
 getFirestore(firebaseApp);
-
-
-/* =========================
-   عناصر الصفحة
-========================= */
 
 const loading =
 document.getElementById("loading");
@@ -1100,22 +817,11 @@ document.getElementById("userId");
 const friendsBtn =
 document.getElementById("friendsBtn");
 
-const createRoomBtn =
-document.getElementById("createRoomBtn");
-
-const joinRoomBtn =
-document.getElementById("joinRoomBtn");
-
-const settingsBtn =
-document.getElementById("settingsBtn");
+const searchFriendBtn =
+document.getElementById("searchFriendBtn");
 
 const backBtn =
 document.getElementById("backBtn");
-
-
-/* =========================
-   روابط الصفحات
-========================= */
 
 const mecdToolsURL =
 "https://mecdjhjhnh37-collab.github.io/Website-g-zel/";
@@ -1123,13 +829,8 @@ const mecdToolsURL =
 const friendsURL =
 "./friends.html";
 
-const roomURL =
-"./room.html";
-
-
-/* =========================
-   الحصول على Chat ID
-========================= */
+const searchFriendURL =
+"./search.html";
 
 async function getChatID(user){
 
@@ -1142,16 +843,13 @@ db,
 user.uid
 );
 
-
 const userDoc =
 await getDoc(userRef);
-
 
 if(userDoc.exists()){
 
 const data =
 userDoc.data();
-
 
 if(data.chatID){
 
@@ -1161,11 +859,6 @@ return data.chatID;
 
 }
 
-
-/* =========================
-   العداد
-========================= */
-
 const counterRef =
 doc(
 db,
@@ -1173,13 +866,10 @@ db,
 "chatCounter"
 );
 
-
 const counterDoc =
 await getDoc(counterRef);
 
-
 let number = 1;
-
 
 if(counterDoc.exists()){
 
@@ -1190,19 +880,9 @@ counterDoc.data().number || 0
 
 }
 
-
-/* =========================
-   ID الجديد
-========================= */
-
 const newID =
 "MC-" +
 String(number).padStart(6,"0");
-
-
-/* =========================
-   حفظ المستخدم
-========================= */
 
 await setDoc(
 
@@ -1235,11 +915,6 @@ merge:true
 
 );
 
-
-/* =========================
-   حفظ العداد
-========================= */
-
 await setDoc(
 
 counterRef,
@@ -1258,9 +933,7 @@ merge:true
 
 );
 
-
 return newID;
-
 
 }catch(error){
 
@@ -1275,17 +948,11 @@ return "MC-000001";
 
 }
 
-
-/* =========================
-   فحص تسجيل الدخول
-========================= */
-
 onAuthStateChanged(
 
 auth,
 
 async(user)=>{
-
 
 if(!user){
 
@@ -1297,22 +964,11 @@ return;
 
 }
 
-
 try{
-
-
-/* =========================
-   الاسم
-========================= */
 
 name.textContent =
 user.displayName ||
 "مستخدم Mecd";
-
-
-/* =========================
-   الصورة
-========================= */
 
 if(user.photoURL){
 
@@ -1332,29 +988,17 @@ avatar.textContent =
 
 }
 
-
-/* =========================
-   ID
-========================= */
-
 const id =
 await getChatID(user);
 
-
 userId.textContent =
 "ID: " + id;
-
-
-/* =========================
-   إظهار الصفحة
-========================= */
 
 loading.style.display =
 "none";
 
 app.style.display =
 "flex";
-
 
 }catch(error){
 
@@ -1375,111 +1019,42 @@ loading.innerHTML = `
 
 });
 
-
-/* =========================
-   زر الأصدقاء
-========================= */
-
 friendsBtn.addEventListener(
-
 "click",
-
 ()=>{
 
 window.location.href =
 friendsURL;
 
 }
-
 );
 
-
-/* =========================
-   🟢 زر إنشاء غرفة
-========================= */
-
-createRoomBtn.addEventListener(
-
+searchFriendBtn.addEventListener(
 "click",
-
 ()=>{
 
 window.location.href =
-roomURL;
+searchFriendURL;
 
 }
-
 );
-
-
-/* =========================
-   زر دخول عبر ID
-========================= */
-
-joinRoomBtn.addEventListener(
-
-"click",
-
-()=>{
-
-alert(
-"ميزة دخول الدردشة عبر ID ستكون متاحة قريبًا."
-);
-
-}
-
-);
-
-
-/* =========================
-   زر الإعدادات
-========================= */
-
-settingsBtn.addEventListener(
-
-"click",
-
-()=>{
-
-alert(
-"إعدادات Mecd Chat ستكون متاحة قريبًا."
-);
-
-}
-
-);
-
-
-/* =========================
-   العودة إلى Mecd Tools
-========================= */
 
 backBtn.addEventListener(
-
 "click",
-
 ()=>{
 
 window.location.href =
 mecdToolsURL;
 
 }
-
 );
-
-
-/* =========================
-   Service Worker
-========================= */
 
 if(
 "serviceWorker" in navigator
 ){
 
 window.addEventListener(
-
 "load",
-
 ()=>{
 
 navigator.serviceWorker
@@ -1510,7 +1085,6 @@ error
 );
 
 }
-
 );
 
 }
