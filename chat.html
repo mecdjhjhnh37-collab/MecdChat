@@ -284,8 +284,8 @@ transform:rotate(360deg);
 جارٍ التحميل...
 </div>
 
-<div class="user-status">
-● متصل
+<div id="friendStatus" class="user-status">
+● غير متصل
 </div>
 
 </div>
@@ -322,6 +322,14 @@ autocomplete="off"
 
 
 <script type="module">
+   import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  onDisconnect,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 import {
 initializeApp
@@ -351,6 +359,7 @@ serverTimestamp
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+   
 
 /* =========================
    Firebase
@@ -391,6 +400,8 @@ getAuth(firebaseApp);
 const db =
 getFirestore(firebaseApp);
 
+const realtimeDB = 
+getDatabase(firebaseApp);
 
 /* =========================
    العناصر
@@ -425,6 +436,33 @@ document.getElementById("sendButton");
 
 const backButton =
 document.getElementById("backButton");
+
+const friendStatus =
+document.getElementById("friendStatus");
+   function listenFriendStatus(friendUID){
+
+  const statusRef =
+    ref(realtimeDB, "presence/" + friendUID);
+
+  onValue(statusRef, (snapshot) => {
+
+    const data = snapshot.val();
+
+    if(data && data.online === true){
+
+      friendStatus.textContent = "● متصل";
+      friendStatus.style.color = "#00e889";
+
+    }else{
+
+      friendStatus.textContent = "● غير متصل";
+      friendStatus.style.color = "#7b8783";
+
+    }
+
+  });
+
+}
 
 
 /* =========================
@@ -913,13 +951,13 @@ return;
 
 
 currentUser = user;
-
+setMyPresence();
 
 try{
 
 const success =
 await loadFriend();
-
+listenFriendStatus(friendUser.uid);
 
 if(!success){
 return;
