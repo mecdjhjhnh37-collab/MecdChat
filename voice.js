@@ -1,170 +1,49 @@
 import {
 collection,
 addDoc,
-serverTimestamp
+serverTimestamp,
+doc,
+updateDoc,
+setDoc
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-let mediaRecorder = null;
-
-let audioChunks = [];
-
-let audioStream = null;
-
-let isRecording = false;
-
-let cancelRecording = false;
-
-let startY = 0;
-
-let recordingTimer = null;
-
-let seconds = 0;
-
 
 
 const voiceButton =
 document.getElementById("voiceButton");
 
 
+let recorder = null;
+let stream = null;
+let chunks = [];
+
+let isRecording = false;
+let cancelRecording = false;
 
 
 
-// بدء التسجيل عند الضغط
-
+// بدء التسجيل
 voiceButton.addEventListener(
 "pointerdown",
-(e)=>{
+async(e)=>{
 
 
-startY = e.clientY;
+if(isRecording) return;
+
 
 cancelRecording = false;
 
 
-startRecording();
-
-
-});
-
-
-
-
-
-
-
-// فحص السحب للأعلى
-
-voiceButton.addEventListener(
-"pointermove",
-(e)=>{
-
-
-if(!isRecording)
-return;
-
-
-
-let moveUp =
-startY - e.clientY;
-
-
-
-if(moveUp > 80){
-
-
-cancelRecording = true;
-
-
-voiceButton.textContent =
-"❌";
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-// عند رفع الإصبع
-
-voiceButton.addEventListener(
-"pointerup",
-()=>{
-
-
-if(!isRecording)
-return;
-
-
-
-if(cancelRecording){
-
-cancelCurrentRecording();
-
-
-}else{
-
-
-stopRecording();
-
-
-}
-
-
-
-});
-
-
-
-
-
-
-
-// إذا انقطع اللمس
-
-voiceButton.addEventListener(
-"pointercancel",
-()=>{
-
-
-if(isRecording){
-
-cancelCurrentRecording();
-
-}
-
-
-});
-
-
-
-
-
-
-
-
-
-async function startRecording(){
-
-
-if(isRecording)
-return;
-
+voiceButton.setPointerCapture(
+e.pointerId
+);
 
 
 try{
 
 
-audioStream =
+stream =
 await navigator.mediaDevices.getUserMedia({
 
 audio:true
@@ -173,29 +52,24 @@ audio:true
 
 
 
-
-
-mediaRecorder =
-new MediaRecorder(
-audioStream
-);
+recorder =
+new MediaRecorder(stream);
 
 
 
-audioChunks=[];
+chunks = [];
 
 
 
-mediaRecorder.ondataavailable =
+recorder.ondataavailable =
 (event)=>{
 
 
 if(event.data.size > 0){
 
-audioChunks.push(event.data);
+chunks.push(event.data);
 
 }
-
 
 };
 
@@ -203,43 +77,28 @@ audioChunks.push(event.data);
 
 
 
-
-
-mediaRecorder.onstop =
-async ()=>{
+recorder.onstop =
+async()=>{
 
 
 if(cancelRecording){
 
-
-audioChunks=[];
+chunks=[];
 
 return;
 
-
 }
-
-
 
 
 
 
 const blob =
 new Blob(
-
-audioChunks,
-
+chunks,
 {
-
 type:"audio/webm"
-
 }
-
 );
-
-
-
-
 
 
 
@@ -252,117 +111,68 @@ reader.readAsDataURL(blob);
 
 
 
-
-
 reader.onloadend =
-async ()=>{
+async()=>{
 
 
-const audioBase64 =
+const audio =
 reader.result;
 
 
 
-
-
-
-// عرض الصوت عند المرسل
-
-addVoiceMessage(
-audioBase64
-);
-
-
-
-
+// عرض عند المرسل
+addVoiceMessage(audio);
 
 
 
 // إرسال Firestore
 
-try{
-
-
 await addDoc(
 
 collection(
-
 window.chatDB,
-
 "chats",
-
 window.chatID,
-
 "messages"
-
 ),
-
 
 {
 
-
 type:"voice",
 
-
-audio:
-audioBase64,
-
+audio:audio,
 
 senderId:
 window.chatUser.uid,
 
-
 receiverId:
 window.chatFriend.uid,
-
 
 createdAt:
 serverTimestamp()
 
-
 }
 
-
 );
 
 
-
-console.log(
-"Voice sent"
-);
-
-
-
-}catch(error){
-
-
-console.error(
-"Voice Firestore error",
-error
-);
-
-
-}
-
+};
 
 
 };
 
 
 
-};
-
-
-
-
-
-
-
-mediaRecorder.start();
+recorder.start();
 
 
 
 isRecording=true;
+
+
+
+// إظهار للطرف الثاني
+await setRecordingStatus(true);
 
 
 
@@ -371,65 +181,31 @@ voiceButton.classList.add(
 );
 
 
-
-seconds=0;
-
-
-
-recordingTimer =
-setInterval(()=>{
-
-
-seconds++;
-
-
-let time =
-seconds < 10
-?
-"0"+seconds
-:
-seconds;
-
-
-
 voiceButton.textContent =
-"🔴 "+time;
+"🔴";
 
 
-
-},1000);
-
-
-
-
-}
-
-catch(error){
-
+}catch(error){
 
 console.error(error);
-
 
 alert(
 "لم يتم السماح بالميكروفون"
 );
 
-
 }
 
 
-
-}
-
+});
 
 
 
 
 
-
-
-
-function stopRecording(){
+// رفع الإصبع
+voiceButton.addEventListener(
+"pointerup",
+async()=>{
 
 
 if(!isRecording)
@@ -437,28 +213,72 @@ return;
 
 
 
-clearInterval(
-recordingTimer
-);
+if(cancelRecording){
+
+cancelCurrentRecording();
+
+}else{
+
+stopRecording();
+
+}
+
+
+});
 
 
 
-recordingTimer=null;
+
+
+// السحب لفوق للإلغاء
+voiceButton.addEventListener(
+"pointermove",
+(e)=>{
+
+
+if(!isRecording)
+return;
 
 
 
-mediaRecorder.stop();
+if(e.clientY < voiceButton.getBoundingClientRect().top - 50){
+
+
+cancelRecording=true;
+
+
+voiceButton.textContent =
+"❌";
+
+
+}
+
+
+});
 
 
 
 
 
-audioStream
+
+async function stopRecording(){
+
+
+
+if(!recorder)
+return;
+
+
+
+recorder.stop();
+
+
+
+stream
 .getTracks()
 .forEach(
-(track)=>track.stop()
+track=>track.stop()
 );
-
 
 
 
@@ -466,8 +286,7 @@ isRecording=false;
 
 
 
-voiceButton.textContent =
-"🎤";
+await setRecordingStatus(false);
 
 
 
@@ -476,10 +295,11 @@ voiceButton.classList.remove(
 );
 
 
+voiceButton.textContent =
+"🎤";
+
 
 }
-
-
 
 
 
@@ -490,38 +310,28 @@ voiceButton.classList.remove(
 function cancelCurrentRecording(){
 
 
-if(!isRecording)
-return;
-
-
 
 cancelRecording=true;
 
 
 
-clearInterval(
-recordingTimer
-);
+if(recorder){
+
+recorder.stop();
+
+}
 
 
 
-recordingTimer=null;
+if(stream){
 
-
-
-mediaRecorder.stop();
-
-
-
-
-
-audioStream
+stream
 .getTracks()
 .forEach(
-(track)=>track.stop()
+track=>track.stop()
 );
 
-
+}
 
 
 
@@ -529,8 +339,7 @@ isRecording=false;
 
 
 
-voiceButton.textContent =
-"🎤";
+setRecordingStatus(false);
 
 
 
@@ -539,16 +348,68 @@ voiceButton.classList.remove(
 );
 
 
-
-console.log(
-"Recording cancelled"
-);
-
+voiceButton.textContent =
+"🎤";
 
 
 }
 
 
+
+
+
+
+
+// حالة التسجيل للطرف الثاني
+async function setRecordingStatus(status){
+
+
+if(
+!window.chatUser ||
+!window.chatFriend
+)
+return;
+
+
+
+try{
+
+
+await setDoc(
+
+doc(
+window.chatDB,
+"users",
+window.chatUser.uid
+),
+
+{
+
+recording:status
+
+},
+
+{
+
+merge:true
+
+}
+
+);
+
+
+
+}catch(error){
+
+console.error(
+"Recording status error",
+error
+);
+
+}
+
+
+}
 
 
 
@@ -565,11 +426,8 @@ document.createElement(
 );
 
 
-
 box.className =
 "message mine";
-
-
 
 
 
@@ -582,41 +440,29 @@ document.createElement(
 
 audio.controls=true;
 
-
 audio.src=url;
-
 
 audio.style.width =
 "230px";
 
 
 
-
-box.appendChild(
-audio
-);
+box.appendChild(audio);
 
 
 
-
-
-const messages =
-document.getElementById(
-"messages"
-);
+document
+.getElementById("messages")
+.appendChild(box);
 
 
 
-messages.appendChild(
-box
-);
-
-
-
-
-messages.scrollTop =
-messages.scrollHeight;
-
+document
+.getElementById("messages")
+.scrollTop =
+document
+.getElementById("messages")
+.scrollHeight;
 
 
 }
