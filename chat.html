@@ -980,7 +980,6 @@ data.senderId === currentUser.uid
 "other"
 );
 
-
 if(data.type === "voice"){
 
 const audio = document.createElement("audio");
@@ -990,6 +989,18 @@ audio.src = data.audio;
 audio.style.width = "230px";
 
 box.appendChild(audio);
+
+
+// إضافة نص صغير للصوت
+const voiceText = document.createElement("span");
+voiceText.textContent = "🎤 رسالة صوتية";
+voiceText.style.display="block";
+voiceText.style.fontSize="12px";
+
+box.appendChild(voiceText);
+
+}
+
 
 }else{
 
@@ -1242,8 +1253,52 @@ clearTimeout(timer);
 
 
 element.addEventListener(
-"pointerleave",
-()=>{
+"contextmenu",
+e=>{
+e.preventDefault();
+
+removeMenus();
+
+const menu=document.createElement("div");
+menu.className="message-menu";
+
+const button=document.createElement("button");
+
+if(mine){
+
+button.textContent="🗑️ إلغاء الإرسال";
+
+button.onclick=async()=>{
+
+await deleteDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+)
+);
+
+removeMenus();
+
+};
+
+}else{
+
+button.textContent="🗑️ حذف لدي";
+
+button.onclick=()=>{
+element.remove();
+removeMenus();
+};
+
+}
+
+menu.appendChild(button);
+element.appendChild(menu);
+
+});
 
 clearTimeout(timer);
 
