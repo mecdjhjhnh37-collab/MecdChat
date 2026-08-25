@@ -14,12 +14,15 @@ async function startRecording(){
 
     try{
 
-        audioStream = await navigator.mediaDevices.getUserMedia({
+        audioStream =
+        await navigator.mediaDevices.getUserMedia({
             audio:true
         });
 
 
-        mediaRecorder = new MediaRecorder(audioStream);
+        mediaRecorder =
+        new MediaRecorder(audioStream);
+
 
         audioChunks = [];
 
@@ -37,7 +40,9 @@ async function startRecording(){
 
         mediaRecorder.onstop = ()=>{
 
-            const audioBlob = new Blob(
+
+            const audioBlob =
+            new Blob(
                 audioChunks,
                 {
                     type:"audio/webm"
@@ -45,11 +50,7 @@ async function startRecording(){
             );
 
 
-            const audioURL =
-            URL.createObjectURL(audioBlob);
-
-
-            addVoiceMessage(audioURL);
+            saveVoiceToFirestore(audioBlob);
 
 
         };
@@ -57,7 +58,9 @@ async function startRecording(){
 
         mediaRecorder.start();
 
+
         isRecording = true;
+
 
         voiceButton.textContent="🔴";
 
@@ -76,8 +79,78 @@ async function startRecording(){
 
 
 
+// حفظ الصوت في Firestore
+async function saveVoiceToFirestore(blob){
+
+
+    const reader = new FileReader();
+
+
+    reader.onloadend = async ()=>{
+
+
+        const base64Audio =
+        reader.result;
+
+
+        try{
+
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "chats",
+                    chatID,
+                    "messages"
+                ),
+
+                {
+
+                    audioData: base64Audio,
+
+                    senderId:
+                    currentUser.uid,
+
+
+                    createdAt:
+                    serverTimestamp()
+
+                }
+
+            );
+
+
+            addVoiceMessage(base64Audio);
+
+
+        }catch(error){
+
+            console.error(
+                "Voice save error:",
+                error
+            );
+
+            alert("فشل حفظ الصوت");
+
+        }
+
+
+    };
+
+
+    reader.readAsDataURL(blob);
+
+
+}
+
+
+
+
+
 // إيقاف التسجيل
 function stopRecording(){
+
 
     if(!isRecording) return;
 
@@ -85,7 +158,9 @@ function stopRecording(){
     mediaRecorder.stop();
 
 
-    audioStream.getTracks().forEach(track=>{
+    audioStream
+    .getTracks()
+    .forEach(track=>{
 
         track.stop();
 
@@ -97,6 +172,7 @@ function stopRecording(){
 
     voiceButton.textContent="🎤";
 
+
     voiceButton.classList.remove("recording");
 
 
@@ -104,11 +180,14 @@ function stopRecording(){
 
 
 
-// إضافة الصوت للمحادثة
+
+
+// عرض الصوت داخل المحادثة
 function addVoiceMessage(url){
 
 
-    const box = document.createElement("div");
+    const box =
+    document.createElement("div");
 
 
     box.className =
@@ -121,10 +200,12 @@ function addVoiceMessage(url){
 
     audio.controls = true;
 
+
     audio.src = url;
 
 
-    audio.style.width="230px";
+    audio.style.width =
+    "230px";
 
 
     box.appendChild(audio);
@@ -141,6 +222,8 @@ function addVoiceMessage(url){
 
 
 
+
+
 // ضغط مطول
 voiceButton.addEventListener(
 "pointerdown",
@@ -149,6 +232,7 @@ voiceButton.addEventListener(
     startRecording();
 
 });
+
 
 
 
@@ -163,7 +247,8 @@ voiceButton.addEventListener(
 
 
 
-// إذا سحب إصبعه خارج الزر
+
+// سحب الإصبع خارج الزر
 voiceButton.addEventListener(
 "pointerleave",
 ()=>{
