@@ -1,37 +1,18 @@
 import {
-
-storage
-
-}
-
-from "./firebase.js";
-
-
-import {
-
 collection,
 addDoc,
-serverTimestamp,
-doc,
-setDoc
-
+serverTimestamp
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 import {
-
 ref,
 uploadBytes,
 getDownloadURL
-
 }
-
 from
-
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
@@ -40,8 +21,11 @@ const voiceButton =
 document.getElementById("voiceButton");
 
 
+
 let recorder = null;
+
 let stream = null;
+
 let chunks = [];
 
 let isRecording = false;
@@ -53,7 +37,24 @@ voiceButton.addEventListener(
 async()=>{
 
 
-if(isRecording) return;
+if(isRecording)
+return;
+
+
+
+if(
+!window.storage ||
+!window.chatDB ||
+!window.chatID ||
+!window.chatUser ||
+!window.chatFriend
+){
+
+console.error("Firebase variables missing");
+
+return;
+
+}
 
 
 
@@ -61,11 +62,11 @@ try{
 
 
 stream =
-await navigator.mediaDevices.getUserMedia({
-
+await navigator.mediaDevices.getUserMedia(
+{
 audio:true
-
-});
+}
+);
 
 
 
@@ -79,7 +80,7 @@ chunks=[];
 
 
 recorder.ondataavailable =
-e=>{
+(e)=>{
 
 if(e.data.size>0){
 
@@ -106,61 +107,55 @@ type:"audio/webm"
 
 
 
-// رفع الصوت إلى Storage
+// رفع الصوت إلى Firebase Storage
 
-const fileRef =
+const voiceRef =
 ref(
-
-storage,
-
+window.storage,
 "voices/"+Date.now()+".webm"
-
 );
 
 
 
 await uploadBytes(
-fileRef,
+voiceRef,
 blob
 );
 
 
 
-const audioURL =
+const url =
 await getDownloadURL(
-fileRef
+voiceRef
 );
 
 
 
 
-// حفظ الرسالة في Firestore
+// حفظ الرسالة
 
 await addDoc(
 
 collection(
-
 window.chatDB,
-
 "chats",
-
 window.chatID,
-
 "messages"
-
 ),
 
 {
 
 type:"voice",
 
-audio:audioURL,
+audio:url,
 
 senderId:
 window.chatUser.uid,
 
+
 receiverId:
 window.chatFriend.uid,
+
 
 createdAt:
 serverTimestamp()
@@ -183,8 +178,12 @@ isRecording=true;
 
 voiceButton.textContent="🔴";
 
+voiceButton.classList.add("recording");
 
-}catch(error){
+
+}
+
+catch(error){
 
 console.error(error);
 
@@ -194,6 +193,7 @@ alert("لم يتم السماح بالميكروفون");
 
 
 });
+
 
 
 
@@ -215,7 +215,7 @@ recorder.stop();
 stream
 .getTracks()
 .forEach(
-t=>t.stop()
+track=>track.stop()
 );
 
 
@@ -224,6 +224,11 @@ isRecording=false;
 
 
 voiceButton.textContent="🎤";
+
+
+voiceButton.classList.remove(
+"recording"
+);
 
 
 });
