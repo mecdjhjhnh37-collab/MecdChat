@@ -1702,14 +1702,32 @@ currentUser.uid
 
 /* النص */
 
+if(data.type === "voice"){
+
+const audio =
+document.createElement("audio");
+
+audio.controls=true;
+
+audio.src=data.audio;
+
+audio.style.width="230px";
+
+message.appendChild(audio);
+
+
+}else{
+
+
 const text =
 document.createTextNode(
 data.text || ""
 );
 
-message.appendChild(
-text
-);
+message.appendChild(text);
+
+
+}
 
 
 /* الوقت */
