@@ -1,13 +1,39 @@
 import {
+
+storage
+
+}
+
+from "./firebase.js";
+
+
+import {
+
 collection,
 addDoc,
 serverTimestamp,
 doc,
-updateDoc,
 setDoc
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+
+ref,
+uploadBytes,
+getDownloadURL
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 
 
 const voiceButton =
@@ -19,25 +45,16 @@ let stream = null;
 let chunks = [];
 
 let isRecording = false;
-let cancelRecording = false;
 
 
 
-// بدء التسجيل
 voiceButton.addEventListener(
 "pointerdown",
-async(e)=>{
+async()=>{
 
 
 if(isRecording) return;
 
-
-cancelRecording = false;
-
-
-voiceButton.setPointerCapture(
-e.pointerId
-);
 
 
 try{
@@ -57,17 +74,16 @@ new MediaRecorder(stream);
 
 
 
-chunks = [];
+chunks=[];
 
 
 
 recorder.ondataavailable =
-(event)=>{
+e=>{
 
+if(e.data.size>0){
 
-if(event.data.size > 0){
-
-chunks.push(event.data);
+chunks.push(e.data);
 
 }
 
@@ -76,20 +92,8 @@ chunks.push(event.data);
 
 
 
-
 recorder.onstop =
 async()=>{
-
-
-if(cancelRecording){
-
-chunks=[];
-
-return;
-
-}
-
-
 
 
 const blob =
@@ -102,45 +106,55 @@ type:"audio/webm"
 
 
 
-const reader =
-new FileReader();
+// رفع الصوت إلى Storage
+
+const fileRef =
+ref(
+
+storage,
+
+"voices/"+Date.now()+".webm"
+
+);
 
 
 
-reader.readAsDataURL(blob);
+await uploadBytes(
+fileRef,
+blob
+);
 
 
 
-reader.onloadend =
-async()=>{
-
-
-const audio =
-reader.result;
-
-
-
-// عرض عند المرسل
-addVoiceMessage(audio);
+const audioURL =
+await getDownloadURL(
+fileRef
+);
 
 
 
-// إرسال Firestore
+
+// حفظ الرسالة في Firestore
 
 await addDoc(
 
 collection(
+
 window.chatDB,
+
 "chats",
+
 window.chatID,
+
 "messages"
+
 ),
 
 {
 
 type:"voice",
 
-audio:audio,
+audio:audioURL,
 
 senderId:
 window.chatUser.uid,
@@ -156,8 +170,6 @@ serverTimestamp()
 );
 
 
-};
-
 
 };
 
@@ -166,32 +178,17 @@ serverTimestamp()
 recorder.start();
 
 
-
 isRecording=true;
 
 
-
-// إظهار للطرف الثاني
-await setRecordingStatus(true);
-
-
-
-voiceButton.classList.add(
-"recording"
-);
-
-
-voiceButton.textContent =
-"🔴";
+voiceButton.textContent="🔴";
 
 
 }catch(error){
 
 console.error(error);
 
-alert(
-"لم يتم السماح بالميكروفون"
-);
+alert("لم يتم السماح بالميكروفون");
 
 }
 
@@ -201,71 +198,12 @@ alert(
 
 
 
-
-// رفع الإصبع
 voiceButton.addEventListener(
 "pointerup",
-async()=>{
+()=>{
 
 
 if(!isRecording)
-return;
-
-
-
-if(cancelRecording){
-
-cancelCurrentRecording();
-
-}else{
-
-stopRecording();
-
-}
-
-
-});
-
-
-
-
-
-// السحب لفوق للإلغاء
-voiceButton.addEventListener(
-"pointermove",
-(e)=>{
-
-
-if(!isRecording)
-return;
-
-
-
-if(e.clientY < voiceButton.getBoundingClientRect().top - 50){
-
-
-cancelRecording=true;
-
-
-voiceButton.textContent =
-"❌";
-
-
-}
-
-
-});
-
-
-
-
-
-
-async function stopRecording(){
-
-
-
-if(!recorder)
 return;
 
 
@@ -277,7 +215,7 @@ recorder.stop();
 stream
 .getTracks()
 .forEach(
-track=>track.stop()
+t=>t.stop()
 );
 
 
@@ -285,184 +223,7 @@ track=>track.stop()
 isRecording=false;
 
 
+voiceButton.textContent="🎤";
 
-await setRecordingStatus(false);
 
-
-
-voiceButton.classList.remove(
-"recording"
-);
-
-
-voiceButton.textContent =
-"🎤";
-
-
-}
-
-
-
-
-
-
-
-function cancelCurrentRecording(){
-
-
-
-cancelRecording=true;
-
-
-
-if(recorder){
-
-recorder.stop();
-
-}
-
-
-
-if(stream){
-
-stream
-.getTracks()
-.forEach(
-track=>track.stop()
-);
-
-}
-
-
-
-isRecording=false;
-
-
-
-setRecordingStatus(false);
-
-
-
-voiceButton.classList.remove(
-"recording"
-);
-
-
-voiceButton.textContent =
-"🎤";
-
-
-}
-
-
-
-
-
-
-
-// حالة التسجيل للطرف الثاني
-async function setRecordingStatus(status){
-
-
-if(
-!window.chatUser ||
-!window.chatFriend
-)
-return;
-
-
-
-try{
-
-
-await setDoc(
-
-doc(
-window.chatDB,
-"users",
-window.chatUser.uid
-),
-
-{
-
-recording:status
-
-},
-
-{
-
-merge:true
-
-}
-
-);
-
-
-
-}catch(error){
-
-console.error(
-"Recording status error",
-error
-);
-
-}
-
-
-}
-
-
-
-
-
-
-
-function addVoiceMessage(url){
-
-
-const box =
-document.createElement(
-"div"
-);
-
-
-box.className =
-"message mine";
-
-
-
-const audio =
-document.createElement(
-"audio"
-);
-
-
-
-audio.controls=true;
-
-audio.src=url;
-
-audio.style.width =
-"230px";
-
-
-
-box.appendChild(audio);
-
-
-
-document
-.getElementById("messages")
-.appendChild(box);
-
-
-
-document
-.getElementById("messages")
-.scrollTop =
-document
-.getElementById("messages")
-.scrollHeight;
-
-
-}
+});
