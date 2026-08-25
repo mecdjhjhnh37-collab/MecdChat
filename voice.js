@@ -1,87 +1,58 @@
 const voiceButton = document.getElementById("voiceButton");
 
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
+let recorder;
+let stream;
+let chunks = [];
 
-voiceButton.addEventListener("click", async () => {
 
-    if (!isRecording) {
+voiceButton.addEventListener("pointerdown", async ()=>{
 
-        try {
+    stream = await navigator.mediaDevices.getUserMedia({
+        audio:true
+    });
 
-            const stream = await navigator.mediaDevices.getUserMedia({
-                audio: true
-            });
 
-            mediaRecorder = new MediaRecorder(stream);
+    recorder = new MediaRecorder(stream);
 
-            audioChunks = [];
+    chunks = [];
 
-            mediaRecorder.addEventListener("dataavailable", event => {
 
-                if (event.data.size > 0) {
-                    audioChunks.push(event.data);
-                }
+    recorder.ondataavailable = (e)=>{
 
-            });
+        chunks.push(e.data);
 
-            mediaRecorder.addEventListener("stop", () => {
+    };
 
-                const audioBlob = new Blob(
-                    audioChunks,
-                    { type: "audio/webm" }
-                );
 
-                const audioURL = URL.createObjectURL(audioBlob);
+    recorder.start();
 
-                const audio = document.createElement("audio");
 
-                audio.controls = true;
-                audio.src = audioURL;
+    voiceButton.classList.add("recording");
 
-                audio.style.maxWidth = "250px";
+    voiceButton.textContent = "🔴";
 
-                messages.appendChild(audio);
+});
 
-                messages.scrollTop = messages.scrollHeight;
 
-            });
+voiceButton.addEventListener("pointerup", ()=>{
 
-            mediaRecorder.start();
 
-            isRecording = true;
+    if(!recorder) return;
 
-            voiceButton.textContent = "⏹️";
 
-            voiceButton.style.background = "#00e889";
-            voiceButton.style.color = "#00150e";
+    recorder.stop();
 
-        } catch (error) {
 
-            console.error("Microphone error:", error);
+    stream.getTracks().forEach(track=>{
 
-            alert(
-                "لم يتم السماح باستخدام الميكروفون."
-            );
+        track.stop();
 
-        }
+    });
 
-    } else {
 
-        mediaRecorder.stop();
+    voiceButton.classList.remove("recording");
 
-        mediaRecorder.stream
-            .getTracks()
-            .forEach(track => track.stop());
+    voiceButton.textContent = "🎤";
 
-        isRecording = false;
-
-        voiceButton.textContent = "🎤";
-
-        voiceButton.style.background = "";
-        voiceButton.style.color = "";
-
-    }
 
 });
