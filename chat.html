@@ -1274,17 +1274,23 @@ onAuthStateChanged(
 auth,
 async user=>{
 
-if(!user)
+if(!user){
+
+console.log("لا يوجد مستخدم مسجل");
+
 return;
+
+}
 
 
 currentUser = user;
 
 
 console.log(
-"تم تسجيل الدخول",
+"تم تسجيل الدخول:",
 currentUser.uid
 );
+
 
 
 const ok =
@@ -1297,9 +1303,11 @@ ok
 );
 
 
+
 if(ok){
 
 listenMessages();
+
 
 
 document.getElementById(
@@ -1307,11 +1315,13 @@ document.getElementById(
 ).style.display="none";
 
 
+
 document.getElementById(
 "app"
 ).style.display="flex";
 
 }
+
 
 });
 
