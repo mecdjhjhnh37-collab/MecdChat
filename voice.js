@@ -8,16 +8,21 @@ from
 
 
 let mediaRecorder = null;
+
 let audioChunks = [];
+
 let audioStream = null;
 
 let isRecording = false;
 
-let startY = 0;
 let cancelRecording = false;
 
+let startY = 0;
+
 let recordingTimer = null;
+
 let seconds = 0;
+
 
 
 const voiceButton =
@@ -25,19 +30,22 @@ document.getElementById("voiceButton");
 
 
 
+
+
+// بدء التسجيل عند الضغط
+
 voiceButton.addEventListener(
 "pointerdown",
 (e)=>{
+
 
 startY = e.clientY;
 
 cancelRecording = false;
 
-voiceButton.setPointerCapture(
-e.pointerId
-);
 
 startRecording();
+
 
 });
 
@@ -45,22 +53,26 @@ startRecording();
 
 
 
+
+
+// فحص السحب للأعلى
+
 voiceButton.addEventListener(
 "pointermove",
 (e)=>{
 
 
-if(!isRecording) return;
+if(!isRecording)
+return;
 
 
 
-let distance =
+let moveUp =
 startY - e.clientY;
 
 
 
-// السحب للأعلى لإلغاء
-if(distance > 80){
+if(moveUp > 80){
 
 
 cancelRecording = true;
@@ -81,6 +93,9 @@ voiceButton.textContent =
 
 
 
+
+// عند رفع الإصبع
+
 voiceButton.addEventListener(
 "pointerup",
 ()=>{
@@ -95,14 +110,42 @@ if(cancelRecording){
 
 cancelCurrentRecording();
 
+
 }else{
 
+
 stopRecording();
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+// إذا انقطع اللمس
+
+voiceButton.addEventListener(
+"pointercancel",
+()=>{
+
+
+if(isRecording){
+
+cancelCurrentRecording();
 
 }
 
 
 });
+
+
 
 
 
@@ -117,6 +160,7 @@ if(isRecording)
 return;
 
 
+
 try{
 
 
@@ -129,8 +173,12 @@ audio:true
 
 
 
+
+
 mediaRecorder =
-new MediaRecorder(audioStream);
+new MediaRecorder(
+audioStream
+);
 
 
 
@@ -139,15 +187,18 @@ audioChunks=[];
 
 
 mediaRecorder.ondataavailable =
-(e)=>{
+(event)=>{
 
-if(e.data.size > 0){
 
-audioChunks.push(e.data);
+if(event.data.size > 0){
+
+audioChunks.push(event.data);
 
 }
 
+
 };
+
 
 
 
@@ -160,21 +211,35 @@ async ()=>{
 
 if(cancelRecording){
 
+
 audioChunks=[];
 
 return;
 
+
 }
+
+
+
 
 
 
 const blob =
 new Blob(
+
 audioChunks,
+
 {
+
 type:"audio/webm"
+
 }
+
 );
+
+
+
+
 
 
 
@@ -182,7 +247,10 @@ const reader =
 new FileReader();
 
 
+
 reader.readAsDataURL(blob);
+
+
 
 
 
@@ -195,11 +263,17 @@ reader.result;
 
 
 
-// إظهار الصوت عند المرسل
+
+
+
+// عرض الصوت عند المرسل
 
 addVoiceMessage(
 audioBase64
 );
+
+
+
 
 
 
@@ -212,44 +286,61 @@ try{
 await addDoc(
 
 collection(
+
 window.chatDB,
+
 "chats",
+
 window.chatID,
+
 "messages"
+
 ),
+
 
 {
 
+
 type:"voice",
+
 
 audio:
 audioBase64,
 
+
 senderId:
 window.chatUser.uid,
+
 
 receiverId:
 window.chatFriend.uid,
 
+
 createdAt:
 serverTimestamp()
 
+
 }
+
 
 );
 
 
+
 console.log(
-"voice sent"
+"Voice sent"
 );
 
 
 
 }catch(error){
 
+
 console.error(
+"Voice Firestore error",
 error
 );
+
 
 }
 
@@ -258,7 +349,10 @@ error
 };
 
 
+
 };
+
+
 
 
 
@@ -268,15 +362,17 @@ mediaRecorder.start();
 
 
 
-isRecording = true;
+isRecording=true;
 
-
-seconds = 0;
 
 
 voiceButton.classList.add(
 "recording"
 );
+
+
+
+seconds=0;
 
 
 
@@ -287,7 +383,7 @@ setInterval(()=>{
 seconds++;
 
 
-let s =
+let time =
 seconds < 10
 ?
 "0"+seconds
@@ -297,7 +393,7 @@ seconds;
 
 
 voiceButton.textContent =
-"🔴 "+s;
+"🔴 "+time;
 
 
 
@@ -305,11 +401,8 @@ voiceButton.textContent =
 
 
 
+
 }
-
-
-
-
 
 catch(error){
 
@@ -323,6 +416,8 @@ alert(
 
 
 }
+
+
 
 }
 
@@ -348,15 +443,22 @@ recordingTimer
 
 
 
+recordingTimer=null;
+
+
+
 mediaRecorder.stop();
+
+
 
 
 
 audioStream
 .getTracks()
 .forEach(
-track=>track.stop()
+(track)=>track.stop()
 );
+
 
 
 
@@ -368,9 +470,11 @@ voiceButton.textContent =
 "🎤";
 
 
+
 voiceButton.classList.remove(
 "recording"
 );
+
 
 
 }
@@ -401,15 +505,23 @@ recordingTimer
 
 
 
+recordingTimer=null;
+
+
+
 mediaRecorder.stop();
+
+
 
 
 
 audioStream
 .getTracks()
 .forEach(
-track=>track.stop()
+(track)=>track.stop()
 );
+
+
 
 
 
@@ -421,14 +533,17 @@ voiceButton.textContent =
 "🎤";
 
 
+
 voiceButton.classList.remove(
 "recording"
 );
 
 
+
 console.log(
-"voice cancelled"
+"Recording cancelled"
 );
+
 
 
 }
@@ -445,7 +560,10 @@ function addVoiceMessage(url){
 
 
 const box =
-document.createElement("div");
+document.createElement(
+"div"
+);
+
 
 
 box.className =
@@ -453,14 +571,19 @@ box.className =
 
 
 
+
+
 const audio =
-document.createElement("audio");
+document.createElement(
+"audio"
+);
 
 
-audio.controls = true;
+
+audio.controls=true;
 
 
-audio.src = url;
+audio.src=url;
 
 
 audio.style.width =
@@ -468,22 +591,32 @@ audio.style.width =
 
 
 
-box.appendChild(audio);
+
+box.appendChild(
+audio
+);
 
 
-
-document
-.getElementById("messages")
-.appendChild(box);
 
 
 
 const messages =
-document.getElementById("messages");
+document.getElementById(
+"messages"
+);
+
+
+
+messages.appendChild(
+box
+);
+
+
 
 
 messages.scrollTop =
 messages.scrollHeight;
+
 
 
 }
