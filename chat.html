@@ -1151,149 +1151,19 @@ id,
 mine
 ){
 
-element.addEventListener(
-"contextmenu",
-e=>{
-
-e.preventDefault();
-
-removeMenus();
-
-
-const menu=document.createElement("div");
-
-menu.className="message-menu";
-
-
-const button=document.createElement("button");
-
-
-if(mine){
-
-button.textContent="🗑️ إلغاء الإرسال";
-
-
-button.onclick=async()=>{
-
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-
-removeMenus();
-
-
-};
-
-
-}else{
-
-
-button.textContent="🗑️ حذف لدي";
-
-
-button.onclick=()=>{
-
-element.remove();
-
-removeMenus();
-
-};
-
-
-}
-
-
-
-menu.appendChild(button);
-
-element.appendChild(menu);
-
-
-});
-
-
-
 let timer;
 
 
+// الضغط المطول للموبايل
 element.addEventListener(
 "pointerdown",
 ()=>{
 
-
 timer=setTimeout(()=>{
 
-
-removeMenus();
-
-
-const menu=document.createElement("div");
-
-menu.className="message-menu";
-
-
-const button=document.createElement("button");
-
-
-if(mine){
-
-button.textContent="🗑️ إلغاء الإرسال";
-
-
-button.onclick=async()=>{
-
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-
-removeMenus();
-
-
-};
-
-
-}else{
-
-
-button.textContent="🗑️ حذف لدي";
-
-
-button.onclick=()=>{
-
-element.remove();
-
-removeMenus();
-
-};
-
-
-}
-
-
-
-menu.appendChild(button);
-
-element.appendChild(menu);
-
+showDeleteMenu();
 
 },500);
-
 
 });
 
@@ -1308,6 +1178,7 @@ clearTimeout(timer);
 });
 
 
+
 element.addEventListener(
 "pointerleave",
 ()=>{
@@ -1316,6 +1187,84 @@ clearTimeout(timer);
 
 });
 
+
+
+// كليك يمين للكمبيوتر
+element.addEventListener(
+"contextmenu",
+e=>{
+
+e.preventDefault();
+
+showDeleteMenu();
+
+});
+
+
+
+function showDeleteMenu(){
+
+removeMenus();
+
+
+const menu=document.createElement("div");
+
+menu.className="message-menu";
+
+
+const button=document.createElement("button");
+
+
+
+if(mine){
+
+button.textContent="🗑️ إلغاء الإرسال";
+
+
+button.onclick=async()=>{
+
+
+await deleteDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+)
+);
+
+
+removeMenus();
+
+};
+
+
+}else{
+
+
+button.textContent="🗑️ حذف لدي";
+
+
+button.onclick=()=>{
+
+element.remove();
+
+removeMenus();
+
+};
+
+
+}
+
+
+
+menu.appendChild(button);
+
+element.appendChild(menu);
+
+
+}
 
 }
 
