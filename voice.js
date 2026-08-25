@@ -91,7 +91,7 @@ async function startRecording(){
 
                         audio: audioBase64,
 
-                        senderId:"000001",
+                        senderId: currentUserId
 
                         createdAt:
                         serverTimestamp()
@@ -256,3 +256,63 @@ voiceButton.addEventListener(
     stopRecording();
 
 });
+import {
+    onSnapshot,
+    query,
+    collection,
+    orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// استقبال الرسائل الصوتية من الطرف الثاني
+
+const voiceMessagesQuery = query(
+    collection(db,"messages"),
+    orderBy("createdAt","asc")
+);
+
+
+onSnapshot(
+    voiceMessagesQuery,
+    (snapshot)=>{
+
+
+        snapshot.docChanges().forEach(
+            (change)=>{
+
+
+                if(change.type === "added"){
+
+
+                    const data =
+                    change.doc.data();
+
+
+
+                    if(data.type === "voice"){
+
+
+                        // لا تعيد عرض صوتك أنت
+                        if(data.senderId !== "000001"){
+
+
+                            addVoiceMessage(
+                                data.audio
+                            );
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+            }
+        );
+
+
+    }
+);
