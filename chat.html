@@ -663,17 +663,19 @@ padding:6px 12px;
 
 position:absolute;
 
-background:#111916;
+right:10px;
 
-border:1px solid rgba(255,255,255,.1);
+top:50%;
+
+transform:translateY(-50%);
+
+background:#111916;
 
 border-radius:12px;
 
 padding:8px;
 
-z-index:50;
-
-display:none;
+z-index:999;
 
 }
 
@@ -2496,6 +2498,207 @@ error
 
 
 }  
+
+function addMessageActions(
+messageElement,
+messageID,
+isMine,
+data
+){
+
+let pressTimer;
+
+
+messageElement.addEventListener(
+"pointerdown",
+(e)=>{
+
+pressTimer=setTimeout(()=>{
+
+showMessageMenu(
+messageElement,
+messageID,
+isMine
+);
+
+
+},500);
+
+
+});
+
+
+messageElement.addEventListener(
+"pointerup",
+()=>{
+
+clearTimeout(pressTimer);
+
+});
+
+
+messageElement.addEventListener(
+"pointercancel",
+()=>{
+
+clearTimeout(pressTimer);
+
+});
+
+
+}
+
+
+
+
+function showMessageMenu(
+messageElement,
+messageID,
+isMine
+){
+
+
+removeMenus();
+
+
+const menu =
+document.createElement("div");
+
+
+menu.className =
+"message-menu";
+
+
+
+const button =
+document.createElement("button");
+
+
+
+if(isMine){
+
+
+button.textContent =
+"🗑️ إلغاء الإرسال";
+
+
+button.onclick =
+async(e)=>{
+
+
+e.stopPropagation();
+
+
+await deleteMessage(
+messageID
+);
+
+
+removeMenus();
+
+
+};
+
+
+}else{
+
+
+button.textContent =
+"🗑️ حذف لدي";
+
+
+button.onclick =
+(e)=>{
+
+
+e.stopPropagation();
+
+
+messageElement.remove();
+
+
+removeMenus();
+
+
+};
+
+
+}
+
+
+
+menu.appendChild(button);
+
+
+
+messageElement.appendChild(
+menu
+);
+
+
+menu.style.display =
+"block";
+
+
+}
+
+
+
+function removeMenus(){
+
+
+document
+.querySelectorAll(".message-menu")
+.forEach(
+menu=>menu.remove()
+);
+
+
+}
+
+
+
+
+async function deleteMessage(
+messageID
+){
+
+try{
+
+
+await deleteDoc(
+
+doc(
+
+db,
+
+"chats",
+
+chatID,
+
+"messages",
+
+messageID
+
+)
+
+);
+
+
+
+}catch(error){
+
+
+console.error(
+"Delete error:",
+error
+);
+
+
+}
+
+
+}
 
 </script>
 <script type="module" src="voice.js"></script>   
