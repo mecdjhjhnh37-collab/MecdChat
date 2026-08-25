@@ -632,7 +632,31 @@ height:50px;
 }
 
 }
+#recordBox{
+position:fixed;
+bottom:75px;
+left:50%;
+transform:translateX(-50%);
+background:#18231f;
+padding:10px 15px;
+border-radius:20px;
+display:flex;
+gap:10px;
+align-items:center;
+z-index:50;
+}
 
+#recordText{
+color:#00e889;
+}
+
+#cancelRecord{
+background:#ff3333;
+color:white;
+border:none;
+border-radius:12px;
+padding:6px 12px;
+}
 </style>
 
 </head>
@@ -794,6 +818,12 @@ maxlength="2000"
 <button id="voiceButton" type="button">
 🎤
 </button>
+
+<div id="recordBox" style="display:none;">
+  <span id="recordText">يسجل الآن...</span>
+  <span id="recordTime">00:00</span>
+  <button id="cancelRecord">إلغاء</button>
+</div>
 
 
 <button
