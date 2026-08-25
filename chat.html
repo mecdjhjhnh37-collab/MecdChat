@@ -494,7 +494,39 @@ transform:rotate(360deg);
 }
 
 }
+     
+#voiceButton,
+#callButton,
+#videoButton{
 
+width:45px;
+height:45px;
+
+border:none;
+border-radius:15px;
+
+background:#18231f;
+
+color:white;
+
+font-size:20px;
+
+cursor:pointer;
+
+flex-shrink:0;
+
+}
+
+
+#voiceButton:active,
+#callButton:active,
+#videoButton:active{
+
+transform:scale(.94);
+
+}
+
+     
 @media(max-width:480px){
 
 header{
@@ -702,6 +734,18 @@ class="messages"
 
 <div class="input-area">
 
+<button id="voiceButton" type="button">
+🎤
+</button>
+
+<button id="callButton" type="button">
+📞
+</button>
+
+<button id="videoButton" type="button">
+📹
+</button>
+
 <input
 id="messageInput"
 type="text"
@@ -714,9 +758,7 @@ maxlength="2000"
 id="sendButton"
 type="button"
 >
-
 ➤
-
 </button>
 
 </div>
@@ -877,6 +919,24 @@ const sendButton =
 document.getElementById(
 "sendButton"
 );
+
+const voiceButton =
+document.getElementById(
+"voiceButton"
+);
+
+
+const callButton =
+document.getElementById(
+"callButton"
+);
+
+
+const videoButton =
+document.getElementById(
+"videoButton"
+);
+     
 
 const backButton =
 document.getElementById(
@@ -2045,6 +2105,38 @@ setMyPresence(false);
 }
 
 );
+
+voiceButton.addEventListener(
+"click",
+()=>{
+
+alert(
+"🎤 تسجيل الصوت قيد التطوير"
+);
+
+});
+
+
+callButton.addEventListener(
+"click",
+()=>{
+
+alert(
+"📞 الاتصال الصوتي قيد التطوير"
+);
+
+});
+
+
+videoButton.addEventListener(
+"click",
+()=>{
+
+alert(
+"📹 اتصال الفيديو قيد التطوير"
+);
+
+});
 
 </script>
 
