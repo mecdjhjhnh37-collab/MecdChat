@@ -1274,23 +1274,30 @@ onAuthStateChanged(
 auth,
 async user=>{
 
-console.log("تم تسجيل الدخول", currentUser.uid);
-
 if(!user)
 return;
 
 
-currentUser=user;
+currentUser = user;
 
+
+console.log(
+"تم تسجيل الدخول",
+currentUser.uid
+);
 
 
 const ok =
 await loadFriend();
 
-console.log("نتيجة loadFriend:", ok);
+
+console.log(
+"نتيجة loadFriend:",
+ok
+);
+
 
 if(ok){
-
 
 listenMessages();
 
@@ -1300,14 +1307,11 @@ document.getElementById(
 ).style.display="none";
 
 
-
 document.getElementById(
 "app"
 ).style.display="flex";
 
-
 }
-
 
 });
 
