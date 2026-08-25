@@ -7,16 +7,17 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
 let mediaRecorder = null;
 let audioChunks = [];
 let audioStream = null;
+
 let isRecording = false;
 
-let recordingTimer = null;
-let recordingSeconds = 0;
+let startY = 0;
 let cancelRecording = false;
 
+let recordingTimer = null;
+let seconds = 0;
 
 
 const voiceButton =
@@ -24,11 +25,11 @@ document.getElementById("voiceButton");
 
 
 
-
-
 voiceButton.addEventListener(
 "pointerdown",
 (e)=>{
+
+startY = e.clientY;
 
 cancelRecording = false;
 
@@ -45,8 +46,49 @@ startRecording();
 
 
 voiceButton.addEventListener(
+"pointermove",
+(e)=>{
+
+
+if(!isRecording) return;
+
+
+
+let distance =
+startY - e.clientY;
+
+
+
+// السحب للأعلى لإلغاء
+if(distance > 80){
+
+
+cancelRecording = true;
+
+
+voiceButton.textContent =
+"❌";
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+voiceButton.addEventListener(
 "pointerup",
 ()=>{
+
+
+if(!isRecording)
+return;
+
 
 
 if(cancelRecording){
@@ -66,34 +108,13 @@ stopRecording();
 
 
 
-voiceButton.addEventListener(
-"pointerleave",
-()=>{
-
-
-if(isRecording){
-
-cancelRecording = true;
-
-voiceButton.textContent="❌";
-
-}
-
-
-});
-
-
-
-
-
-
 
 
 async function startRecording(){
 
 
-if(isRecording) return;
-
+if(isRecording)
+return;
 
 
 try{
@@ -117,17 +138,14 @@ audioChunks=[];
 
 
 
-mediaRecorder.ondataavailable = (e)=>{
-
+mediaRecorder.ondataavailable =
+(e)=>{
 
 if(e.data.size > 0){
 
-
 audioChunks.push(e.data);
 
-
 }
-
 
 };
 
@@ -136,17 +154,8 @@ audioChunks.push(e.data);
 
 
 
-mediaRecorder.onstop = async ()=>{
-
-
-if(recordingTimer){
-
-clearInterval(recordingTimer);
-
-recordingTimer=null;
-
-}
-
+mediaRecorder.onstop =
+async ()=>{
 
 
 if(cancelRecording){
@@ -159,24 +168,13 @@ return;
 
 
 
-
-
 const blob =
-
 new Blob(
-
 audioChunks,
-
 {
-
 type:"audio/webm"
-
 }
-
 );
-
-
-
 
 
 
@@ -184,15 +182,12 @@ const reader =
 new FileReader();
 
 
-
 reader.readAsDataURL(blob);
 
 
 
-
-
-
-reader.onloadend = async ()=>{
+reader.onloadend =
+async ()=>{
 
 
 const audioBase64 =
@@ -200,10 +195,7 @@ reader.result;
 
 
 
-
-
-
-// عرض الصوت عند المرسل
+// إظهار الصوت عند المرسل
 
 addVoiceMessage(
 audioBase64
@@ -212,87 +204,61 @@ audioBase64
 
 
 
-
-
-
-// حفظ الصوت في Firestore
-
+// إرسال Firestore
 
 try{
 
 
 await addDoc(
 
-
 collection(
-
 window.chatDB,
-
 "chats",
-
 window.chatID,
-
 "messages"
-
 ),
-
 
 {
 
-
 type:"voice",
-
 
 audio:
 audioBase64,
 
-
 senderId:
 window.chatUser.uid,
-
 
 receiverId:
 window.chatFriend.uid,
 
-
 createdAt:
 serverTimestamp()
 
-
 }
-
 
 );
 
 
-
 console.log(
-"Voice sent"
+"voice sent"
 );
 
 
 
 }catch(error){
 
-
 console.error(
-"Firestore voice error:",
 error
 );
-
 
 }
 
 
 
-
 };
 
 
-
 };
-
-
 
 
 
@@ -302,10 +268,10 @@ mediaRecorder.start();
 
 
 
+isRecording = true;
 
-isRecording=true;
 
-
+seconds = 0;
 
 
 voiceButton.classList.add(
@@ -314,47 +280,24 @@ voiceButton.classList.add(
 
 
 
-
-// بدء العداد
-
-recordingSeconds = 0;
-
-
 recordingTimer =
 setInterval(()=>{
 
 
-recordingSeconds++;
+seconds++;
 
 
-let minutes =
-Math.floor(
-recordingSeconds / 60
-);
-
-
-let seconds =
-recordingSeconds % 60;
-
-
-
-if(seconds < 10){
-
-seconds =
-"0"+seconds;
-
-}
+let s =
+seconds < 10
+?
+"0"+seconds
+:
+seconds;
 
 
 
 voiceButton.textContent =
-"🔴 "
-+
-minutes
-+
-":"
-+
-seconds;
+"🔴 "+s;
 
 
 
@@ -362,14 +305,16 @@ seconds;
 
 
 
+}
 
 
 
 
-}catch(e){
+
+catch(error){
 
 
-console.error(e);
+console.error(error);
 
 
 alert(
@@ -377,10 +322,7 @@ alert(
 );
 
 
-
 }
-
-
 
 }
 
@@ -395,19 +337,14 @@ alert(
 function stopRecording(){
 
 
+if(!isRecording)
+return;
 
-if(!isRecording) return;
 
 
-
-if(recordingTimer){
-
-clearInterval(recordingTimer);
-
-recordingTimer=null;
-
-}
-
+clearInterval(
+recordingTimer
+);
 
 
 
@@ -415,17 +352,11 @@ mediaRecorder.stop();
 
 
 
-
 audioStream
-
 .getTracks()
-
 .forEach(
-
 track=>track.stop()
-
 );
-
 
 
 
@@ -433,15 +364,13 @@ isRecording=false;
 
 
 
-
-voiceButton.textContent="🎤";
-
+voiceButton.textContent =
+"🎤";
 
 
 voiceButton.classList.remove(
 "recording"
 );
-
 
 
 }
@@ -457,30 +386,18 @@ voiceButton.classList.remove(
 function cancelCurrentRecording(){
 
 
-
-if(!isRecording) return;
-
-
-
-
-if(recordingTimer){
-
-clearInterval(recordingTimer);
-
-recordingTimer=null;
-
-}
+if(!isRecording)
+return;
 
 
 
-
-
-cancelRecording = true;
+cancelRecording=true;
 
 
 
-audioChunks=[];
-
+clearInterval(
+recordingTimer
+);
 
 
 
@@ -488,17 +405,11 @@ mediaRecorder.stop();
 
 
 
-
 audioStream
-
 .getTracks()
-
 .forEach(
-
 track=>track.stop()
-
 );
-
 
 
 
@@ -506,14 +417,18 @@ isRecording=false;
 
 
 
-voiceButton.textContent="🎤";
-
+voiceButton.textContent =
+"🎤";
 
 
 voiceButton.classList.remove(
 "recording"
 );
 
+
+console.log(
+"voice cancelled"
+);
 
 
 }
@@ -529,39 +444,27 @@ voiceButton.classList.remove(
 function addVoiceMessage(url){
 
 
-
 const box =
-
 document.createElement("div");
 
 
-
-box.className="message mine";
-
-
-
-
+box.className =
+"message mine";
 
 
 
 const audio =
-
 document.createElement("audio");
 
 
-
-audio.controls=true;
-
+audio.controls = true;
 
 
-audio.src=url;
+audio.src = url;
 
 
-
-audio.style.width="230px";
-
-
-
+audio.style.width =
+"230px";
 
 
 
@@ -569,33 +472,18 @@ box.appendChild(audio);
 
 
 
-
-
-
 document
-
 .getElementById("messages")
-
 .appendChild(box);
 
 
 
+const messages =
+document.getElementById("messages");
 
 
-
-
-document
-
-.getElementById("messages")
-
-.scrollTop =
-
-document
-
-.getElementById("messages")
-
-.scrollHeight;
-
+messages.scrollTop =
+messages.scrollHeight;
 
 
 }
