@@ -13,6 +13,10 @@ let audioChunks = [];
 let audioStream = null;
 let isRecording = false;
 
+let recordingTimer = null;
+let recordingSeconds = 0;
+let cancelRecording = false;
+
 
 
 const voiceButton =
@@ -24,22 +28,60 @@ document.getElementById("voiceButton");
 
 voiceButton.addEventListener(
 "pointerdown",
-startRecording
+(e)=>{
+
+cancelRecording = false;
+
+voiceButton.setPointerCapture(
+e.pointerId
 );
+
+startRecording();
+
+});
+
+
 
 
 
 voiceButton.addEventListener(
 "pointerup",
-stopRecording
-);
+()=>{
+
+
+if(cancelRecording){
+
+cancelCurrentRecording();
+
+}else{
+
+stopRecording();
+
+}
+
+
+});
+
+
 
 
 
 voiceButton.addEventListener(
 "pointerleave",
-stopRecording
-);
+()=>{
+
+
+if(isRecording){
+
+cancelRecording = true;
+
+voiceButton.textContent="❌";
+
+}
+
+
+});
+
 
 
 
@@ -97,6 +139,27 @@ audioChunks.push(e.data);
 mediaRecorder.onstop = async ()=>{
 
 
+if(recordingTimer){
+
+clearInterval(recordingTimer);
+
+recordingTimer=null;
+
+}
+
+
+
+if(cancelRecording){
+
+audioChunks=[];
+
+return;
+
+}
+
+
+
+
 
 const blob =
 
@@ -115,7 +178,7 @@ type:"audio/webm"
 
 
 
-// تحويل الصوت إلى Base64
+
 
 const reader =
 new FileReader();
@@ -123,6 +186,7 @@ new FileReader();
 
 
 reader.readAsDataURL(blob);
+
 
 
 
@@ -138,6 +202,7 @@ reader.result;
 
 
 
+
 // عرض الصوت عند المرسل
 
 addVoiceMessage(
@@ -148,7 +213,10 @@ audioBase64
 
 
 
-// إرسال الصوت إلى Firestore
+
+
+// حفظ الصوت في Firestore
+
 
 try{
 
@@ -222,8 +290,9 @@ error
 
 
 
-
 };
+
+
 
 
 
@@ -239,13 +308,59 @@ isRecording=true;
 
 
 
-voiceButton.textContent="🔴";
-
-
-
 voiceButton.classList.add(
 "recording"
 );
+
+
+
+
+// بدء العداد
+
+recordingSeconds = 0;
+
+
+recordingTimer =
+setInterval(()=>{
+
+
+recordingSeconds++;
+
+
+let minutes =
+Math.floor(
+recordingSeconds / 60
+);
+
+
+let seconds =
+recordingSeconds % 60;
+
+
+
+if(seconds < 10){
+
+seconds =
+"0"+seconds;
+
+}
+
+
+
+voiceButton.textContent =
+"🔴 "
++
+minutes
++
+":"
++
+seconds;
+
+
+
+},1000);
+
+
 
 
 
@@ -276,11 +391,22 @@ alert(
 
 
 
+
 function stopRecording(){
 
 
 
 if(!isRecording) return;
+
+
+
+if(recordingTimer){
+
+clearInterval(recordingTimer);
+
+recordingTimer=null;
+
+}
 
 
 
@@ -312,11 +438,80 @@ voiceButton.textContent="🎤";
 
 
 
+voiceButton.classList.remove(
+"recording"
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function cancelCurrentRecording(){
+
+
+
+if(!isRecording) return;
+
+
+
+
+if(recordingTimer){
+
+clearInterval(recordingTimer);
+
+recordingTimer=null;
+
+}
+
+
+
+
+
+cancelRecording = true;
+
+
+
+audioChunks=[];
+
+
+
+
+mediaRecorder.stop();
+
+
+
+
+audioStream
+
+.getTracks()
+
+.forEach(
+
+track=>track.stop()
+
+);
+
+
+
+
+isRecording=false;
+
+
+
+voiceButton.textContent="🎤";
+
+
 
 voiceButton.classList.remove(
-
 "recording"
-
 );
 
 
@@ -347,6 +542,8 @@ box.className="message mine";
 
 
 
+
+
 const audio =
 
 document.createElement("audio");
@@ -367,7 +564,9 @@ audio.style.width="230px";
 
 
 
+
 box.appendChild(audio);
+
 
 
 
@@ -378,6 +577,8 @@ document
 .getElementById("messages")
 
 .appendChild(box);
+
+
 
 
 
