@@ -21,13 +21,9 @@ const voiceButton =
 document.getElementById("voiceButton");
 
 
-
 let recorder = null;
-
 let stream = null;
-
 let chunks = [];
-
 let isRecording = false;
 
 
@@ -51,7 +47,6 @@ if(
 ){
 
 console.error("Firebase variables missing");
-
 return;
 
 }
@@ -82,7 +77,7 @@ chunks=[];
 recorder.ondataavailable =
 (e)=>{
 
-if(e.data.size>0){
+if(e.data.size > 0){
 
 chunks.push(e.data);
 
@@ -93,8 +88,19 @@ chunks.push(e.data);
 
 
 
+
 recorder.onstop =
 async()=>{
+
+
+if(chunks.length === 0){
+
+resetVoice();
+
+return;
+
+}
+
 
 
 const blob =
@@ -107,7 +113,8 @@ type:"audio/webm"
 
 
 
-// رفع الصوت إلى Firebase Storage
+
+// رفع إلى Storage
 
 const voiceRef =
 ref(
@@ -132,7 +139,14 @@ voiceRef
 
 
 
-// حفظ الرسالة
+// إظهار الصوت عند المرسل فوراً
+
+addVoiceMessage(url);
+
+
+
+
+// حفظ Firestore
 
 await addDoc(
 
@@ -152,10 +166,8 @@ audio:url,
 senderId:
 window.chatUser.uid,
 
-
 receiverId:
 window.chatFriend.uid,
-
 
 createdAt:
 serverTimestamp()
@@ -166,11 +178,16 @@ serverTimestamp()
 
 
 
+resetVoice();
+
+
 };
 
 
 
+
 recorder.start();
+
 
 
 isRecording=true;
@@ -178,7 +195,11 @@ isRecording=true;
 
 voiceButton.textContent="🔴";
 
-voiceButton.classList.add("recording");
+
+voiceButton.classList.add(
+"recording"
+);
+
 
 
 }
@@ -190,6 +211,7 @@ console.error(error);
 alert("لم يتم السماح بالميكروفون");
 
 }
+
 
 
 });
@@ -208,9 +230,15 @@ return;
 
 
 
+if(recorder){
+
 recorder.stop();
 
+}
 
+
+
+if(stream){
 
 stream
 .getTracks()
@@ -218,7 +246,23 @@ stream
 track=>track.stop()
 );
 
+}
 
+
+
+});
+
+
+
+
+
+function resetVoice(){
+
+recorder=null;
+
+stream=null;
+
+chunks=[];
 
 isRecording=false;
 
@@ -230,5 +274,56 @@ voiceButton.classList.remove(
 "recording"
 );
 
+}
 
-});
+
+
+
+
+
+
+function addVoiceMessage(url){
+
+
+const box =
+document.createElement("div");
+
+
+box.className =
+"message mine";
+
+
+
+const audio =
+document.createElement("audio");
+
+
+audio.controls=true;
+
+
+audio.src=url;
+
+
+audio.style.width="230px";
+
+
+
+box.appendChild(audio);
+
+
+
+document
+.getElementById("messages")
+.appendChild(box);
+
+
+
+document
+.getElementById("messages")
+.scrollTop =
+document
+.getElementById("messages")
+.scrollHeight;
+
+
+}
