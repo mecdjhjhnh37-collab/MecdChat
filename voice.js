@@ -1,47 +1,87 @@
-let recorder;
+const voiceButton = document.getElementById("voiceButton");
+
+let mediaRecorder = null;
 let audioChunks = [];
+let isRecording = false;
 
-const voiceBtn = document.getElementById("voiceRecordBtn");
+voiceButton.addEventListener("click", async () => {
 
-voiceBtn.onclick = async () => {
+    if (!isRecording) {
 
-    if (!recorder || recorder.state === "inactive") {
+        try {
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
-
-        recorder = new MediaRecorder(stream);
-
-        audioChunks = [];
-
-        recorder.ondataavailable = e => {
-            audioChunks.push(e.data);
-        };
-
-        recorder.onstop = () => {
-
-            const audio = new Blob(audioChunks, {
-                type: "audio/webm"
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true
             });
 
-            const url = URL.createObjectURL(audio);
+            mediaRecorder = new MediaRecorder(stream);
 
-            const player = document.createElement("audio");
-            player.controls = true;
-            player.src = url;
+            audioChunks = [];
 
-            document.body.appendChild(player);
-        };
+            mediaRecorder.addEventListener("dataavailable", event => {
 
-        recorder.start();
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
 
-        voiceBtn.innerHTML = "⏹️";
+            });
+
+            mediaRecorder.addEventListener("stop", () => {
+
+                const audioBlob = new Blob(
+                    audioChunks,
+                    { type: "audio/webm" }
+                );
+
+                const audioURL = URL.createObjectURL(audioBlob);
+
+                const audio = document.createElement("audio");
+
+                audio.controls = true;
+                audio.src = audioURL;
+
+                audio.style.maxWidth = "250px";
+
+                messages.appendChild(audio);
+
+                messages.scrollTop = messages.scrollHeight;
+
+            });
+
+            mediaRecorder.start();
+
+            isRecording = true;
+
+            voiceButton.textContent = "⏹️";
+
+            voiceButton.style.background = "#00e889";
+            voiceButton.style.color = "#00150e";
+
+        } catch (error) {
+
+            console.error("Microphone error:", error);
+
+            alert(
+                "لم يتم السماح باستخدام الميكروفون."
+            );
+
+        }
 
     } else {
 
-        recorder.stop();
+        mediaRecorder.stop();
 
-        voiceBtn.innerHTML = "🎤";
+        mediaRecorder.stream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        isRecording = false;
+
+        voiceButton.textContent = "🎤";
+
+        voiceButton.style.background = "";
+        voiceButton.style.color = "";
+
     }
-};
+
+});
