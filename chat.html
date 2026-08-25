@@ -5,8 +5,7 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <meta name="theme-color" content="#050807">
 
@@ -26,10 +25,7 @@ body{
 
 height:100vh;
 
-font-family:
-Arial,
-Tahoma,
-sans-serif;
+font-family:Arial,Tahoma,sans-serif;
 
 color:white;
 
@@ -69,9 +65,6 @@ flex-direction:column;
 
 
 
-/* ===== Header ===== */
-
-
 header{
 
 height:75px;
@@ -86,9 +79,7 @@ padding:12px 15px;
 
 background:#050807;
 
-border-bottom:
-1px solid
-rgba(255,255,255,.08);
+border-bottom:1px solid rgba(255,255,255,.08);
 
 }
 
@@ -181,7 +172,6 @@ margin-top:5px;
 }
 
 
-
 .user-status.online{
 
 color:#00e889;
@@ -190,7 +180,39 @@ color:#00e889;
 
 
 
-/* ===== Messages ===== */
+.call-buttons{
+
+display:flex;
+
+gap:8px;
+
+}
+
+
+
+.call-buttons button{
+
+width:42px;
+
+height:42px;
+
+border:0;
+
+border-radius:14px;
+
+background:#18231f;
+
+color:white;
+
+font-size:18px;
+
+cursor:pointer;
+
+}
+
+
+
+/* الرسائل */
 
 
 .messages{
@@ -199,9 +221,7 @@ flex:1;
 
 overflow-y:auto;
 
-padding:
-
-20px 15px 100px;
+padding:20px 15px 100px;
 
 display:flex;
 
@@ -223,9 +243,6 @@ color:#72817c;
 
 }
 
-
-
-/* ===== Message ===== */
 
 
 .message{
@@ -264,9 +281,9 @@ align-self:flex-end;
 
 background:#18231f;
 
-border-bottom-right-radius:5px;
-
 border:1px solid rgba(255,255,255,.08);
+
+border-bottom-right-radius:5px;
 
 }
 
@@ -285,9 +302,7 @@ margin-top:5px;
 }
 
 
-
-
-/* ===== Input ===== */
+/* الكتابة */
 
 
 .input-area{
@@ -377,9 +392,6 @@ color:#00150e;
 
 
 
-/* ===== Delete menu ===== */
-
-
 .message-menu{
 
 position:absolute;
@@ -414,32 +426,206 @@ padding:10px 15px;
 
 border-radius:10px;
 
-cursor:pointer;
-
 }
+
 
 
 </style>
 
 </head>
+<body>
+
+
+<div id="loading"
+style="
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#020504;
+color:white;
+font-size:18px;
+z-index:999;
+">
+
+جارٍ فتح الدردشة...
+
+</div>
+
+
+
+<main
+id="app"
+class="app"
+style="display:none;"
+>
+
+
+<header>
+
+
+<button
+id="backButton"
+class="back"
+type="button"
+>
+→
+</button>
+
+
+
+<div
+id="friendAvatar"
+class="avatar"
+>
+👤
+</div>
+
+
+
+
+<div class="user-info">
+
+
+<div
+id="friendName"
+class="user-name"
+>
+جار التحميل...
+</div>
+
+
+
+<div
+id="friendStatus"
+class="user-status"
+>
+● غير متصل
+</div>
+
+
+
+</div>
+
+
+
+
+<div class="call-buttons">
+
+
+<button id="callButton">
+📞
+</button>
+
+
+<button id="videoButton">
+📹
+</button>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+<div
+id="messages"
+class="messages"
+>
+
+
+<div class="empty">
+
+💬
+
+<br>
+
+ابدأ المحادثة الآن
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="input-area">
+
+
+<input
+id="messageInput"
+placeholder="اكتب رسالة..."
+autocomplete="off"
+maxlength="2000"
+>
+
+
+
+<button
+id="voiceButton"
+type="button"
+>
+🎤
+</button>
+
+
+
+<button
+id="sendButton"
+type="button"
+>
+➤
+</button>
+
+
+
+</div>
+
+
+
+</main>
+
+
+
+
+
 <script type="module">
 
+
 import {
+
 initializeApp
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
+
 import {
+
 getAuth,
 onAuthStateChanged
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
+
 import {
+
 getFirestore,
 doc,
 getDoc,
@@ -451,28 +637,39 @@ onSnapshot,
 addDoc,
 deleteDoc,
 serverTimestamp
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
 
 
 
 const firebaseConfig = {
 
+
 apiKey:
 "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
 
 authDomain:
 "mecd-tools.firebaseapp.com",
 
+
 projectId:
 "mecd-tools",
+
 
 storageBucket:
 "mecd-tools.firebasestorage.app",
 
+
 messagingSenderId:
 "643005547408",
+
 
 appId:
 "1:643005547408:web:b1719060ec340dd0e0a915"
@@ -481,7 +678,8 @@ appId:
 
 
 
-const appFirebase =
+
+const firebaseApp =
 initializeApp(
 firebaseConfig
 );
@@ -489,47 +687,37 @@ firebaseConfig
 
 const auth =
 getAuth(
-appFirebase
+firebaseApp
 );
 
 
 const db =
 getFirestore(
-appFirebase
+firebaseApp
 );
-
-
-
-
 const messages =
-document.getElementById(
-"messages"
-);
-
+document.getElementById("messages");
 
 const messageInput =
-document.getElementById(
-"messageInput"
-);
-
+document.getElementById("messageInput");
 
 const sendButton =
-document.getElementById(
-"sendButton"
-);
-
+document.getElementById("sendButton");
 
 const friendName =
-document.getElementById(
-"friendName"
-);
-
+document.getElementById("friendName");
 
 const friendAvatar =
-document.getElementById(
-"friendAvatar"
-);
+document.getElementById("friendAvatar");
 
+const backButton =
+document.getElementById("backButton");
+
+const callButton =
+document.getElementById("callButton");
+
+const videoButton =
+document.getElementById("videoButton");
 
 
 let currentUser = null;
@@ -543,24 +731,18 @@ let unsubscribeMessages = null;
 
 
 
-function createChatID(
-a,
-b
-){
+function createChatID(a,b){
 
 return [
-a,
-b
+
+a,b
+
 ]
 .sort()
 .join("_");
 
 }
-
-
-
-
-async function loadFriend(){
+  async function loadFriend(){
 
 
 const params =
@@ -570,17 +752,12 @@ location.search
 
 
 const id =
-params.get(
-"friend"
-);
-
+params.get("friend");
 
 
 if(!id){
 
-alert(
-"لا يوجد صديق"
-);
+alert("لا يوجد صديق");
 
 return false;
 
@@ -601,9 +778,7 @@ id
 
 if(!userDoc.exists()){
 
-alert(
-"المستخدم غير موجود"
-);
+alert("المستخدم غير موجود");
 
 return false;
 
@@ -620,11 +795,9 @@ friendUser={
 
 uid:id,
 
-name:
-data.name || "مستخدم",
+name:data.name || "مستخدم Mecd",
 
-photo:
-data.photo || ""
+photo:data.photo || ""
 
 };
 
@@ -684,7 +857,6 @@ merge:true
 
 return true;
 
-
 }
 
 
@@ -721,23 +893,41 @@ onSnapshot(
 q,
 snap=>{
 
+messages.innerHTML=""
 
-messages.innerHTML="";
 
 
-snap.forEach(
-item=>{
+if(snap.empty){
+
+messages.innerHTML=
+`
+<div class="empty">
+
+💬
+
+<br>
+
+ابدأ المحادثة الآن
+
+</div>
+`;
+
+return;
+
+}
+
+
+
+snap.forEach(item=>{
 
 
 const data =
 item.data();
 
 
-const box =
-document.createElement(
-"div"
-);
 
+const box =
+document.createElement("div");
 
 
 box.className =
@@ -745,59 +935,53 @@ box.className =
 
 (
 data.senderId === currentUser.uid
-
 ?
-
 "mine"
-
 :
-
 "other"
-
 );
 
-
-
-if(data.type==="voice"){
-
-
-const audio =
-document.createElement(
-"audio"
-);
-
-
-audio.controls=true;
-
-audio.src =
-data.audio;
 
 
 box.appendChild(
-audio
-);
-
-
-
-}else{
-
-
-box.appendChild(
-
 document.createTextNode(
 data.text || ""
 )
-
 );
 
+
+
+const time =
+document.createElement("span");
+
+
+time.className="time";
+
+
+if(
+data.createdAt &&
+typeof data.createdAt.toDate === "function"
+){
+
+time.textContent =
+data.createdAt
+.toDate()
+.toLocaleTimeString(
+"ar",
+{
+hour:"2-digit",
+minute:"2-digit"
+}
+);
 
 }
 
 
 
-messages.appendChild(
-box
-);
+box.appendChild(time);
+
+
+messages.appendChild(box);
 
 
 
@@ -809,9 +993,7 @@ data.senderId === currentUser.uid
 
 
 
-}
-
-);
+});
 
 
 
@@ -819,13 +1001,13 @@ messages.scrollTop =
 messages.scrollHeight;
 
 
-
 }
 
 );
 
 
 }
+
 
 
 
@@ -835,7 +1017,6 @@ async function sendMessage(){
 
 const text =
 messageInput.value.trim();
-
 
 
 if(!text)
@@ -888,30 +1069,30 @@ messageInput.addEventListener(
 "keydown",
 e=>{
 
-
 if(e.key==="Enter"){
 
 sendMessage();
 
 }
 
-
 });
-  /* =========================
-   ضغط مطول على الرسالة
-========================= */
+
+
+
+
 
 
 function addMessageActions(
-messageElement,
-messageID,
-isMine
+element,
+id,
+mine
 ){
+
 
 let timer;
 
 
-messageElement.addEventListener(
+element.addEventListener(
 "pointerdown",
 ()=>{
 
@@ -919,21 +1100,22 @@ messageElement.addEventListener(
 timer=setTimeout(()=>{
 
 
-showMessageMenu(
-messageElement,
-messageID,
-isMine
-);
+if(confirm("حذف الرسالة؟")){
 
 
-},500);
+deleteMessage(id);
+
+
+}
+
+
+},600);
 
 
 });
 
 
-
-messageElement.addEventListener(
+element.addEventListener(
 "pointerup",
 ()=>{
 
@@ -942,221 +1124,45 @@ clearTimeout(timer);
 });
 
 
-messageElement.addEventListener(
-"pointercancel",
-()=>{
-
-clearTimeout(timer);
-
-});
-
-
-messageElement.addEventListener(
-"pointerleave",
-()=>{
-
-clearTimeout(timer);
-
-});
-
-
 }
 
 
 
 
-
-function showMessageMenu(
-messageElement,
-messageID,
-isMine
-){
-
-
-removeMenus();
-
-
-
-const menu =
-document.createElement(
-"div"
-);
-
-
-menu.className =
-"message-menu";
-
-
-
-const button =
-document.createElement(
-"button"
-);
-
-
-
-if(isMine){
-
-
-button.textContent =
-"🗑️ إلغاء الإرسال";
-
-
-
-button.onclick =
-async(e)=>{
-
-
-e.stopPropagation();
-
-
-
-await deleteMessage(
-messageID
-);
-
-
-
-removeMenus();
-
-
-};
-
-
-}
-
-else{
-
-
-button.textContent =
-"🗑️ حذف لدي";
-
-
-
-button.onclick =
-(e)=>{
-
-
-e.stopPropagation();
-
-
-
-messageElement.remove();
-
-
-
-removeMenus();
-
-
-};
-
-
-}
-
-
-
-menu.appendChild(
-button
-);
-
-
-
-messageElement.appendChild(
-menu
-);
-
-
-
-}
-
-
-
-
-function removeMenus(){
-
-
-document
-.querySelectorAll(
-".message-menu"
-)
-
-.forEach(
-e=>e.remove()
-);
-
-
-}
-
-
-
-
-async function deleteMessage(
-id
-){
-
-
-try{
+async function deleteMessage(id){
 
 
 await deleteDoc(
 
 doc(
-
 db,
-
 "chats",
-
 chatID,
-
 "messages",
-
 id
-
 )
 
 );
 
 
-
-}catch(error){
-
-
-console.error(
-"Delete error:",
-error
-);
-
-
-}
-
-
 }
 
 
 
 
 
-
-/* =========================
-   تسجيل الدخول وفتح الدردشة
-========================= */
 
 
 onAuthStateChanged(
 auth,
-async(user)=>{
+async user=>{
 
 
-if(!user){
-
+if(!user)
 return;
 
-}
 
-
-
-currentUser =
-user;
+currentUser=user;
 
 
 
@@ -1171,57 +1177,51 @@ if(ok){
 listenMessages();
 
 
-
-document
-.getElementById(
+document.getElementById(
 "loading"
-)
-.style.display =
-"none";
+).style.display="none";
 
 
 
-document
-.getElementById(
+document.getElementById(
 "app"
-)
-.style.display =
-"flex";
+).style.display="flex";
 
 
 }
 
 
-
-}
-
-);
+});
 
 
 
 
 
 
-
-/* =========================
-   زر الرجوع
-========================= */
-
-
-document
-.getElementById(
-"backButton"
-)
-
-.onclick =
+backButton.onclick =
 ()=>{
-
 
 history.back();
 
+};
+
+
+
+callButton.onclick =
+()=>{
+
+alert("📞 الاتصال قيد التطوير");
 
 };
 
+
+
+videoButton.onclick =
+()=>{
+
+alert("📹 الفيديو قيد التطوير");
+
+};
 
 
 
@@ -1230,4 +1230,4 @@ history.back();
 
 </body>
 
-</html>   
+</html>
