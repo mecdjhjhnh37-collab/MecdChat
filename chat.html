@@ -674,10 +674,6 @@ from
 
   import {
 getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-}
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -734,13 +730,6 @@ firebaseApp
   const storage =
 getStorage(firebaseApp);
   window.chatDB = db;
-
-window.chatID = chatID;
-
-window.chatUser = currentUser;
-
-window.chatFriend = friendUser;
-
 window.storage = storage;
 const messages =
 document.getElementById("messages");
@@ -871,7 +860,9 @@ createChatID(
 currentUser.uid,
 friendUser.uid
 );
-
+window.chatID = chatID;
+window.chatUser = currentUser;
+window.chatFriend = friendUser;
 
 
 await setDoc(
