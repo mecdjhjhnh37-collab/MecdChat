@@ -21,6 +21,7 @@ const voiceButton =
 document.getElementById("voiceButton");
 
 
+
 let recorder = null;
 let stream = null;
 let chunks = [];
@@ -70,7 +71,7 @@ new MediaRecorder(stream);
 
 
 
-chunks=[];
+chunks = [];
 
 
 
@@ -93,6 +94,9 @@ recorder.onstop =
 async()=>{
 
 
+try{
+
+
 if(chunks.length === 0){
 
 resetVoice();
@@ -113,8 +117,7 @@ type:"audio/webm"
 
 
 
-
-// رفع إلى Storage
+// رفع الصوت
 
 const voiceRef =
 ref(
@@ -139,14 +142,7 @@ voiceRef
 
 
 
-// إظهار الصوت عند المرسل فوراً
-
-addVoiceMessage(url);
-
-
-
-
-// حفظ Firestore
+// حفظ الرسالة في Firestore
 
 await addDoc(
 
@@ -166,8 +162,10 @@ audio:url,
 senderId:
 window.chatUser.uid,
 
+
 receiverId:
 window.chatFriend.uid,
+
 
 createdAt:
 serverTimestamp()
@@ -178,7 +176,26 @@ serverTimestamp()
 
 
 
+}
+catch(error){
+
+console.error(
+"Voice error:",
+error
+);
+
+
+alert(
+"حدث خطأ أثناء إرسال الصوت"
+);
+
+
+}
+
+
+
 resetVoice();
+
 
 
 };
@@ -208,13 +225,20 @@ catch(error){
 
 console.error(error);
 
-alert("لم يتم السماح بالميكروفون");
+
+alert(
+"لم يتم السماح بالميكروفون"
+);
+
+
+resetVoice();
 
 }
 
 
 
 });
+
 
 
 
@@ -256,6 +280,7 @@ track=>track.stop()
 
 
 
+
 function resetVoice(){
 
 recorder=null;
@@ -273,57 +298,6 @@ voiceButton.textContent="🎤";
 voiceButton.classList.remove(
 "recording"
 );
-
-}
-
-
-
-
-
-
-
-function addVoiceMessage(url){
-
-
-const box =
-document.createElement("div");
-
-
-box.className =
-"message mine";
-
-
-
-const audio =
-document.createElement("audio");
-
-
-audio.controls=true;
-
-
-audio.src=url;
-
-
-audio.style.width="230px";
-
-
-
-box.appendChild(audio);
-
-
-
-document
-.getElementById("messages")
-.appendChild(box);
-
-
-
-document
-.getElementById("messages")
-.scrollTop =
-document
-.getElementById("messages")
-.scrollHeight;
 
 
 }
