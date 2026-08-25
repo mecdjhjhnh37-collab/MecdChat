@@ -1151,41 +1151,30 @@ id,
 mine
 ){
 
-let timer;
-
-
 element.addEventListener(
-"pointerdown",
-()=>{
+"contextmenu",
+e=>{
 
-timer=setTimeout(()=>{
-
+e.preventDefault();
 
 removeMenus();
 
 
-const menu =
-document.createElement("div");
+const menu=document.createElement("div");
+
+menu.className="message-menu";
 
 
-menu.className =
-"message-menu";
-
-
-const button =
-document.createElement("button");
-
+const button=document.createElement("button");
 
 
 if(mine){
 
 button.textContent="🗑️ إلغاء الإرسال";
 
-button.onclick = async(e)=>{
 
-e.stopPropagation();
+button.onclick=async()=>{
 
-try{
 
 await deleteDoc(
 doc(
@@ -1197,13 +1186,9 @@ id
 )
 );
 
+
 removeMenus();
 
-}catch(error){
-
-console.error(error);
-
-}
 
 };
 
@@ -1211,12 +1196,10 @@ console.error(error);
 }else{
 
 
-button.textContent =
-"🗑️ حذف لدي";
+button.textContent="🗑️ حذف لدي";
 
 
-button.onclick =
-()=>{
+button.onclick=()=>{
 
 element.remove();
 
@@ -1231,9 +1214,82 @@ removeMenus();
 
 menu.appendChild(button);
 
-
 element.appendChild(menu);
 
+
+});
+
+
+
+let timer;
+
+
+element.addEventListener(
+"pointerdown",
+()=>{
+
+
+timer=setTimeout(()=>{
+
+
+removeMenus();
+
+
+const menu=document.createElement("div");
+
+menu.className="message-menu";
+
+
+const button=document.createElement("button");
+
+
+if(mine){
+
+button.textContent="🗑️ إلغاء الإرسال";
+
+
+button.onclick=async()=>{
+
+
+await deleteDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+)
+);
+
+
+removeMenus();
+
+
+};
+
+
+}else{
+
+
+button.textContent="🗑️ حذف لدي";
+
+
+button.onclick=()=>{
+
+element.remove();
+
+removeMenus();
+
+};
+
+
+}
+
+
+
+menu.appendChild(button);
+
+element.appendChild(menu);
 
 
 },500);
@@ -1247,60 +1303,19 @@ element.addEventListener(
 "pointerup",
 ()=>{
 
+clearTimeout(timer);
 
+});
 
 
 element.addEventListener(
-"contextmenu",
-e=>{
-e.preventDefault();
-
-removeMenus();
-
-const menu=document.createElement("div");
-menu.className="message-menu";
-
-const button=document.createElement("button");
-
-if(mine){
-
-button.textContent="🗑️ إلغاء الإرسال";
-
-button.onclick=async()=>{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-removeMenus();
-
-};
-
-}else{
-
-button.textContent="🗑️ حذف لدي";
-
-button.onclick=()=>{
-element.remove();
-removeMenus();
-};
-
-}
-
-menu.appendChild(button);
-element.appendChild(menu);
-
-});
+"pointerleave",
+()=>{
 
 clearTimeout(timer);
 
 });
+
 
 }
 
