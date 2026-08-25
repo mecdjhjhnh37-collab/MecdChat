@@ -1088,7 +1088,6 @@ id,
 mine
 ){
 
-
 let timer;
 
 
@@ -1096,23 +1095,74 @@ element.addEventListener(
 "pointerdown",
 ()=>{
 
-
 timer=setTimeout(()=>{
 
 
-if(confirm("حذف الرسالة؟")){
+removeMenus();
 
 
-deleteMessage(id);
+const menu =
+document.createElement("div");
+
+
+menu.className =
+"message-menu";
+
+
+const button =
+document.createElement("button");
+
+
+
+if(mine){
+
+button.textContent =
+"🗑️ إلغاء الإرسال";
+
+
+button.onclick =
+async()=>{
+
+await deleteMessage(id);
+
+removeMenus();
+
+};
+
+
+}else{
+
+
+button.textContent =
+"🗑️ حذف لدي";
+
+
+button.onclick =
+()=>{
+
+element.remove();
+
+removeMenus();
+
+};
 
 
 }
 
 
-},600);
+
+menu.appendChild(button);
+
+
+element.appendChild(menu);
+
+
+
+},500);
 
 
 });
+
 
 
 element.addEventListener(
@@ -1124,26 +1174,26 @@ clearTimeout(timer);
 });
 
 
+element.addEventListener(
+"pointerleave",
+()=>{
+
+clearTimeout(timer);
+
+});
+
 }
 
 
 
 
-async function deleteMessage(id){
+function removeMenus(){
 
-
-await deleteDoc(
-
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-
+document
+.querySelectorAll(".message-menu")
+.forEach(
+e=>e.remove()
 );
-
 
 }
 
