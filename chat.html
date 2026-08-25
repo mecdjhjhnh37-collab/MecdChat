@@ -733,6 +733,15 @@ firebaseApp
 );
   const storage =
 getStorage(firebaseApp);
+  window.chatDB = db;
+
+window.chatID = chatID;
+
+window.chatUser = currentUser;
+
+window.chatFriend = friendUser;
+
+window.storage = storage;
 const messages =
 document.getElementById("messages");
 
