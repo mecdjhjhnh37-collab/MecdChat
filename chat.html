@@ -396,21 +396,42 @@ color:#00150e;
 
 position:absolute;
 
-right:0;
+right:10px;
 
-top:-55px;
+bottom:55px;
 
 background:#101815;
 
-padding:6px;
+padding:8px;
 
-border-radius:14px;
+border-radius:16px;
 
-box-shadow:0 5px 20px #0008;
+box-shadow:0 8px 25px #000;
 
 z-index:999;
 
-min-width:140px;
+min-width:150px;
+
+animation:showMenu .2s ease;
+
+}
+
+
+@keyframes showMenu{
+
+from{
+
+opacity:0;
+transform:translateY(10px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
 
 }
 
@@ -959,12 +980,25 @@ data.senderId === currentUser.uid
 );
 
 
+if(data.type === "voice"){
+
+const audio = document.createElement("audio");
+
+audio.controls = true;
+audio.src = data.audio;
+audio.style.width = "230px";
+
+box.appendChild(audio);
+
+}else{
 
 box.appendChild(
 document.createTextNode(
 data.text || ""
 )
 );
+
+}
 
 
 
@@ -1133,17 +1167,31 @@ document.createElement("button");
 
 if(mine){
 
-button.textContent =
-"🗑️ إلغاء الإرسال";
-
+button.textContent="🗑️ إلغاء الإرسال";
 
 button.onclick = async(e)=>{
 
 e.stopPropagation();
 
-await deleteMessage(id);
+try{
+
+await deleteDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+)
+);
 
 removeMenus();
+
+}catch(error){
+
+console.error(error);
+
+}
 
 };
 
