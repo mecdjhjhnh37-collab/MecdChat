@@ -5,179 +5,157 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// العناصر
 const voiceButton = document.getElementById("voiceButton");
 const messages = document.getElementById("messages");
 
 
-// المتغيرات
 let mediaRecorder = null;
 let audioChunks = [];
 let audioStream = null;
 let isRecording = false;
 
 
-// بدء التسجيل
+
 async function startRecording(){
 
     if(isRecording) return;
 
 
-    try {
-
-        audioStream =
-        await navigator.mediaDevices.getUserMedia({
-            audio:true
-        });
+    audioStream = await navigator.mediaDevices.getUserMedia({
+        audio:true
+    });
 
 
-        mediaRecorder =
-        new MediaRecorder(audioStream);
+    mediaRecorder = new MediaRecorder(audioStream);
 
 
-        audioChunks = [];
+    audioChunks = [];
 
 
-        mediaRecorder.ondataavailable = (event)=>{
+    mediaRecorder.ondataavailable = e=>{
 
-            if(event.data.size > 0){
+        if(e.data.size > 0){
 
-                audioChunks.push(event.data);
+            audioChunks.push(e.data);
 
+        }
+
+    };
+
+
+
+    mediaRecorder.onstop = ()=>{
+
+
+        const blob = new Blob(
+            audioChunks,
+            {
+                type:"audio/webm"
             }
-
-        };
-
-
-        mediaRecorder.onstop = async ()=>{
+        );
 
 
-            const audioBlob =
-            new Blob(
-                audioChunks,
-                {
-                    type:"audio/webm"
-                }
+        const reader = new FileReader();
+
+
+        reader.readAsDataURL(blob);
+
+
+        reader.onloadend = async ()=>{
+
+
+            const audioBase64 = reader.result;
+
+
+
+            // عرض عند المرسل
+            addVoiceMessage(
+                audioBase64,
+                "mine"
             );
 
 
-            // تحويل الصوت إلى Base64
-            const reader =
-            new FileReader();
 
+            // حفظ داخل نفس المحادثة
+            await addDoc(
 
-            reader.readAsDataURL(audioBlob);
+                collection(
+                    db,
+                    "chats",
+                    chatID,
+                    "messages"
+                ),
 
+                {
 
-            reader.onloadend = async ()=>{
+                    type:"voice",
 
+                    audio:
+                    audioBase64,
 
-                const audioBase64 =
-                reader.result;
+                    senderId:
+                    currentUser.uid,
 
+                    receiverId:
+                    friendUser.uid,
 
+                    createdAt:
+                    serverTimestamp()
 
-                // إظهار الصوت عند المرسل
-                addVoiceMessage(audioBase64);
+                }
 
-
-
-                // حفظ الصوت في Firestore
-                await addDoc(
-                    collection(db,"messages"),
-                    {
-
-                        type:"voice",
-
-                        audio: audioBase64,
-
-                        senderId: currentUserId
-
-                        createdAt:
-                        serverTimestamp()
-
-                    }
-                );
-
-
-            };
+            );
 
 
         };
 
 
-        mediaRecorder.start();
+    };
 
 
-        isRecording = true;
+
+    mediaRecorder.start();
 
 
-        voiceButton.textContent="🔴";
-
-        voiceButton.classList.add(
-            "recording"
-        );
+    isRecording=true;
 
 
-    }
+    voiceButton.textContent="🔴";
 
-    catch(error){
-
-        console.error(error);
-
-        alert(
-            "لم يتم السماح بالميكروفون"
-        );
-
-    }
 
 }
 
 
 
 
-// إيقاف التسجيل
 function stopRecording(){
 
-
-    if(!isRecording) return;
-
+    if(!isRecording)
+    return;
 
 
     mediaRecorder.stop();
 
 
-
-    audioStream
-    .getTracks()
+    audioStream.getTracks()
     .forEach(track=>{
-
         track.stop();
-
     });
-
 
 
     isRecording=false;
 
 
-
     voiceButton.textContent="🎤";
-
-
-    voiceButton.classList.remove(
-        "recording"
-    );
-
 
 }
 
 
 
-
-
-// إضافة رسالة صوتية للمحادثة
-function addVoiceMessage(audioURL){
+function addVoiceMessage(
+url,
+side
+){
 
 
     const box =
@@ -185,7 +163,7 @@ function addVoiceMessage(audioURL){
 
 
     box.className =
-    "message mine";
+    "message " + side;
 
 
 
@@ -193,25 +171,20 @@ function addVoiceMessage(audioURL){
     document.createElement("audio");
 
 
-
-    audio.controls = true;
-
-
-    audio.src = audioURL;
+    audio.controls=true;
 
 
+    audio.src=url;
 
-    audio.style.width =
-    "230px";
+
+    audio.style.width="230px";
 
 
 
     box.appendChild(audio);
 
 
-
     messages.appendChild(box);
-
 
 
     messages.scrollTop =
@@ -222,97 +195,19 @@ function addVoiceMessage(audioURL){
 
 
 
-
-
-// ضغط الزر
 voiceButton.addEventListener(
 "pointerdown",
-()=>{
-
-    startRecording();
-
-});
-
-
-
-
-// رفع الإصبع
-voiceButton.addEventListener(
-"pointerup",
-()=>{
-
-    stopRecording();
-
-});
-
-
-
-
-// إذا خرج الإصبع من الزر
-voiceButton.addEventListener(
-"pointerleave",
-()=>{
-
-    stopRecording();
-
-});
-import {
-    onSnapshot,
-    query,
-    collection,
-    orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-// استقبال الرسائل الصوتية من الطرف الثاني
-
-const voiceMessagesQuery = query(
-    collection(db,"messages"),
-    orderBy("createdAt","asc")
+startRecording
 );
 
 
-onSnapshot(
-    voiceMessagesQuery,
-    (snapshot)=>{
+voiceButton.addEventListener(
+"pointerup",
+stopRecording
+);
 
 
-        snapshot.docChanges().forEach(
-            (change)=>{
-
-
-                if(change.type === "added"){
-
-
-                    const data =
-                    change.doc.data();
-
-
-
-                    if(data.type === "voice"){
-
-
-                        // لا تعيد عرض صوتك أنت
-                        if(data.senderId !== "000001"){
-
-
-                            addVoiceMessage(
-                                data.audio
-                            );
-
-
-                        }
-
-
-                    }
-
-
-                }
-
-
-            }
-        );
-
-
-    }
+voiceButton.addEventListener(
+"pointerleave",
+stopRecording
 );
