@@ -657,6 +657,51 @@ border:none;
 border-radius:12px;
 padding:6px 12px;
 }
+
+
+.message-menu{
+
+position:absolute;
+
+background:#111916;
+
+border:1px solid rgba(255,255,255,.1);
+
+border-radius:12px;
+
+padding:8px;
+
+z-index:50;
+
+display:none;
+
+}
+
+
+.message-menu button{
+
+background:#18231f;
+
+color:white;
+
+border:none;
+
+padding:10px 15px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-size:14px;
+
+}
+
+
+.message-menu button:active{
+
+transform:scale(.95);
+
+}
 </style>
 
 </head>
@@ -1816,6 +1861,12 @@ messages.appendChild(
 message
 );
 
+addMessageActions(
+message,
+messageDoc.id,
+data.senderId === currentUser.uid
+);
+     
 }
 
 );
