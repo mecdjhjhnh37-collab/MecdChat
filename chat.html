@@ -526,24 +526,33 @@ transform:scale(.94);
 
 }
 .call-buttons{
+
 display:flex;
+
 gap:8px;
+
 margin-right:auto;
+
 }
+
 
 .call-buttons button{
 
 width:42px;
+
 height:42px;
 
 border:none;
+
 border-radius:14px;
 
 background:#18231f;
 
 color:white;
 
-font-size:20px;
+font-size:18px;
+
+cursor:pointer;
 
 }
      
@@ -702,6 +711,23 @@ class="avatar"
 
 <div class="user-info">
 
+<div
+id="friendName"
+class="user-name"
+>
+جارٍ التحميل...
+</div>
+
+<div
+id="friendStatus"
+class="user-status"
+>
+● غير متصل
+</div>
+
+</div>
+
+
 <div class="call-buttons">
 
 <button id="callButton">
@@ -711,27 +737,6 @@ class="avatar"
 <button id="videoButton">
 📹
 </button>
-
-</div>
-
-<div
-id="friendName"
-class="user-name"
->
-
-جارٍ التحميل...
-
-</div>
-
-
-<div
-id="friendStatus"
-class="user-status"
->
-
-● غير متصل
-
-</div>
 
 </div>
 
