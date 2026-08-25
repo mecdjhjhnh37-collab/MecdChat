@@ -1,6 +1,16 @@
+import {
+    collection,
+    addDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// العناصر
 const voiceButton = document.getElementById("voiceButton");
 const messages = document.getElementById("messages");
 
+
+// المتغيرات
 let mediaRecorder = null;
 let audioChunks = [];
 let audioStream = null;
@@ -12,7 +22,8 @@ async function startRecording(){
 
     if(isRecording) return;
 
-    try{
+
+    try {
 
         audioStream =
         await navigator.mediaDevices.getUserMedia({
@@ -38,7 +49,7 @@ async function startRecording(){
         };
 
 
-        mediaRecorder.onstop = ()=>{
+        mediaRecorder.onstop = async ()=>{
 
 
             const audioBlob =
@@ -50,7 +61,46 @@ async function startRecording(){
             );
 
 
-            saveVoiceToFirestore(audioBlob);
+            // تحويل الصوت إلى Base64
+            const reader =
+            new FileReader();
+
+
+            reader.readAsDataURL(audioBlob);
+
+
+            reader.onloadend = async ()=>{
+
+
+                const audioBase64 =
+                reader.result;
+
+
+
+                // إظهار الصوت عند المرسل
+                addVoiceMessage(audioBase64);
+
+
+
+                // حفظ الصوت في Firestore
+                await addDoc(
+                    collection(db,"messages"),
+                    {
+
+                        type:"voice",
+
+                        audio: audioBase64,
+
+                        senderId:"000001",
+
+                        createdAt:
+                        serverTimestamp()
+
+                    }
+                );
+
+
+            };
 
 
         };
@@ -64,86 +114,24 @@ async function startRecording(){
 
         voiceButton.textContent="🔴";
 
-        voiceButton.classList.add("recording");
+        voiceButton.classList.add(
+            "recording"
+        );
 
 
-    }catch(error){
+    }
+
+    catch(error){
 
         console.error(error);
 
-        alert("لم يتم السماح بالميكروفون");
+        alert(
+            "لم يتم السماح بالميكروفون"
+        );
 
     }
 
 }
-
-
-
-// حفظ الصوت في Firestore
-async function saveVoiceToFirestore(blob){
-
-
-    const reader = new FileReader();
-
-
-    reader.onloadend = async ()=>{
-
-
-        const base64Audio =
-        reader.result;
-
-
-        try{
-
-
-            await addDoc(
-
-                collection(
-                    db,
-                    "chats",
-                    chatID,
-                    "messages"
-                ),
-
-                {
-
-                    audioData: base64Audio,
-
-                    senderId:
-                    currentUser.uid,
-
-
-                    createdAt:
-                    serverTimestamp()
-
-                }
-
-            );
-
-
-            addVoiceMessage(base64Audio);
-
-
-        }catch(error){
-
-            console.error(
-                "Voice save error:",
-                error
-            );
-
-            alert("فشل حفظ الصوت");
-
-        }
-
-
-    };
-
-
-    reader.readAsDataURL(blob);
-
-
-}
-
 
 
 
@@ -155,7 +143,9 @@ function stopRecording(){
     if(!isRecording) return;
 
 
+
     mediaRecorder.stop();
+
 
 
     audioStream
@@ -167,13 +157,17 @@ function stopRecording(){
     });
 
 
+
     isRecording=false;
+
 
 
     voiceButton.textContent="🎤";
 
 
-    voiceButton.classList.remove("recording");
+    voiceButton.classList.remove(
+        "recording"
+    );
 
 
 }
@@ -182,8 +176,8 @@ function stopRecording(){
 
 
 
-// عرض الصوت داخل المحادثة
-function addVoiceMessage(url){
+// إضافة رسالة صوتية للمحادثة
+function addVoiceMessage(audioURL){
 
 
     const box =
@@ -194,24 +188,30 @@ function addVoiceMessage(url){
     "message mine";
 
 
+
     const audio =
     document.createElement("audio");
+
 
 
     audio.controls = true;
 
 
-    audio.src = url;
+    audio.src = audioURL;
+
 
 
     audio.style.width =
     "230px";
 
 
+
     box.appendChild(audio);
 
 
+
     messages.appendChild(box);
+
 
 
     messages.scrollTop =
@@ -224,7 +224,7 @@ function addVoiceMessage(url){
 
 
 
-// ضغط مطول
+// ضغط الزر
 voiceButton.addEventListener(
 "pointerdown",
 ()=>{
@@ -248,7 +248,7 @@ voiceButton.addEventListener(
 
 
 
-// سحب الإصبع خارج الزر
+// إذا خرج الإصبع من الزر
 voiceButton.addEventListener(
 "pointerleave",
 ()=>{
