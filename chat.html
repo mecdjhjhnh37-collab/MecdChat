@@ -980,6 +980,7 @@ data.senderId === currentUser.uid
 "other"
 );
 
+
 if(data.type === "voice"){
 
 const audio = document.createElement("audio");
@@ -991,15 +992,15 @@ audio.style.width = "230px";
 box.appendChild(audio);
 
 
-// إضافة نص صغير للصوت
 const voiceText = document.createElement("span");
+
 voiceText.textContent = "🎤 رسالة صوتية";
+
 voiceText.style.display="block";
+
 voiceText.style.fontSize="12px";
 
 box.appendChild(voiceText);
-
-}
 
 
 }else{
@@ -1011,7 +1012,6 @@ data.text || ""
 );
 
 }
-
 
 
 const time =
@@ -1247,9 +1247,7 @@ element.addEventListener(
 "pointerup",
 ()=>{
 
-clearTimeout(timer);
 
-});
 
 
 element.addEventListener(
@@ -1418,10 +1416,6 @@ alert("📹 الفيديو قيد التطوير");
 
 <script type="module" src="voice.js"></script>
 
-
-</body>
-
-</html>
 
 </body>
 
