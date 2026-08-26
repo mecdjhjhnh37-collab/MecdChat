@@ -21,13 +21,14 @@ const voiceButton =
 document.getElementById("voiceButton");
 
 
+
 let recorder = null;
 let stream = null;
 let chunks = [];
 
-let recording = false;
-let startTime = 0;
+let isRecording = false;
 let timer = null;
+let seconds = 0;
 
 
 
@@ -39,7 +40,47 @@ async(e)=>{
 e.preventDefault();
 
 
-if(recording) return;
+if(isRecording)
+return;
+
+
+
+try{
+
+
+voiceButton.setPointerCapture(
+e.pointerId
+);
+
+
+
+await startRecording();
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"لم يتم تشغيل الميكروفون"
+);
+
+resetVoice();
+
+}
+
+
+
+});
+
+
+
+
+
+
+async function startRecording(){
 
 
 if(
@@ -50,13 +91,14 @@ if(
 !window.chatFriend
 ){
 
-console.error("Firebase غير جاهز");
+console.error(
+"Firebase غير جاهز"
+);
+
 return;
 
 }
 
-
-try{
 
 
 stream =
@@ -69,7 +111,9 @@ audio:true
 
 
 recorder =
-new MediaRecorder(stream);
+new MediaRecorder(
+stream
+);
 
 
 
@@ -78,11 +122,11 @@ chunks=[];
 
 
 recorder.ondataavailable =
-event=>{
+(e)=>{
 
-if(event.data.size > 0){
+if(e.data.size > 0){
 
-chunks.push(event.data);
+chunks.push(e.data);
 
 }
 
@@ -99,17 +143,7 @@ async()=>{
 try{
 
 
-if(chunks.length===0){
-
-reset();
-
-return;
-
-}
-
-
-
-const audioBlob =
+const blob =
 new Blob(
 chunks,
 {
@@ -119,7 +153,7 @@ type:"audio/webm"
 
 
 
-const fileRef =
+const file =
 ref(
 window.storage,
 "voices/"+Date.now()+".webm"
@@ -128,21 +162,18 @@ window.storage,
 
 
 await uploadBytes(
-fileRef,
-audioBlob
+file,
+blob
 );
 
 
 
 const url =
 await getDownloadURL(
-fileRef
+file
 );
 
 
-
-
-// حفظ الرسالة
 
 await addDoc(
 
@@ -181,14 +212,16 @@ console.log(
 
 
 }
+
 catch(error){
 
 console.error(
+"إرسال الصوت فشل",
 error
 );
 
 alert(
-"خطأ في إرسال الصوت"
+"فشل إرسال الصوت"
 );
 
 
@@ -196,7 +229,7 @@ alert(
 
 
 
-reset();
+resetVoice();
 
 
 };
@@ -209,29 +242,23 @@ recorder.start();
 
 
 
-recording=true;
+isRecording=true;
+
+seconds=0;
 
 
-startTime=Date.now();
+voiceButton.innerHTML="🔴 0s";
 
 
-voiceButton.textContent="🔴";
-
-
-
-// عداد التسجيل
 
 timer=setInterval(()=>{
 
 
-let sec =
-Math.floor(
-(Date.now()-startTime)/1000
-);
+seconds++;
 
 
-voiceButton.textContent=
-"🔴 "+sec+"s";
+voiceButton.innerHTML=
+"🔴 "+seconds+"s";
 
 
 },1000);
@@ -240,49 +267,32 @@ voiceButton.textContent=
 
 }
 
-catch(error){
-
-console.error(error);
-
-alert(
-"اسمح للميكروفون"
-);
-
-reset();
-
-
-}
-
-
-
-});
-
-
 
 
 
 
 
 // إيقاف عند رفع الإصبع
-
-voiceButton.addEventListener(
+document.addEventListener(
 "pointerup",
 stopRecording
 );
 
 
 
-voiceButton.addEventListener(
-"pointerleave",
-()=>{
+document.addEventListener(
+"touchend",
+stopRecording
+);
 
-if(recording){
 
-stopRecording();
 
-}
+document.addEventListener(
+"pointercancel",
+stopRecording
+);
 
-});
+
 
 
 
@@ -290,7 +300,7 @@ stopRecording();
 function stopRecording(){
 
 
-if(!recording)
+if(!isRecording)
 return;
 
 
@@ -320,7 +330,8 @@ track=>track.stop()
 
 
 
-function reset(){
+
+function resetVoice(){
 
 
 if(timer){
@@ -339,11 +350,10 @@ stream=null;
 
 chunks=[];
 
+isRecording=false;
 
-recording=false;
 
-
-voiceButton.textContent="🎤";
+voiceButton.innerHTML="🎤";
 
 
 }
