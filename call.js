@@ -1,5 +1,6 @@
 /* =========================================
-   Mecd Chat - Call System
+   Mecd Chat - Real Call System
+   WebRTC + Firestore
    ========================================= */
 
 import {
@@ -39,31 +40,23 @@ if (!firebaseApp) {
     );
 }
 
-const auth =
-    getAuth(firebaseApp);
-
-const db =
-    getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 
 /* =========================================
-   المستخدم الحالي
+   المستخدم
    ========================================= */
 
 let currentUser = null;
 
-onAuthStateChanged(
-    auth,
-    user => {
-
-        currentUser = user;
-
-    }
-);
+onAuthStateChanged(auth, user => {
+    currentUser = user;
+});
 
 
 /* =========================================
-   إنشاء ID للمكالمة
+   إنشاء Call ID
    ========================================= */
 
 function createCallID() {
@@ -80,45 +73,32 @@ function createCallID() {
 
 
 /* =========================================
-   بدء الاتصال
+   بدء المكالمة
    ========================================= */
 
 export async function startCall({
-
     friendId,
     friendName,
     friendPhoto
-
 }) {
 
     if (!currentUser) {
 
-        alert(
-            "⚠️ يجب تسجيل الدخول أولاً"
-        );
-
+        alert("⚠️ يجب تسجيل الدخول أولاً");
         return;
 
     }
-
 
     if (!friendId) {
 
-        alert(
-            "⚠️ لم يتم تحديد الصديق"
-        );
-
+        alert("⚠️ لم يتم تحديد الصديق");
         return;
 
     }
 
-
     if (friendId === currentUser.uid) {
 
-        alert(
-            "⚠️ لا يمكنك الاتصال بنفسك"
-        );
-
+        alert("⚠️ لا يمكنك الاتصال بنفسك");
         return;
 
     }
@@ -126,21 +106,12 @@ export async function startCall({
 
     try {
 
-        /* =========================
-           إنشاء Call ID
-        ========================= */
+        const callId = createCallID();
 
-        const callId =
-            createCallID();
-
-
-        /* =========================
-           بيانات المكالمة
-        ========================= */
 
         const callData = {
 
-            callId: callId,
+            callId,
 
             callerId:
                 currentUser.uid,
@@ -176,42 +147,75 @@ export async function startCall({
         };
 
 
-        /* =========================
-           حفظ المكالمة في Firestore
-        ========================= */
+        /* إنشاء المكالمة */
+
+        await setDoc(
+            doc(db, "calls", callId),
+            callData
+        );
+
+
+        /* إرسال إشعار للطرف الثاني */
 
         await setDoc(
 
             doc(
                 db,
-                "calls",
-                callId
+                "users",
+                friendId
             ),
 
-            callData
+            {
+
+                incomingCall: {
+
+                    callId,
+
+                    callerId:
+                        currentUser.uid,
+
+                    callerName:
+                        currentUser.displayName ||
+                        "مستخدم Mecd",
+
+                    callerPhoto:
+                        currentUser.photoURL ||
+                        "",
+
+                    receiverId:
+                        friendId,
+
+                    status:
+                        "ringing",
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+
+            },
+
+            {
+                merge: true
+            }
 
         );
 
 
-        /* =========================
-           فتح شاشة الاتصال
-        ========================= */
+        /* فتح شاشة المكالمة */
 
         const params =
             new URLSearchParams();
-
 
         params.set(
             "callId",
             callId
         );
 
-
         params.set(
             "mode",
             "outgoing"
         );
-
 
         window.location.href =
             "call.html?" +
@@ -235,7 +239,7 @@ export async function startCall({
 
 
 /* =========================================
-   مراقبة المكالمات الواردة
+   المكالمات الواردة
    ========================================= */
 
 export function listenIncomingCalls() {
@@ -245,7 +249,7 @@ export function listenIncomingCalls() {
     }
 
 
-    const userCallRef =
+    const userRef =
         doc(
             db,
             "users",
@@ -255,9 +259,9 @@ export function listenIncomingCalls() {
 
     return onSnapshot(
 
-        userCallRef,
+        userRef,
 
-        async snapshot => {
+        snapshot => {
 
             if (!snapshot.exists()) {
                 return;
@@ -268,49 +272,41 @@ export function listenIncomingCalls() {
                 snapshot.data();
 
 
-            const incomingCall =
+            const incoming =
                 data.incomingCall;
 
 
-            if (!incomingCall) {
+            if (!incoming) {
                 return;
             }
 
 
             if (
-                incomingCall.receiverId !==
+                incoming.receiverId !==
                 currentUser.uid
             ) {
-
                 return;
-
             }
 
 
             if (
-                incomingCall.status !==
+                incoming.status !==
                 "ringing"
             ) {
-
                 return;
-
             }
 
-
-            /* منع فتح نفس المكالمة أكثر من مرة */
 
             if (
                 window.currentIncomingCallId ===
-                incomingCall.callId
+                incoming.callId
             ) {
-
                 return;
-
             }
 
 
             window.currentIncomingCallId =
-                incomingCall.callId;
+                incoming.callId;
 
 
             const params =
@@ -319,13 +315,24 @@ export function listenIncomingCalls() {
 
             params.set(
                 "callId",
-                incomingCall.callId
+                incoming.callId
             );
-
 
             params.set(
                 "mode",
                 "incoming"
+            );
+
+            params.set(
+                "name",
+                incoming.callerName ||
+                "مستخدم Mecd"
+            );
+
+            params.set(
+                "photo",
+                incoming.callerPhoto ||
+                ""
             );
 
 
@@ -333,73 +340,15 @@ export function listenIncomingCalls() {
                 "call.html?" +
                 params.toString();
 
-        }
-
-    );
-
-}
-
-
-/* =========================================
-   إرسال المكالمة الواردة للمستخدم
-   ========================================= */
-
-export async function notifyIncomingCall({
-
-    receiverId,
-    callId,
-    callerId,
-    callerName,
-    callerPhoto
-
-}) {
-
-    if (!receiverId || !callId) {
-        return;
-    }
-
-
-    await setDoc(
-
-        doc(
-            db,
-            "users",
-            receiverId
-        ),
-
-        {
-
-            incomingCall: {
-
-                callId:
-                    callId,
-
-                callerId:
-                    callerId,
-
-                callerName:
-                    callerName ||
-                    "مستخدم Mecd",
-
-                callerPhoto:
-                    callerPhoto ||
-                    "",
-
-                receiverId:
-                    receiverId,
-
-                status:
-                    "ringing",
-
-                createdAt:
-                    serverTimestamp()
-
-            }
-
         },
 
-        {
-            merge: true
+        error => {
+
+            console.error(
+                "Incoming call error:",
+                error
+            );
+
         }
 
     );
@@ -453,7 +402,7 @@ export async function endCall(callId) {
 
 
 /* =========================================
-   حذف طلب المكالمة الواردة
+   حذف المكالمة الواردة
    ========================================= */
 
 export async function clearIncomingCall() {
@@ -495,7 +444,36 @@ export async function clearIncomingCall() {
 
 
 /* =========================================
-   الحصول على بيانات المكالمة
+   الحصول على المكالمة
    ========================================= */
 
-export async function getCall
+export async function getCall(callId) {
+
+    if (!callId) {
+        return null;
+    }
+
+
+    const snapshot =
+        await getDoc(
+
+            doc(
+                db,
+                "calls",
+                callId
+            )
+
+        );
+
+
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+
+    return {
+        id: snapshot.id,
+        ...snapshot.data()
+    };
+
+}
