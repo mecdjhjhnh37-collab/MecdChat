@@ -11,7 +11,6 @@
 
 <title>Mecd Chat</title>
 
-
 <style>
 
 *{
@@ -19,7 +18,6 @@ box-sizing:border-box;
 margin:0;
 padding:0;
 }
-
 
 body{
 
@@ -47,8 +45,6 @@ overflow:hidden;
 
 }
 
-
-
 .app{
 
 height:100vh;
@@ -62,8 +58,6 @@ display:flex;
 flex-direction:column;
 
 }
-
-
 
 header{
 
@@ -82,8 +76,6 @@ background:#050807;
 border-bottom:1px solid rgba(255,255,255,.08);
 
 }
-
-
 
 .back{
 
@@ -104,8 +96,6 @@ font-size:22px;
 cursor:pointer;
 
 }
-
-
 
 .avatar{
 
@@ -129,8 +119,6 @@ font-size:24px;
 
 }
 
-
-
 .avatar img{
 
 width:100%;
@@ -141,15 +129,11 @@ object-fit:cover;
 
 }
 
-
-
 .user-info{
 
 flex:1;
 
 }
-
-
 
 .user-name{
 
@@ -158,8 +142,6 @@ font-size:17px;
 font-weight:bold;
 
 }
-
-
 
 .user-status{
 
@@ -171,14 +153,11 @@ margin-top:5px;
 
 }
 
-
 .user-status.online{
 
 color:#00e889;
 
 }
-
-
 
 .call-buttons{
 
@@ -187,8 +166,6 @@ display:flex;
 gap:8px;
 
 }
-
-
 
 .call-buttons button{
 
@@ -211,9 +188,7 @@ cursor:pointer;
 }
 
 
-
 /* الرسائل */
-
 
 .messages{
 
@@ -231,8 +206,6 @@ gap:10px;
 
 }
 
-
-
 .empty{
 
 margin:auto;
@@ -242,8 +215,6 @@ text-align:center;
 color:#72817c;
 
 }
-
-
 
 .message{
 
@@ -259,8 +230,6 @@ word-break:break-word;
 
 }
 
-
-
 .message.mine{
 
 align-self:flex-start;
@@ -273,8 +242,6 @@ border-bottom-left-radius:5px;
 
 }
 
-
-
 .message.other{
 
 align-self:flex-end;
@@ -286,8 +253,6 @@ border:1px solid rgba(255,255,255,.08);
 border-bottom-right-radius:5px;
 
 }
-
-
 
 .time{
 
@@ -303,7 +268,6 @@ margin-top:5px;
 
 
 /* الكتابة */
-
 
 .input-area{
 
@@ -329,8 +293,6 @@ background:#050807;
 
 }
 
-
-
 #messageInput{
 
 flex:1;
@@ -351,8 +313,6 @@ font-size:15px;
 
 }
 
-
-
 #voiceButton,
 #sendButton{
 
@@ -370,8 +330,6 @@ cursor:pointer;
 
 }
 
-
-
 #voiceButton{
 
 background:#18231f;
@@ -379,8 +337,6 @@ background:#18231f;
 color:white;
 
 }
-
-
 
 #sendButton{
 
@@ -391,12 +347,13 @@ color:#00150e;
 }
 
 
+/* قائمة حذف الرسالة */
 
 .message-menu{
+
 position:absolute;
 
 left:10px;
-right:auto;
 
 bottom:55px;
 
@@ -410,19 +367,20 @@ box-shadow:0 8px 25px #000;
 
 z-index:999;
 
-min-width:150px;
+width:150px;
 
-max-width:calc(100vw - 40px);
+max-width:calc(100% - 20px);
 
 animation:showMenu .2s ease;
-}
 
+}
 
 @keyframes showMenu{
 
 from{
 
 opacity:0;
+
 transform:translateY(10px);
 
 }
@@ -430,13 +388,12 @@ transform:translateY(10px);
 to{
 
 opacity:1;
+
 transform:translateY(0);
 
 }
 
 }
-
-
 
 .message-menu button{
 
@@ -454,17 +411,21 @@ border-radius:10px;
 
 font-size:14px;
 
+cursor:pointer;
+
+white-space:nowrap;
+
 }
-
-
 
 </style>
 
 </head>
+
 <body>
 
 
-<div id="loading"
+<div
+id="loading"
 style="
 position:fixed;
 inset:0;
@@ -542,12 +503,18 @@ class="user-status"
 <div class="call-buttons">
 
 
-<button id="callButton">
+<button
+id="callButton"
+type="button"
+>
 📞
 </button>
 
 
-<button id="videoButton">
+<button
+id="videoButton"
+type="button"
+>
 📹
 </button>
 
@@ -653,6 +620,7 @@ from
 
 
 import {
+
 getFirestore,
 doc,
 getDoc,
@@ -666,50 +634,48 @@ deleteDoc,
 updateDoc,
 arrayUnion,
 serverTimestamp
+
 }
 
 from
 
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  
 
-  
+
+
 import {
+
 getStorage
+
 }
+
 from
+
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
 
 const firebaseConfig = {
 
-
 apiKey:
 "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
-
 
 authDomain:
 "mecd-tools.firebaseapp.com",
 
-
 projectId:
 "mecd-tools",
-
 
 storageBucket:
 "mecd-tools.firebasestorage.app",
 
-
 messagingSenderId:
 "643005547408",
-
 
 appId:
 "1:643005547408:web:b1719060ec340dd0e0a915"
 
 };
-
 
 
 
@@ -719,71 +685,363 @@ firebaseConfig
 );
 
 
+
 const auth =
 getAuth(
 firebaseApp
 );
 
 
+
 const db =
 getFirestore(
 firebaseApp
 );
-  const storage =
-getStorage(firebaseApp);
-  window.chatDB = db;
-window.storage = storage;
+
+
+
+const storage =
+getStorage(
+firebaseApp
+);
+
+
+
+window.chatDB =
+db;
+
+window.storage =
+storage;
+
+
+
 const messages =
-document.getElementById("messages");
+document.getElementById(
+"messages"
+);
+
+
 
 const messageInput =
-document.getElementById("messageInput");
+document.getElementById(
+"messageInput"
+);
+
+
 
 const sendButton =
-document.getElementById("sendButton");
+document.getElementById(
+"sendButton"
+);
+
+
 
 const friendName =
-document.getElementById("friendName");
+document.getElementById(
+"friendName"
+);
+
+
 
 const friendAvatar =
-document.getElementById("friendAvatar");
+document.getElementById(
+"friendAvatar"
+);
+
+
+
+const friendStatus =
+document.getElementById(
+"friendStatus"
+);
+
+
 
 const backButton =
-document.getElementById("backButton");
+document.getElementById(
+"backButton"
+);
+
+
 
 const callButton =
-document.getElementById("callButton");
+document.getElementById(
+"callButton"
+);
+
+
 
 const videoButton =
-document.getElementById("videoButton");
+document.getElementById(
+"videoButton"
+);
 
 
-let currentUser = null;
 
-let friendUser = null;
+let currentUser =
+null;
 
-let chatID = null;
 
-let unsubscribeMessages = null;
 
-let unsubscribeFriendStatus = null;
-  
-let presenceInterval = null;
+let friendUser =
+null;
 
+
+
+let chatID =
+null;
+
+
+
+let unsubscribeMessages =
+null;
+
+
+
+let unsubscribeFriendStatus =
+null;
+
+
+
+let presenceInterval =
+null;
+
+
+
+/* =========================
+   إنشاء Chat ID
+========================= */
 
 function createChatID(a,b){
 
 return [
 
-a,b
+a,
+b
 
 ]
 .sort()
 .join("_");
 
 }
-  async function loadFriend(){
 
+
+
+/* =========================
+   تحديث حالة المستخدم
+========================= */
+
+async function updateMyPresence(){
+
+if(!currentUser)
+return;
+
+
+try{
+
+await setDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+),
+
+{
+
+online:true,
+
+lastSeen:
+serverTimestamp()
+
+},
+
+{
+
+merge:true
+
+}
+
+);
+
+}catch(error){
+
+console.error(
+"Presence error:",
+error
+);
+
+}
+
+}
+
+
+
+/* =========================
+   تشغيل Presence
+========================= */
+
+function startPresence(){
+
+updateMyPresence();
+
+
+if(presenceInterval){
+
+clearInterval(
+presenceInterval
+);
+
+}
+
+
+presenceInterval =
+setInterval(
+
+()=>{
+
+updateMyPresence();
+
+},
+
+10000
+
+);
+
+}
+
+
+
+/* =========================
+   إيقاف Presence
+========================= */
+
+function stopPresence(){
+
+if(presenceInterval){
+
+clearInterval(
+presenceInterval
+);
+
+presenceInterval =
+null;
+
+}
+
+}
+
+
+
+/* =========================
+   مراقبة حالة الصديق
+========================= */
+
+function listenFriendStatus(){
+
+if(!friendUser)
+return;
+
+
+if(unsubscribeFriendStatus){
+
+unsubscribeFriendStatus();
+
+unsubscribeFriendStatus =
+null;
+
+}
+
+
+const friendRef =
+doc(
+db,
+"users",
+friendUser.uid
+);
+
+
+
+unsubscribeFriendStatus =
+onSnapshot(
+
+friendRef,
+
+snap=>{
+
+if(!snap.exists())
+return;
+
+
+const data =
+snap.data();
+
+
+const lastSeen =
+data.lastSeen &&
+
+typeof data.lastSeen.toMillis ===
+"function"
+
+?
+
+data.lastSeen.toMillis()
+
+:
+
+0;
+
+
+const online =
+data.online === true &&
+
+lastSeen > 0 &&
+
+(Date.now() - lastSeen < 30000);
+
+
+if(online){
+
+friendStatus.textContent =
+"● متصل";
+
+friendStatus.classList.add(
+"online"
+);
+
+}else{
+
+friendStatus.textContent =
+"● غير متصل";
+
+friendStatus.classList.remove(
+"online"
+);
+
+}
+
+},
+
+error=>{
+
+console.error(
+"Friend status error:",
+error
+);
+
+}
+
+);
+
+}
+
+
+
+/* =========================
+   تحميل الصديق
+========================= */
+
+async function loadFriend(){
 
 const params =
 new URLSearchParams(
@@ -797,7 +1055,9 @@ params.get("friend");
 
 if(!id){
 
-alert("لا يوجد صديق");
+alert(
+"لا يوجد صديق"
+);
 
 return false;
 
@@ -807,106 +1067,45 @@ return false;
 
 const userDoc =
 await getDoc(
+
 doc(
 db,
 "users",
 id
 )
+
 );
 
 
 
 if(!userDoc.exists()){
 
-alert("المستخدم غير موجود");
+alert(
+"المستخدم غير موجود"
+);
 
 return false;
 
 }
 
-function listenFriendStatus(){
 
-if(!friendUser)
-return;
-
-const friendRef =
-doc(
-db,
-"users",
-friendUser.uid
-);
-
-unsubscribeFriendStatus =
-onSnapshot(
-friendRef,
-snap => {
-
-if(!snap.exists())
-return;
-
-const data =
-snap.data();
-
-const status =
-document.getElementById(
-"friendStatus"
-);
-
-const lastSeen =
-data.lastSeen &&
-typeof data.lastSeen.toMillis === "function"
-  ? data.lastSeen.toMillis()
-  : 0;
-
-const online =
-data.online === true &&
-(Date.now() - lastSeen < 30000);
-
-if(online){
-
-status.textContent =
-"● متصل";
-
-status.classList.add(
-"online"
-);
-
-}else{
-
-status.textContent =
-"● غير متصل";
-
-status.classList.remove(
-"online"
-);
-
-}
-
-},
-error => {
-
-console.error(
-"Friend status error:",
-error
-);
-
-}
-);
-
-}
 
 const data =
 userDoc.data();
 
 
 
-friendUser={
+friendUser = {
 
 uid:id,
 
-name:data.name || "مستخدم Mecd",
+name:
+data.name ||
+"مستخدم Mecd",
 
-photo:data.photo || ""
+photo:
+data.photo ||
+""
 
 };
 
@@ -919,10 +1118,19 @@ friendUser.name;
 
 if(friendUser.photo){
 
-friendAvatar.innerHTML =
-`
-<img src="${friendUser.photo}">
+friendAvatar.innerHTML = `
+
+<img
+src="${friendUser.photo}"
+alt="صورة الحساب"
+>
+
 `;
+
+}else{
+
+friendAvatar.textContent =
+"👤";
 
 }
 
@@ -930,12 +1138,24 @@ friendAvatar.innerHTML =
 
 chatID =
 createChatID(
+
 currentUser.uid,
+
 friendUser.uid
+
 );
-window.chatID = chatID;
-window.chatUser = currentUser;
-window.chatFriend = friendUser;
+
+
+
+window.chatID =
+chatID;
+
+window.chatUser =
+currentUser;
+
+window.chatFriend =
+friendUser;
+
 
 
 await setDoc(
@@ -959,11 +1179,16 @@ serverTimestamp()
 },
 
 {
+
 merge:true
+
 }
 
 );
 
+
+
+listenFriendStatus();
 
 
 return true;
@@ -972,46 +1197,270 @@ return true;
 
 
 
-
-
+/* =========================
+   الاستماع للرسائل
+========================= */
 
 function listenMessages(){
+
+if(unsubscribeMessages){
+
+unsubscribeMessages();
+
+unsubscribeMessages =
+null;
+
+}
+
 
 
 const ref =
 collection(
+
 db,
 "chats",
 chatID,
 "messages"
+
 );
 
 
 
 const q =
 query(
+
 ref,
+
 orderBy(
 "createdAt",
 "asc"
 )
+
 );
 
 
 
 unsubscribeMessages =
 onSnapshot(
+
 q,
+
 snap=>{
 
-messages.innerHTML=""
+messages.innerHTML =
+"";
+
+
+let visibleMessages =
+0;
+
+
+snap.forEach(
+
+item=>{
+
+const data =
+item.data();
+
+
+/* الرسائل المحذوفة لدي */
+
+if(
+
+Array.isArray(
+data.deletedFor
+)
+
+&&
+
+data.deletedFor.includes(
+currentUser.uid
+)
+
+){
+
+return;
+
+}
+
+
+visibleMessages++;
+
+
+const box =
+document.createElement(
+"div"
+);
+
+
+box.className =
+
+"message " +
+
+(
+
+data.senderId ===
+currentUser.uid
+
+?
+
+"mine"
+
+:
+
+"other"
+
+);
+
+
+/* رسالة صوتية */
+
+if(data.type === "voice"){
+
+const audio =
+document.createElement(
+"audio"
+);
+
+
+audio.controls =
+true;
+
+
+audio.src =
+data.audio ||
+"";
+
+
+audio.style.width =
+"230px";
+
+
+audio.style.maxWidth =
+"100%";
+
+
+box.appendChild(
+audio
+);
 
 
 
-if(snap.empty){
+const voiceText =
+document.createElement(
+"span"
+);
 
-messages.innerHTML=
-`
+
+voiceText.textContent =
+"🎤 رسالة صوتية";
+
+
+voiceText.style.display =
+"block";
+
+
+voiceText.style.fontSize =
+"12px";
+
+
+box.appendChild(
+voiceText
+);
+
+}else{
+
+box.appendChild(
+
+document.createTextNode(
+data.text ||
+""
+)
+
+);
+
+}
+
+
+
+/* الوقت */
+
+const time =
+document.createElement(
+"span"
+);
+
+
+time.className =
+"time";
+
+
+if(
+
+data.createdAt &&
+
+typeof data.createdAt.toDate ===
+"function"
+
+){
+
+time.textContent =
+
+data.createdAt
+.toDate()
+.toLocaleTimeString(
+
+"ar",
+
+{
+
+hour:
+"2-digit",
+
+minute:
+"2-digit"
+
+}
+
+);
+
+}
+
+
+
+box.appendChild(
+time
+);
+
+
+
+messages.appendChild(
+box
+);
+
+
+
+addMessageActions(
+
+box,
+
+item.id,
+
+data.senderId ===
+currentUser.uid
+
+);
+
+}
+
+);
+
+
+
+if(visibleMessages === 0){
+
+messages.innerHTML = `
+
 <div class="empty">
 
 💬
@@ -1021,139 +1470,48 @@ messages.innerHTML=
 ابدأ المحادثة الآن
 
 </div>
+
 `;
 
-return;
-
 }
 
 
 
-snap.forEach(item=>{
+/* النزول لآخر الرسائل */
 
+requestAnimationFrame(
 
-const data =
-item.data();
-
-if (
-data.deletedFor &&
-data.deletedFor.includes(currentUser.uid)
-){
-return;
-}
-
-const box =
-document.createElement("div");
-
-
-box.className =
-"message " +
-
-(
-data.senderId === currentUser.uid
-?
-"mine"
-:
-"other"
-);
-
-
-if(data.type === "voice"){
-
-const audio = document.createElement("audio");
-
-audio.controls = true;
-audio.src = data.audio;
-audio.style.width = "230px";
-
-box.appendChild(audio);
-
-
-const voiceText = document.createElement("span");
-
-voiceText.textContent = "🎤 رسالة صوتية";
-
-voiceText.style.display="block";
-
-voiceText.style.fontSize="12px";
-
-box.appendChild(voiceText);
-
-
-}else{
-
-box.appendChild(
-document.createTextNode(
-data.text || ""
-)
-);
-
-}
-
-
-const time =
-document.createElement("span");
-
-
-time.className="time";
-
-
-if(
-data.createdAt &&
-typeof data.createdAt.toDate === "function"
-){
-
-time.textContent =
-data.createdAt
-.toDate()
-.toLocaleTimeString(
-"ar",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-);
-
-}
-
-
-
-box.appendChild(time);
-
-
-messages.appendChild(box);
-
-
-
-addMessageActions(
-box,
-item.id,
-data.senderId === currentUser.uid
-);
-
-
-
-});
-
-
+()=>{
 
 messages.scrollTop =
 messages.scrollHeight;
 
+}
+
+);
+
+},
+
+error=>{
+
+console.error(
+"Messages error:",
+error
+);
 
 }
 
 );
 
-
 }
 
 
 
-
+/* =========================
+   إرسال رسالة
+========================= */
 
 async function sendMessage(){
-
 
 const text =
 messageInput.value.trim();
@@ -1161,6 +1519,21 @@ messageInput.value.trim();
 
 if(!text)
 return;
+
+
+if(
+!currentUser ||
+!friendUser ||
+!chatID
+)
+return;
+
+
+
+try{
+
+sendButton.disabled =
+true;
 
 
 
@@ -1192,13 +1565,38 @@ serverTimestamp()
 
 
 
-messageInput.value="";
+messageInput.value =
+"";
 
+
+}catch(error){
+
+console.error(
+"Send message error:",
+error
+);
+
+
+alert(
+"حدث خطأ أثناء إرسال الرسالة"
+);
+
+}finally{
+
+sendButton.disabled =
+false;
+
+messageInput.focus();
+
+}
 
 }
 
 
 
+/* =========================
+   زر الإرسال
+========================= */
 
 sendButton.onclick =
 sendMessage;
@@ -1206,10 +1604,14 @@ sendMessage;
 
 
 messageInput.addEventListener(
+
 "keydown",
+
 e=>{
 
-if(e.key==="Enter"){
+if(e.key === "Enter"){
+
+e.preventDefault();
 
 sendMessage();
 
@@ -1219,136 +1621,293 @@ sendMessage();
 
 
 
-
-
+/* =========================
+   قائمة حذف الرسائل
+========================= */
 
 function addMessageActions(
+
 element,
+
 id,
+
 mine
+
 ){
 
-let timer;
+let timer =
+null;
 
 
-// الضغط المطول للموبايل
+
+/* ضغط مطول */
+
 element.addEventListener(
-"pointerdown",
-()=>{
 
-timer=setTimeout(()=>{
+"pointerdown",
+
+e=>{
+
+if(
+e.target.closest(
+".message-menu"
+)
+)
+return;
+
+
+
+timer =
+setTimeout(
+
+()=>{
 
 showDeleteMenu();
 
-},500);
+},
 
-});
+500
+
+);
+
+}
+
+);
 
 
+
+/* إلغاء الضغط */
 
 element.addEventListener(
+
 "pointerup",
+
 ()=>{
 
-clearTimeout(timer);
+if(timer){
 
-});
+clearTimeout(
+timer
+);
+
+timer =
+null;
+
+}
+
+}
+
+);
 
 
 
 element.addEventListener(
+
+"pointercancel",
+
+()=>{
+
+if(timer){
+
+clearTimeout(
+timer
+);
+
+timer =
+null;
+
+}
+
+}
+
+);
+
+
+
+element.addEventListener(
+
 "pointerleave",
+
 ()=>{
 
-clearTimeout(timer);
+if(timer){
 
-});
+clearTimeout(
+timer
+);
+
+timer =
+null;
+
+}
+
+}
+
+);
 
 
 
-// كليك يمين للكمبيوتر
+/* كليك يمين */
+
 element.addEventListener(
+
 "contextmenu",
+
 e=>{
 
 e.preventDefault();
 
 showDeleteMenu();
 
-});
+}
+
+);
 
 
+
+/* إظهار القائمة */
 
 function showDeleteMenu(){
 
 removeMenus();
 
 
-const menu=document.createElement("div");
 
-menu.className="message-menu";
+const menu =
+document.createElement(
+"div"
+);
 
 
-const button=document.createElement("button");
+
+menu.className =
+"message-menu";
+
+
+
+const button =
+document.createElement(
+"button"
+);
 
 
 
 if(mine){
 
-button.textContent="🗑️ إلغاء الإرسال";
+button.textContent =
+"🗑️ إلغاء الإرسال";
 
 
-button.onclick=async()=>{
+
+button.onclick =
+async e=>{
+
+e.stopPropagation();
 
 
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-
-removeMenus();
-
-};
-
-
-}else{
-
-button.textContent="🗑️ حذف لدي";
-
-button.onclick=async()=>{
 
 try{
 
-await updateDoc(
+await deleteDoc(
+
 doc(
+
 db,
+
 "chats",
+
 chatID,
+
 "messages",
+
 id
-),
-{
-deletedFor:
-arrayUnion(
-currentUser.uid
+
 )
-}
+
 );
 
+
+
 removeMenus();
+
+
 
 }catch(error){
 
 console.error(
-"خطأ في حذف الرسالة لدي:",
+"Delete message error:",
 error
 );
+
+
+alert(
+"حدث خطأ أثناء إلغاء إرسال الرسالة"
+);
+
+}
+
+};
+
+
+
+}else{
+
+button.textContent =
+"🗑️ حذف لدي";
+
+
+
+button.onclick =
+async e=>{
+
+e.stopPropagation();
+
+
+
+try{
+
+await updateDoc(
+
+doc(
+
+db,
+
+"chats",
+
+chatID,
+
+"messages",
+
+id
+
+)
+
+),
+
+{
+
+deletedFor:
+arrayUnion(
+currentUser.uid
+)
+
+}
+
+);
+
+
+
+removeMenus();
+
+
+
+}catch(error){
+
+console.error(
+"Delete for me error:",
+error
+);
+
 
 alert(
 "حدث خطأ أثناء حذف الرسالة"
@@ -1362,10 +1921,15 @@ alert(
 
 
 
-menu.appendChild(button);
+menu.appendChild(
+button
+);
 
-element.appendChild(menu);
 
+
+element.appendChild(
+menu
+);
 
 }
 
@@ -1373,37 +1937,81 @@ element.appendChild(menu);
 
 
 
+/* =========================
+   إغلاق قوائم الحذف
+========================= */
 
 function removeMenus(){
 
 document
-.querySelectorAll(".message-menu")
+.querySelectorAll(
+".message-menu"
+)
 .forEach(
-e=>e.remove()
+
+menu=>{
+
+menu.remove();
+
+}
+
 );
 
 }
 
 
 
+/* الضغط خارج القائمة */
+
+document.addEventListener(
+
+"pointerdown",
+
+e=>{
+
+if(
+e.target.closest(
+".message-menu"
+)
+)
+return;
+
+
+removeMenus();
+
+}
+
+);
 
 
 
+/* =========================
+   تسجيل الدخول
+========================= */
 
 onAuthStateChanged(
+
 auth,
+
 async user=>{
 
 if(!user){
 
-console.log("لا يوجد مستخدم مسجل");
+console.log(
+"لا يوجد مستخدم مسجل"
+);
+
+stopPresence();
 
 return;
 
 }
 
 
-currentUser = user;
+
+currentUser =
+user;
+
 
 
 console.log(
@@ -1413,8 +2021,17 @@ currentUser.uid
 
 
 
+/* تشغيل حالة متصل */
+
+startPresence();
+
+
+
+try{
+
 const ok =
 await loadFriend();
+
 
 
 console.log(
@@ -1427,31 +2044,119 @@ ok
 if(ok){
 
 listenMessages();
-listenFriendStatus();
+
 
 
 document.getElementById(
 "loading"
-).style.display="none";
+).style.display =
+"none";
 
 
 
 document.getElementById(
 "app"
-).style.display="flex";
+).style.display =
+"flex";
 
 }
 
+}catch(error){
+
+console.error(
+"Mecd Chat error:",
+error
+);
+
+
+
+document.getElementById(
+"loading"
+).innerHTML = `
+
+<div>
+
+⚠️ حدث خطأ أثناء فتح الدردشة
+
+</div>
+
+<div
+
+style="
+font-size:12px;
+color:#777;
+margin-top:8px;
+"
+
+>
+
+${error.message || ""}
+
+</div>
+
+`;
+
+}
 
 });
 
 
 
+/* =========================
+   عند العودة للصفحة
+========================= */
+
+document.addEventListener(
+
+"visibilitychange",
+
+()=>{
+
+if(
+document.visibilityState ===
+"visible"
+){
+
+updateMyPresence();
+
+}
+
+});
 
 
+
+/* =========================
+   الأزرار
+========================= */
 
 backButton.onclick =
 ()=>{
+
+if(unsubscribeMessages){
+
+unsubscribeMessages();
+
+unsubscribeMessages =
+null;
+
+}
+
+
+
+if(unsubscribeFriendStatus){
+
+unsubscribeFriendStatus();
+
+unsubscribeFriendStatus =
+null;
+
+}
+
+
+
+stopPresence();
+
+
 
 history.back();
 
@@ -1462,7 +2167,9 @@ history.back();
 callButton.onclick =
 ()=>{
 
-alert("📞 الاتصال قيد التطوير");
+alert(
+"📞 الاتصال قيد التطوير"
+);
 
 };
 
@@ -1471,17 +2178,20 @@ alert("📞 الاتصال قيد التطوير");
 videoButton.onclick =
 ()=>{
 
-alert("📹 الفيديو قيد التطوير");
+alert(
+"📹 الفيديو قيد التطوير"
+);
 
 };
-
-
-
 
 </script>
 
 
-<script type="module" src="voice.js"></script>
+
+<script
+type="module"
+src="voice.js"
+></script>
 
 
 </body>
