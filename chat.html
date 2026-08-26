@@ -211,33 +211,38 @@ cursor:not-allowed
 .message-menu{
 position:absolute;
 left:50%;
-bottom:calc(100% + 10px);
+bottom:calc(100% + 8px);
 transform:translateX(-50%);
 width:max-content;
-min-width:190px;
+min-width:150px;
 max-width:calc(100vw - 30px);
-padding:7px;
+padding:5px;
 background:#0b1512;
 border:1px solid rgba(0,232,137,.18);
-border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,.55);
+border-radius:15px;
+box-shadow:0 8px 25px rgba(0,0,0,.55);
 z-index:99999;
 animation:showMenu .18s ease;
 }
 
 .message-menu button{
 width:100%;
-min-width:175px;
-padding:13px 18px;
+min-width:140px;
+padding:10px 14px;
 border:0;
-border-radius:13px;
+border-radius:11px;
 background:#18231f;
 color:white;
-font-size:15px;
+font-size:13px;
 font-weight:bold;
 cursor:pointer;
 white-space:nowrap;
 text-align:center;
+}
+
+.message-menu button:active{
+transform:scale(.97);
+background:#21332d;
 }
 
 .message-menu button:active{
