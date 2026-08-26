@@ -2,20 +2,26 @@ import {
   collection,
   addDoc,
   serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import {
   ref,
   uploadBytes,
   getDownloadURL
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
+
+// ==========================================
+// زر التسجيل
+// ==========================================
 
 const voiceButton =
   document.getElementById("voiceButton");
 
+
+// ==========================================
+// المتغيرات
+// ==========================================
 
 let recorder = null;
 let stream = null;
@@ -23,11 +29,17 @@ let chunks = [];
 
 let isRecording = false;
 let starting = false;
+
+// مهم جدًا:
+// نعرف هل إصبع المستخدم ما زال ضاغطًا
+let fingerDown = false;
+
+// لمنع الإيقاف أكثر من مرة
 let stopRequested = false;
 
 
 // ==========================================
-// بدء التسجيل عند الضغط
+// الضغط على زر الميكروفون
 // ==========================================
 
 voiceButton.addEventListener(
@@ -36,16 +48,60 @@ voiceButton.addEventListener(
 
     event.preventDefault();
 
-    if (isRecording || starting)
+    // المستخدم بدأ الضغط
+    fingerDown = true;
+
+    // منع التكرار
+    if (isRecording || starting) {
       return;
+    }
 
     starting = true;
 
     try {
 
+      // محاولة تثبيت المؤشر على الزر
+      if (
+        voiceButton.setPointerCapture &&
+        event.pointerId !== undefined
+      ) {
+
+        try {
+
+          voiceButton.setPointerCapture(
+            event.pointerId
+          );
+
+        } catch (e) {
+
+          console.log(
+            "Pointer capture غير متاح"
+          );
+
+        }
+
+      }
+
+
       await startRecording();
 
-    } catch (error) {
+
+      // ====================================
+      // مهم جدًا
+      // إذا كان المستخدم رفع إصبعه
+      // أثناء انتظار تشغيل الميكروفون
+      // نوقف التسجيل مباشرة بعد بدايته
+      // ====================================
+
+      if (!fingerDown) {
+
+        stopRecording();
+
+      }
+
+    }
+
+    catch (error) {
 
       console.error(
         "Microphone error:",
@@ -60,7 +116,9 @@ voiceButton.addEventListener(
         "لم يتم السماح بالميكروفون"
       );
 
-    } finally {
+    }
+
+    finally {
 
       starting = false;
 
@@ -71,7 +129,7 @@ voiceButton.addEventListener(
 
 
 // ==========================================
-// رفع الإصبع = إيقاف
+// رفع الإصبع
 // ==========================================
 
 voiceButton.addEventListener(
@@ -80,6 +138,8 @@ voiceButton.addEventListener(
 
     event.preventDefault();
 
+    fingerDown = false;
+
     stopRecording();
 
   }
@@ -87,12 +147,16 @@ voiceButton.addEventListener(
 
 
 // ==========================================
-// إذا سحب المستخدم إصبعه من الزر
+// إلغاء اللمس
 // ==========================================
 
 voiceButton.addEventListener(
   "pointercancel",
-  () => {
+  (event) => {
+
+    event.preventDefault();
+
+    fingerDown = false;
 
     stopRecording();
 
@@ -101,19 +165,32 @@ voiceButton.addEventListener(
 
 
 // ==========================================
-// إذا خرج المؤشر من الزر أثناء الضغط
+// فقدان المؤشر
 // ==========================================
 
 voiceButton.addEventListener(
   "lostpointercapture",
   () => {
 
-    if (isRecording) {
+    fingerDown = false;
 
-      stopRecording();
+    stopRecording();
 
-    }
+  }
+);
 
+
+// ==========================================
+// إذا خرج الإصبع من الزر
+// ==========================================
+
+voiceButton.addEventListener(
+  "pointerleave",
+  () => {
+
+    // لا نوقف هنا مباشرة.
+    // على الهاتف pointerleave ممكن يحصل
+    // بسبب حركة بسيطة للإصبع.
   }
 );
 
@@ -123,6 +200,10 @@ voiceButton.addEventListener(
 // ==========================================
 
 async function startRecording() {
+
+  // ========================================
+  // التأكد من Firebase
+  // ========================================
 
   if (
     !window.storage ||
@@ -139,6 +220,10 @@ async function startRecording() {
   }
 
 
+  // ========================================
+  // التأكد من دعم الميكروفون
+  // ========================================
+
   if (
     !navigator.mediaDevices ||
     !navigator.mediaDevices.getUserMedia
@@ -151,13 +236,36 @@ async function startRecording() {
   }
 
 
+  if (
+    typeof MediaRecorder === "undefined"
+  ) {
+
+    throw new Error(
+      "MediaRecorder غير مدعوم"
+    );
+
+  }
+
+
+  // ========================================
+  // طلب الميكروفون
+  // ========================================
+
   stream =
     await navigator.mediaDevices.getUserMedia(
       {
-        audio: true
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true
+        }
       }
     );
 
+
+  // ========================================
+  // اختيار صيغة الصوت
+  // ========================================
 
   let mimeType = "";
 
@@ -184,24 +292,52 @@ async function startRecording() {
 
   }
 
+  else if (
+    MediaRecorder.isTypeSupported(
+      "audio/mp4"
+    )
+  ) {
 
-  recorder =
-    mimeType
-      ?
+    mimeType =
+      "audio/mp4";
+
+  }
+
+
+  // ========================================
+  // إنشاء MediaRecorder
+  // ========================================
+
+  if (mimeType) {
+
+    recorder =
       new MediaRecorder(
         stream,
         {
           mimeType: mimeType
         }
-      )
-      :
-      new MediaRecorder(stream);
+      );
+
+  }
+
+  else {
+
+    recorder =
+      new MediaRecorder(
+        stream
+      );
+
+  }
 
 
   chunks = [];
 
   stopRequested = false;
 
+
+  // ========================================
+  // استقبال بيانات الصوت
+  // ========================================
 
   recorder.ondataavailable =
     (event) => {
@@ -220,13 +356,36 @@ async function startRecording() {
     };
 
 
-  recorder.onstop =
-    () => {
+  // ========================================
+  // عند انتهاء التسجيل
+  // ========================================
 
-      finishRecording();
+  recorder.onstop =
+    async () => {
+
+      await finishRecording();
 
     };
 
+
+  // ========================================
+  // عند حدوث خطأ
+  // ========================================
+
+  recorder.onerror =
+    (event) => {
+
+      console.error(
+        "MediaRecorder error:",
+        event
+      );
+
+    };
+
+
+  // ========================================
+  // بدء التسجيل
+  // ========================================
 
   recorder.start();
 
@@ -234,7 +393,10 @@ async function startRecording() {
   isRecording = true;
 
 
-  // شكل زر التسجيل
+  // ========================================
+  // شكل الزر أثناء التسجيل
+  // ========================================
+
   voiceButton.innerHTML =
     "🔴";
 
@@ -245,7 +407,7 @@ async function startRecording() {
 
 
   console.log(
-    "بدأ التسجيل"
+    "🎤 بدأ التسجيل"
   );
 
 }
@@ -257,19 +419,30 @@ async function startRecording() {
 
 function stopRecording() {
 
-  if (!isRecording)
+  // إذا لم يبدأ التسجيل بعد
+  // لا نفعل شيء هنا.
+  // startRecording() سيفحص fingerDown
+  // بعد انتهاء getUserMedia.
+  if (!isRecording) {
+
     return;
 
+  }
 
-  if (stopRequested)
+
+  // منع الإيقاف المتكرر
+  if (stopRequested) {
+
     return;
+
+  }
 
 
   stopRequested = true;
 
 
   console.log(
-    "إيقاف التسجيل..."
+    "🛑 إيقاف التسجيل"
   );
 
 
@@ -278,7 +451,20 @@ function stopRecording() {
     recorder.state !== "inactive"
   ) {
 
-    recorder.stop();
+    try {
+
+      recorder.stop();
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Recorder stop error:",
+        error
+      );
+
+    }
 
   }
 
@@ -293,9 +479,14 @@ async function finishRecording() {
 
   try {
 
-    // إيقاف الميكروفون
-    stopMicrophone();
+    console.log(
+      "📦 تجهيز التسجيل..."
+    );
 
+
+    // ======================================
+    // التأكد من وجود بيانات
+    // ======================================
 
     if (
       !chunks ||
@@ -309,6 +500,10 @@ async function finishRecording() {
     }
 
 
+    // ======================================
+    // معرفة نوع الملف
+    // ======================================
+
     const mime =
       recorder &&
       recorder.mimeType
@@ -317,6 +512,10 @@ async function finishRecording() {
         :
         "audio/webm";
 
+
+    // ======================================
+    // إنشاء الملف
+    // ======================================
 
     const blob =
       new Blob(
@@ -327,7 +526,13 @@ async function finishRecording() {
       );
 
 
-    if (blob.size === 0) {
+    console.log(
+      "حجم الصوت:",
+      blob.size
+    );
+
+
+    if (blob.size <= 0) {
 
       throw new Error(
         "ملف الصوت فارغ"
@@ -336,41 +541,28 @@ async function finishRecording() {
     }
 
 
-    console.log(
-      "حجم التسجيل:",
-      blob.size
-    );
-
-
     // ======================================
-    // إظهار الصوت فوراً في الدردشة
+    // اسم الملف
     // ======================================
 
-    const localURL =
-      URL.createObjectURL(
-        blob
-      );
+    let extension =
+      "webm";
 
 
-    showVoiceMessage(
-      localURL
-    );
+    if (
+      mime.includes("mp4")
+    ) {
 
+      extension =
+        "mp4";
 
-    // ======================================
-    // رفع الصوت إلى Firebase
-    // ======================================
-
-    const extension =
-      mime.includes("webm")
-        ?
-        "webm"
-        :
-        "audio";
+    }
 
 
     const fileName =
       "voices/" +
+      window.chatID +
+      "/" +
       Date.now() +
       "_" +
       Math.random()
@@ -380,6 +572,10 @@ async function finishRecording() {
       extension;
 
 
+    // ======================================
+    // Firebase Storage
+    // ======================================
+
     const voiceRef =
       ref(
         window.storage,
@@ -387,11 +583,23 @@ async function finishRecording() {
       );
 
 
-    await uploadBytes(
-      voiceRef,
-      blob
+    console.log(
+      "⬆️ رفع الصوت..."
     );
 
+
+    await uploadBytes(
+      voiceRef,
+      blob,
+      {
+        contentType: mime
+      }
+    );
+
+
+    // ======================================
+    // الحصول على الرابط
+    // ======================================
 
     const url =
       await getDownloadURL(
@@ -400,7 +608,7 @@ async function finishRecording() {
 
 
     console.log(
-      "تم رفع التسجيل"
+      "✅ تم رفع الصوت"
     );
 
 
@@ -419,9 +627,11 @@ async function finishRecording() {
 
       {
 
-        type: "voice",
+        type:
+          "voice",
 
-        audio: url,
+        audio:
+          url,
 
         senderId:
           window.chatUser.uid,
@@ -438,18 +648,28 @@ async function finishRecording() {
 
 
     console.log(
-      "تم إرسال الرسالة الصوتية"
+      "✅ تم إرسال الرسالة الصوتية"
     );
 
+
+    // ======================================
+    // لا نضيف الرسالة يدويًا هنا
+    //
+    // onSnapshot الموجود في index.html
+    // سيعرضها تلقائيًا.
+    //
+    // هذا يمنع ظهور الرسالة مرتين.
+    // ======================================
 
   }
 
   catch (error) {
 
     console.error(
-      "Voice error:",
+      "❌ Voice error:",
       error
     );
+
 
     alert(
       "حدث خطأ أثناء إرسال التسجيل"
@@ -459,112 +679,20 @@ async function finishRecording() {
 
   finally {
 
+    // ======================================
+    // إيقاف الميكروفون
+    // ======================================
+
+    stopMicrophone();
+
+
+    // ======================================
+    // إعادة الزر
+    // ======================================
+
     resetVoice();
 
   }
-
-}
-
-
-// ==========================================
-// إظهار التسجيل مباشرة في الدردشة
-// ==========================================
-
-function showVoiceMessage(url) {
-
-  const messages =
-    document.getElementById(
-      "messages"
-    );
-
-
-  if (!messages)
-    return;
-
-
-  // إزالة رسالة "ابدأ المحادثة"
-  const empty =
-    messages.querySelector(
-      ".empty"
-    );
-
-
-  if (empty) {
-
-    empty.remove();
-
-  }
-
-
-  const box =
-    document.createElement(
-      "div"
-    );
-
-
-  box.className =
-    "message mine";
-
-
-  const audio =
-    document.createElement(
-      "audio"
-    );
-
-
-  audio.controls = true;
-
-  audio.preload = "metadata";
-
-  audio.src = url;
-
-
-  audio.style.width =
-    "230px";
-
-  audio.style.maxWidth =
-    "100%";
-
-
-  box.appendChild(
-    audio
-  );
-
-
-  const label =
-    document.createElement(
-      "span"
-    );
-
-
-  label.textContent =
-    "🎤 رسالة صوتية";
-
-
-  label.style.display =
-    "block";
-
-
-  label.style.fontSize =
-    "12px";
-
-
-  label.style.marginTop =
-    "5px";
-
-
-  box.appendChild(
-    label
-  );
-
-
-  messages.appendChild(
-    box
-  );
-
-
-  messages.scrollTop =
-    messages.scrollHeight;
 
 }
 
@@ -575,16 +703,31 @@ function showVoiceMessage(url) {
 
 function stopMicrophone() {
 
-  if (!stream)
+  if (!stream) {
+
     return;
+
+  }
 
 
   stream
     .getTracks()
     .forEach(
-      track => {
+      (track) => {
 
-        track.stop();
+        try {
+
+          track.stop();
+
+        }
+
+        catch (error) {
+
+          console.error(
+            error
+          );
+
+        }
 
       }
     );
@@ -596,7 +739,7 @@ function stopMicrophone() {
 
 
 // ==========================================
-// إعادة زر الميكروفون
+// إعادة الزر للوضع الطبيعي
 // ==========================================
 
 function resetVoice() {
@@ -624,3 +767,17 @@ function resetVoice() {
   );
 
 }
+
+
+// ==========================================
+// منع القائمة/السلوك الافتراضي
+// ==========================================
+
+voiceButton.addEventListener(
+  "contextmenu",
+  (event) => {
+
+    event.preventDefault();
+
+  }
+);
