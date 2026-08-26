@@ -1692,6 +1692,8 @@ startPresence();
 await loadFriend();
 
 listenMessages();
+   const { listenIncomingCalls } = await import("./call.js");
+listenIncomingCalls();
 
 /* تشغيل استقبال المكالمات */
 listenIncomingCalls();
@@ -1867,7 +1869,7 @@ type="module"
 src="voice.js">
 </script>
 
-   <script type="module" src="call.js"></script>
+   
 
 </body>
 </html>
