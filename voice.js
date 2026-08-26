@@ -1,24 +1,20 @@
 import {
-collection,
-addDoc,
-serverTimestamp
-}
-from
+  collection,
+  addDoc,
+  serverTimestamp
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
 import {
-ref,
-uploadBytes,
-getDownloadURL
-}
-from
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
-
 const voiceButton =
-document.getElementById("voiceButton");
+  document.getElementById("voiceButton");
 
 
 let recorder = null;
@@ -29,336 +25,483 @@ let isRecording = false;
 let timer = null;
 let seconds = 0;
 
+let stopRequested = false;
 
+
+
+// ========================================
+// بدء التسجيل
+// ========================================
 
 voiceButton.addEventListener(
-"pointerdown",
-async(e)=>{
+  "pointerdown",
+  async (event) => {
+
+    event.preventDefault();
+
+    if (isRecording)
+      return;
 
 
-e.preventDefault();
+    try {
+
+      if (
+        voiceButton.setPointerCapture &&
+        event.pointerId !== undefined
+      ) {
+
+        voiceButton.setPointerCapture(
+          event.pointerId
+        );
+
+      }
 
 
-if(isRecording)
-return;
+      await startRecording();
 
+    }
 
+    catch (error) {
 
-try{
+      console.error(
+        "Microphone error:",
+        error
+      );
 
+      resetVoice();
 
-voiceButton.setPointerCapture(
-e.pointerId
+      alert(
+        "لم يتم السماح بالميكروفون"
+      );
+
+    }
+
+  }
 );
 
 
 
-await startRecording();
+// ========================================
+// تشغيل التسجيل
+// ========================================
 
+async function startRecording() {
 
+  if (
+    !window.storage ||
+    !window.chatDB ||
+    !window.chatID ||
+    !window.chatUser ||
+    !window.chatFriend
+  ) {
 
-}
+    console.error(
+      "Firebase variables missing"
+    );
 
-catch(error){
+    return;
 
-console.error(error);
+  }
 
-alert(
-"خطأ في تشغيل الميكروفون"
-);
 
-resetVoice();
+  stream =
+    await navigator.mediaDevices.getUserMedia(
+      {
+        audio: true
+      }
+    );
 
-}
 
+  // اختيار صيغة الصوت المدعومة
+  let mimeType = "";
 
+  if (
+    MediaRecorder.isTypeSupported(
+      "audio/webm;codecs=opus"
+    )
+  ) {
 
-});
+    mimeType =
+      "audio/webm;codecs=opus";
 
+  }
 
+  else if (
+    MediaRecorder.isTypeSupported(
+      "audio/webm"
+    )
+  ) {
 
+    mimeType =
+      "audio/webm";
 
+  }
 
-async function startRecording(){
 
+  recorder =
+    mimeType
+      ?
+      new MediaRecorder(
+        stream,
+        {
+          mimeType: mimeType
+        }
+      )
+      :
+      new MediaRecorder(stream);
 
-if(
-!window.storage ||
-!window.chatDB ||
-!window.chatID ||
-!window.chatUser ||
-!window.chatFriend
-){
 
-console.error(
-"Firebase غير جاهز"
-);
+  chunks = [];
 
-return;
 
-}
+  recorder.ondataavailable =
+    (event) => {
 
+      if (
+        event.data &&
+        event.data.size > 0
+      ) {
 
+        chunks.push(
+          event.data
+        );
 
-stream =
-await navigator.mediaDevices.getUserMedia(
-{
-audio:true
-}
-);
+      }
 
+    };
 
 
-recorder =
-new MediaRecorder(
-stream,
-{
-mimeType:"audio/webm"
-}
-);
 
+  recorder.onstop =
+    async () => {
 
+      await finishRecording();
 
-chunks=[];
+    };
 
 
 
-recorder.ondataavailable =
-event=>{
+  recorder.start(100);
 
-if(event.data.size > 0){
 
-chunks.push(event.data);
+  isRecording = true;
 
-}
+  stopRequested = false;
 
-};
+  seconds = 0;
 
 
+  voiceButton.innerHTML =
+    "🔴 0s";
 
 
+  timer =
+    setInterval(
+      () => {
 
-recorder.onstop =
-async()=>{
+        seconds++;
 
+        voiceButton.innerHTML =
+          "🔴 " +
+          seconds +
+          "s";
 
-const blob =
-new Blob(
-chunks,
-{
-type:"audio/webm"
-}
-);
-
-
-
-if(blob.size === 0){
-
-resetVoice();
-
-return;
-
-}
-
-
-
-try{
-
-
-const voiceRef =
-ref(
-window.storage,
-"voices/"+Date.now()+".webm"
-);
-
-
-
-await uploadBytes(
-voiceRef,
-blob
-);
-
-
-
-const url =
-await getDownloadURL(
-voiceRef
-);
-
-
-
-await addDoc(
-
-collection(
-window.chatDB,
-"chats",
-window.chatID,
-"messages"
-),
-
-{
-
-type:"voice",
-
-audio:url,
-
-senderId:
-window.chatUser.uid,
-
-receiverId:
-window.chatFriend.uid,
-
-createdAt:
-serverTimestamp()
-
-}
-
-);
-
-
-
-}
-
-catch(error){
-
-console.error(
-error
-);
-
-alert(
-"فشل إرسال الصوت"
-);
-
+      },
+      1000
+    );
 
 }
 
 
 
-resetVoice();
-
-
-
-};
-
-
-
-
-
-recorder.start(100);
-
-
-
-isRecording=true;
-
-
-seconds=0;
-
-
-voiceButton.innerHTML="🔴 0s";
-
-
-
-timer=setInterval(()=>{
-
-
-seconds++;
-
-
-voiceButton.innerHTML=
-"🔴 "+seconds+"s";
-
-
-},1000);
-
-
-
-}
-
-
-
-
-
-// رفع الإصبع = إنهاء التسجيل
+// ========================================
+// رفع الإصبع = إيقاف التسجيل
+// ========================================
 
 document.addEventListener(
-"pointerup",
-stopRecording
+  "pointerup",
+  stopRecording
 );
 
 
 document.addEventListener(
-"touchend",
-stopRecording
+  "pointercancel",
+  stopRecording
 );
 
 
 document.addEventListener(
-"pointercancel",
-stopRecording
+  "touchend",
+  stopRecording
 );
 
 
 
+function stopRecording() {
+
+  if (!isRecording)
+    return;
 
 
-function stopRecording(){
+  if (stopRequested)
+    return;
 
 
-if(!isRecording)
-return;
+  stopRequested = true;
 
 
+  if (
+    recorder &&
+    recorder.state !== "inactive"
+  ) {
 
-if(recorder &&
-recorder.state !== "inactive"){
+    recorder.stop();
 
-recorder.stop();
-
-}
-
-
-
-if(stream){
-
-stream
-.getTracks()
-.forEach(
-track=>track.stop()
-);
+  }
 
 }
 
 
 
+// ========================================
+// إنهاء التسجيل بعد MediaRecorder.stop()
+// ========================================
+
+async function finishRecording() {
+
+  try {
+
+    clearInterval(timer);
+
+    timer = null;
+
+
+    // ننتظر لحظة حتى تصل آخر قطعة صوت
+    await new Promise(
+      resolve =>
+        setTimeout(
+          resolve,
+          100
+        )
+    );
+
+
+    if (
+      !chunks ||
+      chunks.length === 0
+    ) {
+
+      throw new Error(
+        "لم يتم تسجيل أي صوت"
+      );
+
+    }
+
+
+    const mime =
+      recorder &&
+      recorder.mimeType
+        ?
+        recorder.mimeType
+        :
+        "audio/webm";
+
+
+    const blob =
+      new Blob(
+        chunks,
+        {
+          type: mime
+        }
+      );
+
+
+    console.log(
+      "Voice size:",
+      blob.size
+    );
+
+
+    if (blob.size === 0) {
+
+      throw new Error(
+        "ملف الصوت فارغ"
+      );
+
+    }
+
+
+
+    // ====================================
+    // رفع الصوت إلى Firebase Storage
+    // ====================================
+
+    const extension =
+      mime.includes("webm")
+        ?
+        "webm"
+        :
+        "audio";
+
+
+    const voiceRef =
+      ref(
+        window.storage,
+        "voices/" +
+        Date.now() +
+        "." +
+        extension
+      );
+
+
+    await uploadBytes(
+      voiceRef,
+      blob
+    );
+
+
+    const url =
+      await getDownloadURL(
+        voiceRef
+      );
+
+
+    console.log(
+      "Voice URL:",
+      url
+    );
+
+
+
+    // ====================================
+    // حفظ الرسالة
+    // ====================================
+
+    await addDoc(
+
+      collection(
+        window.chatDB,
+        "chats",
+        window.chatID,
+        "messages"
+      ),
+
+      {
+
+        type: "voice",
+
+        audio: url,
+
+        senderId:
+          window.chatUser.uid,
+
+        receiverId:
+          window.chatFriend.uid,
+
+        createdAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    console.log(
+      "تم إرسال الرسالة الصوتية"
+    );
+
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Voice send error:",
+      error
+    );
+
+
+    alert(
+      "حدث خطأ أثناء إرسال التسجيل"
+    );
+
+  }
+
+
+  finally {
+
+
+    // إيقاف الميكروفون
+    if (stream) {
+
+      stream
+        .getTracks()
+        .forEach(
+          track => track.stop()
+        );
+
+    }
+
+
+    resetVoice();
+
+  }
+
 }
 
 
 
+// ========================================
+// إعادة الزر للوضع الطبيعي
+// ========================================
+
+function resetVoice() {
+
+  if (timer) {
+
+    clearInterval(timer);
+
+  }
 
 
-function resetVoice(){
+  timer = null;
 
 
-if(timer){
+  if (stream) {
 
-clearInterval(timer);
+    stream
+      .getTracks()
+      .forEach(
+        track => {
 
-}
+          if (
+            track.readyState !== "ended"
+          ) {
+
+            track.stop();
+
+          }
+
+        }
+      );
+
+  }
 
 
-timer=null;
+  recorder = null;
+
+  stream = null;
+
+  chunks = [];
+
+  isRecording = false;
+
+  stopRequested = false;
+
+  seconds = 0;
 
 
-recorder=null;
-
-stream=null;
-
-chunks=[];
-
-isRecording=false;
-
-
-voiceButton.innerHTML="🎤";
-
+  voiceButton.innerHTML =
+    "🎤";
 
 }
