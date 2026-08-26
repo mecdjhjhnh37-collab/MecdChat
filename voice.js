@@ -21,7 +21,6 @@ const voiceButton =
 document.getElementById("voiceButton");
 
 
-
 let recorder = null;
 let stream = null;
 let chunks = [];
@@ -32,10 +31,10 @@ let seconds = 0;
 
 
 
-// بدء التسجيل
 voiceButton.addEventListener(
 "pointerdown",
 async(e)=>{
+
 
 e.preventDefault();
 
@@ -57,6 +56,7 @@ e.pointerId
 await startRecording();
 
 
+
 }
 
 catch(error){
@@ -64,7 +64,7 @@ catch(error){
 console.error(error);
 
 alert(
-"لم يتم تشغيل الميكروفون"
+"خطأ في تشغيل الميكروفون"
 );
 
 resetVoice();
@@ -74,7 +74,6 @@ resetVoice();
 
 
 });
-
 
 
 
@@ -112,7 +111,10 @@ audio:true
 
 recorder =
 new MediaRecorder(
-stream
+stream,
+{
+mimeType:"audio/webm"
+}
 );
 
 
@@ -122,11 +124,11 @@ chunks=[];
 
 
 recorder.ondataavailable =
-(e)=>{
+event=>{
 
-if(e.data.size > 0){
+if(event.data.size > 0){
 
-chunks.push(e.data);
+chunks.push(event.data);
 
 }
 
@@ -140,9 +142,6 @@ recorder.onstop =
 async()=>{
 
 
-try{
-
-
 const blob =
 new Blob(
 chunks,
@@ -153,7 +152,20 @@ type:"audio/webm"
 
 
 
-const file =
+if(blob.size === 0){
+
+resetVoice();
+
+return;
+
+}
+
+
+
+try{
+
+
+const voiceRef =
 ref(
 window.storage,
 "voices/"+Date.now()+".webm"
@@ -162,7 +174,7 @@ window.storage,
 
 
 await uploadBytes(
-file,
+voiceRef,
 blob
 );
 
@@ -170,7 +182,7 @@ blob
 
 const url =
 await getDownloadURL(
-file
+voiceRef
 );
 
 
@@ -205,18 +217,11 @@ serverTimestamp()
 
 
 
-console.log(
-"تم إرسال الصوت"
-);
-
-
-
 }
 
 catch(error){
 
 console.error(
-"إرسال الصوت فشل",
 error
 );
 
@@ -232,17 +237,19 @@ alert(
 resetVoice();
 
 
+
 };
 
 
 
 
 
-recorder.start();
+recorder.start(100);
 
 
 
 isRecording=true;
+
 
 seconds=0;
 
@@ -271,13 +278,12 @@ voiceButton.innerHTML=
 
 
 
+// رفع الإصبع = إنهاء التسجيل
 
-// إيقاف عند رفع الإصبع
 document.addEventListener(
 "pointerup",
 stopRecording
 );
-
 
 
 document.addEventListener(
@@ -286,12 +292,10 @@ stopRecording
 );
 
 
-
 document.addEventListener(
 "pointercancel",
 stopRecording
 );
-
 
 
 
@@ -305,7 +309,8 @@ return;
 
 
 
-if(recorder){
+if(recorder &&
+recorder.state !== "inactive"){
 
 recorder.stop();
 
