@@ -915,185 +915,329 @@ listenFriendStatus();
 
 
 /* =========================
-   عرض الرسائل
+   عرض الرسائل بدون إعادة رسم الدردشة كلها
 ========================= */
 
 function renderMessages(snap){
 
-messages.innerHTML="";
+    if(!renderMessages.elements){
+        renderMessages.elements = new Map();
+    }
 
+    const elements = renderMessages.elements;
 
-let visible=0;
+    /* هل المستخدم قريب من آخر الرسائل؟ */
+    const nearBottom =
+        messages.scrollHeight -
+        messages.scrollTop -
+        messages.clientHeight < 120;
 
 
-snap.forEach(item=>{
+    /* =========================
+       إنشاء رسالة واحدة
+    ========================= */
 
-const data=
-item.data();
+    function createMessageElement(id, data){
 
+        if(
+            Array.isArray(data.deletedFor) &&
+            data.deletedFor.includes(currentUser.uid)
+        ){
+            return null;
+        }
 
-if(
 
-Array.isArray(data.deletedFor)&&
-data.deletedFor.includes(
-currentUser.uid
-)
+        const box =
+            document.createElement("div");
 
-){
 
-return;
+        box.className =
+            "message " +
+            (
+                data.senderId === currentUser.uid
+                ? "mine"
+                : "other"
+            );
 
-}
 
+        /* =========================
+           رسالة صوتية
+        ========================= */
 
-visible++;
+        if(data.type === "voice"){
 
+            const audio =
+                document.createElement("audio");
 
-const box=
-document.createElement("div");
+            audio.controls = true;
 
+            audio.src =
+                data.audio || "";
 
-box.className=
-"message "+
-(
-data.senderId===
-currentUser.uid
-?
-"mine"
-:
-"other"
-);
+            audio.style.width =
+                "230px";
 
+            audio.style.maxWidth =
+                "100%";
 
-/* رسالة صوتية */
+            box.appendChild(audio);
 
-if(data.type==="voice"){
 
-const audio=
-document.createElement("audio");
+            const voiceText =
+                document.createElement("span");
 
+            voiceText.textContent =
+                "🎤 رسالة صوتية";
 
-audio.controls=true;
+            voiceText.style.display =
+                "block";
 
-audio.src=
-data.audio||"";
+            voiceText.style.fontSize =
+                "12px";
 
+            box.appendChild(voiceText);
 
-audio.style.width=
-"230px";
+        }else{
 
+            box.appendChild(
+                document.createTextNode(
+                    data.text || ""
+                )
+            );
 
-audio.style.maxWidth=
-"100%";
+        }
 
 
-box.appendChild(
-audio
-);
+        /* =========================
+           الوقت
+        ========================= */
 
+        const time =
+            document.createElement("span");
 
-const voiceText=
-document.createElement("span");
+        time.className =
+            "time";
 
 
-voiceText.textContent=
-"🎤 رسالة صوتية";
+        if(data.createdAt?.toDate){
 
+            time.textContent =
+                data.createdAt
+                .toDate()
+                .toLocaleTimeString(
+                    "ar",
+                    {
+                        hour:"2-digit",
+                        minute:"2-digit"
+                    }
+                );
 
-voiceText.style.display=
-"block";
+        }
 
 
-voiceText.style.fontSize=
-"12px";
+        box.appendChild(time);
 
 
-box.appendChild(
-voiceText
-);
+        /* =========================
+           قائمة الحذف
+        ========================= */
 
-}else{
+        addMessageActions(
+            box,
+            id,
+            data.senderId === currentUser.uid
+        );
 
-box.appendChild(
 
-document.createTextNode(
-data.text||""
-)
+        return box;
 
-);
+    }
 
-}
 
+    /* =========================
+       معالجة التغييرات فقط
+    ========================= */
 
-/* الوقت */
+    snap.docChanges().forEach(change => {
 
-const time=
-document.createElement("span");
+        const id =
+            change.doc.id;
 
+        const data =
+            change.doc.data();
 
-time.className=
-"time";
 
+        /* رسالة جديدة */
+        if(change.type === "added"){
 
-if(data.createdAt?.toDate){
+            const element =
+                createMessageElement(
+                    id,
+                    data
+                );
 
-time.textContent=
 
-data.createdAt
-.toDate()
-.toLocaleTimeString(
-"ar",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-);
+            if(element){
 
-}
+                elements.set(
+                    id,
+                    element
+                );
 
 
-box.appendChild(
-time
-);
+                messages.appendChild(
+                    element
+                );
 
+            }
 
-messages.appendChild(
-box
-);
+        }
 
 
-addMessageActions(
+        /* تعديل رسالة */
+        else if(change.type === "modified"){
 
-box,
+            const oldElement =
+                elements.get(id);
 
-item.id,
 
-data.senderId===
-currentUser.uid
+            /* الرسالة انحذفت عند هذا المستخدم */
+            if(
+                Array.isArray(data.deletedFor) &&
+                data.deletedFor.includes(
+                    currentUser.uid
+                )
+            ){
 
-);
+                if(oldElement){
 
-});
+                    oldElement.remove();
 
+                    elements.delete(id);
 
-if(!visible){
+                }
 
-messages.innerHTML=
+                return;
 
-'<div class="empty">'+
-'💬<br>'+
-'ابدأ المحادثة الآن'+
-'</div>';
+            }
 
-}
 
+            const newElement =
+                createMessageElement(
+                    id,
+                    data
+                );
 
-requestAnimationFrame(()=>{
 
-messages.scrollTop=
-messages.scrollHeight;
+            if(!newElement)
+                return;
 
-});
+
+            if(oldElement){
+
+                oldElement.replaceWith(
+                    newElement
+                );
+
+            }else{
+
+                messages.appendChild(
+                    newElement
+                );
+
+            }
+
+
+            elements.set(
+                id,
+                newElement
+            );
+
+        }
+
+
+        /* حذف الرسالة نهائياً */
+        else if(change.type === "removed"){
+
+            const element =
+                elements.get(id);
+
+
+            if(element){
+
+                element.remove();
+
+                elements.delete(id);
+
+            }
+
+        }
+
+    });
+
+
+    /* =========================
+       رسالة فارغة
+    ========================= */
+
+    const realMessages =
+        messages.querySelectorAll(
+            ".message"
+        );
+
+
+    const empty =
+        messages.querySelector(
+            ".empty"
+        );
+
+
+    if(realMessages.length === 0){
+
+        if(!empty){
+
+            const emptyBox =
+                document.createElement(
+                    "div"
+                );
+
+            emptyBox.className =
+                "empty";
+
+            emptyBox.innerHTML =
+                "💬<br>ابدأ المحادثة الآن";
+
+            messages.appendChild(
+                emptyBox
+            );
+
+        }
+
+    }else{
+
+        if(empty){
+
+            empty.remove();
+
+        }
+
+    }
+
+
+    /* =========================
+       التمرير
+    ========================= */
+
+    if(nearBottom){
+
+        requestAnimationFrame(() => {
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        });
+
+    }
 
 }
 
