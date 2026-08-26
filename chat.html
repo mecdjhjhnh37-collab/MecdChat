@@ -375,6 +375,8 @@ type="button">
 
 <script type="module">
 
+import { startCall } from "./call.js";
+   
 import {
 initializeApp
 }
@@ -482,6 +484,20 @@ $("backButton");
 
 const callButton=
 $("callButton");
+   callButton.addEventListener("click", () => {
+
+    if (!friendUser) {
+        alert("⚠️ لم يتم تحميل بيانات الصديق");
+        return;
+    }
+
+    startCall({
+        friendId: friendUser.uid,
+        friendName: friendUser.name,
+        friendPhoto: friendUser.photo
+    });
+
+});
 
 const videoButton=
 $("videoButton");
