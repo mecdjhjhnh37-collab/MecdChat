@@ -766,7 +766,9 @@ let chatID = null;
 
 let unsubscribeMessages = null;
 
-
+let unsubscribeFriendStatus = null;
+  
+let presenceInterval = null;
 
 
 function createChatID(a,b){
@@ -822,7 +824,76 @@ return false;
 
 }
 
+function listenFriendStatus(){
 
+if(!friendUser)
+return;
+
+const friendRef =
+doc(
+db,
+"users",
+friendUser.uid
+);
+
+unsubscribeFriendStatus =
+onSnapshot(
+friendRef,
+snap => {
+
+if(!snap.exists())
+return;
+
+const data =
+snap.data();
+
+const status =
+document.getElementById(
+"friendStatus"
+);
+
+const lastSeen =
+data.lastSeen &&
+typeof data.lastSeen.toMillis === "function"
+  ? data.lastSeen.toMillis()
+  : 0;
+
+const online =
+data.online === true &&
+(Date.now() - lastSeen < 30000);
+
+if(online){
+
+status.textContent =
+"● متصل";
+
+status.classList.add(
+"online"
+);
+
+}else{
+
+status.textContent =
+"● غير متصل";
+
+status.classList.remove(
+"online"
+);
+
+}
+
+},
+error => {
+
+console.error(
+"Friend status error:",
+error
+);
+
+}
+);
+
+}
 
 const data =
 userDoc.data();
@@ -1356,7 +1427,7 @@ ok
 if(ok){
 
 listenMessages();
-
+listenFriendStatus();
 
 
 document.getElementById(
