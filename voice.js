@@ -6,11 +6,18 @@ import {
 
 import {
   ref,
-  uploadBytes,
+  uploadBytesResumable,
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-const voiceButton = document.getElementById("voiceButton");
+
+// ======================================================
+// زر الميكروفون
+// ======================================================
+
+const voiceButton =
+  document.getElementById("voiceButton");
+
 
 if (!voiceButton) {
 
@@ -18,215 +25,345 @@ if (!voiceButton) {
 
 } else {
 
+
+  // منع مشاكل اللمس
   voiceButton.style.touchAction = "none";
   voiceButton.style.userSelect = "none";
   voiceButton.style.webkitUserSelect = "none";
 
+
+  // ======================================================
+  // المتغيرات
+  // ======================================================
+
   let mediaRecorder = null;
+
   let audioStream = null;
+
   let audioChunks = [];
 
   let isRecording = false;
+
   let isStarting = false;
+
   let isSending = false;
 
   let pointerId = null;
 
 
-  // =====================================================
-  // صندوق حالة صغير
-  // =====================================================
+  // ======================================================
+  // إنشاء حالة التسجيل
+  // ======================================================
 
-  let debugBox = document.getElementById("voiceDebug");
+  let statusBox =
+    document.getElementById("voiceStatus");
 
-  if (!debugBox) {
 
-    debugBox = document.createElement("div");
+  if (!statusBox) {
 
-    debugBox.id = "voiceDebug";
+    statusBox =
+      document.createElement("div");
 
-    debugBox.style.position = "fixed";
-    debugBox.style.bottom = "70px";
-    debugBox.style.left = "10px";
-    debugBox.style.right = "10px";
-    debugBox.style.padding = "8px";
-    debugBox.style.background = "rgba(0,0,0,.85)";
-    debugBox.style.color = "#00e889";
-    debugBox.style.fontSize = "12px";
-    debugBox.style.textAlign = "center";
-    debugBox.style.borderRadius = "10px";
-    debugBox.style.zIndex = "9999";
-    debugBox.style.display = "none";
+    statusBox.id =
+      "voiceStatus";
 
-    document.body.appendChild(debugBox);
+    statusBox.style.position =
+      "fixed";
+
+    statusBox.style.bottom =
+      "72px";
+
+    statusBox.style.left =
+      "10px";
+
+    statusBox.style.right =
+      "10px";
+
+    statusBox.style.padding =
+      "9px";
+
+    statusBox.style.background =
+      "rgba(0,0,0,.88)";
+
+    statusBox.style.color =
+      "#00e889";
+
+    statusBox.style.textAlign =
+      "center";
+
+    statusBox.style.fontSize =
+      "13px";
+
+    statusBox.style.borderRadius =
+      "12px";
+
+    statusBox.style.zIndex =
+      "99999";
+
+    statusBox.style.display =
+      "none";
+
+    document.body.appendChild(
+      statusBox
+    );
 
   }
 
 
-  function debug(message) {
+  function status(text) {
 
-    console.log("🎤 VOICE:", message);
+    console.log(
+      "🎤 VOICE:",
+      text
+    );
 
-    debugBox.textContent = message;
-    debugBox.style.display = "block";
+    statusBox.textContent =
+      text;
+
+    statusBox.style.display =
+      "block";
 
   }
 
 
-  // =====================================================
+  function hideStatus() {
+
+    statusBox.style.display =
+      "none";
+
+  }
+
+
+  // ======================================================
   // الضغط على الميكروفون
-  // =====================================================
+  // ======================================================
 
-  voiceButton.addEventListener("pointerdown", async (event) => {
+  voiceButton.addEventListener(
+    "pointerdown",
+    async (event) => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    if (isRecording || isStarting || isSending) {
-      return;
-    }
+      if (
+        isRecording ||
+        isStarting ||
+        isSending
+      ) {
 
-    pointerId = event.pointerId;
+        return;
 
-    try {
+      }
 
-      voiceButton.setPointerCapture(event.pointerId);
 
-    } catch (error) {
+      pointerId =
+        event.pointerId;
 
-      console.log(error);
 
-    }
+      try {
 
-    isStarting = true;
+        voiceButton.setPointerCapture(
+          event.pointerId
+        );
 
-    debug("🟡 جاري تشغيل الميكروفون...");
+      } catch (error) {
 
-    try {
+        console.log(error);
 
-      await startRecording();
+      }
 
-    } catch (error) {
 
-      console.error(error);
+      isStarting = true;
 
-      debug(
-        "❌ فشل تشغيل الميكروفون: " +
-        error.message
+
+      status(
+        "🟡 جاري تشغيل الميكروفون..."
       );
 
-      cleanup();
 
-      if (error.name === "NotAllowedError") {
+      try {
 
-        alert("🎤 اسمح للموقع باستخدام الميكروفون.");
+        await startRecording();
 
-      } else {
+      }
 
-        alert(
-          "❌ تعذر تشغيل الميكروفون: " +
+      catch (error) {
+
+        console.error(
+          "❌ Start error:",
+          error
+        );
+
+
+        status(
+          "❌ " +
           error.message
         );
+
+
+        cleanup();
+
+
+        if (
+          error.name ===
+          "NotAllowedError"
+        ) {
+
+          alert(
+            "🎤 يجب السماح للموقع باستخدام الميكروفون."
+          );
+
+        } else {
+
+          alert(
+            "تعذر تشغيل الميكروفون:\n" +
+            error.message
+          );
+
+        }
+
+      }
+
+
+      isStarting = false;
+
+    }
+  );
+
+
+  // ======================================================
+  // رفع الإصبع
+  // ======================================================
+
+  voiceButton.addEventListener(
+    "pointerup",
+    (event) => {
+
+      event.preventDefault();
+
+
+      if (
+        pointerId !== null &&
+        event.pointerId !== pointerId
+      ) {
+
+        return;
+
+      }
+
+
+      pointerId = null;
+
+
+      if (isRecording) {
+
+        status(
+          "🟠 جاري إيقاف التسجيل..."
+        );
+
+        stopRecording();
 
       }
 
     }
-
-    isStarting = false;
-
-  });
+  );
 
 
-  // =====================================================
-  // رفع الإصبع
-  // =====================================================
-
-  voiceButton.addEventListener("pointerup", (event) => {
-
-    event.preventDefault();
-
-    if (
-      pointerId !== null &&
-      event.pointerId !== pointerId
-    ) {
-      return;
-    }
-
-    pointerId = null;
-
-    debug("🟠 تم رفع الإصبع — إيقاف التسجيل...");
-
-    stopRecording();
-
-  });
-
-
-  // =====================================================
+  // ======================================================
   // إلغاء اللمس
-  // =====================================================
+  // ======================================================
 
-  voiceButton.addEventListener("pointercancel", (event) => {
+  voiceButton.addEventListener(
+    "pointercancel",
+    (event) => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-    pointerId = null;
-
-    debug("🟠 تم إلغاء اللمس");
-
-    stopRecording();
-
-  });
+      pointerId = null;
 
 
-  // =====================================================
+      if (isRecording) {
+
+        stopRecording();
+
+      }
+
+    }
+  );
+
+
+  // ======================================================
   // منع القائمة
-  // =====================================================
+  // ======================================================
 
-  voiceButton.addEventListener("contextmenu", (event) => {
+  voiceButton.addEventListener(
+    "contextmenu",
+    (event) => {
 
-    event.preventDefault();
+      event.preventDefault();
 
-  });
+    }
+  );
 
 
-  // =====================================================
+  // ======================================================
   // بدء التسجيل
-  // =====================================================
+  // ======================================================
 
   async function startRecording() {
 
-    // -----------------------------------------------
-    // فحص Firebase
-    // -----------------------------------------------
 
-    debug("🔎 فحص Firebase...");
+    // ----------------------------------------------
+    // فحص Firebase
+    // ----------------------------------------------
 
     if (!window.storage) {
-      throw new Error("window.storage غير موجود");
+
+      throw new Error(
+        "Firebase Storage غير جاهز"
+      );
+
     }
+
 
     if (!window.chatDB) {
-      throw new Error("window.chatDB غير موجود");
+
+      throw new Error(
+        "Firestore غير جاهز"
+      );
+
     }
+
 
     if (!window.chatID) {
-      throw new Error("window.chatID غير موجود");
+
+      throw new Error(
+        "chatID غير موجود"
+      );
+
     }
+
 
     if (!window.chatUser) {
-      throw new Error("window.chatUser غير موجود");
+
+      throw new Error(
+        "المستخدم غير موجود"
+      );
+
     }
+
 
     if (!window.chatFriend) {
-      throw new Error("window.chatFriend غير موجود");
+
+      throw new Error(
+        "الصديق غير موجود"
+      );
+
     }
 
 
-    debug("🟢 Firebase جاهز");
-
-
-    // -----------------------------------------------
-    // فحص الميكروفون
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // فحص المتصفح
+    // ----------------------------------------------
 
     if (
       !navigator.mediaDevices ||
@@ -234,13 +371,15 @@ if (!voiceButton) {
     ) {
 
       throw new Error(
-        "getUserMedia غير مدعوم"
+        "المتصفح لا يدعم الميكروفون"
       );
 
     }
 
+
     if (
-      typeof MediaRecorder === "undefined"
+      typeof MediaRecorder ===
+      "undefined"
     ) {
 
       throw new Error(
@@ -250,49 +389,56 @@ if (!voiceButton) {
     }
 
 
-    // -----------------------------------------------
-    // تشغيل الميكروفون
-    // -----------------------------------------------
-
-    debug("🎤 طلب إذن الميكروفون...");
+    // ----------------------------------------------
+    // فتح الميكروفون
+    // ----------------------------------------------
 
     audioStream =
       await navigator.mediaDevices.getUserMedia({
 
         audio: {
+
           echoCancellation: true,
+
           noiseSuppression: true,
+
           autoGainControl: true
+
         }
 
       });
 
 
-    debug("🟢 الميكروفون يعمل");
-
-
-    // -----------------------------------------------
-    // اختيار الصيغة
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // اختيار صيغة الصوت
+    // ----------------------------------------------
 
     let mimeType = "";
+
 
     const formats = [
 
       "audio/webm;codecs=opus",
+
       "audio/webm",
+
       "audio/mp4"
 
     ];
 
 
-    for (const format of formats) {
+    for (
+      const format of formats
+    ) {
 
       if (
-        MediaRecorder.isTypeSupported(format)
+        MediaRecorder.isTypeSupported(
+          format
+        )
       ) {
 
-        mimeType = format;
+        mimeType =
+          format;
 
         break;
 
@@ -307,24 +453,30 @@ if (!voiceButton) {
     );
 
 
-    // -----------------------------------------------
-    // إنشاء Recorder
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // إنشاء MediaRecorder
+    // ----------------------------------------------
 
     if (mimeType) {
 
       mediaRecorder =
         new MediaRecorder(
+
           audioStream,
+
           {
-            mimeType: mimeType
+            mimeType:
+              mimeType
           }
+
         );
 
     } else {
 
       mediaRecorder =
-        new MediaRecorder(audioStream);
+        new MediaRecorder(
+          audioStream
+        );
 
     }
 
@@ -332,92 +484,110 @@ if (!voiceButton) {
     audioChunks = [];
 
 
-    // -----------------------------------------------
-    // وصول البيانات
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // استقبال الصوت
+    // ----------------------------------------------
 
-    mediaRecorder.ondataavailable = (event) => {
+    mediaRecorder.ondataavailable =
+      (event) => {
 
-      console.log(
-        "📦 dataavailable:",
-        event.data.size
-      );
-
-      if (
-        event.data &&
-        event.data.size > 0
-      ) {
-
-        audioChunks.push(event.data);
-
-      }
-
-    };
+        console.log(
+          "📦 Audio chunk:",
+          event.data.size
+        );
 
 
-    // -----------------------------------------------
-    // توقف التسجيل
-    // -----------------------------------------------
+        if (
+          event.data &&
+          event.data.size > 0
+        ) {
 
-    mediaRecorder.onstop = async () => {
+          audioChunks.push(
+            event.data
+          );
 
-      debug(
-        "🟢 MediaRecorder توقف — تجهيز الملف..."
-      );
+        }
 
-      await finishRecording();
-
-    };
+      };
 
 
-    // -----------------------------------------------
+    // ----------------------------------------------
+    // انتهاء التسجيل
+    // ----------------------------------------------
+
+    mediaRecorder.onstop =
+      async () => {
+
+        console.log(
+          "⏹️ MediaRecorder stopped"
+        );
+
+
+        await finishRecording();
+
+      };
+
+
+    // ----------------------------------------------
     // خطأ
-    // -----------------------------------------------
+    // ----------------------------------------------
 
-    mediaRecorder.onerror = (event) => {
+    mediaRecorder.onerror =
+      (event) => {
 
-      console.error(
-        "❌ MediaRecorder error:",
-        event.error
-      );
-
-      debug(
-        "❌ خطأ MediaRecorder"
-      );
-
-    };
+        console.error(
+          "❌ Recorder error:",
+          event.error
+        );
 
 
-    // -----------------------------------------------
+        status(
+          "❌ خطأ أثناء التسجيل"
+        );
+
+      };
+
+
+    // ----------------------------------------------
     // بدء
-    // -----------------------------------------------
+    // ----------------------------------------------
 
     mediaRecorder.start(100);
 
-    isRecording = true;
+
+    isRecording =
+      true;
 
 
-    voiceButton.textContent = "🔴";
+    voiceButton.textContent =
+      "🔴";
 
-    voiceButton.classList.add("recording");
+
+    voiceButton.classList.add(
+      "recording"
+    );
 
 
-    debug("🔴 جاري التسجيل... ارفع إصبعك للإرسال");
+    status(
+      "🔴 جاري التسجيل... ارفع إصبعك للإرسال"
+    );
+
+
+    console.log(
+      "🎤 بدأ التسجيل"
+    );
 
   }
 
 
-  // =====================================================
+  // ======================================================
   // إيقاف التسجيل
-  // =====================================================
+  // ======================================================
 
   function stopRecording() {
 
-    if (!isRecording) {
 
-      console.log(
-        "ℹ️ stopRecording: لا يوجد تسجيل"
-      );
+    if (!isRecording) {
 
       return;
 
@@ -426,68 +596,67 @@ if (!voiceButton) {
 
     if (!mediaRecorder) {
 
-      debug("❌ MediaRecorder غير موجود");
-
       return;
 
     }
 
 
     if (
-      mediaRecorder.state === "inactive"
+      mediaRecorder.state ===
+      "inactive"
     ) {
-
-      debug("⚠️ التسجيل متوقف أصلًا");
 
       return;
 
     }
 
 
-    debug("⏹️ إرسال أمر إيقاف التسجيل...");
+    console.log(
+      "⏹️ إيقاف التسجيل"
+    );
 
 
     try {
 
       mediaRecorder.stop();
 
-    } catch (error) {
+    }
 
-      console.error(error);
+    catch (error) {
 
-      debug(
-        "❌ فشل إيقاف التسجيل: " +
-        error.message
+      console.error(
+        error
       );
-
-      cleanup();
 
     }
 
   }
 
 
-  // =====================================================
-  // إنهاء التسجيل
-  // =====================================================
+  // ======================================================
+  // إنهاء التسجيل ورفع الصوت
+  // ======================================================
 
   async function finishRecording() {
 
+
     if (isSending) {
+
       return;
+
     }
 
-    isSending = true;
+
+    isSending =
+      true;
 
 
     try {
 
-      debug("📦 تجهيز ملف الصوت...");
 
-
-      // ---------------------------------------------
+      // --------------------------------------------
       // نوع الملف
-      // ---------------------------------------------
+      // --------------------------------------------
 
       const mimeType =
         mediaRecorder &&
@@ -498,25 +667,19 @@ if (!voiceButton) {
           "audio/webm";
 
 
-      console.log(
-        "MIME:",
-        mimeType
-      );
-
-
-      // ---------------------------------------------
+      // --------------------------------------------
       // إيقاف الميكروفون
-      // ---------------------------------------------
+      // --------------------------------------------
 
       stopMicrophone();
 
 
-      // ---------------------------------------------
+      // --------------------------------------------
       // فحص البيانات
-      // ---------------------------------------------
+      // --------------------------------------------
 
       console.log(
-        "عدد القطع:",
+        "📦 عدد أجزاء الصوت:",
         audioChunks.length
       );
 
@@ -526,27 +689,31 @@ if (!voiceButton) {
       ) {
 
         throw new Error(
-          "لم تصل أي بيانات صوت"
+          "لم يتم تسجيل أي صوت"
         );
 
       }
 
 
-      // ---------------------------------------------
-      // إنشاء الملف
-      // ---------------------------------------------
+      // --------------------------------------------
+      // إنشاء Blob
+      // --------------------------------------------
 
       const blob =
         new Blob(
+
           audioChunks,
+
           {
-            type: mimeType
+            type:
+              mimeType
           }
+
         );
 
 
       console.log(
-        "حجم الملف:",
+        "🎵 حجم الملف:",
         blob.size
       );
 
@@ -554,38 +721,38 @@ if (!voiceButton) {
       if (blob.size === 0) {
 
         throw new Error(
-          "ملف الصوت حجمه صفر"
+          "ملف الصوت فارغ"
         );
 
       }
 
 
-      debug(
-        "🟢 تم إنشاء الملف — الحجم: " +
-        Math.round(blob.size / 1024) +
-        " KB"
+      status(
+        "🟢 تم التسجيل — تجهيز الملف..."
       );
 
 
-      // ---------------------------------------------
+      // --------------------------------------------
       // الامتداد
-      // ---------------------------------------------
+      // --------------------------------------------
 
-      let extension = "webm";
+      let extension =
+        "webm";
 
 
       if (
         mimeType.includes("mp4")
       ) {
 
-        extension = "mp4";
+        extension =
+          "mp4";
 
       }
 
 
-      // ---------------------------------------------
+      // --------------------------------------------
       // اسم الملف
-      // ---------------------------------------------
+      // --------------------------------------------
 
       const fileName =
 
@@ -613,44 +780,126 @@ if (!voiceButton) {
 
 
       console.log(
-        "اسم الملف:",
+        "📁 File:",
         fileName
       );
 
 
-      // ---------------------------------------------
-      // Storage reference
-      // ---------------------------------------------
-
-      debug("⬆️ جاري رفع الصوت إلى Firebase...");
-
+      // --------------------------------------------
+      // Firebase Storage
+      // --------------------------------------------
 
       const voiceRef =
         ref(
+
           window.storage,
+
           fileName
+
         );
 
 
-      await uploadBytes(
+      status(
+        "⬆️ جاري رفع الصوت: 0%"
+      );
 
-        voiceRef,
 
-        blob,
+      const uploadTask =
+        uploadBytesResumable(
 
-        {
-          contentType: mimeType
+          voiceRef,
+
+          blob,
+
+          {
+            contentType:
+              mimeType
+          }
+
+        );
+
+
+      // --------------------------------------------
+      // انتظار انتهاء الرفع
+      // --------------------------------------------
+
+      await new Promise(
+        (resolve, reject) => {
+
+
+          uploadTask.on(
+
+            "state_changed",
+
+            (snapshot) => {
+
+
+              const progress =
+
+                Math.round(
+
+                  (
+                    snapshot.bytesTransferred /
+                    snapshot.totalBytes
+                  ) * 100
+
+                );
+
+
+              console.log(
+                "⬆️ Upload:",
+                progress + "%"
+              );
+
+
+              status(
+                "⬆️ جاري رفع الصوت: " +
+                progress +
+                "%"
+              );
+
+            },
+
+
+            (error) => {
+
+              console.error(
+                "❌ Upload error:",
+                error
+              );
+
+
+              reject(error);
+
+            },
+
+
+            () => {
+
+              console.log(
+                "✅ Upload finished"
+              );
+
+
+              resolve();
+
+            }
+
+          );
+
         }
 
       );
 
 
-      debug("🟢 تم رفع الصوت بنجاح");
+      // --------------------------------------------
+      // الحصول على الرابط
+      // --------------------------------------------
 
+      status(
+        "🔗 جاري الحصول على رابط الصوت..."
+      );
 
-      // ---------------------------------------------
-      // الرابط
-      // ---------------------------------------------
 
       const downloadURL =
         await getDownloadURL(
@@ -659,37 +908,41 @@ if (!voiceButton) {
 
 
       console.log(
-        "URL:",
+        "🔗 URL:",
         downloadURL
       );
 
 
-      debug("🔗 تم الحصول على رابط الصوت");
+      // --------------------------------------------
+      // حفظ الرسالة
+      // --------------------------------------------
 
-
-      // ---------------------------------------------
-      // Firestore
-      // ---------------------------------------------
-
-      debug(
-        "💾 جاري حفظ رسالة الصوت..."
+      status(
+        "💾 جاري حفظ الرسالة..."
       );
 
 
       await addDoc(
 
         collection(
+
           window.chatDB,
+
           "chats",
+
           window.chatID,
+
           "messages"
+
         ),
 
         {
 
-          type: "voice",
+          type:
+            "voice",
 
-          audio: downloadURL,
+          audio:
+            downloadURL,
 
           senderId:
             window.chatUser.uid,
@@ -705,21 +958,26 @@ if (!voiceButton) {
       );
 
 
-      debug(
-        "✅ تم إرسال رسالة صوتية بنجاح"
+      console.log(
+        "✅ Voice message saved"
       );
 
 
-      setTimeout(() => {
+      status(
+        "✅ تم إرسال الرسالة الصوتية"
+      );
 
-        debugBox.style.display = "none";
 
-      }, 2000);
+      setTimeout(
+        hideStatus,
+        2000
+      );
 
 
     }
 
     catch (error) {
+
 
       console.error(
         "❌ VOICE ERROR:",
@@ -727,84 +985,147 @@ if (!voiceButton) {
       );
 
 
-      debug(
-        "❌ توقف هنا: " +
-        error.message
+      let message =
+        error.message ||
+        "خطأ غير معروف";
+
+
+      // رسائل Firebase أوضح
+
+      if (
+        error.code ===
+        "storage/unauthorized"
+      ) {
+
+        message =
+          "ليس لديك صلاحية رفع الملفات إلى Storage";
+
+      }
+
+
+      else if (
+        error.code ===
+        "storage/canceled"
+      ) {
+
+        message =
+          "تم إلغاء رفع الملف";
+
+      }
+
+
+      else if (
+        error.code ===
+        "storage/unknown"
+      ) {
+
+        message =
+          "حدث خطأ غير معروف في Firebase Storage";
+
+      }
+
+
+      status(
+        "❌ " + message
       );
 
 
       alert(
-        "❌ خطأ في إرسال الصوت:\n\n" +
-        error.message
+        "❌ لم يتم إرسال التسجيل:\n\n" +
+        message
       );
 
     }
 
+
     finally {
+
 
       cleanup();
 
-      isSending = false;
+
+      isSending =
+        false;
 
     }
 
   }
 
 
-  // =====================================================
+  // ======================================================
   // إيقاف الميكروفون
-  // =====================================================
+  // ======================================================
 
   function stopMicrophone() {
 
+
     if (!audioStream) {
+
       return;
+
     }
 
 
     audioStream
       .getTracks()
-      .forEach((track) => {
+      .forEach(
+        (track) => {
 
-        try {
+          try {
 
-          track.stop();
+            track.stop();
 
-        } catch (error) {
+          }
 
-          console.log(error);
+          catch (error) {
+
+            console.log(error);
+
+          }
 
         }
+      );
 
-      });
 
-
-    audioStream = null;
+    audioStream =
+      null;
 
   }
 
 
-  // =====================================================
+  // ======================================================
   // تنظيف
-  // =====================================================
+  // ======================================================
 
   function cleanup() {
+
 
     stopMicrophone();
 
 
-    mediaRecorder = null;
-
-    audioChunks = [];
-
-    isRecording = false;
-
-    isStarting = false;
-
-    pointerId = null;
+    mediaRecorder =
+      null;
 
 
-    voiceButton.textContent = "🎤";
+    audioChunks =
+      [];
+
+
+    isRecording =
+      false;
+
+
+    isStarting =
+      false;
+
+
+    pointerId =
+      null;
+
+
+    voiceButton.textContent =
+      "🎤";
+
 
     voiceButton.classList.remove(
       "recording"
@@ -814,7 +1135,7 @@ if (!voiceButton) {
 
 
   console.log(
-    "🎤 voice.js diagnostic version loaded"
+    "🎤 voice.js جاهز"
   );
 
 }
