@@ -1682,20 +1682,19 @@ return;
 }
 
 
-currentUser=
+currentUser =
 user;
-
 
 try{
 
 startPresence();
 
-
 await loadFriend();
-
 
 listenMessages();
 
+/* تشغيل استقبال المكالمات */
+listenIncomingCalls();
 
 showApp();
 
