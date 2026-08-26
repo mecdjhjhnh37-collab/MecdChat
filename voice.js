@@ -6,6 +6,7 @@ serverTimestamp
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 import {
 ref,
 uploadBytes,
@@ -15,65 +16,73 @@ from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
-const voiceButton = document.getElementById("voiceButton");
 
-let recorder;
-let stream;
+const voiceButton =
+document.getElementById("voiceButton");
+
+
+let recorder = null;
+let stream = null;
 let chunks = [];
-let isRecording = false;
+
+let recording = false;
+let startTime = 0;
+let timer = null;
 
 
 
-voiceButton.addEventListener("pointerdown", startRecord);
-
-voiceButton.addEventListener("pointerup", stopRecord);
-
-voiceButton.addEventListener("pointercancel", stopRecord);
-
-voiceButton.addEventListener("pointerleave", stopRecord);
-
-
-
-async function startRecord(e){
+// بدء التسجيل
+voiceButton.addEventListener(
+"pointerdown",
+async(e)=>{
 
 e.preventDefault();
 
 
-if(isRecording) return;
+if(recording) return;
 
 
 if(
 !window.storage ||
 !window.chatDB ||
-!window.chatID
+!window.chatID ||
+!window.chatUser ||
+!window.chatFriend
 ){
 
-console.log("Firebase missing");
+console.error("Firebase غير جاهز");
 return;
 
 }
 
 
-
 try{
 
 
-stream = await navigator.mediaDevices.getUserMedia({
+stream =
+await navigator.mediaDevices.getUserMedia(
+{
 audio:true
-});
+}
+);
 
 
-recorder = new MediaRecorder(stream);
+
+recorder =
+new MediaRecorder(stream);
+
 
 
 chunks=[];
 
 
-recorder.ondataavailable = e=>{
 
-if(e.data.size>0){
+recorder.ondataavailable =
+event=>{
 
-chunks.push(e.data);
+if(event.data.size > 0){
+
+chunks.push(event.data);
 
 }
 
@@ -81,97 +90,36 @@ chunks.push(e.data);
 
 
 
-recorder.start();
 
 
-isRecording=true;
+recorder.onstop =
+async()=>{
 
 
-voiceButton.textContent="⏹️";
-
-console.log("Recording started");
+try{
 
 
-}
+if(chunks.length===0){
 
-catch(err){
+reset();
 
-console.error(err);
-
-alert("اسمح بالميكروفون");
-
-}
-
-
-
-}
-
-
-
-
-function stopRecord(e){
-
-e.preventDefault();
-
-
-if(!isRecording)
 return;
 
-
-if(recorder){
-
-recorder.stop();
-
 }
 
 
 
-if(stream){
-
-stream.getTracks().forEach(t=>t.stop());
-
+const audioBlob =
+new Blob(
+chunks,
+{
+type:"audio/webm"
 }
-
-
-isRecording=false;
-
-voiceButton.textContent="🎤";
-
-}
+);
 
 
 
-recorderStop();
-
-
-
-function recorderStop(){
-
-
-document.addEventListener(
-"visibilitychange",
-()=>{
-
-if(document.hidden && isRecording){
-
-stopRecord(new Event("stop"));
-
-}
-
-});
-
-
-}
-
-
-
-
-
-async function sendVoice(blob){
-
-
-
-const voiceRef =
+const fileRef =
 ref(
 window.storage,
 "voices/"+Date.now()+".webm"
@@ -180,18 +128,21 @@ window.storage,
 
 
 await uploadBytes(
-voiceRef,
-blob
+fileRef,
+audioBlob
 );
 
 
 
 const url =
 await getDownloadURL(
-voiceRef
+fileRef
 );
 
 
+
+
+// حفظ الرسالة
 
 await addDoc(
 
@@ -223,30 +174,176 @@ serverTimestamp()
 
 
 
-}
-
-
-
-
-recorder.onstop = async()=>{
-
-
-if(chunks.length===0)
-return;
-
-
-const blob = new Blob(
-chunks,
-{
-type:"audio/webm"
-}
+console.log(
+"تم إرسال الصوت"
 );
 
 
-await sendVoice(blob);
 
+}
+catch(error){
+
+console.error(
+error
+);
+
+alert(
+"خطأ في إرسال الصوت"
+);
+
+
+}
+
+
+
+reset();
+
+
+};
+
+
+
+
+
+recorder.start();
+
+
+
+recording=true;
+
+
+startTime=Date.now();
+
+
+voiceButton.textContent="🔴";
+
+
+
+// عداد التسجيل
+
+timer=setInterval(()=>{
+
+
+let sec =
+Math.floor(
+(Date.now()-startTime)/1000
+);
+
+
+voiceButton.textContent=
+"🔴 "+sec+"s";
+
+
+},1000);
+
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+alert(
+"اسمح للميكروفون"
+);
+
+reset();
+
+
+}
+
+
+
+});
+
+
+
+
+
+
+
+// إيقاف عند رفع الإصبع
+
+voiceButton.addEventListener(
+"pointerup",
+stopRecording
+);
+
+
+
+voiceButton.addEventListener(
+"pointerleave",
+()=>{
+
+if(recording){
+
+stopRecording();
+
+}
+
+});
+
+
+
+
+function stopRecording(){
+
+
+if(!recording)
+return;
+
+
+
+if(recorder){
+
+recorder.stop();
+
+}
+
+
+
+if(stream){
+
+stream
+.getTracks()
+.forEach(
+track=>track.stop()
+);
+
+}
+
+
+
+}
+
+
+
+
+function reset(){
+
+
+if(timer){
+
+clearInterval(timer);
+
+}
+
+
+timer=null;
+
+
+recorder=null;
+
+stream=null;
 
 chunks=[];
 
 
-};
+recording=false;
+
+
+voiceButton.textContent="🎤";
+
+
+}
