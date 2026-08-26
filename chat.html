@@ -652,7 +652,6 @@ from
 
 
 import {
-
 getFirestore,
 doc,
 getDoc,
@@ -663,8 +662,9 @@ orderBy,
 onSnapshot,
 addDoc,
 deleteDoc,
+updateDoc,
+arrayUnion,
 serverTimestamp
-
 }
 
 from
@@ -963,7 +963,12 @@ snap.forEach(item=>{
 const data =
 item.data();
 
-
+if (
+data.deletedFor &&
+data.deletedFor.includes(currentUser.uid)
+){
+return;
+}
 
 const box =
 document.createElement("div");
@@ -1242,18 +1247,44 @@ removeMenus();
 
 }else{
 
-
 button.textContent="🗑️ حذف لدي";
 
+button.onclick=async()=>{
 
-button.onclick=()=>{
+try{
 
-element.remove();
+await updateDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+),
+{
+deletedFor:
+arrayUnion(
+currentUser.uid
+)
+}
+);
 
 removeMenus();
 
-};
+}catch(error){
 
+console.error(
+"خطأ في حذف الرسالة لدي:",
+error
+);
+
+alert(
+"حدث خطأ أثناء حذف الرسالة"
+);
+
+}
+
+};
 
 }
 
