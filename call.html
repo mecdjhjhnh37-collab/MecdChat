@@ -2,12 +2,23 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0"
+>
+
+<meta
+name="theme-color"
+content="#050807"
+>
 
 <title>Mecd Call</title>
 
 <style>
+
 *{
 box-sizing:border-box;
 margin:0;
@@ -15,22 +26,38 @@ padding:0;
 }
 
 body{
+
 height:100vh;
-font-family:Arial,Tahoma,sans-serif;
+
+font-family:
+Arial,
+Tahoma,
+sans-serif;
+
 color:white;
 
 background:
-radial-gradient(circle at top,#123d35,transparent 45%),
-linear-gradient(180deg,#07110f,#020504);
+radial-gradient(
+circle at top,
+#123d35,
+transparent 45%
+),
+linear-gradient(
+180deg,
+#07110f,
+#020504
+);
 
 display:flex;
 align-items:center;
 justify-content:center;
 
 overflow:hidden;
+
 }
 
 .call-screen{
+
 width:100%;
 max-width:650px;
 height:100vh;
@@ -41,10 +68,13 @@ align-items:center;
 justify-content:center;
 
 padding:30px;
+
 text-align:center;
+
 }
 
 .avatar{
+
 width:130px;
 height:130px;
 
@@ -61,42 +91,62 @@ font-size:60px;
 overflow:hidden;
 
 box-shadow:
-0 10px 40px rgba(0,0,0,.45);
+0 10px 40px
+rgba(0,0,0,.45);
+
 }
 
 .avatar img{
+
 width:100%;
 height:100%;
+
 object-fit:cover;
+
 }
 
 .name{
+
 font-size:27px;
 font-weight:bold;
+
 margin-top:25px;
+
 }
 
 .status{
+
 font-size:16px;
+
 color:#899590;
+
 margin-top:10px;
+
 }
 
 .status.ringing{
+
 color:#00e889;
+
 }
 
 .buttons{
+
 display:flex;
+
 gap:35px;
+
 margin-top:70px;
+
 }
 
 .call-btn{
+
 width:70px;
 height:70px;
 
 border:0;
+
 border-radius:50%;
 
 font-size:28px;
@@ -104,30 +154,47 @@ font-size:28px;
 cursor:pointer;
 
 display:flex;
+
 align-items:center;
 justify-content:center;
+
 }
 
 .cancel{
+
 background:#e53935;
 color:white;
+
 }
 
 .accept{
+
 background:#00e889;
 color:#00150e;
+
 }
 
 .hidden{
+
 display:none;
+
 }
+
+#remoteAudio{
+
+display:none;
+
+}
+
 </style>
 
 </head>
 
 <body>
 
+
 <div class="call-screen">
+
 
 <div
 id="avatar"
@@ -135,11 +202,13 @@ class="avatar">
 👤
 </div>
 
+
 <div
 id="name"
 class="name">
 جارٍ التحميل...
 </div>
+
 
 <div
 id="status"
@@ -147,9 +216,11 @@ class="status">
 جاري الاتصال...
 </div>
 
+
 <div
 id="buttons"
 class="buttons">
+
 
 <button
 id="cancelButton"
@@ -158,6 +229,7 @@ type="button">
 📞
 </button>
 
+
 <button
 id="acceptButton"
 class="call-btn accept hidden"
@@ -165,37 +237,97 @@ type="button">
 📞
 </button>
 
+
 </div>
+
+
+<audio
+id="remoteAudio"
+autoplay>
+</audio>
+
 
 </div>
 
 
 <script type="module">
 
-/*
-================================
-Mecd Call
-الخطوة الأولى
-================================
-*/
+import {
 
-const params =
-new URLSearchParams(
-location.search
-);
+initializeApp
 
-const name =
-params.get("name") ||
-"مستخدم Mecd";
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-const photo =
-params.get("photo") ||
-"";
 
-const mode =
-params.get("mode") ||
-"outgoing";
+import {
 
+getAuth,
+onAuthStateChanged
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
+getFirestore,
+doc,
+getDoc,
+setDoc,
+updateDoc,
+deleteDoc,
+collection,
+onSnapshot,
+serverTimestamp
+
+}
+from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================================
+   Firebase
+   ========================================= */
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+authDomain:
+"mecd-tools.firebaseapp.com",
+
+projectId:
+"mecd-tools",
+
+storageBucket:
+"mecd-tools.firebasestorage.app",
+
+messagingSenderId:
+"643005547408",
+
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915"
+
+};
+
+
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getFirestore(app);
+
+
+/* =========================================
+   العناصر
+   ========================================= */
 
 const nameElement =
 document.getElementById("name");
@@ -212,20 +344,188 @@ document.getElementById("cancelButton");
 const acceptButton =
 document.getElementById("acceptButton");
 
+const remoteAudio =
+document.getElementById("remoteAudio");
+
+
+/* =========================================
+   البيانات
+   ========================================= */
+
+const params =
+new URLSearchParams(
+location.search
+);
+
+
+const callId =
+params.get("callId");
+
+const mode =
+params.get("mode") ||
+"outgoing";
+
+
+let currentUser =
+null;
+
+let callData =
+null;
+
+let peer =
+null;
+
+let localStream =
+null;
+
+let unsubscribeCall =
+null;
+
+let unsubscribeAnswer =
+null;
+
+let unsubscribeCallerCandidates =
+null;
+
+let unsubscribeReceiverCandidates =
+null;
+
+let ending =
+false;
+
+
+/* =========================================
+   إعدادات WebRTC
+   ========================================= */
+
+const rtcConfig = {
+
+iceServers: [
+
+{
+urls:
+"stun:stun.l.google.com:19302"
+},
+
+{
+urls:
+"stun:stun1.l.google.com:19302"
+}
+
+]
+
+};
+
+
+/* =========================================
+   انتظار تسجيل الدخول
+   ========================================= */
+
+onAuthStateChanged(
+
+auth,
+
+async user => {
+
+if(!user){
+
+statusElement.textContent =
+"يجب تسجيل الدخول أولاً";
+
+return;
+
+}
+
+
+currentUser =
+user;
+
+
+try{
+
+await initializeCall();
+
+}catch(error){
+
+console.error(
+error
+);
+
+statusElement.textContent =
+"❌ تعذر تشغيل المكالمة";
+
+}
+
+}
+
+);
+
+
+/* =========================================
+   تحميل المكالمة
+   ========================================= */
+
+async function initializeCall(){
+
+if(!callId){
+
+throw new Error(
+"لا يوجد Call ID"
+);
+
+}
+
+
+const callRef =
+doc(
+db,
+"calls",
+callId
+);
+
+
+const snapshot =
+await getDoc(
+callRef
+);
+
+
+if(!snapshot.exists()){
+
+throw new Error(
+"المكالمة غير موجودة"
+);
+
+}
+
+
+callData =
+snapshot.data();
+
+
+/* بيانات الشخص */
+
+if(mode === "incoming"){
 
 nameElement.textContent =
-name;
+callData.callerName ||
+params.get("name") ||
+"مستخدم Mecd";
+
+
+const photo =
+callData.callerPhoto ||
+params.get("photo") ||
+"";
 
 
 if(photo){
 
 avatarElement.innerHTML =
-`<img src="${photo}" alt="">`;
+`<img src="${escapeHtml(photo)}" alt="">`;
 
 }
 
-
-if(mode==="incoming"){
 
 statusElement.textContent =
 "📞 مكالمة واردة";
@@ -240,34 +540,755 @@ acceptButton.classList.remove(
 
 }else{
 
+nameElement.textContent =
+callData.receiverName ||
+"مستخدم Mecd";
+
+
+const photo =
+callData.receiverPhoto ||
+"";
+
+
+if(photo){
+
+avatarElement.innerHTML =
+`<img src="${escapeHtml(photo)}" alt="">`;
+
+}
+
+
 statusElement.textContent =
 "جاري الاتصال...";
 
 }
 
 
-cancelButton.addEventListener(
-"click",
-()=>{
+/* مراقبة حالة المكالمة */
 
-window.close();
+unsubscribeCall =
+onSnapshot(
 
-history.back();
+callRef,
+
+snapshot => {
+
+if(!snapshot.exists()){
+
+finishLocal(
+"انتهت المكالمة"
+);
+
+return;
 
 }
+
+
+const data =
+snapshot.data();
+
+
+if(data.status === "ended"){
+
+finishLocal(
+"تم إنهاء المكالمة"
+);
+
+}
+
+}
+
+);
+
+}
+
+
+/* =========================================
+   بدء WebRTC
+   ========================================= */
+
+async function createPeer(){
+
+peer =
+new RTCPeerConnection(
+rtcConfig
 );
 
 
-acceptButton.addEventListener(
-"click",
+/* استقبال الصوت */
+
+peer.ontrack =
+event => {
+
+if(
+event.streams &&
+event.streams[0]
+){
+
+remoteAudio.srcObject =
+event.streams[0];
+
+remoteAudio.play()
+.catch(()=>{});
+
+}
+
+};
+
+
+/* ICE */
+
+peer.onicecandidate =
+async event => {
+
+if(!event.candidate){
+
+return;
+
+}
+
+
+const candidate =
+event.candidate.toJSON();
+
+
+const type =
+mode === "outgoing"
+?
+"callerCandidates"
+:
+"receiverCandidates";
+
+
+await setDoc(
+
+doc(
+
+collection(
+db,
+"calls",
+callId,
+type
+)
+
+),
+
+candidate
+
+);
+
+};
+
+
+peer.onconnectionstatechange =
 ()=>{
 
+const state =
+peer.connectionState;
+
+
+if(state === "connected"){
+
 statusElement.textContent =
-"تم قبول المكالمة";
+"🟢 متصل";
+
+statusElement.classList.add(
+"ringing"
+);
+
+}
+
+
+if(
+state === "disconnected" ||
+state === "failed" ||
+state === "closed"
+){
+
+finishLocal(
+"انتهى الاتصال"
+);
+
+}
+
+};
+
+}
+
+
+/* =========================================
+   الحصول على الميكروفون
+   ========================================= */
+
+async function getMicrophone(){
+
+localStream =
+await navigator.mediaDevices
+.getUserMedia({
+
+audio:true,
+video:false
+
+});
+
+
+localStream
+.getTracks()
+.forEach(track => {
+
+peer.addTrack(
+track,
+localStream
+);
+
+});
+
+}
+
+
+/* =========================================
+   المتصل
+   ========================================= */
+
+async function startOutgoingCall(){
+
+await createPeer();
+
+await getMicrophone();
+
+
+const offer =
+await peer.createOffer();
+
+
+await peer.setLocalDescription(
+offer
+);
+
+
+await updateDoc(
+
+doc(
+db,
+"calls",
+callId
+),
+
+{
+
+offer: {
+
+type:
+offer.type,
+
+sdp:
+offer.sdp
+
+},
+
+status:
+"ringing"
+
+}
+
+);
+
+
+/* انتظار answer */
+
+unsubscribeAnswer =
+onSnapshot(
+
+doc(
+db,
+"calls",
+callId
+),
+
+async snapshot => {
+
+const data =
+snapshot.data();
+
+
+if(!data){
+
+return;
+
+}
+
+
+if(
+data.answer &&
+!peer.currentRemoteDescription
+){
+
+await peer.setRemoteDescription(
+
+new RTCSessionDescription(
+data.answer
+)
+
+);
+
+statusElement.textContent =
+"🟢 جاري الاتصال...";
+
+}
+
+}
+
+);
+
+
+/* استقبال ICE من الطرف الثاني */
+
+listenCandidates(
+"receiverCandidates"
+);
+
+}
+
+
+/* =========================================
+   قبول المكالمة
+   ========================================= */
+
+async function acceptIncomingCall(){
 
 acceptButton.classList.add(
 "hidden"
 );
+
+
+statusElement.textContent =
+"جاري الاتصال...";
+
+
+await createPeer();
+
+await getMicrophone();
+
+
+/* وضع Offer */
+
+if(!callData.offer){
+
+throw new Error(
+"لا يوجد Offer"
+);
+
+}
+
+
+await peer.setRemoteDescription(
+
+new RTCSessionDescription(
+callData.offer
+)
+
+);
+
+
+/* إنشاء Answer */
+
+const answer =
+await peer.createAnswer();
+
+
+await peer.setLocalDescription(
+answer
+);
+
+
+await updateDoc(
+
+doc(
+db,
+"calls",
+callId
+),
+
+{
+
+answer: {
+
+type:
+answer.type,
+
+sdp:
+answer.sdp
+
+},
+
+status:
+"connected"
+
+}
+
+);
+
+
+/* استقبال ICE */
+
+listenCandidates(
+"callerCandidates"
+);
+
+}
+
+
+/* =========================================
+   ICE Candidates
+   ========================================= */
+
+function listenCandidates(type){
+
+const ref =
+collection(
+db,
+"calls",
+callId,
+type
+);
+
+
+const unsubscribe =
+onSnapshot(
+
+ref,
+
+snapshot => {
+
+snapshot.docChanges()
+.forEach(
+async change => {
+
+if(
+change.type !== "added"
+){
+
+return;
+
+}
+
+
+try{
+
+await peer.addIceCandidate(
+
+new RTCIceCandidate(
+change.doc.data()
+)
+
+);
+
+}catch(error){
+
+console.error(
+"ICE error:",
+error
+);
+
+}
+
+});
+
+}
+
+);
+
+
+if(type === "callerCandidates"){
+
+unsubscribeCallerCandidates =
+unsubscribe;
+
+}else{
+
+unsubscribeReceiverCandidates =
+unsubscribe;
+
+}
+
+}
+
+
+/* =========================================
+   إلغاء / إنهاء
+   ========================================= */
+
+cancelButton.addEventListener(
+
+"click",
+
+async () => {
+
+await endCall();
+
+}
+
+);
+
+
+acceptButton.addEventListener(
+
+"click",
+
+async () => {
+
+try{
+
+await acceptIncomingCall();
+
+}catch(error){
+
+console.error(
+"Accept error:",
+error
+);
+
+statusElement.textContent =
+"❌ تعذر قبول المكالمة";
+
+}
+
+}
+
+);
+
+
+/* =========================================
+   إنهاء المكالمة
+   ========================================= */
+
+async function endCall(){
+
+if(ending){
+
+return;
+
+}
+
+ending = true;
+
+
+try{
+
+await updateDoc(
+
+doc(
+db,
+"calls",
+callId
+),
+
+{
+
+status:
+"ended",
+
+endedAt:
+serverTimestamp()
+
+}
+
+);
+
+}catch(error){
+
+console.error(
+"End call error:",
+error
+);
+
+}
+
+
+/* حذف الإشعار */
+
+try{
+
+await updateDoc(
+
+doc(
+db,
+"users",
+currentUser.uid
+),
+
+{
+
+incomingCall:
+null
+
+}
+
+);
+
+}catch(error){
+
+console.error(
+error
+);
+
+}
+
+
+cleanup();
+
+
+setTimeout(
+()=>{
+
+history.back();
+
+},
+200
+);
+
+}
+
+
+/* =========================================
+   إنهاء محلي
+   ========================================= */
+
+function finishLocal(text){
+
+if(ending){
+
+return;
+
+}
+
+ending = true;
+
+
+statusElement.textContent =
+text;
+
+
+cleanup();
+
+
+setTimeout(
+()=>{
+
+history.back();
+
+},
+1000
+);
+
+}
+
+
+/* =========================================
+   تنظيف
+   ========================================= */
+
+function cleanup(){
+
+if(unsubscribeCall){
+
+unsubscribeCall();
+unsubscribeCall=null;
+
+}
+
+if(unsubscribeAnswer){
+
+unsubscribeAnswer();
+unsubscribeAnswer=null;
+
+}
+
+if(unsubscribeCallerCandidates){
+
+unsubscribeCallerCandidates();
+unsubscribeCallerCandidates=null;
+
+}
+
+if(unsubscribeReceiverCandidates){
+
+unsubscribeReceiverCandidates();
+unsubscribeReceiverCandidates=null;
+
+}
+
+if(localStream){
+
+localStream
+.getTracks()
+.forEach(track =>
+track.stop()
+);
+
+localStream=null;
+
+}
+
+if(peer){
+
+peer.close();
+peer=null;
+
+}
+
+}
+
+
+/* =========================================
+   حماية الصورة
+   ========================================= */
+
+function escapeHtml(value){
+
+return String(value).replace(
+/[&<>'"]/g,
+c => ({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+"'":"&#39;",
+'"':"&quot;"
+
+}[c])
+
+);
+
+}
+
+
+/* =========================================
+   عند إغلاق الصفحة
+   ========================================= */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(
+localStream
+){
+
+localStream
+.getTracks()
+.forEach(
+track =>
+track.stop()
+);
+
+}
+
+if(peer){
+
+peer.close();
+
+}
 
 }
 );
