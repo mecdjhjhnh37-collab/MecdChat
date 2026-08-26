@@ -1,2593 +1,626 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<meta name="theme-color"
-content="#050807">
-
-<title>Mecd Chat</title>
-
-
-<style>
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
-
-body{
-
-height:100vh;
-
-font-family:
-Arial,
-Tahoma,
-sans-serif;
-
-color:white;
-
-background:
-
-radial-gradient(
-circle at top,
-#123d35,
-transparent 40%
-),
-
-linear-gradient(
-180deg,
-#07110f,
-#020504
-);
-
-overflow:hidden;
-
-}
-
-
-
-.app{
-
-height:100vh;
-
-max-width:650px;
-
-margin:auto;
-
-display:flex;
-
-flex-direction:column;
-
-}
-
-
-
-header{
-
-height:75px;
-
-display:flex;
-
-align-items:center;
-
-gap:12px;
-
-padding:12px 15px;
-
-background:#050807;
-
-border-bottom:
-1px solid rgba(255,255,255,.08);
-
-}
-
-
-
-.back{
-
-width:45px;
-
-height:45px;
-
-border:0;
-
-border-radius:15px;
-
-background:#18231f;
-
-color:white;
-
-font-size:22px;
-
-cursor:pointer;
-
-}
-
-
-
-.avatar{
-
-width:48px;
-
-height:48px;
-
-border-radius:16px;
-
-background:#12352c;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-overflow:hidden;
-
-font-size:24px;
-
-}
-
-
-
-.avatar img{
-
-width:100%;
-
-height:100%;
-
-object-fit:cover;
-
-}
-
-
-
-.user-info{
-
-flex:1;
-
-}
-
-
-
-.user-name{
-
-font-size:17px;
-
-font-weight:bold;
-
-}
-
-
-
-.user-status{
-
-font-size:12px;
-
-color:#777;
-
-margin-top:5px;
-
-}
-
-
-
-.user-status.online{
-
-color:#00e889;
-
-}
-
-
-
-.call-buttons{
-
-display:flex;
-
-gap:8px;
-
-}
-
-
-
-.call-buttons button{
-
-width:42px;
-
-height:42px;
-
-border:0;
-
-border-radius:14px;
-
-background:#18231f;
-
-color:white;
-
-font-size:18px;
-
-cursor:pointer;
-
-}
-
-
-
-/* =========================
-   الرسائل
-========================= */
-
-.messages{
-
-flex:1;
-
-overflow-y:auto;
-
-padding:
-20px
-15px
-100px;
-
-display:flex;
-
-flex-direction:column;
-
-gap:10px;
-
-}
-
-
-
-.empty{
-
-margin:auto;
-
-text-align:center;
-
-color:#72817c;
-
-}
-
-
-
-.message{
-
-max-width:78%;
-
-padding:12px 15px;
-
-border-radius:18px;
-
-position:relative;
-
-word-break:break-word;
-
-}
-
-
-
-.message.mine{
-
-align-self:flex-start;
-
-background:#00c96b;
-
-color:#00150e;
-
-border-bottom-left-radius:5px;
-
-}
-
-
-
-.message.other{
-
-align-self:flex-end;
-
-background:#18231f;
-
-border:
-1px solid rgba(255,255,255,.08);
-
-border-bottom-right-radius:5px;
-
-}
-
-
-
-.time{
-
-display:block;
-
-font-size:9px;
-
-opacity:.6;
-
-margin-top:5px;
-
-}
-
-
-
-.message audio{
-
-display:block;
-
-width:230px;
-
-max-width:100%;
-
-}
-
-
-
-/* =========================
-   منطقة الكتابة
-========================= */
-
-.input-area{
-
-position:fixed;
-
-bottom:0;
-
-left:50%;
-
-transform:translateX(-50%);
-
-width:100%;
-
-max-width:650px;
-
-padding:10px;
-
-display:flex;
-
-gap:8px;
-
-background:#050807;
-
-}
-
-
-
-#messageInput{
-
-flex:1;
-
-padding:14px;
-
-border-radius:17px;
-
-border:
-1px solid #27332f;
-
-background:#111916;
-
-color:white;
-
-outline:none;
-
-font-size:15px;
-
-}
-
-
-
-#voiceButton,
-#sendButton{
-
-width:50px;
-
-height:50px;
-
-border:0;
-
-border-radius:16px;
-
-font-size:22px;
-
-cursor:pointer;
-
-touch-action:none;
-
-user-select:none;
-
--webkit-user-select:none;
-
-}
-
-
-
-#voiceButton{
-
-background:#18231f;
-
-color:white;
-
-transition:
-transform .15s,
-background .15s;
-
-}
-
-
-
-/* أثناء التسجيل */
-
-#voiceButton.recording{
-
-background:#8b1e1e;
-
-transform:scale(1.08);
-
-}
-
-
-
-#sendButton{
-
-background:#00e889;
-
-color:#00150e;
-
-}
-
-
-
-/* =========================
-   قائمة الرسالة
-========================= */
-
-.message-menu{
-
-position:absolute;
-
-right:10px;
-
-bottom:55px;
-
-background:#101815;
-
-padding:8px;
-
-border-radius:16px;
-
-box-shadow:
-0 8px 25px #000;
-
-z-index:999;
-
-min-width:150px;
-
-animation:
-showMenu .2s ease;
-
-}
-
-
-
-@keyframes showMenu{
-
-from{
-
-opacity:0;
-
-transform:translateY(10px);
-
-}
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
-}
-
-
-
-.message-menu button{
-
-width:100%;
-
-background:#18231f;
-
-color:white;
-
-border:0;
-
-padding:12px;
-
-border-radius:10px;
-
-font-size:14px;
-
-}
-
-
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<!-- =========================
-     شاشة التحميل
-========================= -->
-
-<div
-id="loading"
-style="
-position:fixed;
-inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#020504;
-color:white;
-font-size:18px;
-z-index:999;
-">
-
-جارٍ فتح الدردشة...
-
-</div>
-
-
-
-<!-- =========================
-     التطبيق
-========================= -->
-
-<main
-id="app"
-class="app"
-style="display:none;"
->
-
-
-<header>
-
-
-<button
-id="backButton"
-class="back"
-type="button"
->
-
-→
-
-</button>
-
-
-
-<div
-id="friendAvatar"
-class="avatar"
->
-
-👤
-
-</div>
-
-
-
-<div class="user-info">
-
-<div
-id="friendName"
-class="user-name"
->
-
-جار التحميل...
-
-</div>
-
-
-
-<div
-id="friendStatus"
-class="user-status"
->
-
-● غير متصل
-
-</div>
-
-</div>
-
-
-
-<div class="call-buttons">
-
-
-<button
-id="callButton"
-type="button"
->
-
-📞
-
-</button>
-
-
-<button
-id="videoButton"
-type="button"
->
-
-📹
-
-</button>
-
-
-</div>
-
-
-</header>
-
-
-
-<!-- =========================
-     الرسائل
-========================= -->
-
-<div
-id="messages"
-class="messages"
->
-
-<div class="empty">
-
-💬
-
-<br>
-
-ابدأ المحادثة الآن
-
-</div>
-
-</div>
-
-
-
-<!-- =========================
-     الكتابة
-========================= -->
-
-<div class="input-area">
-
-
-<input
-id="messageInput"
-placeholder="اكتب رسالة..."
-autocomplete="off"
-maxlength="2000"
->
-
-
-
-<button
-id="voiceButton"
-type="button"
-aria-label="تسجيل رسالة صوتية"
->
-
-🎤
-
-</button>
-
-
-
-<button
-id="sendButton"
-type="button"
->
-
-➤
-
-</button>
-
-
-</div>
-
-
-</main>
-
-
-
-<script type="module">
-
-
-/* =========================================
-   Firebase
-========================================= */
-
 import {
-
-initializeApp
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-
-
-import {
-
-getAuth,
-onAuthStateChanged
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-
-import {
-
-getFirestore,
-doc,
-getDoc,
-setDoc,
-collection,
-query,
-orderBy,
-onSnapshot,
-addDoc,
-deleteDoc,
-serverTimestamp
-
-}
-
-from
-
+  collection,
+  addDoc,
+  serverTimestamp
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-
-
 import {
-
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-
-}
-
-from
-
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 
-
-/* =========================================
-   Firebase Config
-========================================= */
-
-const firebaseConfig = {
-
-apiKey:
-"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
-
-authDomain:
-"mecd-tools.firebaseapp.com",
-
-projectId:
-"mecd-tools",
-
-storageBucket:
-"mecd-tools.firebasestorage.app",
-
-messagingSenderId:
-"643005547408",
-
-appId:
-"1:643005547408:web:b1719060ec340dd0e0a915"
-
-};
-
-
-
-const firebaseApp =
-initializeApp(
-firebaseConfig
-);
-
-
-
-const auth =
-getAuth(
-firebaseApp
-);
-
-
-
-const db =
-getFirestore(
-firebaseApp
-);
-
-
-
-const storage =
-getStorage(
-firebaseApp
-);
-
-
-
-/* =========================================
-   جعل المتغيرات متاحة لتسجيل الصوت
-========================================= */
-
-window.chatDB =
-db;
-
-window.storage =
-storage;
-
-
-
-/* =========================================
-   عناصر الصفحة
-========================================= */
-
-const messages =
-document.getElementById(
-"messages"
-);
-
-
-
-const messageInput =
-document.getElementById(
-"messageInput"
-);
-
-
-
-const sendButton =
-document.getElementById(
-"sendButton"
-);
-
-
-
 const voiceButton =
-document.getElementById(
-"voiceButton"
-);
+  document.getElementById("voiceButton");
 
-
-
-const friendName =
-document.getElementById(
-"friendName"
-);
-
-
-
-const friendAvatar =
-document.getElementById(
-"friendAvatar"
-);
-
-
-
-const friendStatus =
-document.getElementById(
-"friendStatus"
-);
-
-
-
-const backButton =
-document.getElementById(
-"backButton"
-);
-
-
-
-const callButton =
-document.getElementById(
-"callButton"
-);
-
-
-
-const videoButton =
-document.getElementById(
-"videoButton"
-);
-
-
-
-/* =========================================
-   المتغيرات
-========================================= */
-
-let currentUser = null;
-
-let friendUser = null;
-
-let chatID = null;
-
-let unsubscribeMessages = null;
-
-
-
-/* =========================================
-   إنشاء Chat ID
-========================================= */
-
-function createChatID(a,b){
-
-return [
-
-a,
-b
-
-]
-.sort()
-.join("_");
-
-}
-
-
-
-/* =========================================
-   تحميل الصديق
-========================================= */
-
-async function loadFriend(){
-
-const params =
-new URLSearchParams(
-location.search
-);
-
-
-
-const id =
-params.get("friend");
-
-
-
-if(!id){
-
-alert(
-"لا يوجد صديق"
-);
-
-return false;
-
-}
-
-
-
-const userDoc =
-await getDoc(
-doc(
-db,
-"users",
-id
-)
-);
-
-
-
-if(!userDoc.exists()){
-
-alert(
-"المستخدم غير موجود"
-);
-
-return false;
-
-}
-
-
-
-const data =
-userDoc.data();
-
-
-
-friendUser = {
-
-uid:id,
-
-name:
-data.name ||
-"مستخدم Mecd",
-
-photo:
-data.photo ||
-""
-
-};
-
-
-
-friendName.textContent =
-friendUser.name;
-
-
-
-if(friendUser.photo){
-
-friendAvatar.innerHTML =
-
-`
-<img
-src="${friendUser.photo}"
-alt=""
->
-`;
-
-}
-
-
-
-chatID =
-createChatID(
-currentUser.uid,
-friendUser.uid
-);
-
-
-
-/* مهم للصوت */
-
-window.chatID =
-chatID;
-
-window.chatUser =
-currentUser;
-
-window.chatFriend =
-friendUser;
-
-
-
-await setDoc(
-
-doc(
-db,
-"chats",
-chatID
-),
-
-{
-
-members:[
-
-currentUser.uid,
-friendUser.uid
-
-],
-
-createdAt:
-serverTimestamp()
-
-},
-
-{
-
-merge:true
-
-}
-
-);
-
-
-
-return true;
-
-}
-
-
-
-/* =========================================
-   الاستماع للرسائل
-========================================= */
-
-function listenMessages(){
-
-const refMessages =
-collection(
-db,
-"chats",
-chatID,
-"messages"
-);
-
-
-
-const q =
-query(
-
-refMessages,
-
-orderBy(
-"createdAt",
-"asc"
-)
-
-);
-
-
-
-unsubscribeMessages =
-onSnapshot(
-
-q,
-
-snap => {
-
-
-messages.innerHTML = "";
-
-
-
-if(snap.empty){
-
-messages.innerHTML =
-
-`
-<div class="empty">
-
-💬
-
-<br>
-
-ابدأ المحادثة الآن
-
-</div>
-`;
-
-return;
-
-}
-
-
-
-snap.forEach(
-item => {
-
-const data =
-item.data();
-
-
-
-const box =
-document.createElement(
-"div"
-);
-
-
-
-box.className =
-"message " +
-
-(
-
-data.senderId ===
-currentUser.uid
-
-?
-
-"mine"
-
-:
-
-"other"
-
-);
-
-
-
-/* =================================
-   رسالة صوتية
-================================= */
-
-if(data.type === "voice"){
-
-const audio =
-document.createElement(
-"audio"
-);
-
-
-
-audio.controls =
-true;
-
-
-
-audio.preload =
-"metadata";
-
-
-
-audio.src =
-data.audio;
-
-
-
-audio.style.width =
-"230px";
-
-
-
-audio.style.maxWidth =
-"100%";
-
-
-
-box.appendChild(
-audio
-);
-
-
-
-const voiceText =
-document.createElement(
-"span"
-);
-
-
-
-voiceText.textContent =
-"🎤 رسالة صوتية";
-
-
-
-voiceText.style.display =
-"block";
-
-
-
-voiceText.style.fontSize =
-"12px";
-
-
-
-voiceText.style.marginTop =
-"5px";
-
-
-
-box.appendChild(
-voiceText
-);
-
-}
-
-
-/* =================================
-   رسالة نصية
-================================= */
-
-else{
-
-box.appendChild(
-
-document.createTextNode(
-data.text || ""
-)
-
-);
-
-}
-
-
-
-/* =================================
-   الوقت
-================================= */
-
-const time =
-document.createElement(
-"span"
-);
-
-
-
-time.className =
-"time";
-
-
-
-if(
-
-data.createdAt &&
-
-typeof data.createdAt.toDate ===
-"function"
-
-){
-
-time.textContent =
-
-data.createdAt
-.toDate()
-.toLocaleTimeString(
-"ar",
-{
-
-hour:"2-digit",
-
-minute:"2-digit"
-
-}
-
-);
-
-}
-
-
-
-box.appendChild(
-time
-);
-
-
-
-messages.appendChild(
-box
-);
-
-
-
-addMessageActions(
-
-box,
-
-item.id,
-
-data.senderId ===
-currentUser.uid
-
-);
-
-});
-
-
-
-messages.scrollTop =
-messages.scrollHeight;
-
-}
-
-);
-
-}
-
-
-
-/* =========================================
-   إرسال رسالة نصية
-========================================= */
-
-async function sendMessage(){
-
-const text =
-messageInput.value.trim();
-
-
-
-if(!text)
-return;
-
-
-
-if(!currentUser ||
-!friendUser ||
-!chatID){
-
-return;
-
-}
-
-
-
-try{
-
-await addDoc(
-
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-
-{
-
-text:text,
-
-senderId:
-currentUser.uid,
-
-receiverId:
-friendUser.uid,
-
-createdAt:
-serverTimestamp()
-
-}
-
-);
-
-
-
-messageInput.value = "";
-
-}
-
-catch(error){
-
-console.error(
-"Send message error:",
-error
-);
-
-alert(
-"تعذر إرسال الرسالة"
-);
-
-}
-
-}
-
-
-
-/* =========================================
-   زر الإرسال
-========================================= */
-
-sendButton.onclick =
-sendMessage;
-
-
-
-messageInput.addEventListener(
-
-"keydown",
-
-event => {
-
-if(
-event.key === "Enter"
-){
-
-event.preventDefault();
-
-sendMessage();
-
-}
-
-}
-
-);
-
-
-
-/* =========================================
-   حذف الرسائل
-========================================= */
-
-function addMessageActions(
-element,
-id,
-mine
-){
-
-let timer = null;
-
-
-
-element.addEventListener(
-
-"contextmenu",
-
-event => {
-
-event.preventDefault();
-
-showDeleteMenu();
-
-}
-
-);
-
-
-
-function showDeleteMenu(){
-
-removeMenus();
-
-
-
-const menu =
-document.createElement(
-"div"
-);
-
-
-
-menu.className =
-"message-menu";
-
-
-
-const button =
-document.createElement(
-"button"
-);
-
-
-
-if(mine){
-
-button.textContent =
-"🗑️ إلغاء الإرسال";
-
-
-
-button.onclick =
-async event => {
-
-event.stopPropagation();
-
-
-
-try{
-
-await deleteDoc(
-
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-
-);
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-
-
-removeMenus();
-
-};
-
-}
-
-else{
-
-button.textContent =
-"🗑️ حذف لدي";
-
-
-
-button.onclick =
-() => {
-
-element.remove();
-
-removeMenus();
-
-};
-
-}
-
-
-
-menu.appendChild(
-button
-);
-
-
-
-element.appendChild(
-menu
-);
-
-}
-
-
-
-/* الضغط المطول */
-
-element.addEventListener(
-
-"pointerdown",
-
-event => {
-
-timer =
-setTimeout(
-showDeleteMenu,
-500
-);
-
-}
-
-);
-
-
-
-element.addEventListener(
-
-"pointerup",
-
-() => {
-
-clearTimeout(timer);
-
-}
-
-);
-
-
-
-element.addEventListener(
-
-"pointercancel",
-
-() => {
-
-clearTimeout(timer);
-
-}
-
-);
-
-
-
-element.addEventListener(
-
-"pointerleave",
-
-() => {
-
-clearTimeout(timer);
-
-}
-
-);
-
-}
-
-
-
-/* =========================================
-   إزالة القوائم
-========================================= */
-
-function removeMenus(){
-
-document
-.querySelectorAll(
-".message-menu"
-)
-.forEach(
-element =>
-element.remove()
-);
-
-}
-
-
-
-/* =========================================
-   تسجيل الصوت
-========================================= */
 
 let recorder = null;
-
-let recordingStream = null;
-
-let voiceChunks = [];
+let stream = null;
+let chunks = [];
 
 let isRecording = false;
-
-let isStarting = false;
-
+let starting = false;
 let stopRequested = false;
 
-let pointerIsDown = false;
 
-
-
-/* =========================================
-   الضغط على زر الصوت
-========================================= */
+// ==========================================
+// بدء التسجيل عند الضغط
+// ==========================================
 
 voiceButton.addEventListener(
+  "pointerdown",
+  async (event) => {
 
-"pointerdown",
+    event.preventDefault();
 
-async event => {
+    if (isRecording || starting)
+      return;
 
-event.preventDefault();
+    starting = true;
 
+    try {
 
+      await startRecording();
 
-pointerIsDown = true;
+    } catch (error) {
 
+      console.error(
+        "Microphone error:",
+        error
+      );
 
+      stopMicrophone();
 
-if(
-isRecording ||
-isStarting
-){
+      resetVoice();
 
-return;
+      alert(
+        "لم يتم السماح بالميكروفون"
+      );
 
-}
+    } finally {
 
+      starting = false;
 
+    }
 
-isStarting = true;
-
-stopRequested = false;
-
-
-
-try{
-
-/*
-   مهم جدًا:
-   نطلب الميكروفون هنا.
-*/
-
-recordingStream =
-await navigator
-.mediaDevices
-.getUserMedia(
-{
-audio:true
-}
+  }
 );
 
 
-
-/*
-   إذا المستخدم رفع إصبعه
-   أثناء انتظار الميكروفون
-*/
-
-if(!pointerIsDown){
-
-recordingStream
-.getTracks()
-.forEach(
-track =>
-track.stop()
-);
-
-recordingStream =
-null;
-
-isStarting =
-false;
-
-return;
-
-}
-
-
-
-let mimeType = "";
-
-
-
-if(
-MediaRecorder.isTypeSupported(
-"audio/webm;codecs=opus"
-)
-){
-
-mimeType =
-"audio/webm;codecs=opus";
-
-}
-
-else if(
-MediaRecorder.isTypeSupported(
-"audio/webm"
-)
-){
-
-mimeType =
-"audio/webm";
-
-}
-
-
-
-/* إنشاء Recorder */
-
-if(mimeType){
-
-recorder =
-new MediaRecorder(
-recordingStream,
-{
-mimeType:
-mimeType
-}
-);
-
-}
-
-else{
-
-recorder =
-new MediaRecorder(
-recordingStream
-);
-
-}
-
-
-
-voiceChunks = [];
-
-
-
-recorder.ondataavailable =
-event => {
-
-if(
-event.data &&
-event.data.size > 0
-){
-
-voiceChunks.push(
-event.data
-);
-
-}
-
-};
-
-
-
-recorder.onstop =
-async () => {
-
-await finishVoiceRecording();
-
-};
-
-
-
-recorder.onerror =
-event => {
-
-console.error(
-"Recorder error:",
-event.error
-);
-
-};
-
-
-
-/*
-   timeslice صغير حتى نحصل
-   على chunks بشكل مستمر
-*/
-
-recorder.start(100);
-
-
-
-isRecording = true;
-
-isStarting = false;
-
-
-
-voiceButton.classList.add(
-"recording"
-);
-
-
-
-voiceButton.innerHTML =
-"🔴";
-
-
-
-/*
-   إذا رفع المستخدم إصبعه
-   أثناء لحظة بدء التسجيل
-*/
-
-if(!pointerIsDown){
-
-stopRecording();
-
-}
-
-}
-
-catch(error){
-
-console.error(
-"Microphone error:",
-error
-);
-
-isStarting = false;
-
-isRecording = false;
-
-stopRequested = false;
-
-pointerIsDown = false;
-
-
-
-if(
-recordingStream
-){
-
-recordingStream
-.getTracks()
-.forEach(
-track =>
-track.stop()
-);
-
-recordingStream =
-null;
-
-}
-
-
-
-voiceButton.classList.remove(
-"recording"
-);
-
-
-
-voiceButton.innerHTML =
-"🎤";
-
-
-
-alert(
-"لم يتم السماح بالميكروفون"
-);
-
-}
-
-}
-
-);
-
-
-
-/* =========================================
-   رفع الإصبع
-========================================= */
+// ==========================================
+// رفع الإصبع = إيقاف
+// ==========================================
 
 voiceButton.addEventListener(
+  "pointerup",
+  (event) => {
 
-"pointerup",
+    event.preventDefault();
 
-event => {
+    stopRecording();
 
-event.preventDefault();
-
-pointerIsDown = false;
-
-stopRecording();
-
-}
-
+  }
 );
 
 
-
-/* =========================================
-   إلغاء اللمس
-========================================= */
+// ==========================================
+// إذا سحب المستخدم إصبعه من الزر
+// ==========================================
 
 voiceButton.addEventListener(
+  "pointercancel",
+  () => {
 
-"pointercancel",
+    stopRecording();
 
-() => {
-
-pointerIsDown = false;
-
-stopRecording();
-
-}
-
+  }
 );
 
 
-
-/* =========================================
-   فقدان المؤشر
-========================================= */
+// ==========================================
+// إذا خرج المؤشر من الزر أثناء الضغط
+// ==========================================
 
 voiceButton.addEventListener(
+  "lostpointercapture",
+  () => {
 
-"lostpointercapture",
+    if (isRecording) {
 
-() => {
+      stopRecording();
 
-if(pointerIsDown){
+    }
 
-pointerIsDown = false;
-
-stopRecording();
-
-}
-
-}
-
+  }
 );
 
 
+// ==========================================
+// بدء التسجيل
+// ==========================================
 
-/* =========================================
-   إيقاف التسجيل
-========================================= */
+async function startRecording() {
 
-function stopRecording(){
+  if (
+    !window.storage ||
+    !window.chatDB ||
+    !window.chatID ||
+    !window.chatUser ||
+    !window.chatFriend
+  ) {
 
-/*
-   إذا التسجيل لم يبدأ بعد،
-   نسجل أن المستخدم رفع إصبعه.
-*/
+    throw new Error(
+      "Firebase غير جاهز"
+    );
 
-if(isStarting){
+  }
 
-stopRequested = true;
 
-return;
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ) {
+
+    throw new Error(
+      "المتصفح لا يدعم الميكروفون"
+    );
+
+  }
+
+
+  stream =
+    await navigator.mediaDevices.getUserMedia(
+      {
+        audio: true
+      }
+    );
+
+
+  let mimeType = "";
+
+
+  if (
+    MediaRecorder.isTypeSupported(
+      "audio/webm;codecs=opus"
+    )
+  ) {
+
+    mimeType =
+      "audio/webm;codecs=opus";
+
+  }
+
+  else if (
+    MediaRecorder.isTypeSupported(
+      "audio/webm"
+    )
+  ) {
+
+    mimeType =
+      "audio/webm";
+
+  }
+
+
+  recorder =
+    mimeType
+      ?
+      new MediaRecorder(
+        stream,
+        {
+          mimeType: mimeType
+        }
+      )
+      :
+      new MediaRecorder(stream);
+
+
+  chunks = [];
+
+  stopRequested = false;
+
+
+  recorder.ondataavailable =
+    (event) => {
+
+      if (
+        event.data &&
+        event.data.size > 0
+      ) {
+
+        chunks.push(
+          event.data
+        );
+
+      }
+
+    };
+
+
+  recorder.onstop =
+    () => {
+
+      finishRecording();
+
+    };
+
+
+  recorder.start();
+
+
+  isRecording = true;
+
+
+  // شكل زر التسجيل
+  voiceButton.innerHTML =
+    "🔴";
+
+
+  voiceButton.classList.add(
+    "recording"
+  );
+
+
+  console.log(
+    "بدأ التسجيل"
+  );
 
 }
 
 
+// ==========================================
+// إيقاف التسجيل
+// ==========================================
 
-if(!isRecording){
+function stopRecording() {
 
-return;
-
-}
-
-
-
-if(stopRequested){
-
-return;
-
-}
+  if (!isRecording)
+    return;
 
 
-
-stopRequested = true;
-
-
-
-console.log(
-"إيقاف التسجيل..."
-);
+  if (stopRequested)
+    return;
 
 
+  stopRequested = true;
 
-if(
-recorder &&
-recorder.state !==
-"inactive"
-){
 
-recorder.stop();
+  console.log(
+    "إيقاف التسجيل..."
+  );
 
-}
+
+  if (
+    recorder &&
+    recorder.state !== "inactive"
+  ) {
+
+    recorder.stop();
+
+  }
 
 }
 
 
+// ==========================================
+// إنهاء التسجيل وإرساله
+// ==========================================
 
-/* =========================================
-   إنهاء التسجيل
-========================================= */
+async function finishRecording() {
 
-async function finishVoiceRecording(){
+  try {
 
-try{
-
-/*
-   نوقف الميكروفون
-*/
-
-stopMicrophone();
+    // إيقاف الميكروفون
+    stopMicrophone();
 
 
+    if (
+      !chunks ||
+      chunks.length === 0
+    ) {
 
-if(
-!voiceChunks ||
-voiceChunks.length === 0
-){
+      throw new Error(
+        "لم يتم تسجيل أي صوت"
+      );
 
-throw new Error(
-"لم يتم تسجيل أي صوت"
-);
+    }
+
+
+    const mime =
+      recorder &&
+      recorder.mimeType
+        ?
+        recorder.mimeType
+        :
+        "audio/webm";
+
+
+    const blob =
+      new Blob(
+        chunks,
+        {
+          type: mime
+        }
+      );
+
+
+    if (blob.size === 0) {
+
+      throw new Error(
+        "ملف الصوت فارغ"
+      );
+
+    }
+
+
+    console.log(
+      "حجم التسجيل:",
+      blob.size
+    );
+
+
+    // ======================================
+    // إظهار الصوت فوراً في الدردشة
+    // ======================================
+
+    const localURL =
+      URL.createObjectURL(
+        blob
+      );
+
+
+    showVoiceMessage(
+      localURL
+    );
+
+
+    // ======================================
+    // رفع الصوت إلى Firebase
+    // ======================================
+
+    const extension =
+      mime.includes("webm")
+        ?
+        "webm"
+        :
+        "audio";
+
+
+    const fileName =
+      "voices/" +
+      Date.now() +
+      "_" +
+      Math.random()
+        .toString(36)
+        .substring(2) +
+      "." +
+      extension;
+
+
+    const voiceRef =
+      ref(
+        window.storage,
+        fileName
+      );
+
+
+    await uploadBytes(
+      voiceRef,
+      blob
+    );
+
+
+    const url =
+      await getDownloadURL(
+        voiceRef
+      );
+
+
+    console.log(
+      "تم رفع التسجيل"
+    );
+
+
+    // ======================================
+    // حفظ الرسالة في Firestore
+    // ======================================
+
+    await addDoc(
+
+      collection(
+        window.chatDB,
+        "chats",
+        window.chatID,
+        "messages"
+      ),
+
+      {
+
+        type: "voice",
+
+        audio: url,
+
+        senderId:
+          window.chatUser.uid,
+
+        receiverId:
+          window.chatFriend.uid,
+
+        createdAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+
+    console.log(
+      "تم إرسال الرسالة الصوتية"
+    );
+
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Voice error:",
+      error
+    );
+
+    alert(
+      "حدث خطأ أثناء إرسال التسجيل"
+    );
+
+  }
+
+  finally {
+
+    resetVoice();
+
+  }
 
 }
 
 
+// ==========================================
+// إظهار التسجيل مباشرة في الدردشة
+// ==========================================
 
-const mime =
-recorder &&
-recorder.mimeType
+function showVoiceMessage(url) {
 
-?
-
-recorder.mimeType
-
-:
-
-"audio/webm";
+  const messages =
+    document.getElementById(
+      "messages"
+    );
 
 
-
-const blob =
-new Blob(
-voiceChunks,
-{
-type:mime
-}
-);
+  if (!messages)
+    return;
 
 
-
-if(blob.size === 0){
-
-throw new Error(
-"ملف الصوت فارغ"
-);
-
-}
+  // إزالة رسالة "ابدأ المحادثة"
+  const empty =
+    messages.querySelector(
+      ".empty"
+    );
 
 
+  if (empty) {
 
-console.log(
-"حجم التسجيل:",
-blob.size
-);
+    empty.remove();
 
-
-
-/*
-   اسم فريد للصوت
-*/
-
-const extension =
-mime.includes(
-"webm"
-)
-
-?
-
-"webm"
-
-:
-
-"audio";
+  }
 
 
-
-const fileName =
-
-"voices/" +
-
-currentUser.uid +
-
-"_" +
-
-Date.now() +
-
-"_" +
-
-Math.random()
-.toString(36)
-.substring(2) +
-
-"." +
-
-extension;
+  const box =
+    document.createElement(
+      "div"
+    );
 
 
-
-/*
-   رفع الصوت
-*/
-
-const voiceRef =
-ref(
-storage,
-fileName
-);
+  box.className =
+    "message mine";
 
 
-
-await uploadBytes(
-voiceRef,
-blob
-);
-
+  const audio =
+    document.createElement(
+      "audio"
+    );
 
 
-const audioURL =
-await getDownloadURL(
-voiceRef
-);
+  audio.controls = true;
+
+  audio.preload = "metadata";
+
+  audio.src = url;
 
 
+  audio.style.width =
+    "230px";
 
-console.log(
-"تم رفع الصوت:",
-audioURL
-);
+  audio.style.maxWidth =
+    "100%";
 
 
+  box.appendChild(
+    audio
+  );
 
-/*
-   حفظ الرسالة
-*/
 
-await addDoc(
+  const label =
+    document.createElement(
+      "span"
+    );
 
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
 
-{
+  label.textContent =
+    "🎤 رسالة صوتية";
 
-type:
-"voice",
 
-audio:
-audioURL,
+  label.style.display =
+    "block";
 
-senderId:
-currentUser.uid,
 
-receiverId:
-friendUser.uid,
+  label.style.fontSize =
+    "12px";
 
-createdAt:
-serverTimestamp()
+
+  label.style.marginTop =
+    "5px";
+
+
+  box.appendChild(
+    label
+  );
+
+
+  messages.appendChild(
+    box
+  );
+
+
+  messages.scrollTop =
+    messages.scrollHeight;
 
 }
 
-);
+
+// ==========================================
+// إيقاف الميكروفون
+// ==========================================
+
+function stopMicrophone() {
+
+  if (!stream)
+    return;
 
 
+  stream
+    .getTracks()
+    .forEach(
+      track => {
 
-console.log(
-"تم إرسال الرسالة الصوتية بنجاح"
-);
+        track.stop();
 
-}
-
-catch(error){
-
-console.error(
-"Voice send error:",
-error
-);
+      }
+    );
 
 
-
-alert(
-"حدث خطأ أثناء إرسال التسجيل"
-);
-
-}
-
-finally{
-
-resetVoice();
-
-}
+  stream = null;
 
 }
 
 
+// ==========================================
+// إعادة زر الميكروفون
+// ==========================================
 
-/* =========================================
-   إيقاف الميكروفون
-========================================= */
+function resetVoice() {
 
-function stopMicrophone(){
-
-if(
-!recordingStream
-){
-
-return;
-
-}
+  stopMicrophone();
 
 
+  recorder = null;
 
-recordingStream
-.getTracks()
-.forEach(
-track => {
+  chunks = [];
 
-if(
-track.readyState !==
-"ended"
-){
+  isRecording = false;
 
-track.stop();
+  starting = false;
 
-}
+  stopRequested = false;
+
+
+  voiceButton.innerHTML =
+    "🎤";
+
+
+  voiceButton.classList.remove(
+    "recording"
+  );
 
 }
-);
-
-
-
-recordingStream =
-null;
-
-}
-
-
-
-/* =========================================
-   إعادة زر الصوت
-========================================= */
-
-function resetVoice(){
-
-stopMicrophone();
-
-
-
-if(
-recorder &&
-recorder.state !==
-"inactive"
-){
-
-try{
-
-recorder.stop();
-
-}
-
-catch(error){
-
-console.error(error);
-
-}
-
-}
-
-
-
-recorder =
-null;
-
-
-
-voiceChunks =
-[];
-
-
-
-isRecording =
-false;
-
-
-
-isStarting =
-false;
-
-
-
-stopRequested =
-false;
-
-
-
-pointerIsDown =
-false;
-
-
-
-voiceButton.classList.remove(
-"recording"
-);
-
-
-
-voiceButton.innerHTML =
-"🎤";
-
-}
-
-
-
-/* =========================================
-   تسجيل الدخول
-========================================= */
-
-onAuthStateChanged(
-
-auth,
-
-async user => {
-
-if(!user){
-
-console.log(
-"لا يوجد مستخدم مسجل"
-);
-
-return;
-
-}
-
-
-
-currentUser =
-user;
-
-
-
-console.log(
-"تم تسجيل الدخول:",
-currentUser.uid
-);
-
-
-
-try{
-
-const ok =
-await loadFriend();
-
-
-
-if(!ok){
-
-return;
-
-}
-
-
-
-listenMessages();
-
-
-
-document.getElementById(
-"loading"
-).style.display =
-"none";
-
-
-
-document.getElementById(
-"app"
-).style.display =
-"flex";
-
-}
-
-catch(error){
-
-console.error(
-"Chat startup error:",
-error
-);
-
-
-
-alert(
-"حدث خطأ في فتح الدردشة"
-);
-
-}
-
-}
-
-);
-
-
-
-/* =========================================
-   رجوع
-========================================= */
-
-backButton.onclick =
-() => {
-
-history.back();
-
-};
-
-
-
-/* =========================================
-   الاتصال
-========================================= */
-
-callButton.onclick =
-() => {
-
-alert(
-"📞 الاتصال قيد التطوير"
-);
-
-};
-
-
-
-/* =========================================
-   الفيديو
-========================================= */
-
-videoButton.onclick =
-() => {
-
-alert(
-"📹 الفيديو قيد التطوير"
-);
-
-};
-
-
-
-</script>
-
-</body>
-
-</html>
