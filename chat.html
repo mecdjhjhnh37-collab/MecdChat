@@ -862,9 +862,12 @@ let typingState =
 let callModule =
     null;
 
+let videoCallModule =
+    null;
+
 
 // ============================================================
-// تحميل نظام المكالمات
+// تحميل نظام المكالمات الصوتية
 // ============================================================
 
 async function loadCallSystem(){
@@ -894,6 +897,45 @@ async function loadCallSystem(){
 
         console.error(
             "Call system error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// 📹 تحميل نظام مكالمات الفيديو
+// ============================================================
+
+async function loadVideoCallSystem(){
+
+    try{
+
+        videoCallModule =
+            await import(
+                "./Video-call.js"
+            );
+
+        console.log(
+            "Mecd Video Call system loaded"
+        );
+
+        if(
+            typeof videoCallModule.listenIncomingVideoCalls ===
+            "function"
+        ){
+
+            await videoCallModule
+                .listenIncomingVideoCalls();
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Video call system error:",
             error
         );
 
@@ -2582,10 +2624,6 @@ async function sendMessage(){
                 type:
                     "text",
 
-                // ==============================================
-                // ✓ تم الإرسال
-                // ==============================================
-
                 read:
                     false,
 
@@ -2889,7 +2927,7 @@ document.addEventListener(
 
 
 // ============================================================
-// 📞 الاتصال
+// 📞 الاتصال الصوتي
 // ============================================================
 
 callButton.addEventListener(
@@ -2981,18 +3019,94 @@ callButton.addEventListener(
 
 
 // ============================================================
-// فيديو
+// 📹 الاتصال بالفيديو
 // ============================================================
 
 videoButton.addEventListener(
 
     "click",
 
-    () => {
+    async () => {
 
-        alert(
-            "📹 مكالمة الفيديو قيد التطوير"
-        );
+        if(!currentUser){
+
+            alert(
+                "⚠️ يجب تسجيل الدخول أولاً"
+            );
+
+            return;
+
+        }
+
+        if(!friendUser){
+
+            alert(
+                "⚠️ لم يتم تحميل بيانات الصديق"
+            );
+
+            return;
+
+        }
+
+        try{
+
+            if(!videoCallModule){
+
+                videoCallModule =
+                    await import(
+                        "./Video-call.js"
+                    );
+
+            }
+
+            if(
+                typeof videoCallModule.startVideoCall !==
+                "function"
+            ){
+
+                throw new Error(
+                    "startVideoCall غير موجودة في Video-call.js"
+                );
+
+            }
+
+            await videoCallModule.startVideoCall({
+
+                friendId:
+                    friendUser.uid,
+
+                friendName:
+                    friendUser.name,
+
+                friendPhoto:
+                    friendUser.photo,
+
+                chatId:
+                    chatID
+
+            });
+
+        }
+
+        catch(error){
+
+            console.error(
+                "Video call error:",
+                error
+            );
+
+            alert(
+
+                "❌ تعذر بدء مكالمة الفيديو\n\n" +
+
+                (
+                    error?.message ||
+                    "حدث خطأ"
+                )
+
+            );
+
+        }
 
     }
 
@@ -3068,9 +3182,6 @@ document.addEventListener(
             updateMyPresence(
                 true
             );
-
-            // إذا عاد المستخدم للمحادثة
-            // يتم تحديث حالة الكتابة إذا كان هناك نص
 
             if(
                 messageInput.value.trim()
@@ -3168,6 +3279,12 @@ function init(){
                 listenMessages();
 
                 await loadCallSystem();
+
+                // ==================================================
+                // 📹 تشغيل نظام مكالمات الفيديو
+                // ==================================================
+
+                await loadVideoCallSystem();
 
                 showApp();
 
