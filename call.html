@@ -138,8 +138,6 @@ body{
 }
 
 
-/* الحلقة */
-
 .avatar-ring{
 
     position:absolute;
@@ -315,7 +313,7 @@ body{
 
     position:absolute;
 
-    bottom:58px;
+    bottom:70px;
 
     left:0;
 
@@ -431,7 +429,8 @@ body{
 
     left:0;
     right:0;
-    bottom:48px;
+
+    bottom:60px;
 
     display:none;
 
@@ -546,6 +545,8 @@ body{
     font-size:13px;
 
     z-index:100;
+
+    white-space:pre-line;
 
 }
 
@@ -724,10 +725,6 @@ body{
     <div id="errorBox"></div>
 
 
-    <!-- ==========================================
-         الشخص
-    =========================================== -->
-
     <section class="person">
 
 
@@ -779,10 +776,6 @@ body{
     </section>
 
 
-    <!-- ==========================================
-         الصوت القادم
-    =========================================== -->
-
     <audio
         id="remoteAudio"
         autoplay
@@ -790,16 +783,10 @@ body{
     </audio>
 
 
-    <!-- ==========================================
-         أزرار المكالمة
-    =========================================== -->
-
     <div
         id="controls"
         class="controls">
 
-
-        <!-- كتم ميكروفوني -->
 
         <button
             id="muteButton"
@@ -812,8 +799,6 @@ body{
         </button>
 
 
-        <!-- كتم صوت الطرف الآخر -->
-
         <button
             id="remoteMuteButton"
             class="control"
@@ -824,8 +809,6 @@ body{
 
         </button>
 
-
-        <!-- إنهاء -->
 
         <button
             id="endButton"
@@ -840,10 +823,6 @@ body{
 
     </div>
 
-
-    <!-- ==========================================
-         المكالمة الواردة
-    =========================================== -->
 
     <div
         id="incoming"
@@ -892,89 +871,51 @@ body{
 
 <script type="module">
 
-/* =========================================================
-   العناصر
-========================================================= */
-
 const avatar =
-    document.getElementById(
-        "avatar"
-    );
+    document.getElementById("avatar");
 
 const avatarRing =
-    document.getElementById(
-        "avatarRing"
-    );
+    document.getElementById("avatarRing");
 
 const nameElement =
-    document.getElementById(
-        "name"
-    );
+    document.getElementById("name");
 
 const statusElement =
-    document.getElementById(
-        "status"
-    );
+    document.getElementById("status");
 
 const timerElement =
-    document.getElementById(
-        "timer"
-    );
+    document.getElementById("timer");
 
 const controls =
-    document.getElementById(
-        "controls"
-    );
+    document.getElementById("controls");
 
 const incoming =
-    document.getElementById(
-        "incoming"
-    );
+    document.getElementById("incoming");
 
 const incomingText =
-    document.getElementById(
-        "incomingText"
-    );
+    document.getElementById("incomingText");
 
 const muteButton =
-    document.getElementById(
-        "muteButton"
-    );
+    document.getElementById("muteButton");
 
 const remoteMuteButton =
-    document.getElementById(
-        "remoteMuteButton"
-    );
+    document.getElementById("remoteMuteButton");
 
 const endButton =
-    document.getElementById(
-        "endButton"
-    );
+    document.getElementById("endButton");
 
 const acceptButton =
-    document.getElementById(
-        "acceptButton"
-    );
+    document.getElementById("acceptButton");
 
 const rejectButton =
-    document.getElementById(
-        "rejectButton"
-    );
+    document.getElementById("rejectButton");
 
 const remoteAudio =
-    document.getElementById(
-        "remoteAudio"
-    );
+    document.getElementById("remoteAudio");
 
 const errorBox =
-    document.getElementById(
-        "errorBox"
-    );
+    document.getElementById("errorBox");
 
-
-/* =========================================================
-   الرابط
-========================================================= */
 
 const params =
     new URLSearchParams(
@@ -983,51 +924,41 @@ const params =
 
 
 const callId =
-    params.get(
-        "callId"
-    ) || "";
+    params.get("callId") || "";
 
 
 const mode =
-    params.get(
-        "mode"
-    ) || "outgoing";
+    params.get("mode") || "outgoing";
+
+
+const friendId =
+    params.get("friendId") || "";
 
 
 const friendName =
-    params.get(
-        "name"
-    ) || "مستخدم Mecd";
+    params.get("name") ||
+    "مستخدم Mecd";
 
 
 const friendPhoto =
-    params.get(
-        "photo"
-    ) || "";
+    params.get("photo") || "";
+
+
+let callModule = null;
+
+let ending = false;
+
+let missedTimer = null;
+
+let muted = false;
+
+let remoteMuted = false;
+
+let redirecting = false;
 
 
 /* =========================================================
-   حالة
-========================================================= */
-
-let callModule =
-    null;
-
-let ending =
-    false;
-
-let missedTimer =
-    null;
-
-let muted =
-    false;
-
-let remoteMuted =
-    false;
-
-
-/* =========================================================
-   بيانات الشخص
+   عرض الشخص
 ========================================================= */
 
 nameElement.textContent =
@@ -1069,6 +1000,14 @@ if(friendPhoto){
 
         };
 
+
+    avatar.innerHTML =
+        "";
+
+    avatar.appendChild(
+        img
+    );
+
 }else{
 
     avatar.innerHTML =
@@ -1078,7 +1017,7 @@ if(friendPhoto){
 
 
 /* =========================================================
-   تغيير الحالة
+   الحالة
 ========================================================= */
 
 function setStatus(
@@ -1119,12 +1058,135 @@ function showError(
 
 
 /* =========================================================
+   رابط الدردشة
+========================================================= */
+
+function buildChatUrl(){
+
+    const url =
+        new URL(
+            "./chat.html",
+            window.location.href
+        );
+
+
+    if(friendId){
+
+        url.searchParams.set(
+            "friend",
+            friendId
+        );
+
+    }
+
+
+    return url.href;
+
+}
+
+
+/* =========================================================
+   الرجوع للدردشة
+========================================================= */
+
+function goBackToChat(){
+
+    if(redirecting){
+
+        return;
+
+    }
+
+
+    redirecting =
+        true;
+
+
+    const returnParam =
+        params.get(
+            "return"
+        ) || "";
+
+
+    let target =
+        "";
+
+
+    if(returnParam){
+
+        try{
+
+            const url =
+                new URL(
+                    returnParam,
+                    window.location.href
+                );
+
+
+            if(
+                friendId &&
+                !url.searchParams.get(
+                    "friend"
+                )
+            ){
+
+                url.searchParams.set(
+                    "friend",
+                    friendId
+                );
+
+            }
+
+
+            target =
+                url.href;
+
+        }catch(error){
+
+            console.error(
+                "Return URL error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    if(!target){
+
+        target =
+            buildChatUrl();
+
+    }
+
+
+    setTimeout(
+        () => {
+
+            window.location.replace(
+                target
+            );
+
+        },
+
+        100
+
+    );
+
+}
+
+
+/* =========================================================
    مؤقت عدم الرد
 ========================================================= */
 
 function startMissedTimer(){
 
-    if(mode !== "outgoing"){
+    if(
+        mode !==
+        "outgoing"
+    ){
 
         return;
 
@@ -1135,11 +1197,6 @@ function startMissedTimer(){
         missedTimer
     );
 
-
-    /*
-     * إذا لم يتم الرد خلال 30 ثانية
-     * تعتبر المكالمة فائتة.
-     */
 
     missedTimer =
         setTimeout(
@@ -1156,7 +1213,8 @@ function startMissedTimer(){
 
                     await callModule
                         ?.endCall(
-                            callId
+                            callId,
+                            "timeout"
                         );
 
                 }catch(error){
@@ -1181,10 +1239,6 @@ function startMissedTimer(){
 }
 
 
-/* =========================================================
-   إلغاء مؤقت عدم الرد
-========================================================= */
-
 function stopMissedTimer(){
 
     if(missedTimer){
@@ -1202,7 +1256,7 @@ function stopMissedTimer(){
 
 
 /* =========================================================
-   تجهيز Call Module
+   تحميل call.js
 ========================================================= */
 
 async function loadCallModule(){
@@ -1215,11 +1269,6 @@ async function loadCallModule(){
             );
 
 
-        /*
-         * هذه الأحداث يجب تعريفها
-         * قبل تشغيل المكالمة.
-         */
-
         window.onRemoteStream =
             stream => {
 
@@ -1229,7 +1278,8 @@ async function loadCallModule(){
                         stream;
 
 
-                    remoteAudio.play()
+                    remoteAudio
+                        .play()
                         .catch(
                             () => {}
                         );
@@ -1244,10 +1294,6 @@ async function loadCallModule(){
 
             };
 
-
-        /* ------------------------------------------
-           الهاتف الثاني بدأ يرن فعليًا
-        ------------------------------------------ */
 
         window.onCallRinging =
             () => {
@@ -1266,10 +1312,6 @@ async function loadCallModule(){
 
             };
 
-
-        /* ------------------------------------------
-           المكالمة أصبحت متصلة
-        ------------------------------------------ */
 
         window.onCallConnected =
             () => {
@@ -1294,15 +1336,12 @@ async function loadCallModule(){
             };
 
 
-        /* ------------------------------------------
-           المؤقت
-        ------------------------------------------ */
-
         window.onCallTimer =
             duration => {
 
                 timerElement.textContent =
                     duration;
+
 
                 timerElement.classList.add(
                     "show"
@@ -1310,10 +1349,6 @@ async function loadCallModule(){
 
             };
 
-
-        /* ------------------------------------------
-           فشل الاتصال
-        ------------------------------------------ */
 
         window.onCallFailed =
             () => {
@@ -1340,10 +1375,6 @@ async function loadCallModule(){
             };
 
 
-        /* ------------------------------------------
-           تم رفض المكالمة
-        ------------------------------------------ */
-
         window.onCallRejected =
             () => {
 
@@ -1360,34 +1391,20 @@ async function loadCallModule(){
                     "none";
 
 
-                setTimeout(
-                    () => {
+                controls.classList.add(
+                    "hidden"
+                );
 
-                        location.href =
-                            "chat.html";
 
-                    },
-
-                    900
-
+                incoming.classList.remove(
+                    "show"
                 );
 
             };
 
 
-        /* ------------------------------------------
-           انتهت المكالمة
-        ------------------------------------------ */
-
         window.onCallEnded =
             () => {
-
-                if(ending){
-
-                    return;
-
-                }
-
 
                 stopMissedTimer();
 
@@ -1441,7 +1458,8 @@ async function loadCallModule(){
 ========================================================= */
 
 function finishScreen(
-    text = "انتهت المكالمة"
+    text =
+        "انتهت المكالمة"
 ){
 
     if(ending){
@@ -1478,17 +1496,7 @@ function finishScreen(
     );
 
 
-    setTimeout(
-        () => {
-
-            location.href =
-                "chat.html";
-
-        },
-
-        900
-
-    );
+    goBackToChat();
 
 }
 
@@ -1546,7 +1554,7 @@ muteButton.addEventListener(
 
 
 /* =========================================================
-   كتم صوت الطرف الآخر
+   كتم الصوت
 ========================================================= */
 
 window.toggleRemoteAudio =
@@ -1661,16 +1669,8 @@ endButton.addEventListener(
         );
 
 
-        setTimeout(
-            () => {
-
-                location.href =
-                    "chat.html";
-
-            },
-
-            900
-
+        incoming.classList.remove(
+            "show"
         );
 
     }
@@ -1679,7 +1679,7 @@ endButton.addEventListener(
 
 
 /* =========================================================
-   رفض المكالمة
+   رفض
 ========================================================= */
 
 rejectButton.addEventListener(
@@ -1733,26 +1733,13 @@ rejectButton.addEventListener(
         avatarRing.style.display =
             "none";
 
-
-        setTimeout(
-            () => {
-
-                location.href =
-                    "chat.html";
-
-            },
-
-            900
-
-        );
-
     }
 
 );
 
 
 /* =========================================================
-   قبول المكالمة
+   قبول
 ========================================================= */
 
 acceptButton.addEventListener(
@@ -1811,7 +1798,6 @@ acceptButton.addEventListener(
                 "connecting"
             );
 
-
         }catch(error){
 
             console.error(
@@ -1847,7 +1833,7 @@ acceptButton.addEventListener(
 
 
 /* =========================================================
-   تشغيل المكالمة
+   تشغيل
 ========================================================= */
 
 async function start(){
@@ -1874,11 +1860,14 @@ async function start(){
     }
 
 
-    /* =====================================================
-       مكالمة صادرة
-    ===================================================== */
+    /* ================================
+       صادرة
+    ================================= */
 
-    if(mode === "outgoing"){
+    if(
+        mode ===
+        "outgoing"
+    ){
 
         controls.classList.remove(
             "hidden"
@@ -1899,13 +1888,6 @@ async function start(){
         avatarRing.style.display =
             "block";
 
-
-        /*
-         * مهم:
-         * يبقى "جارٍ الاتصال..."
-         * حتى يرسل الهاتف الثاني
-         * status = ringing
-         */
 
         startMissedTimer();
 
@@ -1944,11 +1926,14 @@ async function start(){
     }
 
 
-    /* =====================================================
-       مكالمة واردة
-    ===================================================== */
+    /* ================================
+       واردة
+    ================================= */
 
-    if(mode === "incoming"){
+    if(
+        mode ===
+        "incoming"
+    ){
 
         controls.classList.add(
             "hidden"
@@ -1975,14 +1960,6 @@ async function start(){
 
 
         try{
-
-            /*
-             * watchIncomingCall يقوم أولاً
-             * بتشغيل الميكروفون.
-             *
-             * وبعد نجاحه فقط يرسل
-             * status = ringing
-             */
 
             await callModule
                 .watchIncomingCall(
@@ -2021,15 +1998,11 @@ async function start(){
 }
 
 
-/* =========================================================
-   تشغيل
-========================================================= */
-
 start();
 
 
 /* =========================================================
-   منع الخروج بزر الرجوع أثناء المكالمة
+   منع الرجوع أثناء المكالمة
 ========================================================= */
 
 history.pushState(
