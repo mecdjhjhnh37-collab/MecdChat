@@ -25,8 +25,7 @@ import {
     query,
     where,
     onSnapshot,
-    serverTimestamp,
-    runTransaction
+    serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -95,14 +94,14 @@ const RTC_CONFIG = {
 
 
 // ============================================================
-// إعدادات المكالمة
+// إعدادات
 // ============================================================
 
 const RING_TIMEOUT = 30000;
 
 
 // ============================================================
-// الحالة العامة
+// الحالة
 // ============================================================
 
 let currentUser = null;
@@ -137,13 +136,6 @@ let callEndNotified = false;
 // ============================================================
 // تسجيل الدخول
 // ============================================================
-
-function getCurrentUser(){
-
-    return auth.currentUser;
-
-}
-
 
 if(auth.currentUser){
 
@@ -186,15 +178,33 @@ function createCallId(){
 
 function formatDuration(seconds){
 
+    seconds =
+        Number(seconds || 0);
+
+    if(!Number.isFinite(seconds)){
+
+        seconds = 0;
+
+    }
+
+    seconds =
+        Math.max(
+            0,
+            Math.floor(seconds)
+        );
+
+
     const hours =
         Math.floor(
             seconds / 3600
         );
 
+
     const minutes =
         Math.floor(
             (seconds % 3600) / 60
         );
+
 
     const secs =
         seconds % 60;
@@ -247,7 +257,7 @@ function getQueryParam(name){
 
 
 // ============================================================
-// إعلام واجهة المكالمة بانتهاء المكالمة مرة واحدة فقط
+// إعلام الواجهة بانتهاء المكالمة
 // ============================================================
 
 function notifyCallEnded(reason){
@@ -289,15 +299,13 @@ function notifyCallEnded(reason){
 
 
 // ============================================================
-// الرجوع إلى الدردشة
+// العودة للدردشة
 // ============================================================
 
 function returnToChat(){
 
     const returnUrl =
-        getQueryParam(
-            "return"
-        );
+        getQueryParam("return");
 
 
     if(returnUrl){
@@ -323,9 +331,7 @@ function returnToChat(){
                 }
 
             },
-
             150
-
         );
 
         return;
@@ -344,9 +350,7 @@ function returnToChat(){
                 history.back();
 
             },
-
             150
-
         );
 
     }
@@ -417,7 +421,7 @@ async function ensureUser(){
 
 
 // ============================================================
-// تشغيل الميكروفون
+// الميكروفون
 // ============================================================
 
 async function getLocalAudio(){
@@ -446,11 +450,14 @@ async function getLocalAudio(){
 
             audio: {
 
-                echoCancellation:true,
+                echoCancellation:
+                    true,
 
-                noiseSuppression:true,
+                noiseSuppression:
+                    true,
 
-                autoGainControl:true
+                autoGainControl:
+                    true
 
             },
 
@@ -497,9 +504,17 @@ function createPeerConnection(){
                     .forEach(
                         track => {
 
-                            remoteStream.addTrack(
-                                track
-                            );
+                            if(
+                                !remoteStream
+                                    .getTracks()
+                                    .includes(track)
+                            ){
+
+                                remoteStream.addTrack(
+                                    track
+                                );
+
+                            }
 
                         }
                     );
@@ -546,7 +561,8 @@ function createPeerConnection(){
 
 
             if(
-                state === "failed"
+                state ===
+                "failed"
             ){
 
                 if(
@@ -562,7 +578,8 @@ function createPeerConnection(){
 
 
             if(
-                state === "disconnected"
+                state ===
+                "disconnected"
             ){
 
                 if(
@@ -578,7 +595,8 @@ function createPeerConnection(){
 
 
             if(
-                state === "closed"
+                state ===
+                "closed"
             ){
 
                 stopTimer();
@@ -624,9 +642,7 @@ function addLocalTracks(){
             track => {
 
                 if(
-                    !existing.includes(
-                        track
-                    )
+                    !existing.includes(track)
                 ){
 
                     peerConnection.addTrack(
@@ -643,7 +659,7 @@ function addLocalTracks(){
 
 
 // ============================================================
-// ICE - استقبال
+// استقبال ICE
 // ============================================================
 
 function listenForIceCandidates(
@@ -716,9 +732,11 @@ function listenForIceCandidates(
 
                                     await peerConnection
                                         .addIceCandidate(
+
                                             new RTCIceCandidate(
                                                 data.candidate
                                             )
+
                                         );
 
                                 }
@@ -752,7 +770,7 @@ function listenForIceCandidates(
 
 
 // ============================================================
-// ICE - إرسال
+// إرسال ICE
 // ============================================================
 
 function setupLocalIce(
@@ -904,7 +922,7 @@ export async function startCall({
 
 
 // ============================================================
-// مؤقت عدم الرد - 30 ثانية
+// مؤقت عدم الرد
 // ============================================================
 
 function startNoAnswerTimeout(
@@ -935,7 +953,7 @@ function startNoAnswerTimeout(
 
 
     console.log(
-        "⏱️ وقت الرنين المتبقي:",
+        "⏱️ الرنين:",
         Math.ceil(
             remaining / 1000
         ),
@@ -950,8 +968,7 @@ function startNoAnswerTimeout(
 
                 if(
                     !currentCallRef ||
-                    currentCallId !==
-                    callId ||
+                    currentCallId !== callId ||
                     isConnected ||
                     isEnding
                 ){
@@ -982,18 +999,9 @@ function startNoAnswerTimeout(
                         snapshot.data();
 
 
-                    /*
-                     فقط إذا ما زالت المكالمة
-                     calling أو ringing
-                     نعتبرها فائتة
-                    */
-
                     if(
-                        data.status ===
-                            "calling" ||
-
-                        data.status ===
-                            "ringing"
+                        data.status === "calling" ||
+                        data.status === "ringing"
                     ){
 
                         console.log(
@@ -1011,7 +1019,7 @@ function startNoAnswerTimeout(
                 }catch(error){
 
                     console.error(
-                        "30 second timeout error:",
+                        "Timeout error:",
                         error
                     );
 
@@ -1043,7 +1051,7 @@ function clearCallTimeout(){
 
 
 // ============================================================
-// المتصل - تشغيل المكالمة
+// المتصل
 // ============================================================
 
 export async function startOutgoingCall(
@@ -1095,26 +1103,18 @@ export async function startOutgoingCall(
 
 
     const callerName =
-        getQueryParam(
-            "name"
-        ) ||
+        getQueryParam("name") ||
         "مستخدم Mecd";
 
 
     const callerPhoto =
-        getQueryParam(
-            "photo"
-        ) ||
+        getQueryParam("photo") ||
         "";
 
 
     const createdAtMs =
         Date.now();
 
-
-    // --------------------------------------------
-    // تشغيل الميكروفون
-    // --------------------------------------------
 
     await getLocalAudio();
 
@@ -1129,15 +1129,12 @@ export async function startOutgoingCall(
     );
 
 
-    // --------------------------------------------
-    // إنشاء Offer
-    // --------------------------------------------
-
     const offer =
         await peerConnection
             .createOffer({
 
-                offerToReceiveAudio:true
+                offerToReceiveAudio:
+                    true
 
             });
 
@@ -1147,10 +1144,6 @@ export async function startOutgoingCall(
             offer
         );
 
-
-    // --------------------------------------------
-    // إنشاء وثيقة المكالمة
-    // --------------------------------------------
 
     await setDoc(
 
@@ -1206,19 +1199,11 @@ export async function startOutgoingCall(
     );
 
 
-    // --------------------------------------------
-    // بدء عداد 30 ثانية
-    // --------------------------------------------
-
     startNoAnswerTimeout(
         callId,
         createdAtMs
     );
 
-
-    // --------------------------------------------
-    // مراقبة المكالمة
-    // --------------------------------------------
 
     unsubscribeCall =
         onSnapshot(
@@ -1238,10 +1223,6 @@ export async function startOutgoingCall(
                     snapshot.data();
 
 
-                // --------------------------------
-                // الهاتف الثاني بدأ يرن فعليًا
-                // --------------------------------
-
                 if(
                     data.status ===
                     "ringing"
@@ -1259,10 +1240,6 @@ export async function startOutgoingCall(
                 }
 
 
-                // --------------------------------
-                // تم الرد
-                // --------------------------------
-
                 if(
                     data.status ===
                     "accepted"
@@ -1273,10 +1250,6 @@ export async function startOutgoingCall(
                 }
 
 
-                // --------------------------------
-                // المكالمة أصبحت متصلة
-                // --------------------------------
-
                 if(
                     data.status ===
                     "connected"
@@ -1286,10 +1259,6 @@ export async function startOutgoingCall(
 
                 }
 
-
-                // --------------------------------
-                // رفض المكالمة
-                // --------------------------------
 
                 if(
                     data.status ===
@@ -1316,15 +1285,11 @@ export async function startOutgoingCall(
 
                     await cleanupCall(
                         callId,
-                        true
+                        false
                     );
 
                 }
 
-
-                // --------------------------------
-                // إنهاء المكالمة
-                // --------------------------------
 
                 if(
                     data.status ===
@@ -1346,10 +1311,6 @@ export async function startOutgoingCall(
 
                 }
 
-
-                // --------------------------------
-                // وصول Answer
-                // --------------------------------
 
                 if(
                     data.answer &&
@@ -1488,9 +1449,7 @@ export async function listenIncomingCalls(){
                         }
 
 
-                        if(
-                            currentCallId
-                        ){
+                        if(currentCallId){
 
                             return;
 
@@ -1548,7 +1507,7 @@ export async function listenIncomingCalls(){
         error => {
 
             console.error(
-                "Incoming calls listener:",
+                "Incoming calls error:",
                 error
             );
 
@@ -1615,10 +1574,8 @@ export async function watchIncomingCall(
 
 
     if(
-        data.status !==
-        "calling" &&
-        data.status !==
-        "ringing"
+        data.status !== "calling" &&
+        data.status !== "ringing"
     ){
 
         throw new Error(
@@ -1628,17 +1585,8 @@ export async function watchIncomingCall(
     }
 
 
-    // --------------------------------------------
-    // تشغيل الميكروفون
-    // --------------------------------------------
-
     await getLocalAudio();
 
-
-    /*
-     نعيد فحص المكالمة بعد إذن الميكروفون
-     حتى لا يظهر "يرن" إذا انتهت المكالمة
-    */
 
     const latestSnapshot =
         await getDoc(
@@ -1646,9 +1594,7 @@ export async function watchIncomingCall(
         );
 
 
-    if(
-        !latestSnapshot.exists()
-    ){
+    if(!latestSnapshot.exists()){
 
         throw new Error(
             "المكالمة انتهت"
@@ -1662,10 +1608,8 @@ export async function watchIncomingCall(
 
 
     if(
-        data.status !==
-        "calling" &&
-        data.status !==
-        "ringing"
+        data.status !== "calling" &&
+        data.status !== "ringing"
     ){
 
         throw new Error(
@@ -1690,10 +1634,6 @@ export async function watchIncomingCall(
     );
 
 
-    // --------------------------------------------
-    // حساب الوقت المتبقي من 30 ثانية
-    // --------------------------------------------
-
     const createdAtMs =
         data.createdAt?.toMillis?.() ||
         Date.now();
@@ -1705,8 +1645,7 @@ export async function watchIncomingCall(
 
 
     if(
-        elapsed >=
-        RING_TIMEOUT
+        elapsed >= RING_TIMEOUT
     ){
 
         await endCall(
@@ -1718,10 +1657,6 @@ export async function watchIncomingCall(
 
     }
 
-
-    // --------------------------------------------
-    // هنا فقط يصبح الهاتف الثاني يرن
-    // --------------------------------------------
 
     await updateDoc(
 
@@ -1750,19 +1685,11 @@ export async function watchIncomingCall(
     }
 
 
-    // --------------------------------------------
-    // تشغيل مهلة الـ30 ثانية
-    // --------------------------------------------
-
     startNoAnswerTimeout(
         callId,
         createdAtMs
     );
 
-
-    // --------------------------------------------
-    // مراقبة المكالمة
-    // --------------------------------------------
 
     unsubscribeCall =
         onSnapshot(
@@ -1781,10 +1708,6 @@ export async function watchIncomingCall(
                 const call =
                     snap.data();
 
-
-                // --------------------------------
-                // المكالمة انتهت
-                // --------------------------------
 
                 if(
                     call.status ===
@@ -1810,10 +1733,6 @@ export async function watchIncomingCall(
                 }
 
 
-                // --------------------------------
-                // رفضت
-                // --------------------------------
-
                 if(
                     call.status ===
                     "rejected"
@@ -1838,10 +1757,6 @@ export async function watchIncomingCall(
                 }
 
 
-                // --------------------------------
-                // تم قبول المكالمة
-                // --------------------------------
-
                 if(
                     call.status ===
                     "accepted"
@@ -1852,12 +1767,9 @@ export async function watchIncomingCall(
                 }
 
 
-                // --------------------------------
-                // وصول Offer
-                // --------------------------------
-
                 if(
                     call.offer &&
+                    peerConnection &&
                     !peerConnection
                         .currentRemoteDescription
                 ){
@@ -1937,10 +1849,8 @@ export async function acceptIncomingCall(
 
 
     if(
-        data.status ===
-        "ended" ||
-        data.status ===
-        "rejected"
+        data.status === "ended" ||
+        data.status === "rejected"
     ){
 
         throw new Error(
@@ -1951,10 +1861,8 @@ export async function acceptIncomingCall(
 
 
     if(
-        data.status !==
-        "calling" &&
-        data.status !==
-        "ringing"
+        data.status !== "calling" &&
+        data.status !== "ringing"
     ){
 
         throw new Error(
@@ -2056,7 +1964,7 @@ export async function acceptIncomingCall(
 
 
 // ============================================================
-// عند اتصال المكالمة فعليًا
+// اتصال فعلي
 // ============================================================
 
 async function markConnected(){
@@ -2071,11 +1979,6 @@ async function markConnected(){
 
     }
 
-
-    /*
-     نتأكد أن الطرف الآخر لم ينهِ المكالمة
-     قبل أن نعتبرها متصلة
-    */
 
     try{
 
@@ -2097,10 +2000,8 @@ async function markConnected(){
 
 
         if(
-            data.status ===
-            "ended" ||
-            data.status ===
-            "rejected"
+            data.status === "ended" ||
+            data.status === "rejected"
         ){
 
             return;
@@ -2133,36 +2034,30 @@ async function markConnected(){
     startTimer();
 
 
-    if(
-        currentCallRef
-    ){
+    try{
 
-        try{
+        await updateDoc(
 
-            await updateDoc(
+            currentCallRef,
 
-                currentCallRef,
+            {
 
-                {
+                status:
+                    "connected",
 
-                    status:
-                        "connected",
+                startedAt:
+                    serverTimestamp()
 
-                    startedAt:
-                        serverTimestamp()
+            }
 
-                }
+        );
 
-            );
+    }catch(error){
 
-        }catch(error){
-
-            console.error(
-                "StartedAt error:",
-                error
-            );
-
-        }
+        console.error(
+            "Connected update error:",
+            error
+        );
 
     }
 
@@ -2198,9 +2093,7 @@ function startTimer(){
     ){
 
         window.onCallTimer(
-            formatDuration(
-                0
-            )
+            formatDuration(0)
         );
 
     }
@@ -2253,7 +2146,7 @@ function stopTimer(){
 
 
 // ============================================================
-// كتم ميكروفون المستخدم
+// كتم الميكروفون
 // ============================================================
 
 export function toggleMute(){
@@ -2297,7 +2190,7 @@ export function toggleMute(){
 
 
 // ============================================================
-// كتم صوت الطرف الآخر
+// كتم الطرف الآخر
 // ============================================================
 
 export function toggleRemoteMute(){
@@ -2313,6 +2206,253 @@ export function toggleRemoteMute(){
 
 
     return false;
+
+}
+
+
+// ============================================================
+// تسجيل سجل المكالمة
+// ============================================================
+
+async function addCallHistoryOnce(
+    callId
+){
+
+    try{
+
+        const callRef =
+            doc(
+                db,
+                "calls",
+                callId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                callRef
+            );
+
+
+        if(!snapshot.exists()){
+
+            return;
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        if(
+            !data.callerId ||
+            !data.calleeId
+        ){
+
+            return;
+
+        }
+
+
+        /*
+         لا نسجل المكالمة إلا بعد انتهائها
+        */
+
+        if(
+            data.status !== "ended" &&
+            data.status !== "rejected"
+        ){
+
+            return;
+
+        }
+
+
+        let duration =
+            Number(
+                data.duration || 0
+            );
+
+
+        if(
+            !Number.isFinite(duration)
+        ){
+
+            duration = 0;
+
+        }
+
+
+        duration =
+            Math.max(
+                0,
+                Math.floor(duration)
+            );
+
+
+        /*
+         تحديد الحالة
+        */
+
+        let callStatus =
+            "completed";
+
+
+        if(
+            data.status === "rejected"
+        ){
+
+            callStatus =
+                "missed";
+
+        }
+
+
+        if(
+            data.status === "ended" &&
+            !data.startedAt &&
+            duration === 0
+        ){
+
+            callStatus =
+                "missed";
+
+        }
+
+
+        /*
+         ID ثابت لرسالة المكالمة
+         حتى لا تتكرر
+        */
+
+        const chatId =
+            [
+
+                data.callerId,
+
+                data.calleeId
+
+            ]
+            .sort()
+            .join("_");
+
+
+        const messageId =
+            "call_" +
+            callId;
+
+
+        const messageRef =
+            doc(
+
+                db,
+
+                "chats",
+
+                chatId,
+
+                "messages",
+
+                messageId
+
+            );
+
+
+        const text =
+            callStatus === "missed"
+            ?
+            "مكالمة فائتة"
+            :
+            "مكالمة صوتية";
+
+
+        await setDoc(
+
+            messageRef,
+
+            {
+
+                type:
+                    "call",
+
+                callStatus:
+                    callStatus,
+
+                callDirection:
+                    "outgoing",
+
+                duration:
+                    duration,
+
+                callerId:
+                    data.callerId,
+
+                receiverId:
+                    data.calleeId,
+
+                senderId:
+                    data.callerId,
+
+                text:
+                    text,
+
+                createdAt:
+                    data.endedAt ||
+                    serverTimestamp()
+
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+
+        /*
+         نضع علامة فقط للمعلومية
+        */
+
+        try{
+
+            await updateDoc(
+
+                callRef,
+
+                {
+
+                    historyAdded:
+                        true
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.warn(
+                "historyAdded update:",
+                error
+            );
+
+        }
+
+
+        console.log(
+            "📞 تم تسجيل سجل المكالمة:",
+            callStatus,
+            duration
+        );
+
+    }catch(error){
+
+        console.error(
+            "Call history error:",
+            error
+        );
+
+    }
 
 }
 
@@ -2357,28 +2497,42 @@ export async function endCall(
             );
 
 
-        if(
-            snapshot.exists()
-        ){
+        if(snapshot.exists()){
 
             const data =
                 snapshot.data();
 
 
-            /*
-             إذا المكالمة لم تصبح connected
-             فهي مكالمة فائتة
-            */
-
             const alreadyFinished =
-                data.status ===
-                    "ended" ||
-
-                data.status ===
-                    "rejected";
+                data.status === "ended" ||
+                data.status === "rejected";
 
 
             if(!alreadyFinished){
+
+                /*
+                 إذا كان أحد الطرفين متصلًا
+                 نحتفظ بأنها مكالمة مكتملة.
+                */
+
+                const wasConnected =
+                    isConnected ||
+                    !!data.startedAt ||
+                    data.status === "connected";
+
+
+                const finalDuration =
+                    wasConnected
+                    ?
+                    Math.max(
+                        timerSeconds,
+                        Number(
+                            data.duration || 0
+                        )
+                    )
+                    :
+                    0;
+
 
                 await updateDoc(
 
@@ -2393,11 +2547,7 @@ export async function endCall(
                             serverTimestamp(),
 
                         duration:
-                            isConnected
-                            ?
-                            timerSeconds
-                            :
-                            0
+                            finalDuration
 
                     }
 
@@ -2418,9 +2568,7 @@ export async function endCall(
 
 
     /*
-     نسجل السجل مباشرة.
-     إذا لم تكن المكالمة متصلة
-     addCallHistoryOnce سيجعلها missed.
+     نسجل سجل المكالمة قبل التنظيف
     */
 
     await addCallHistoryOnce(
@@ -2428,21 +2576,13 @@ export async function endCall(
     );
 
 
-    if(
+    notifyCallEnded(
         reason === "timeout"
-    ){
-
-        notifyCallEnded(
-            "timeout"
-        );
-
-    }else{
-
-        notifyCallEnded(
-            "ended"
-        );
-
-    }
+        ?
+        "timeout"
+        :
+        "ended"
+    );
 
 
     await cleanupCall(
@@ -2529,290 +2669,6 @@ export async function rejectCall(
         id,
         false
     );
-
-}
-
-
-// ============================================================
-// سجل المكالمة داخل المحادثة
-// ============================================================
-
-async function addCallHistoryOnce(
-    callId
-){
-
-    try{
-
-        const callRef =
-            doc(
-                db,
-                "calls",
-                callId
-            );
-
-
-        let shouldCreate =
-            false;
-
-
-        await runTransaction(
-
-            db,
-
-            async transaction => {
-
-                const snap =
-                    await transaction.get(
-                        callRef
-                    );
-
-
-                if(!snap.exists()){
-
-                    return;
-
-                }
-
-
-                const data =
-                    snap.data();
-
-
-                if(
-                    data.historyAdded ===
-                    true
-                ){
-
-                    return;
-
-                }
-
-
-                transaction.update(
-
-                    callRef,
-
-                    {
-
-                        historyAdded:
-                            true
-
-                    }
-
-                );
-
-
-                shouldCreate =
-                    true;
-
-            }
-
-        );
-
-
-        if(!shouldCreate){
-
-            return;
-
-        }
-
-
-        const finalSnapshot =
-            await getDoc(
-                callRef
-            );
-
-
-        if(
-            !finalSnapshot.exists()
-        ){
-
-            return;
-
-        }
-
-
-        const data =
-            finalSnapshot.data();
-
-
-        if(
-            !data ||
-            !data.callerId ||
-            !data.calleeId
-        ){
-
-            return;
-
-        }
-
-
-        const duration =
-            Number(
-                data.duration ||
-                timerSeconds ||
-                0
-            );
-
-
-        let status =
-            "completed";
-
-
-        /*
-         rejected = missed
-        */
-
-        if(
-            data.status ===
-            "rejected"
-        ){
-
-            status =
-                "missed";
-
-        }
-
-
-        /*
-         ended بدون startedAt
-         = المتصل أنهى قبل الرد
-         */
-
-        if(
-            data.status ===
-            "ended" &&
-            !data.startedAt
-        ){
-
-            status =
-                "missed";
-
-        }
-
-
-        /*
-         إذا duration = 0 وما في startedAt
-         نعتبرها فائتة أيضًا
-        */
-
-        if(
-            !data.startedAt &&
-            duration === 0
-        ){
-
-            status =
-                "missed";
-
-        }
-
-
-        const caller =
-            data.callerId;
-
-
-        const callee =
-            data.calleeId;
-
-
-        const chatId =
-            [
-                caller,
-                callee
-            ]
-            .sort()
-            .join("_");
-
-
-        /*
-         direction يخزن حسب المستخدم
-         الذي أنشأ سجل المكالمة.
-         chat.html يستطيع أيضًا الاعتماد
-         على callerId لمعرفة الاتجاه الصحيح.
-        */
-
-        const direction =
-            currentUser?.uid ===
-            caller
-            ?
-            "outgoing"
-            :
-            "incoming";
-
-
-        let text;
-
-
-        if(status === "missed"){
-
-            text =
-                "مكالمة لم يتم الرد عليها";
-
-        }else{
-
-            text =
-                "مكالمة صوتية";
-
-        }
-
-
-        await addDoc(
-
-            collection(
-                db,
-                "chats",
-                chatId,
-                "messages"
-            ),
-
-            {
-
-                type:
-                    "call",
-
-                callStatus:
-                    status,
-
-                callDirection:
-                    direction,
-
-                duration:
-                    duration,
-
-                callerId:
-                    caller,
-
-                receiverId:
-                    callee,
-
-                senderId:
-                    caller,
-
-                text:
-                    text,
-
-                createdAt:
-                    serverTimestamp()
-
-            }
-
-        );
-
-
-        console.log(
-            "📞 تم تسجيل المكالمة:",
-            status,
-            duration
-        );
-
-    }catch(error){
-
-        console.error(
-            "Call history error:",
-            error
-        );
-
-    }
 
 }
 
@@ -2948,11 +2804,6 @@ export async function cleanupCall(
     }
 
 
-    /*
-     يرجع المستخدم للمحادثة
-     بعد انتهاء المكالمة.
-    */
-
     returnToChat();
 
 }
@@ -2970,6 +2821,7 @@ export async function clearIncomingCall(){
     currentCallId =
         null;
 
+
     currentCallRef =
         null;
 
@@ -2977,7 +2829,7 @@ export async function clearIncomingCall(){
 
 
 // ============================================================
-// الحصول على الصوت المحلي
+// الحصول على الصوت
 // ============================================================
 
 export function getLocalStream(){
@@ -3010,7 +2862,7 @@ export function getCallState(){
 
 
 // ============================================================
-// تجهيز المكالمة الواردة تلقائيًا
+// تجهيز الواردة
 // ============================================================
 
 export async function initIncomingCall(
