@@ -6,683 +6,576 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
 
-<meta name="theme-color"
-      content="#050807">
+<meta name="theme-color" content="#050807">
 
 <title>Mecd Chat - مكالمة فيديو</title>
+
 
 <style>
 
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    -webkit-tap-highlight-color:transparent;
+box-sizing:border-box;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color:transparent;
 }
 
 html,
 body{
-    width:100%;
-    height:100%;
-    overflow:hidden;
+
+width:100%;
+height:100%;
+overflow:hidden;
+
 }
 
 body{
 
-    font-family:
-        Arial,
-        Tahoma,
-        sans-serif;
+font-family:
+Arial,
+Tahoma,
+sans-serif;
 
-    color:white;
+background:#020504;
 
-    background:#020504;
+color:white;
 
 }
+
 
 .video-app{
 
-    position:relative;
+position:relative;
 
-    width:100%;
-    height:100dvh;
+width:100%;
 
-    max-width:650px;
+height:100dvh;
 
-    margin:auto;
+max-width:650px;
 
-    overflow:hidden;
+margin:auto;
 
-    background:#020504;
+background:#020504;
+
+overflow:hidden;
 
 }
 
-/* =========================
-   فيديو الطرف الآخر
-========================= */
+
+/* الفيديو البعيد */
 
 .remote-video{
 
-    position:absolute;
+position:absolute;
 
-    inset:0;
+inset:0;
 
-    width:100%;
-    height:100%;
+width:100%;
 
-    object-fit:cover;
+height:100%;
 
-    background:#07110f;
+object-fit:cover;
 
-    z-index:1;
+background:#07110f;
 
-    transition:
-        width .25s ease,
-        height .25s ease,
-        left .25s ease,
-        top .25s ease,
-        border-radius .25s ease;
+z-index:1;
 
 }
 
-/* =========================
-   شاشة الانتظار
-========================= */
+
+/* انتظار */
 
 .remote-placeholder{
 
-    position:absolute;
+position:absolute;
 
-    inset:0;
+inset:0;
 
-    display:flex;
+display:flex;
 
-    flex-direction:column;
+flex-direction:column;
 
-    align-items:center;
+justify-content:center;
 
-    justify-content:center;
+align-items:center;
 
-    text-align:center;
+background:
+radial-gradient(
+circle,
+#123d35,
+#020504
+);
 
-    background:
-        radial-gradient(
-            circle at center,
-            #123d35,
-            #020504 70%
-        );
-
-    z-index:2;
+z-index:2;
 
 }
+
 
 .remote-avatar{
 
-    width:82px;
-    height:82px;
+width:85px;
 
-    border-radius:24px;
+height:85px;
 
-    display:flex;
+border-radius:25px;
 
-    align-items:center;
-    justify-content:center;
+background:#18231f;
 
-    overflow:hidden;
+display:flex;
 
-    background:#18231f;
+justify-content:center;
 
-    font-size:36px;
+align-items:center;
 
-    margin-bottom:12px;
+overflow:hidden;
+
+font-size:35px;
 
 }
+
 
 .remote-avatar img{
 
-    width:100%;
-    height:100%;
+width:100%;
 
-    object-fit:cover;
+height:100%;
+
+object-fit:cover;
 
 }
+
 
 .remote-name{
 
-    font-size:18px;
+margin-top:12px;
 
-    font-weight:bold;
+font-size:18px;
+
+font-weight:bold;
 
 }
+
 
 .call-status{
 
-    margin-top:6px;
+margin-top:5px;
 
-    color:#00e889;
+color:#00e889;
 
-    font-size:12px;
+font-size:13px;
 
 }
 
-/* =========================
-   الشريط العلوي
-========================= */
+
+/* الشريط العلوي */
+
 
 .top-bar{
 
-    position:absolute;
+position:absolute;
 
-    top:0;
-    left:0;
-    right:0;
+top:0;
 
-    min-height:64px;
+left:0;
 
-    padding:
-        max(8px, env(safe-area-inset-top))
-        12px
-        8px;
+right:0;
 
-    display:flex;
+height:65px;
 
-    align-items:center;
+display:flex;
 
-    gap:9px;
+align-items:center;
 
-    background:
-        linear-gradient(
-            180deg,
-            rgba(0,0,0,.72),
-            rgba(0,0,0,0)
-        );
+gap:10px;
 
-    z-index:20;
+padding:10px;
+
+background:
+linear-gradient(
+rgba(0,0,0,.7),
+transparent
+);
+
+z-index:20;
 
 }
+
 
 .back-button{
 
-    width:38px;
-    height:38px;
+width:40px;
 
-    flex-shrink:0;
+height:40px;
 
-    border:0;
+border:0;
 
-    border-radius:12px;
+border-radius:12px;
 
-    background:
-        rgba(24,35,31,.9);
+background:#18231f;
 
-    color:white;
+color:white;
 
-    font-size:19px;
-
-    cursor:pointer;
+font-size:20px;
 
 }
+
 
 .top-info{
 
-    min-width:0;
-
-    flex:1;
+flex:1;
 
 }
+
 
 .top-name{
 
-    font-size:15px;
+font-size:16px;
 
-    font-weight:bold;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
+font-weight:bold;
 
 }
+
 
 .top-status{
 
-    margin-top:2px;
+font-size:12px;
 
-    font-size:11px;
-
-    color:#00e889;
+color:#00e889;
 
 }
 
-/* =========================
-   فيديو المستخدم الصغير
-========================= */
+
+
+/* فيديو المستخدم */
+
 
 .local-video{
 
-    position:absolute;
+position:absolute;
 
-    left:12px;
+left:12px;
 
-    bottom:88px;
+bottom:90px;
 
-    width:92px;
-    height:128px;
+width:95px;
 
-    object-fit:cover;
+height:130px;
 
-    background:#111916;
+object-fit:cover;
 
-    border-radius:15px;
+border-radius:15px;
 
-    border:
-        2px solid
-        rgba(0,232,137,.55);
+border:2px solid #00e889;
 
-    z-index:25;
+background:#111;
 
-    box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.55);
-
-    cursor:pointer;
-
-    transition:
-        all .25s ease;
+z-index:25;
 
 }
 
-/* =========================
-   عند تكبير فيديو المستخدم
-========================= */
 
-.video-app.local-big .local-video{
+/* التحكم */
 
-    left:0;
-    bottom:0;
-
-    width:100%;
-    height:100%;
-
-    border-radius:0;
-
-    border:0;
-
-    z-index:8;
-
-}
-
-.video-app.local-big .remote-video{
-
-    top:12px;
-    right:12px;
-
-    left:auto;
-
-    width:100px;
-    height:140px;
-
-    border-radius:15px;
-
-    z-index:25;
-
-    border:
-        2px solid
-        rgba(0,232,137,.55);
-
-    box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.55);
-
-    cursor:pointer;
-
-}
-
-/* =========================
-   الأزرار
-========================= */
 
 .controls{
 
-    position:absolute;
+position:absolute;
 
-    bottom:
-        max(12px, env(safe-area-inset-bottom));
+bottom:15px;
 
-    left:0;
-    right:0;
+left:0;
 
-    height:58px;
+right:0;
 
-    display:flex;
+height:60px;
 
-    align-items:center;
+display:flex;
 
-    justify-content:center;
+justify-content:center;
 
-    gap:10px;
+align-items:center;
 
-    z-index:40;
+gap:12px;
+
+z-index:40;
 
 }
+
+
+.control-button,
+.end-button{
+
+border:0;
+
+color:white;
+
+cursor:pointer;
+
+}
+
 
 .control-button{
 
-    width:48px;
-    height:48px;
+width:50px;
 
-    flex-shrink:0;
+height:50px;
 
-    border:0;
+border-radius:16px;
 
-    border-radius:16px;
+background:#18231f;
 
-    background:#18231f;
-
-    color:white;
-
-    font-size:19px;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 4px 15px
-        rgba(0,0,0,.4);
+font-size:20px;
 
 }
 
-.control-button:active,
-.end-button:active,
-.back-button:active{
-
-    transform:scale(.94);
-
-}
-
-.control-button.off{
-
-    background:#522626;
-
-}
 
 .end-button{
 
-    width:52px;
-    height:52px;
+width:55px;
 
-    flex-shrink:0;
+height:55px;
 
-    border:0;
+border-radius:20px;
 
-    border-radius:18px;
+background:#e83f3f;
 
-    background:#e83f3f;
-
-    color:white;
-
-    font-size:22px;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 4px 18px
-        rgba(0,0,0,.45);
+font-size:22px;
 
 }
 
-/* =========================
-   التحميل
-========================= */
+
+
+/* تحميل */
+
 
 .loading{
 
-    position:fixed;
+position:fixed;
 
-    inset:0;
+inset:0;
 
-    display:flex;
+background:#020504;
 
-    align-items:center;
+display:flex;
 
-    justify-content:center;
+align-items:center;
 
-    background:#020504;
+justify-content:center;
 
-    color:white;
-
-    font-size:15px;
-
-    z-index:100;
+z-index:100;
 
 }
+
 
 .hidden{
 
-    display:none !important;
+display:none!important;
 
 }
 
-/* =========================
-   الخطأ
-========================= */
+
+
+/* الخطأ */
+
 
 .error-box{
 
-    position:absolute;
+position:absolute;
 
-    left:15px;
-    right:15px;
+left:15px;
 
-    bottom:85px;
+right:15px;
 
-    padding:12px;
+bottom:90px;
 
-    border-radius:14px;
+background:#4b2020;
 
-    background:
-        rgba(70,20,20,.95);
+padding:12px;
 
-    color:#ffb3b3;
+border-radius:14px;
 
-    text-align:center;
+text-align:center;
 
-    font-size:12px;
+font-size:13px;
 
-    z-index:50;
+z-index:60;
 
 }
 
-/* =========================
-   الشاشات الصغيرة
-========================= */
-
-@media(max-width:380px){
-
-    .local-video{
-
-        width:82px;
-        height:115px;
-
-        bottom:84px;
-        left:9px;
-
-        border-radius:13px;
-
-    }
-
-    .control-button{
-
-        width:44px;
-        height:44px;
-
-        font-size:17px;
-
-    }
-
-    .end-button{
-
-        width:48px;
-        height:48px;
-
-        font-size:20px;
-
-    }
-
-    .controls{
-
-        gap:8px;
-
-    }
-
-}
 
 </style>
 
 </head>
 
+
+
 <body>
 
-<div id="loading"
-     class="loading">
 
-    جارٍ تشغيل مكالمة الفيديو...
+<div id="loading"
+class="loading">
+
+جارٍ تشغيل مكالمة الفيديو...
 
 </div>
 
+
+
 <main id="videoApp"
-      class="video-app">
-
-    <!-- فيديو الطرف الآخر -->
-
-    <video id="remoteVideo"
-           class="remote-video"
-           autoplay
-           playsinline>
-    </video>
+class="video-app">
 
 
-    <!-- صورة الطرف الآخر أثناء الانتظار -->
 
-    <div id="remotePlaceholder"
-         class="remote-placeholder">
-
-        <div id="remoteAvatar"
-             class="remote-avatar">
-
-            👤
-
-        </div>
-
-        <div id="remoteName"
-             class="remote-name">
-
-            جارٍ التحميل...
-
-        </div>
-
-        <div id="callStatus"
-             class="call-status">
-
-            جارٍ الاتصال...
-
-        </div>
-
-    </div>
+<video id="remoteVideo"
+class="remote-video"
+autoplay
+playsinline>
+</video>
 
 
-    <!-- الشريط العلوي -->
 
-    <div class="top-bar">
-
-        <button id="backButton"
-                class="back-button"
-                type="button">
-
-            →
-
-        </button>
-
-        <div class="top-info">
-
-            <div id="topName"
-                 class="top-name">
-
-                جارٍ الاتصال...
-
-            </div>
-
-            <div id="topStatus"
-                 class="top-status">
-
-                جارٍ الاتصال...
-
-            </div>
-
-        </div>
-
-    </div>
+<div id="remotePlaceholder"
+class="remote-placeholder">
 
 
-    <!-- فيديو المستخدم -->
+<div id="remoteAvatar"
+class="remote-avatar">
 
-    <video id="localVideo"
-           class="local-video"
-           autoplay
-           muted
-           playsinline>
-    </video>
+👤
+
+</div>
 
 
-    <!-- الخطأ -->
+<div id="remoteName"
+class="remote-name">
 
-    <div id="errorBox"
-         class="error-box hidden">
-    </div>
+جارٍ التحميل...
+
+</div>
 
 
-    <!-- أزرار التحكم -->
+<div id="callStatus"
+class="call-status">
 
-    <div class="controls">
+جارٍ الاتصال...
 
-        <button id="muteButton"
-                class="control-button"
-                type="button">
+</div>
 
-            🎤
 
-        </button>
+</div>
 
-        <button id="cameraButton"
-                class="control-button"
-                type="button">
 
-            📹
 
-        </button>
 
-        <button id="endButton"
-                class="end-button"
-                type="button">
 
-            ☎
+<div class="top-bar">
 
-        </button>
 
-    </div>
+<button id="backButton"
+class="back-button">
+
+←
+
+</button>
+
+
+
+<div class="top-info">
+
+<div id="topName"
+class="top-name">
+
+جارٍ الاتصال...
+
+</div>
+
+
+<div id="topStatus"
+class="top-status">
+
+جارٍ الاتصال...
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<video id="localVideo"
+class="local-video"
+autoplay
+muted
+playsinline>
+</video>
+
+
+
+
+<div id="errorBox"
+class="error-box hidden">
+
+</div>
+
+
+
+
+
+<div class="controls">
+
+
+<button id="muteButton"
+class="control-button">
+
+🎤
+
+</button>
+
+
+
+<button id="cameraButton"
+class="control-button">
+
+📹
+
+</button>
+
+
+
+<button id="endButton"
+class="end-button">
+
+☎
+
+</button>
+
+
+</div>
+
+
 
 </main>
 
 
+
+
+
 <script
-    type="module"
-    src="./Video-call.js?v=3">
+type="module"
+src="./Video-call.js?v=4">
+
 </script>
+
 
 </body>
 
