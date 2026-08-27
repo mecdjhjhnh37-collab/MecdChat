@@ -63,10 +63,12 @@ const firebaseApp =
         firebaseConfig
     );
 
+
 const auth =
     getAuth(
         firebaseApp
     );
+
 
 const db =
     getFirestore(
@@ -112,6 +114,17 @@ let cachedCallerId = null;
 
 
 // ============================================================
+// متغيرات سجل المكالمة
+// ============================================================
+
+let callStartedAt = null;
+
+let callWasConnected = false;
+
+let callMessageCreated = false;
+
+
+// ============================================================
 // ICE
 // ============================================================
 
@@ -154,19 +167,33 @@ const $ =
 
 
 let videoApp;
+
 let loading;
+
 let remoteVideo;
+
 let localVideo;
+
 let remotePlaceholder;
+
 let remoteAvatar;
+
 let remoteName;
+
 let callStatus;
+
 let topName;
+
 let topStatus;
+
 let muteButton;
+
 let cameraButton;
+
 let endButton;
+
 let backButton;
+
 let errorBox;
 
 
@@ -229,11 +256,31 @@ const params =
         window.location.search
     );
 
+
 const friendId =
     params.get("friend");
 
+
 const incomingCallId =
     params.get("call");
+
+
+// ============================================================
+// إنشاء Chat ID
+// ============================================================
+
+function createChatID(a,b){
+
+    return [
+
+        a,
+        b
+
+    ]
+    .sort()
+    .join("_");
+
+}
 
 
 // ============================================================
@@ -261,7 +308,9 @@ function setupVideoSwap(){
 
 
     remoteVideo.addEventListener(
+
         "click",
+
         () => {
 
             if(
@@ -275,10 +324,15 @@ function setupVideoSwap(){
             }
 
         }
+
     );
 
 }
 
+
+// ============================================================
+// تبديل حجم الفيديو
+// ============================================================
 
 function toggleVideoSize(){
 
@@ -287,6 +341,7 @@ function toggleVideoSize(){
         return;
 
     }
+
 
     videoApp.classList.toggle(
         "local-big"
@@ -311,6 +366,7 @@ export async function startVideoCall(
 
     }
 
+
     if(!options.friendId){
 
         throw new Error(
@@ -319,16 +375,19 @@ export async function startVideoCall(
 
     }
 
+
     const url =
         new URL(
             "./Video-call.html",
             window.location.href
         );
 
+
     url.searchParams.set(
         "friend",
         options.friendId
     );
+
 
     if(options.chatId){
 
@@ -338,6 +397,7 @@ export async function startVideoCall(
         );
 
     }
+
 
     window.location.href =
         url.toString();
@@ -354,6 +414,7 @@ function escapeHtml(value){
     return String(value)
 
         .replace(
+
             /[&<>'"]/g,
 
             c => ({
@@ -383,12 +444,14 @@ function setStatus(text){
 
     }
 
+
     if(callStatus){
 
         callStatus.textContent =
             text;
 
     }
+
 
     if(topStatus){
 
@@ -411,11 +474,13 @@ function showError(message){
         message
     );
 
+
     if(!isVideoPage){
 
         return;
 
     }
+
 
     if(loading){
 
@@ -424,6 +489,7 @@ function showError(message){
         );
 
     }
+
 
     if(errorBox){
 
@@ -435,6 +501,7 @@ function showError(message){
         );
 
     }
+
 
     setStatus(
         "تعذر الاتصال"
@@ -457,6 +524,7 @@ async function loadFriend(){
 
     }
 
+
     const snap =
         await getDoc(
 
@@ -468,6 +536,7 @@ async function loadFriend(){
 
         );
 
+
     if(!snap.exists()){
 
         throw new Error(
@@ -476,8 +545,10 @@ async function loadFriend(){
 
     }
 
+
     const data =
         snap.data();
+
 
     friendUser = {
 
@@ -577,6 +648,7 @@ async function getLocalMedia(){
             error
         );
 
+
         throw new Error(
             "لم يتم السماح باستخدام الكاميرا والمايك"
         );
@@ -627,7 +699,12 @@ function createPeerConnection(){
         );
 
 
+    // ========================================================
+    // ICE
+    // ========================================================
+
     peerConnection.onicecandidate =
+
         async event => {
 
             if(
@@ -660,10 +737,15 @@ function createPeerConnection(){
                 await addDoc(
 
                     collection(
+
                         db,
+
                         "videoCalls",
+
                         callId,
+
                         collectionName
+
                     ),
 
                     event.candidate.toJSON()
@@ -684,7 +766,12 @@ function createPeerConnection(){
         };
 
 
+    // ========================================================
+    // Remote Track
+    // ========================================================
+
     peerConnection.ontrack =
+
         event => {
 
             if(
@@ -709,6 +796,18 @@ function createPeerConnection(){
                 }
 
 
+                if(!callStartedAt){
+
+                    callStartedAt =
+                        Date.now();
+
+                }
+
+
+                callWasConnected =
+                    true;
+
+
                 setStatus(
                     "متصل"
                 );
@@ -718,7 +817,12 @@ function createPeerConnection(){
         };
 
 
+    // ========================================================
+    // Connection State
+    // ========================================================
+
     peerConnection.onconnectionstatechange =
+
         () => {
 
             if(!peerConnection){
@@ -740,11 +844,24 @@ function createPeerConnection(){
 
             if(state === "connected"){
 
+                callWasConnected =
+                    true;
+
+
+                if(!callStartedAt){
+
+                    callStartedAt =
+                        Date.now();
+
+                }
+
+
                 setStatus(
                     "متصل"
                 );
 
             }
+
 
             else if(state === "connecting"){
 
@@ -754,6 +871,7 @@ function createPeerConnection(){
 
             }
 
+
             else if(state === "disconnected"){
 
                 setStatus(
@@ -761,6 +879,7 @@ function createPeerConnection(){
                 );
 
             }
+
 
             else if(state === "failed"){
 
@@ -819,8 +938,11 @@ function addLocalTracks(){
                 if(!exists){
 
                     peerConnection.addTrack(
+
                         track,
+
                         localStream
+
                     );
 
                 }
@@ -909,6 +1031,7 @@ function listenCandidates(
 
 
     unsubscribeCandidates =
+
         onSnapshot(
 
             ref,
@@ -916,8 +1039,10 @@ function listenCandidates(
             async snapshot => {
 
                 for(
+
                     const change
                     of snapshot.docChanges()
+
                 ){
 
                     if(
@@ -1004,6 +1129,162 @@ function listenCandidates(
 
 
 // ============================================================
+// 💬 إنشاء رسالة سجل مكالمة الفيديو
+// ============================================================
+
+async function createVideoCallMessage(){
+
+    if(
+        callMessageCreated ||
+        !currentUser ||
+        !friendUser ||
+        !callId
+    ){
+
+        return;
+
+    }
+
+
+    callMessageCreated =
+        true;
+
+
+    const chatID =
+        createChatID(
+
+            currentUser.uid,
+
+            friendUser.uid
+
+        );
+
+
+    let duration = 0;
+
+
+    if(
+        callWasConnected &&
+        callStartedAt
+    ){
+
+        duration =
+            Math.max(
+
+                0,
+
+                Math.floor(
+
+                    (
+                        Date.now() -
+                        callStartedAt
+                    ) / 1000
+
+                )
+
+            );
+
+    }
+
+
+    const callStatus =
+        callWasConnected
+        ?
+        "completed"
+        :
+        "missed";
+
+
+    // نفس ID للطرفين
+    // حتى لا تظهر رسالتان لنفس المكالمة
+
+    const messageId =
+        "videoCall_" +
+        callId;
+
+
+    try{
+
+        await setDoc(
+
+            doc(
+
+                db,
+
+                "chats",
+
+                chatID,
+
+                "messages",
+
+                messageId
+
+            ),
+
+            {
+
+                type:
+                    "call",
+
+                callType:
+                    "video",
+
+                callId:
+                    callId,
+
+                senderId:
+                    currentUser.uid,
+
+                receiverId:
+                    friendUser.uid,
+
+                callerId:
+                    cachedCallerId ||
+                    currentUser.uid,
+
+                duration:
+                    duration,
+
+                callStatus:
+                    callStatus,
+
+                read:
+                    false,
+
+                createdAt:
+                    serverTimestamp()
+
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+
+        console.log(
+            "Video call history saved"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Video call history error:",
+            error
+        );
+
+        callMessageCreated =
+            false;
+
+    }
+
+}
+
+
+// ============================================================
 // المكالمة الصادرة
 // ============================================================
 
@@ -1037,10 +1318,12 @@ async function startOutgoingCall(){
 
     const callRef =
         doc(
+
             collection(
                 db,
                 "videoCalls"
             )
+
         );
 
 
@@ -1119,6 +1402,7 @@ async function startOutgoingCall(){
 
 
     unsubscribeCall =
+
         onSnapshot(
 
             callRef,
@@ -1143,7 +1427,7 @@ async function startOutgoingCall(){
                     "ended"
                 ){
 
-                    finishCall(false);
+                    await finishCall(false);
 
                     return;
 
@@ -1212,9 +1496,13 @@ async function answerIncomingCall(){
 
     const callRef =
         doc(
+
             db,
+
             "videoCalls",
+
             callId
+
         );
 
 
@@ -1427,17 +1715,18 @@ async function answerIncomingCall(){
 
 
     unsubscribeCall =
+
         onSnapshot(
 
             callRef,
 
-            snapshot => {
+            async snapshot => {
 
                 if(
                     !snapshot.exists()
                 ){
 
-                    finishCall(false);
+                    await finishCall(false);
 
                     return;
 
@@ -1453,7 +1742,7 @@ async function answerIncomingCall(){
                     "ended"
                 ){
 
-                    finishCall(false);
+                    await finishCall(false);
 
                 }
 
@@ -1470,7 +1759,7 @@ async function answerIncomingCall(){
 
 
 // ============================================================
-// إنهاء المكالمة
+// ☎️ إنهاء المكالمة
 // ============================================================
 
 async function endCall(){
@@ -1484,6 +1773,11 @@ async function endCall(){
 
     ended =
         true;
+
+
+    // حفظ سجل المكالمة قبل التنظيف
+
+    await createVideoCallMessage();
 
 
     try{
@@ -1533,10 +1827,10 @@ async function endCall(){
 
 
 // ============================================================
-// الطرف الآخر أنهى
+// الطرف الآخر أنهى المكالمة
 // ============================================================
 
-function finishCall(
+async function finishCall(
     goBack = true
 ){
 
@@ -1554,6 +1848,11 @@ function finishCall(
     setStatus(
         "انتهت المكالمة"
     );
+
+
+    // حفظ سجل المكالمة
+
+    await createVideoCallMessage();
 
 
     cleanup();
@@ -1612,6 +1911,9 @@ function cleanup(){
         peerConnection.onicecandidate =
             null;
 
+        peerConnection.onconnectionstatechange =
+            null;
+
         peerConnection.close();
 
         peerConnection =
@@ -1625,9 +1927,15 @@ function cleanup(){
         localStream
             .getTracks()
             .forEach(
-                track =>
-                    track.stop()
+
+                track => {
+
+                    track.stop();
+
+                }
+
             );
+
 
         localStream =
             null;
@@ -1665,6 +1973,10 @@ function setupVideoControls(){
 
     }
 
+
+    // ========================================================
+    // المايك
+    // ========================================================
 
     if(muteButton){
 
@@ -1710,6 +2022,7 @@ function setupVideoControls(){
 
 
                 muteButton.textContent =
+
                     microphoneEnabled
                     ?
                     "🎤"
@@ -1718,8 +2031,11 @@ function setupVideoControls(){
 
 
                 muteButton.classList.toggle(
+
                     "off",
+
                     !microphoneEnabled
+
                 );
 
             }
@@ -1728,6 +2044,10 @@ function setupVideoControls(){
 
     }
 
+
+    // ========================================================
+    // الكاميرا
+    // ========================================================
 
     if(cameraButton){
 
@@ -1773,6 +2093,7 @@ function setupVideoControls(){
 
 
                 cameraButton.textContent =
+
                     cameraEnabled
                     ?
                     "📹"
@@ -1781,8 +2102,11 @@ function setupVideoControls(){
 
 
                 cameraButton.classList.toggle(
+
                     "off",
+
                     !cameraEnabled
+
                 );
 
             }
@@ -1792,25 +2116,43 @@ function setupVideoControls(){
     }
 
 
+    // ========================================================
+    // إنهاء
+    // ========================================================
+
     if(endButton){
 
         endButton.addEventListener(
+
             "click",
+
             endCall
+
         );
 
     }
 
+
+    // ========================================================
+    // رجوع
+    // ========================================================
 
     if(backButton){
 
         backButton.addEventListener(
+
             "click",
+
             endCall
+
         );
 
     }
 
+
+    // ========================================================
+    // عند مغادرة الصفحة
+    // ========================================================
 
     window.addEventListener(
 
@@ -1841,7 +2183,8 @@ function setupVideoControls(){
 
                     }
 
-                ).catch(
+                )
+                .catch(
                     console.error
                 );
 
@@ -1871,6 +2214,7 @@ function initVideoPage(){
 
 
     setupVideoSwap();
+
 
     setupVideoControls();
 
