@@ -477,6 +477,11 @@ async function enableNotifications() {
 
         console.log("FCM Token:", token);
 
+          alert(
+    "FCM Token:\n\n" +
+    token
+);
+
         if (currentUser) {
 
             await setDoc(
