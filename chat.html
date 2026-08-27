@@ -1475,8 +1475,10 @@ function createCallMessageElement(
     icon.className =
         "call-icon";
 
-    icon.textContent =
-        "📞";
+   icon.textContent =
+    data.callType === "video"
+    ? "📹"
+    : "📞"; 
 
     const info =
         document.createElement("div");
