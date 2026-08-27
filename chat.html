@@ -130,10 +130,17 @@ header{
     color:#777;
 
     margin-top:5px;
+
+    transition:.2s;
 }
 
 .user-status.online{
     color:#00e889;
+}
+
+.user-status.typing{
+    color:#00e889;
+    font-weight:bold;
 }
 
 .call-buttons{
@@ -226,13 +233,56 @@ header{
 }
 
 .time{
-    display:block;
+    display:inline-block;
 
     font-size:9px;
 
     opacity:.6;
 
     margin-top:5px;
+}
+
+.message-meta{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:5px;
+
+    margin-top:5px;
+}
+
+.message-status{
+    font-size:12px;
+
+    line-height:1;
+
+    font-weight:bold;
+
+    letter-spacing:-3px;
+
+    direction:ltr;
+
+    display:inline-block;
+
+    min-width:16px;
+
+    transition:.2s;
+}
+
+.message-status.sent{
+    opacity:.65;
+}
+
+.message-status.read{
+    color:#006dff;
+    opacity:1;
+}
+
+.message-status.pending{
+    opacity:.5;
 }
 
 .input-area{
@@ -280,6 +330,10 @@ header{
     outline:none;
 
     font-size:15px;
+}
+
+#messageInput:focus{
+    border-color:#00e889;
 }
 
 #voiceButton,
@@ -398,7 +452,6 @@ header{
 
 }
 
-
 /* ============================================================
    رسالة المكالمة
 ============================================================ */
@@ -511,7 +564,6 @@ header{
     margin-top:6px;
 }
 
-
 /* ============================================================
    الهاتف
 ============================================================ */
@@ -542,9 +594,7 @@ header{
 
 </head>
 
-
 <body>
-
 
 <div id="loading"
      style="
@@ -562,14 +612,11 @@ header{
 
 </div>
 
-
 <main id="app"
       class="app"
       style="display:none;">
 
-
 <header>
-
 
 <button id="backButton"
         class="back"
@@ -579,7 +626,6 @@ header{
 
 </button>
 
-
 <div id="friendAvatar"
      class="avatar">
 
@@ -587,9 +633,7 @@ header{
 
 </div>
 
-
 <div class="user-info">
-
 
 <div id="friendName"
      class="user-name">
@@ -598,7 +642,6 @@ header{
 
 </div>
 
-
 <div id="friendStatus"
      class="user-status">
 
@@ -606,12 +649,9 @@ header{
 
 </div>
 
-
 </div>
 
-
 <div class="call-buttons">
-
 
 <button id="callButton"
         type="button">
@@ -620,7 +660,6 @@ header{
 
 </button>
 
-
 <button id="videoButton"
         type="button">
 
@@ -628,16 +667,12 @@ header{
 
 </button>
 
-
 </div>
-
 
 </header>
 
-
 <div id="messages"
      class="messages">
-
 
 <div class="empty">
 
@@ -649,18 +684,14 @@ header{
 
 </div>
 
-
 </div>
 
-
 <div class="input-area">
-
 
 <input id="messageInput"
        placeholder="اكتب رسالة..."
        autocomplete="off"
        maxlength="2000">
-
 
 <button id="voiceButton"
         type="button">
@@ -669,7 +700,6 @@ header{
 
 </button>
 
-
 <button id="sendButton"
         type="button">
 
@@ -677,12 +707,9 @@ header{
 
 </button>
 
-
 </div>
 
-
 </main>
-
 
 <script type="module">
 
@@ -695,13 +722,11 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
 import {
     getAuth,
     onAuthStateChanged
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 
 import {
     getFirestore,
@@ -719,7 +744,6 @@ import {
     serverTimestamp
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 const firebaseConfig = {
 
@@ -743,28 +767,20 @@ const firebaseConfig = {
 
 };
 
-
 const firebaseApp =
     initializeApp(
         firebaseConfig
     );
-
 
 const auth =
     getAuth(
         firebaseApp
     );
 
-
 const db =
     getFirestore(
         firebaseApp
     );
-
-
-// ============================================================
-// ربط voice.js
-// ============================================================
 
 window.chatDB =
     db;
@@ -778,46 +794,35 @@ const $ =
     id =>
         document.getElementById(id);
 
-
 const messages =
     $("messages");
-
 
 const messageInput =
     $("messageInput");
 
-
 const sendButton =
     $("sendButton");
-
 
 const friendName =
     $("friendName");
 
-
 const friendAvatar =
     $("friendAvatar");
-
 
 const friendStatus =
     $("friendStatus");
 
-
 const backButton =
     $("backButton");
-
 
 const callButton =
     $("callButton");
 
-
 const videoButton =
     $("videoButton");
 
-
 const loading =
     $("loading");
-
 
 const app =
     $("app");
@@ -842,8 +847,17 @@ let unsubscribeMessages =
 let unsubscribeFriendStatus =
     null;
 
+let unsubscribeFriendTyping =
+    null;
+
 let presenceInterval =
     null;
+
+let typingTimer =
+    null;
+
+let typingState =
+    false;
 
 let callModule =
     null;
@@ -862,11 +876,9 @@ async function loadCallSystem(){
                 "./call.js"
             );
 
-
         console.log(
             "Mecd Call system loaded"
         );
-
 
         if(
             typeof callModule.listenIncomingCalls ===
@@ -877,7 +889,6 @@ async function loadCallSystem(){
                 .listenIncomingCalls();
 
         }
-
 
     }catch(error){
 
@@ -900,7 +911,6 @@ function createChatID(a,b){
     return [
 
         a,
-
         b
 
     ]
@@ -919,7 +929,6 @@ function showApp(){
     loading.style.display =
         "none";
 
-
     app.style.display =
         "flex";
 
@@ -936,7 +945,6 @@ function showError(error){
         "Mecd Chat error:",
         error
     );
-
 
     loading.innerHTML =
 
@@ -998,8 +1006,7 @@ function escapeHtml(value){
 // ============================================================
 
 async function updateMyPresence(
-    online =
-        true
+    online = true
 ){
 
     if(!currentUser){
@@ -1007,7 +1014,6 @@ async function updateMyPresence(
         return;
 
     }
-
 
     try{
 
@@ -1053,7 +1059,6 @@ function startPresence(){
         true
     );
 
-
     if(presenceInterval){
 
         clearInterval(
@@ -1061,7 +1066,6 @@ function startPresence(){
         );
 
     }
-
 
     presenceInterval =
         setInterval(
@@ -1101,7 +1105,6 @@ function stopPresence(){
 
     }
 
-
     if(currentUser){
 
         updateMyPresence(
@@ -1125,13 +1128,11 @@ function listenFriendStatus(){
 
     }
 
-
     if(unsubscribeFriendStatus){
 
         unsubscribeFriendStatus();
 
     }
-
 
     const ref =
         doc(
@@ -1139,7 +1140,6 @@ function listenFriendStatus(){
             "users",
             friendUser.uid
         );
-
 
     unsubscribeFriendStatus =
         onSnapshot(
@@ -1155,25 +1155,20 @@ function listenFriendStatus(){
                     friendStatus.textContent =
                         "● غير متصل";
 
-
                     friendStatus.classList.remove(
                         "online"
                     );
-
 
                     return;
 
                 }
 
-
                 const data =
                     snap.data();
-
 
                 const lastSeen =
                     data.lastSeen?.toMillis?.() ||
                     0;
-
 
                 const online =
                     data.online === true &&
@@ -1182,14 +1177,20 @@ function listenFriendStatus(){
                     lastSeen <
                     30000;
 
+                if(
+                    !friendStatus.classList.contains(
+                        "typing"
+                    )
+                ){
 
-                friendStatus.textContent =
-                    online
-                    ?
-                    "● متصل"
-                    :
-                    "● غير متصل";
+                    friendStatus.textContent =
+                        online
+                        ?
+                        "● متصل"
+                        :
+                        "● غير متصل";
 
+                }
 
                 friendStatus.classList.toggle(
                     "online",
@@ -1213,6 +1214,259 @@ function listenFriendStatus(){
 
 
 // ============================================================
+// ✍️ حالة الكتابة - الاستماع
+// ============================================================
+
+function listenFriendTyping(){
+
+    if(!friendUser){
+
+        return;
+
+    }
+
+    if(unsubscribeFriendTyping){
+
+        unsubscribeFriendTyping();
+
+    }
+
+    const typingRef =
+        doc(
+
+            db,
+
+            "chats",
+
+            chatID,
+
+            "typing",
+
+            friendUser.uid
+
+        );
+
+    unsubscribeFriendTyping =
+        onSnapshot(
+
+            typingRef,
+
+            snap => {
+
+                if(
+                    !snap.exists()
+                ){
+
+                    setTypingUI(
+                        false
+                    );
+
+                    return;
+
+                }
+
+                const data =
+                    snap.data();
+
+                const updated =
+                    data.updatedAt?.toMillis?.() ||
+                    0;
+
+                const isFresh =
+                    data.typing === true &&
+                    (
+                        !updated ||
+                        Date.now() -
+                        updated <
+                        5000
+                    );
+
+                setTypingUI(
+                    isFresh
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    "Typing listener error:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+// ============================================================
+// ✍️ واجهة يكتب...
+// ============================================================
+
+function setTypingUI(
+    typing
+){
+
+    if(typing){
+
+        friendStatus.textContent =
+            "يكتب...";
+
+        friendStatus.classList.add(
+            "typing"
+        );
+
+        friendStatus.classList.remove(
+            "online"
+        );
+
+    }else{
+
+        friendStatus.classList.remove(
+            "typing"
+        );
+
+        listenFriendStatus();
+
+    }
+
+}
+
+
+// ============================================================
+// ✍️ تحديث حالة الكتابة
+// ============================================================
+
+async function updateTyping(
+    typing
+){
+
+    if(
+        !currentUser ||
+        !chatID
+    ){
+
+        return;
+
+    }
+
+    if(
+        typingState ===
+        typing
+    ){
+
+        return;
+
+    }
+
+    typingState =
+        typing;
+
+    try{
+
+        await setDoc(
+
+            doc(
+
+                db,
+
+                "chats",
+
+                chatID,
+
+                "typing",
+
+                currentUser.uid
+
+            ),
+
+            {
+
+                typing:
+                    typing,
+
+                updatedAt:
+                    serverTimestamp()
+
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+    }catch(error){
+
+        console.error(
+            "Typing update error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// ✍️ عند الكتابة
+// ============================================================
+
+messageInput.addEventListener(
+
+    "input",
+
+    () => {
+
+        const hasText =
+            messageInput.value.trim()
+                .length > 0;
+
+        if(!hasText){
+
+            clearTimeout(
+                typingTimer
+            );
+
+            updateTyping(
+                false
+            );
+
+            return;
+
+        }
+
+        updateTyping(
+            true
+        );
+
+        clearTimeout(
+            typingTimer
+        );
+
+        typingTimer =
+            setTimeout(
+
+                () => {
+
+                    updateTyping(
+                        false
+                    );
+
+                },
+
+                1500
+
+            );
+
+    }
+
+);
+
+
+// ============================================================
 // تحميل الصديق
 // ============================================================
 
@@ -1223,7 +1477,6 @@ async function loadFriend(){
             location.search
         ).get("friend");
 
-
     if(!id){
 
         throw new Error(
@@ -1231,7 +1484,6 @@ async function loadFriend(){
         );
 
     }
-
 
     const userDoc =
         await getDoc(
@@ -1244,7 +1496,6 @@ async function loadFriend(){
 
         );
 
-
     if(
         !userDoc.exists()
     ){
@@ -1255,10 +1506,8 @@ async function loadFriend(){
 
     }
 
-
     const data =
         userDoc.data();
-
 
     friendUser = {
 
@@ -1275,10 +1524,8 @@ async function loadFriend(){
 
     };
 
-
     friendName.textContent =
         friendUser.name;
-
 
     friendAvatar.innerHTML =
         friendUser.photo
@@ -1295,7 +1542,6 @@ async function loadFriend(){
 
         "👤";
 
-
     chatID =
         createChatID(
 
@@ -1305,22 +1551,17 @@ async function loadFriend(){
 
         );
 
-
     window.chatDB =
         db;
-
 
     window.chatID =
         chatID;
 
-
     window.chatUser =
         currentUser;
 
-
     window.chatFriend =
         friendUser;
-
 
     await setDoc(
 
@@ -1335,7 +1576,6 @@ async function loadFriend(){
             members:[
 
                 currentUser.uid,
-
                 friendUser.uid
 
             ],
@@ -1351,8 +1591,9 @@ async function loadFriend(){
 
     );
 
-
     listenFriendStatus();
+
+    listenFriendTyping();
 
 }
 
@@ -1370,7 +1611,6 @@ function formatCallDuration(
             seconds || 0
         );
 
-
     if(
         !Number.isFinite(
             seconds
@@ -1382,7 +1622,6 @@ function formatCallDuration(
 
     }
 
-
     seconds =
         Math.max(
             0,
@@ -1391,26 +1630,21 @@ function formatCallDuration(
             )
         );
 
-
     const minutes =
         Math.floor(
             seconds / 60
         );
 
-
     const secs =
         seconds % 60;
-
 
     const hours =
         Math.floor(
             minutes / 60
         );
 
-
     const finalMinutes =
         minutes % 60;
-
 
     if(hours > 0){
 
@@ -1432,7 +1666,6 @@ function formatCallDuration(
         );
 
     }
-
 
     return (
 
@@ -1462,11 +1695,6 @@ function createCallMessageElement(
         data.callStatus ||
         "completed";
 
-
-    // ========================================================
-    // تحديد الاتجاه الحقيقي من callerId
-    // ========================================================
-
     const direction =
         data.callerId ===
         currentUser.uid
@@ -1479,16 +1707,13 @@ function createCallMessageElement(
 
         "incoming";
 
-
     const missed =
         status ===
         "missed";
 
-
     box.classList.add(
         "call-message"
     );
-
 
     if(missed){
 
@@ -1498,50 +1723,40 @@ function createCallMessageElement(
 
     }
 
-
     const callBox =
         document.createElement(
             "div"
         );
 
-
     callBox.className =
         "call-box";
-
 
     const icon =
         document.createElement(
             "div"
         );
 
-
     icon.className =
         "call-icon";
 
-
     icon.textContent =
         "📞";
-
 
     const info =
         document.createElement(
             "div"
         );
 
-
     info.className =
         "call-info";
-
 
     const title =
         document.createElement(
             "div"
         );
 
-
     title.className =
         "call-title";
-
 
     if(missed){
 
@@ -1558,9 +1773,7 @@ function createCallMessageElement(
 
             "مكالمة صادرة لم يتم الرد عليها";
 
-    }
-
-    else{
+    }else{
 
         title.textContent =
 
@@ -1577,16 +1790,13 @@ function createCallMessageElement(
 
     }
 
-
     const subtitle =
         document.createElement(
             "div"
         );
 
-
     subtitle.className =
         "call-subtitle";
-
 
     subtitle.textContent =
 
@@ -1600,16 +1810,13 @@ function createCallMessageElement(
 
         "تم الاتصال بنجاح";
 
-
     const duration =
         document.createElement(
             "div"
         );
 
-
     duration.className =
         "call-duration";
-
 
     duration.textContent =
         "⏱️ " +
@@ -1617,16 +1824,13 @@ function createCallMessageElement(
             data.duration
         );
 
-
     const directionText =
         document.createElement(
             "div"
         );
 
-
     directionText.className =
         "call-direction";
-
 
     directionText.textContent =
 
@@ -1641,40 +1845,157 @@ function createCallMessageElement(
 
         "↗ صادرة";
 
-
     info.appendChild(
         title
     );
-
 
     info.appendChild(
         subtitle
     );
 
-
     info.appendChild(
         duration
     );
-
 
     info.appendChild(
         directionText
     );
 
-
     callBox.appendChild(
         icon
     );
-
 
     callBox.appendChild(
         info
     );
 
-
     box.appendChild(
         callBox
     );
+
+}
+
+
+// ============================================================
+// 🔵 حالة الرسالة
+// ============================================================
+
+function createMessageStatus(
+    data
+){
+
+    if(
+        data.senderId !==
+        currentUser.uid
+    ){
+
+        return null;
+
+    }
+
+    const status =
+        data.read === true
+        ?
+        "read"
+        :
+        "sent";
+
+    const statusElement =
+        document.createElement(
+            "span"
+        );
+
+    statusElement.className =
+        "message-status " +
+        status;
+
+    statusElement.textContent =
+        status ===
+        "read"
+        ?
+        "✓✓"
+        :
+        "✓";
+
+    statusElement.title =
+        status ===
+        "read"
+        ?
+        "مقروءة"
+        :
+        "تم الإرسال";
+
+    return statusElement;
+
+}
+
+
+// ============================================================
+// 📖 تعليم الرسالة كمقروءة
+// ============================================================
+
+async function markMessageAsRead(
+    id,
+    data
+){
+
+    if(
+        !currentUser ||
+        data.senderId ===
+        currentUser.uid
+    ){
+
+        return;
+
+    }
+
+    if(
+        data.read ===
+        true
+    ){
+
+        return;
+
+    }
+
+    try{
+
+        await updateDoc(
+
+            doc(
+
+                db,
+
+                "chats",
+
+                chatID,
+
+                "messages",
+
+                id
+
+            ),
+
+            {
+
+                read:
+                    true,
+
+                readAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+    }catch(error){
+
+        console.error(
+            "Read status error:",
+            error
+        );
+
+    }
 
 }
 
@@ -1694,17 +2015,14 @@ function renderMessages(snap){
 
     }
 
-
     const elements =
         renderMessages.elements;
-
 
     const nearBottom =
         messages.scrollHeight -
         messages.scrollTop -
         messages.clientHeight <
         120;
-
 
     function createMessageElement(
         id,
@@ -1725,12 +2043,10 @@ function renderMessages(snap){
 
         }
 
-
         const box =
             document.createElement(
                 "div"
             );
-
 
         box.className =
             "message " +
@@ -1750,7 +2066,6 @@ function renderMessages(snap){
 
             );
 
-
         // ====================================================
         // 📞 مكالمة
         // ====================================================
@@ -1767,7 +2082,6 @@ function renderMessages(snap){
 
         }
 
-
         // ====================================================
         // 🎤 صوت
         // ====================================================
@@ -1782,53 +2096,42 @@ function renderMessages(snap){
                     "audio"
                 );
 
-
             audio.controls =
                 true;
-
 
             audio.src =
                 data.audio ||
                 "";
 
-
             audio.style.width =
                 "230px";
-
 
             audio.style.maxWidth =
                 "100%";
 
-
             box.appendChild(
                 audio
             );
-
 
             const voiceText =
                 document.createElement(
                     "span"
                 );
 
-
             voiceText.textContent =
                 "🎤 رسالة صوتية";
-
 
             voiceText.style.display =
                 "block";
 
-
             voiceText.style.fontSize =
                 "12px";
-
 
             box.appendChild(
                 voiceText
             );
 
         }
-
 
         // ====================================================
         // 💬 نص
@@ -1849,20 +2152,25 @@ function renderMessages(snap){
 
         }
 
+        // ====================================================
+        // الوقت والحالة
+        // ====================================================
 
-        // ====================================================
-        // الوقت
-        // ====================================================
+        const meta =
+            document.createElement(
+                "span"
+            );
+
+        meta.className =
+            "message-meta";
 
         const time =
             document.createElement(
                 "span"
             );
 
-
         time.className =
             "time";
-
 
         if(
             data.createdAt?.toDate
@@ -1890,15 +2198,29 @@ function renderMessages(snap){
 
         }
 
-
-        box.appendChild(
+        meta.appendChild(
             time
         );
 
+        const status =
+            createMessageStatus(
+                data
+            );
+
+        if(status){
+
+            meta.appendChild(
+                status
+            );
+
+        }
+
+        box.appendChild(
+            meta
+        );
 
         // ====================================================
-        // 🔒 مهم:
-        // رسالة المكالمة لا تحتوي على حذف
+        // حذف
         // ====================================================
 
         if(
@@ -1919,7 +2241,6 @@ function renderMessages(snap){
 
         }
 
-
         return box;
 
     }
@@ -1933,10 +2254,33 @@ function renderMessages(snap){
                 const id =
                     change.doc.id;
 
-
                 const data =
                     change.doc.data();
 
+                // ------------------------------------------------
+                // 📖 أي رسالة واردة تظهر = مقروءة
+                // ------------------------------------------------
+
+                if(
+                    change.type ===
+                    "added" ||
+                    change.type ===
+                    "modified"
+                ){
+
+                    if(
+                        data.senderId !==
+                        currentUser.uid
+                    ){
+
+                        markMessageAsRead(
+                            id,
+                            data
+                        );
+
+                    }
+
+                }
 
                 if(
                     change.type ===
@@ -1949,14 +2293,12 @@ function renderMessages(snap){
                             data
                         );
 
-
                     if(element){
 
                         elements.set(
                             id,
                             element
                         );
-
 
                         messages.appendChild(
                             element
@@ -1965,7 +2307,6 @@ function renderMessages(snap){
                     }
 
                 }
-
 
                 else if(
                     change.type ===
@@ -1976,7 +2317,6 @@ function renderMessages(snap){
                         elements.get(
                             id
                         );
-
 
                     if(
                         Array.isArray(
@@ -2002,13 +2342,11 @@ function renderMessages(snap){
 
                     }
 
-
                     const newElement =
                         createMessageElement(
                             id,
                             data
                         );
-
 
                     if(!newElement){
 
@@ -2016,16 +2354,13 @@ function renderMessages(snap){
 
                     }
 
-
                     if(oldElement){
 
                         oldElement.replaceWith(
                             newElement
                         );
 
-                    }
-
-                    else{
+                    }else{
 
                         messages.appendChild(
                             newElement
@@ -2033,14 +2368,12 @@ function renderMessages(snap){
 
                     }
 
-
                     elements.set(
                         id,
                         newElement
                     );
 
                 }
-
 
                 else if(
                     change.type ===
@@ -2051,7 +2384,6 @@ function renderMessages(snap){
                         elements.get(
                             id
                         );
-
 
                     if(element){
 
@@ -2069,18 +2401,15 @@ function renderMessages(snap){
 
         );
 
-
     const realMessages =
         messages.querySelectorAll(
             ".message"
         );
 
-
     const empty =
         messages.querySelector(
             ".empty"
         );
-
 
     if(
         realMessages.length ===
@@ -2094,14 +2423,11 @@ function renderMessages(snap){
                     "div"
                 );
 
-
             emptyBox.className =
                 "empty";
 
-
             emptyBox.innerHTML =
                 "💬<br>ابدأ المحادثة الآن";
-
 
             messages.appendChild(
                 emptyBox
@@ -2109,9 +2435,7 @@ function renderMessages(snap){
 
         }
 
-    }
-
-    else{
+    }else{
 
         if(empty){
 
@@ -2120,7 +2444,6 @@ function renderMessages(snap){
         }
 
     }
-
 
     if(nearBottom){
 
@@ -2152,7 +2475,6 @@ function listenMessages(){
 
     }
 
-
     const ref =
         collection(
 
@@ -2166,7 +2488,6 @@ function listenMessages(){
 
         );
 
-
     const q =
         query(
 
@@ -2178,7 +2499,6 @@ function listenMessages(){
             )
 
         );
-
 
     unsubscribeMessages =
         onSnapshot(
@@ -2210,7 +2530,6 @@ async function sendMessage(){
     const text =
         messageInput.value.trim();
 
-
     if(
         !text ||
         !currentUser ||
@@ -2222,10 +2541,16 @@ async function sendMessage(){
 
     }
 
-
     sendButton.disabled =
         true;
 
+    clearTimeout(
+        typingTimer
+    );
+
+    await updateTyping(
+        false
+    );
 
     try{
 
@@ -2257,6 +2582,13 @@ async function sendMessage(){
                 type:
                     "text",
 
+                // ==============================================
+                // ✓ تم الإرسال
+                // ==============================================
+
+                read:
+                    false,
+
                 createdAt:
                     serverTimestamp()
 
@@ -2264,10 +2596,8 @@ async function sendMessage(){
 
         );
 
-
         messageInput.value =
             "";
-
 
         messageInput.focus();
 
@@ -2280,13 +2610,11 @@ async function sendMessage(){
             error
         );
 
-
         alert(
             "حدث خطأ أثناء إرسال الرسالة"
         );
 
     }
-
 
     sendButton.disabled =
         false;
@@ -2351,7 +2679,6 @@ function addMessageActions(
     let timer =
         null;
 
-
     const cancel = () => {
 
         if(timer){
@@ -2366,7 +2693,6 @@ function addMessageActions(
         }
 
     };
-
 
     element.addEventListener(
 
@@ -2384,9 +2710,7 @@ function addMessageActions(
 
             }
 
-
             cancel();
-
 
             timer =
                 setTimeout(
@@ -2401,24 +2725,20 @@ function addMessageActions(
 
     );
 
-
     element.addEventListener(
         "pointerup",
         cancel
     );
-
 
     element.addEventListener(
         "pointercancel",
         cancel
     );
 
-
     element.addEventListener(
         "pointerleave",
         cancel
     );
-
 
     element.addEventListener(
 
@@ -2434,27 +2754,22 @@ function addMessageActions(
 
     );
 
-
     function showDeleteMenu(){
 
         removeMenus();
-
 
         const menu =
             document.createElement(
                 "div"
             );
 
-
         menu.className =
             "message-menu";
-
 
         const button =
             document.createElement(
                 "button"
             );
-
 
         button.textContent =
 
@@ -2468,7 +2783,6 @@ function addMessageActions(
 
             "🗑️ حذف لدي";
 
-
         button.addEventListener(
 
             "click",
@@ -2476,7 +2790,6 @@ function addMessageActions(
             async e => {
 
                 e.stopPropagation();
-
 
                 try{
 
@@ -2495,16 +2808,13 @@ function addMessageActions(
 
                         );
 
-
                     if(mine){
 
                         await deleteDoc(
                             messageRef
                         );
 
-                    }
-
-                    else{
+                    }else{
 
                         await updateDoc(
 
@@ -2523,7 +2833,6 @@ function addMessageActions(
 
                     }
 
-
                     removeMenus();
 
                 }
@@ -2535,7 +2844,6 @@ function addMessageActions(
                         error
                     );
 
-
                     alert(
                         "حدث خطأ أثناء حذف الرسالة"
                     );
@@ -2546,11 +2854,9 @@ function addMessageActions(
 
         );
 
-
         menu.appendChild(
             button
         );
-
 
         element.appendChild(
             menu
@@ -2602,7 +2908,6 @@ callButton.addEventListener(
 
         }
 
-
         if(!friendUser){
 
             alert(
@@ -2612,7 +2917,6 @@ callButton.addEventListener(
             return;
 
         }
-
 
         try{
 
@@ -2625,7 +2929,6 @@ callButton.addEventListener(
 
             }
 
-
             if(
                 typeof callModule.startCall !==
                 "function"
@@ -2636,7 +2939,6 @@ callButton.addEventListener(
                 );
 
             }
-
 
             await callModule.startCall({
 
@@ -2659,7 +2961,6 @@ callButton.addEventListener(
                 "Call error:",
                 error
             );
-
 
             alert(
 
@@ -2708,12 +3009,19 @@ backButton.addEventListener(
 
     () => {
 
+        clearTimeout(
+            typingTimer
+        );
+
+        updateTyping(
+            false
+        );
+
         if(unsubscribeMessages){
 
             unsubscribeMessages();
 
         }
-
 
         if(unsubscribeFriendStatus){
 
@@ -2721,9 +3029,13 @@ backButton.addEventListener(
 
         }
 
+        if(unsubscribeFriendTyping){
+
+            unsubscribeFriendTyping();
+
+        }
 
         stopPresence();
-
 
         history.back();
 
@@ -2748,7 +3060,6 @@ document.addEventListener(
 
         }
 
-
         if(
             document.visibilityState ===
             "visible"
@@ -2758,11 +3069,27 @@ document.addEventListener(
                 true
             );
 
-        }
+            // إذا عاد المستخدم للمحادثة
+            // يتم تحديث حالة الكتابة إذا كان هناك نص
 
-        else{
+            if(
+                messageInput.value.trim()
+                    .length === 0
+            ){
+
+                updateTyping(
+                    false
+                );
+
+            }
+
+        }else{
 
             updateMyPresence(
+                false
+            );
+
+            updateTyping(
                 false
             );
 
@@ -2789,6 +3116,10 @@ window.addEventListener(
                 false
             );
 
+            updateTyping(
+                false
+            );
+
         }
 
     }
@@ -2812,41 +3143,31 @@ function init(){
 
                 stopPresence();
 
-
                 loading.textContent =
                     "يجب تسجيل الدخول أولاً";
-
 
                 return;
 
             }
 
-
             currentUser =
                 user;
-
 
             window.chatDB =
                 db;
 
-
             window.chatUser =
                 currentUser;
-
 
             try{
 
                 startPresence();
 
-
                 await loadFriend();
-
 
                 listenMessages();
 
-
                 await loadCallSystem();
-
 
                 showApp();
 
@@ -2873,12 +3194,10 @@ init();
 
 </script>
 
-
 <script
     type="module"
     src="./voice.js?v=3">
 </script>
-
 
 </body>
 
