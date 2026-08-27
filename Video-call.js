@@ -1,94 +1,83 @@
 // ============================================================
 // Mecd Chat - Video Call
-// Video-call.js
+// Video-call.js FIXED
 // ============================================================
 
+
 import {
-    initializeApp
+initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
+
 import {
-    getAuth,
-    onAuthStateChanged
+getAuth,
+onAuthStateChanged
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
 import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc,
-    updateDoc,
-    collection,
-    addDoc,
-    onSnapshot,
-    serverTimestamp
+getFirestore,
+doc,
+getDoc,
+setDoc,
+updateDoc,
+collection,
+addDoc,
+onSnapshot,
+serverTimestamp
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// ============================================================
-// Firebase
-// ============================================================
+
+// ================= Firebase =================
+
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+apiKey:
+"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
 
-    authDomain:
-        "mecd-tools.firebaseapp.com",
+authDomain:
+"mecd-tools.firebaseapp.com",
 
-    projectId:
-        "mecd-tools",
+projectId:
+"mecd-tools",
 
-    storageBucket:
-        "mecd-tools.firebasestorage.app",
+storageBucket:
+"mecd-tools.firebasestorage.app",
 
-    messagingSenderId:
-        "643005547408",
+messagingSenderId:
+"643005547408",
 
-    appId:
-        "1:643005547408:web:b1719060ec340dd0e0a915"
+appId:
+"1:643005547408:web:b1719060ec340dd0e0a915"
 
 };
 
 
-const firebaseApp =
-    initializeApp(
-        firebaseConfig
-    );
+
+const app =
+initializeApp(firebaseConfig);
 
 
 const auth =
-    getAuth(
-        firebaseApp
-    );
+getAuth(app);
 
 
 const db =
-    getFirestore(
-        firebaseApp
-    );
+getFirestore(app);
 
 
-// ============================================================
-// صفحة الفيديو
-// ============================================================
-
-const isVideoPage =
-    !!document.getElementById(
-        "remoteVideo"
-    );
 
 
-// ============================================================
-// المتغيرات
-// ============================================================
+// ================= Variables =================
+
 
 let currentUser = null;
 
@@ -100,2282 +89,1654 @@ let peerConnection = null;
 
 let localStream = null;
 
+
 let unsubscribeCall = null;
 
 let unsubscribeCandidates = null;
 
+
+let callerId = null;
+
+
 let ended = false;
 
-let microphoneEnabled = true;
 
-let cameraEnabled = true;
-
-let cachedCallerId = null;
-
-
-// ============================================================
-// متغيرات سجل المكالمة
-// ============================================================
 
 let callStartedAt = null;
 
-let callWasConnected = false;
-
-let callMessageCreated = false;
+let callConnected = false;
 
 
-// ============================================================
-// ICE
-// ============================================================
 
-const pendingCandidates = [];
+// ================= HTML =================
 
-const addedCandidateIds =
-    new Set();
-
-
-// ============================================================
-// WebRTC
-// ============================================================
-
-const rtcConfiguration = {
-
-    iceServers:[
-
-        {
-            urls:
-                "stun:stun.l.google.com:19302"
-        },
-
-        {
-            urls:
-                "stun:stun1.l.google.com:19302"
-        }
-
-    ]
-
-};
-
-
-// ============================================================
-// العناصر
-// ============================================================
 
 const $ =
-    id =>
-        document.getElementById(id);
+id =>
+document.getElementById(id);
 
 
-let videoApp;
 
-let loading;
+const isVideoPage =
+!!$("remoteVideo");
+
+
 
 let remoteVideo;
-
 let localVideo;
-
 let remotePlaceholder;
-
 let remoteAvatar;
-
 let remoteName;
-
-let callStatus;
-
 let topName;
-
 let topStatus;
-
-let muteButton;
-
-let cameraButton;
-
-let endButton;
-
-let backButton;
-
+let callStatus;
+let loading;
 let errorBox;
+
 
 
 if(isVideoPage){
 
-    videoApp =
-        $("videoApp");
 
-    loading =
-        $("loading");
+remoteVideo =
+$("remoteVideo");
 
-    remoteVideo =
-        $("remoteVideo");
 
-    localVideo =
-        $("localVideo");
+localVideo =
+$("localVideo");
 
-    remotePlaceholder =
-        $("remotePlaceholder");
 
-    remoteAvatar =
-        $("remoteAvatar");
+remotePlaceholder =
+$("remotePlaceholder");
 
-    remoteName =
-        $("remoteName");
 
-    callStatus =
-        $("callStatus");
+remoteAvatar =
+$("remoteAvatar");
 
-    topName =
-        $("topName");
 
-    topStatus =
-        $("topStatus");
+remoteName =
+$("remoteName");
 
-    muteButton =
-        $("muteButton");
 
-    cameraButton =
-        $("cameraButton");
+topName =
+$("topName");
 
-    endButton =
-        $("endButton");
 
-    backButton =
-        $("backButton");
+topStatus =
+$("topStatus");
 
-    errorBox =
-        $("errorBox");
+
+callStatus =
+$("callStatus");
+
+
+loading =
+$("loading");
+
+
+errorBox =
+$("errorBox");
 
 }
 
 
-// ============================================================
-// بيانات الرابط
-// ============================================================
+
+// ================= URL =================
+
 
 const params =
-    new URLSearchParams(
-        window.location.search
-    );
+new URLSearchParams(
+window.location.search
+);
+
 
 
 const friendId =
-    params.get("friend");
+params.get("friend");
 
 
-const incomingCallId =
-    params.get("call");
+const incomingCall =
+params.get("call");
 
 
-// ============================================================
-// إنشاء Chat ID
-// ============================================================
 
-function createChatID(a,b){
 
-    return [
+// ================= WebRTC =================
 
-        a,
-        b
 
-    ]
-    .sort()
-    .join("_");
+const rtcConfig = {
 
+
+iceServers:[
+
+
+{
+urls:
+"stun:stun.l.google.com:19302"
+},
+
+
+{
+urls:
+"stun:stun1.l.google.com:19302"
 }
 
 
-// ============================================================
-// تكبير / تصغير الفيديوهات
-// ============================================================
-
-function setupVideoSwap(){
-
-    if(
-        !isVideoPage ||
-        !videoApp ||
-        !localVideo ||
-        !remoteVideo
-    ){
-
-        return;
-
-    }
+]
 
 
-    localVideo.addEventListener(
-        "click",
-        toggleVideoSize
-    );
+};
 
 
-    remoteVideo.addEventListener(
 
-        "click",
+// ================= Status =================
 
-        () => {
-
-            if(
-                videoApp.classList.contains(
-                    "local-big"
-                )
-            ){
-
-                toggleVideoSize();
-
-            }
-
-        }
-
-    );
-
-}
-
-
-// ============================================================
-// تبديل حجم الفيديو
-// ============================================================
-
-function toggleVideoSize(){
-
-    if(!videoApp){
-
-        return;
-
-    }
-
-
-    videoApp.classList.toggle(
-        "local-big"
-    );
-
-}
-
-
-// ============================================================
-// بدء المكالمة من chat.html
-// ============================================================
-
-export async function startVideoCall(
-    options
-){
-
-    if(!options){
-
-        throw new Error(
-            "بيانات المكالمة غير موجودة"
-        );
-
-    }
-
-
-    if(!options.friendId){
-
-        throw new Error(
-            "معرف الصديق غير موجود"
-        );
-
-    }
-
-
-    const url =
-        new URL(
-            "./Video-call.html",
-            window.location.href
-        );
-
-
-    url.searchParams.set(
-        "friend",
-        options.friendId
-    );
-
-
-    if(options.chatId){
-
-        url.searchParams.set(
-            "chat",
-            options.chatId
-        );
-
-    }
-
-
-    window.location.href =
-        url.toString();
-
-}
-
-
-// ============================================================
-// حماية HTML
-// ============================================================
-
-function escapeHtml(value){
-
-    return String(value)
-
-        .replace(
-
-            /[&<>'"]/g,
-
-            c => ({
-
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                "'":"&#39;",
-                '"':"&quot;"
-
-            }[c])
-
-        );
-
-}
-
-
-// ============================================================
-// الحالة
-// ============================================================
 
 function setStatus(text){
 
-    if(!isVideoPage){
 
-        return;
-
-    }
+if(callStatus)
+callStatus.textContent=text;
 
 
-    if(callStatus){
+if(topStatus)
+topStatus.textContent=text;
 
-        callStatus.textContent =
-            text;
-
-    }
-
-
-    if(topStatus){
-
-        topStatus.textContent =
-            text;
-
-    }
 
 }
 
 
-// ============================================================
-// الخطأ
-// ============================================================
-
-function showError(message){
-
-    console.error(
-        "Video call:",
-        message
-    );
 
 
-    if(!isVideoPage){
-
-        return;
-
-    }
+function showError(text){
 
 
-    if(loading){
-
-        loading.classList.add(
-            "hidden"
-        );
-
-    }
+console.error(text);
 
 
-    if(errorBox){
+if(errorBox){
 
-        errorBox.textContent =
-            message;
+errorBox.textContent=text;
 
-        errorBox.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    setStatus(
-        "تعذر الاتصال"
-    );
+errorBox.classList.remove(
+"hidden"
+);
 
 }
 
 
-// ============================================================
-// بيانات الصديق
-// ============================================================
+setStatus(
+"تعذر الاتصال"
+);
+
+
+}
+
+
+
+
+// ================= Friend =================
+
 
 async function loadFriend(){
 
-    if(!friendId){
 
-        throw new Error(
-            "لا يوجد صديق في الرابط"
-        );
+const snap =
+await getDoc(
 
-    }
+doc(
+db,
+"users",
+friendId
+)
 
-
-    const snap =
-        await getDoc(
-
-            doc(
-                db,
-                "users",
-                friendId
-            )
-
-        );
+);
 
 
-    if(!snap.exists()){
 
-        throw new Error(
-            "المستخدم غير موجود"
-        );
+if(!snap.exists()){
 
-    }
-
-
-    const data =
-        snap.data();
-
-
-    friendUser = {
-
-        uid:
-            friendId,
-
-        name:
-            data.name ||
-            "مستخدم Mecd",
-
-        photo:
-            data.photo ||
-            ""
-
-    };
-
-
-    if(remoteName){
-
-        remoteName.textContent =
-            friendUser.name;
-
-    }
-
-
-    if(topName){
-
-        topName.textContent =
-            friendUser.name;
-
-    }
-
-
-    if(
-        friendUser.photo &&
-        remoteAvatar
-    ){
-
-        remoteAvatar.innerHTML =
-
-            '<img src="' +
-            escapeHtml(
-                friendUser.photo
-            ) +
-            '" alt="صورة الحساب">';
-
-    }
+throw new Error(
+"الصديق غير موجود"
+);
 
 }
 
 
-// ============================================================
-// الكاميرا والمايك
-// ============================================================
+
+const data =
+snap.data();
+
+
+
+friendUser={
+
+
+uid:
+friendId,
+
+
+name:
+data.name ||
+"مستخدم Mecd",
+
+
+photo:
+data.photo ||
+""
+
+
+};
+
+
+
+if(remoteName)
+remoteName.textContent =
+friendUser.name;
+
+
+if(topName)
+topName.textContent =
+friendUser.name;
+
+
+
+if(friendUser.photo && remoteAvatar){
+
+
+remoteAvatar.innerHTML =
+
+`
+<img src="${friendUser.photo}">
+`;
+
+
+}
+
+
+}
+// ================= Local Media =================
+
 
 async function getLocalMedia(){
 
-    if(localStream){
 
-        return localStream;
+if(localStream){
 
-    }
-
-
-    if(
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ){
-
-        throw new Error(
-            "المتصفح لا يدعم الكاميرا والمايك"
-        );
-
-    }
-
-
-    try{
-
-        localStream =
-            await navigator
-                .mediaDevices
-                .getUserMedia({
-
-                    video:{
-                        facingMode:"user"
-                    },
-
-                    audio:true
-
-                });
-
-    }
-
-    catch(error){
-
-        console.error(
-            error
-        );
-
-
-        throw new Error(
-            "لم يتم السماح باستخدام الكاميرا والمايك"
-        );
-
-    }
-
-
-    if(localVideo){
-
-        localVideo.srcObject =
-            localStream;
-
-    }
-
-
-    return localStream;
+return localStream;
 
 }
 
 
-// ============================================================
-// Caller ID
-// ============================================================
 
-function getCallerId(){
+try{
 
-    return cachedCallerId;
+
+localStream =
+await navigator.mediaDevices.getUserMedia({
+
+video:{
+
+width:{
+ideal:1280
+},
+
+height:{
+ideal:720
+},
+
+facingMode:
+"user"
+
+},
+
+
+audio:{
+
+echoCancellation:true,
+
+noiseSuppression:true
 
 }
 
 
-// ============================================================
-// PeerConnection
-// ============================================================
+});
 
-function createPeerConnection(){
 
-    if(peerConnection){
 
-        return peerConnection;
+if(localVideo){
 
-    }
+localVideo.srcObject =
+localStream;
 
 
-    peerConnection =
-        new RTCPeerConnection(
-            rtcConfiguration
-        );
-
-
-    // ========================================================
-    // ICE
-    // ========================================================
-
-    peerConnection.onicecandidate =
-
-        async event => {
-
-            if(
-                !event.candidate ||
-                !callId ||
-                !currentUser
-            ){
-
-                return;
-
-            }
-
-
-            const collectionName =
-
-                currentUser.uid ===
-                getCallerId()
-
-                ?
-
-                "callerCandidates"
-
-                :
-
-                "calleeCandidates";
-
-
-            try{
-
-                await addDoc(
-
-                    collection(
-
-                        db,
-
-                        "videoCalls",
-
-                        callId,
-
-                        collectionName
-
-                    ),
-
-                    event.candidate.toJSON()
-
-                );
-
-            }
-
-            catch(error){
-
-                console.error(
-                    "ICE error:",
-                    error
-                );
-
-            }
-
-        };
-
-
-    // ========================================================
-    // Remote Track
-    // ========================================================
-
-    peerConnection.ontrack =
-
-        event => {
-
-            if(
-                event.streams &&
-                event.streams[0]
-            ){
-
-                if(remoteVideo){
-
-                    remoteVideo.srcObject =
-                        event.streams[0];
-
-                }
-
-
-                if(remotePlaceholder){
-
-                    remotePlaceholder.classList.add(
-                        "hidden"
-                    );
-
-                }
-
-
-                if(!callStartedAt){
-
-                    callStartedAt =
-                        Date.now();
-
-                }
-
-
-                callWasConnected =
-                    true;
-
-
-                setStatus(
-                    "متصل"
-                );
-
-            }
-
-        };
-
-
-    // ========================================================
-    // Connection State
-    // ========================================================
-
-    peerConnection.onconnectionstatechange =
-
-        () => {
-
-            if(!peerConnection){
-
-                return;
-
-            }
-
-
-            const state =
-                peerConnection.connectionState;
-
-
-            console.log(
-                "WebRTC:",
-                state
-            );
-
-
-            if(state === "connected"){
-
-                callWasConnected =
-                    true;
-
-
-                if(!callStartedAt){
-
-                    callStartedAt =
-                        Date.now();
-
-                }
-
-
-                setStatus(
-                    "متصل"
-                );
-
-            }
-
-
-            else if(state === "connecting"){
-
-                setStatus(
-                    "جارٍ الاتصال..."
-                );
-
-            }
-
-
-            else if(state === "disconnected"){
-
-                setStatus(
-                    "انقطع الاتصال"
-                );
-
-            }
-
-
-            else if(state === "failed"){
-
-                setStatus(
-                    "فشل الاتصال"
-                );
-
-            }
-
-        };
-
-
-    return peerConnection;
+await localVideo.play()
+.catch(()=>{});
 
 }
 
 
-// ============================================================
-// إضافة Tracks
-// ============================================================
-
-function addLocalTracks(){
-
-    if(
-        !localStream ||
-        !peerConnection
-    ){
-
-        return;
-
-    }
+return localStream;
 
 
-    const senders =
-        peerConnection.getSenders();
+
+}
+
+catch(error){
 
 
-    localStream
-        .getTracks()
-        .forEach(
-
-            track => {
-
-                const exists =
-                    senders.some(
-
-                        sender =>
-
-                            sender.track &&
-                            sender.track.kind ===
-                            track.kind
-
-                    );
+console.error(
+error
+);
 
 
-                if(!exists){
+throw new Error(
+"لم يتم السماح بالكاميرا أو المايك"
+);
 
-                    peerConnection.addTrack(
-
-                        track,
-
-                        localStream
-
-                    );
-
-                }
-
-            }
-
-        );
 
 }
 
 
-// ============================================================
-// ICE المؤجل
-// ============================================================
-
-async function flushPendingCandidates(){
-
-    if(
-        !peerConnection ||
-        !peerConnection.remoteDescription
-    ){
-
-        return;
-
-    }
-
-
-    while(
-        pendingCandidates.length
-    ){
-
-        const candidate =
-            pendingCandidates.shift();
-
-
-        try{
-
-            await peerConnection
-                .addIceCandidate(
-                    candidate
-                );
-
-        }
-
-        catch(error){
-
-            console.error(
-                "Candidate error:",
-                error
-            );
-
-        }
-
-    }
-
 }
 
 
-// ============================================================
-// الاستماع لـ ICE
-// ============================================================
 
-function listenCandidates(
-    collectionName
+
+// ================= Peer =================
+
+
+
+function createPeer(){
+
+
+
+if(peerConnection)
+return;
+
+
+
+peerConnection =
+new RTCPeerConnection(
+rtcConfig
+);
+
+
+
+
+
+peerConnection.onicecandidate =
+async e=>{
+
+
+if(
+!e.candidate ||
+!callId
+)
+return;
+
+
+
+const type =
+currentUser.uid === callerId
+
+?
+"callerCandidates"
+
+:
+"calleeCandidates";
+
+
+
+await addDoc(
+
+collection(
+
+db,
+
+"videoCalls",
+
+callId,
+
+type
+
+),
+
+e.candidate.toJSON()
+
+);
+
+
+};
+
+
+
+
+
+
+peerConnection.ontrack =
+async e=>{
+
+
+if(
+e.streams &&
+e.streams[0]
 ){
 
-    if(unsubscribeCandidates){
 
-        unsubscribeCandidates();
-
-    }
+remoteVideo.srcObject =
+e.streams[0];
 
 
-    const ref =
-        collection(
-
-            db,
-
-            "videoCalls",
-
-            callId,
-
-            collectionName
-
-        );
+await remoteVideo.play()
+.catch(()=>{});
 
 
-    unsubscribeCandidates =
 
-        onSnapshot(
+if(remotePlaceholder)
 
-            ref,
-
-            async snapshot => {
-
-                for(
-
-                    const change
-                    of snapshot.docChanges()
-
-                ){
-
-                    if(
-                        change.type !==
-                        "added"
-                    ){
-
-                        continue;
-
-                    }
+remotePlaceholder.classList.add(
+"hidden"
+);
 
 
-                    if(
-                        addedCandidateIds.has(
-                            change.doc.id
-                        )
-                    ){
 
-                        continue;
-
-                    }
+callConnected =
+true;
 
 
-                    addedCandidateIds.add(
-                        change.doc.id
-                    );
+if(!callStartedAt)
+
+callStartedAt =
+Date.now();
 
 
-                    const candidate =
-                        new RTCIceCandidate(
-                            change.doc.data()
-                        );
+setStatus(
+"متصل"
+);
 
-
-                    if(
-                        peerConnection &&
-                        peerConnection.remoteDescription
-                    ){
-
-                        try{
-
-                            await peerConnection
-                                .addIceCandidate(
-                                    candidate
-                                );
-
-                        }
-
-                        catch(error){
-
-                            console.error(
-                                "ICE add error:",
-                                error
-                            );
-
-                        }
-
-                    }
-
-                    else{
-
-                        pendingCandidates.push(
-                            candidate
-                        );
-
-                    }
-
-                }
-
-            },
-
-            error => {
-
-                console.error(
-                    "ICE listener:",
-                    error
-                );
-
-            }
-
-        );
 
 }
 
 
-// ============================================================
-// 💬 إنشاء رسالة سجل مكالمة الفيديو
-// ============================================================
-
-async function createVideoCallMessage(){
-
-    if(
-        callMessageCreated ||
-        !currentUser ||
-        !friendUser ||
-        !callId
-    ){
-
-        return;
-
-    }
+};
 
 
-    callMessageCreated =
-        true;
 
 
-    const chatID =
-        createChatID(
-
-            currentUser.uid,
-
-            friendUser.uid
-
-        );
 
 
-    let duration = 0;
+peerConnection.onconnectionstatechange =
+()=>{
 
 
-    if(
-        callWasConnected &&
-        callStartedAt
-    ){
-
-        duration =
-            Math.max(
-
-                0,
-
-                Math.floor(
-
-                    (
-                        Date.now() -
-                        callStartedAt
-                    ) / 1000
-
-                )
-
-            );
-
-    }
+console.log(
+peerConnection.connectionState
+);
 
 
-    const callStatus =
-        callWasConnected
-        ?
-        "completed"
-        :
-        "missed";
 
+if(
+peerConnection.connectionState ===
+"connected"
+){
 
-    // نفس ID للطرفين
-    // حتى لا تظهر رسالتان لنفس المكالمة
+callConnected=true;
 
-    const messageId =
-        "videoCall_" +
-        callId;
-
-
-    try{
-
-        await setDoc(
-
-            doc(
-
-                db,
-
-                "chats",
-
-                chatID,
-
-                "messages",
-
-                messageId
-
-            ),
-
-            {
-
-                type:
-                    "call",
-
-                callType:
-                    "video",
-
-                callId:
-                    callId,
-
-                senderId:
-                    currentUser.uid,
-
-                receiverId:
-                    friendUser.uid,
-
-                callerId:
-                    cachedCallerId ||
-                    currentUser.uid,
-
-                duration:
-                    duration,
-
-                callStatus:
-                    callStatus,
-
-                read:
-                    false,
-
-                createdAt:
-                    serverTimestamp()
-
-            },
-
-            {
-                merge:true
-            }
-
-        );
-
-
-        console.log(
-            "Video call history saved"
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            "Video call history error:",
-            error
-        );
-
-        callMessageCreated =
-            false;
-
-    }
+setStatus(
+"متصل"
+);
 
 }
 
 
-// ============================================================
-// المكالمة الصادرة
-// ============================================================
+if(
+peerConnection.connectionState ===
+"failed"
+){
+
+setStatus(
+"فشل الاتصال"
+);
+
+}
+
+
+
+};
+
+
+
+}
+
+
+
+
+
+function addTracks(){
+
+
+if(
+!localStream ||
+!peerConnection
+)
+return;
+
+
+
+localStream
+.getTracks()
+.forEach(
+
+track=>{
+
+
+peerConnection.addTrack(
+
+track,
+
+localStream
+
+);
+
+
+}
+
+);
+
+
+}
+
+
+
+
+
+
+
+// ================= ICE Listener =================
+
+
+
+function listenICE(type){
+
+
+
+const ref =
+collection(
+
+db,
+
+"videoCalls",
+
+callId,
+
+type
+
+);
+
+
+
+
+unsubscribeCandidates =
+
+onSnapshot(
+
+ref,
+
+snapshot=>{
+
+
+snapshot.docChanges()
+.forEach(
+
+async change=>{
+
+
+if(
+change.type !==
+"added"
+)
+return;
+
+
+
+await peerConnection
+.addIceCandidate(
+
+new RTCIceCandidate(
+change.doc.data()
+)
+
+);
+
+
+}
+
+);
+
+
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+// ================= Outgoing =================
+
+
 
 async function startOutgoingCall(){
 
-    if(
-        !currentUser ||
-        !friendUser
-    ){
-
-        throw new Error(
-            "بيانات المكالمة غير مكتملة"
-        );
-
-    }
 
 
-    setStatus(
-        "جارٍ الاتصال..."
-    );
+setStatus(
+"جارٍ الاتصال..."
+);
 
 
-    await getLocalMedia();
+
+await getLocalMedia();
 
 
-    createPeerConnection();
+
+const callRef =
+doc(
+collection(
+db,
+"videoCalls"
+)
+);
 
 
-    addLocalTracks();
+
+callId =
+callRef.id;
 
 
-    const callRef =
-        doc(
 
-            collection(
-                db,
-                "videoCalls"
-            )
-
-        );
+callerId =
+currentUser.uid;
 
 
-    callId =
-        callRef.id;
+
+createPeer();
 
 
-    cachedCallerId =
-        currentUser.uid;
+
+addTracks();
 
 
-    listenCandidates(
-        "calleeCandidates"
-    );
+
+listenICE(
+"calleeCandidates"
+);
 
 
-    const offer =
-        await peerConnection
-            .createOffer({
-
-                offerToReceiveAudio:
-                    true,
-
-                offerToReceiveVideo:
-                    true
-
-            });
 
 
-    await peerConnection
-        .setLocalDescription(
-            offer
-        );
+
+const offer =
+await peerConnection
+.createOffer();
 
 
-    await setDoc(
 
-        callRef,
+await peerConnection
+.setLocalDescription(
+offer
+);
 
-        {
 
-            callerId:
-    currentUser.uid,
+
+
+
+await setDoc(
+
+callRef,
+
+{
+
+
+callerId:
+currentUser.uid,
+
 
 calleeId:
-    friendUser.uid,
+friendUser.uid,
+
+
+callerName:
+currentUser.displayName ||
+"مستخدم Mecd",
+
+
+
+offer:{
+
+
+type:
+offer.type,
+
+
+sdp:
+offer.sdp
+
+
+},
+
+
+
+status:
+"ringing",
+
+
+createdAt:
+serverTimestamp()
+
+
+}
+
+
+);
+
+
+
+
+
+unsubscribeCall =
+
+onSnapshot(
+
+callRef,
+
+async snap=>{
+
+
+if(!snap.exists())
+return;
+
+
+
+const data =
+snap.data();
+
+
+
+
+
+if(
+data.answer &&
+!peerConnection.currentRemoteDescription
+){
+
+
+
+await peerConnection
+.setRemoteDescription(
+
+new RTCSessionDescription(
+data.answer
+)
+
+);
+
+
+
+setStatus(
+"متصل"
+);
+
+
+}
+
+
+
+if(
+data.status==="ended"
+){
+
+endRemote();
+
+}
+
+
+}
+
+);
+
+
+
+setStatus(
+"بانتظار الرد..."
+);
+
+
+
+}
+
+
+
+
+
+
+// ================= Incoming =================
+
+
+
+async function answerCall(){
+
+
+
+callId =
+incomingCall;
+
+
+
+const ref =
+doc(
+
+db,
+
+"videoCalls",
+
+callId
+
+);
+
+
+
+
+const snap =
+await getDoc(ref);
+
+
+
+if(!snap.exists())
+
+throw new Error(
+"المكالمة غير موجودة"
+);
+
+
+
+const data =
+snap.data();
+
+
+
+callerId =
+data.callerId;
+
+
+
+friendUser={
+
+uid:
+data.callerId,
+
+name:
+data.callerName ||
+"مستخدم Mecd"
+
+};
+
+
+
+if(remoteName)
+
+remoteName.textContent =
+friendUser.name;
+
+
+
+await getLocalMedia();
+
+
+
+createPeer();
+
+
+
+addTracks();
+
+
+
+listenICE(
+"callerCandidates"
+);
+
+
+
+
+await peerConnection
+.setRemoteDescription(
+
+new RTCSessionDescription(
+data.offer
+)
+
+);
+
+
+
+const answer =
+await peerConnection
+.createAnswer();
+
+
+
+await peerConnection
+.setLocalDescription(
+answer
+);
+
+
+
+await updateDoc(
+
+ref,
+
+{
+
+
+answer:{
+
+
+type:
+answer.type,
+
+
+sdp:
+answer.sdp
+
+
+},
+
+
+status:
+"connected"
+
+
+}
+
+
+);
+
+
+
+setStatus(
+"متصل"
+);
+
+
+
+}
+// ================= End Call =================
+
+
+async function saveCallHistory(){
+
+
+if(
+!currentUser ||
+!friendUser ||
+!callId
+)
+return;
+
+
+
+const chatId = [
+
+currentUser.uid,
+
+friendUser.uid
+
+]
+.sort()
+.join("_");
+
+
+
+await setDoc(
+
+doc(
+
+db,
+
+"chats",
+
+chatId,
+
+"messages",
+
+"videoCall_"+callId
+
+),
+
+{
+
+
+type:
+"call",
+
+
+callType:
+"video",
+
+
+callId:
+callId,
+
+
+senderId:
+currentUser.uid,
+
 
 receiverId:
-    friendUser.uid,
-
-receiverName:
-    friendUser.name,
-
-            callerName:
-                currentUser.displayName ||
-                currentUser.email ||
-                "مستخدم Mecd",
-
-            callerPhoto:
-                currentUser.photoURL ||
-                "",
-
-            offer:{
-
-                type:
-                    offer.type,
-
-                sdp:
-                    offer.sdp
-
-            },
-
-            status:
-                "ringing",
-
-            createdAt:
-                serverTimestamp()
-
-        }
-
-    );
+friendUser.uid,
 
 
-    unsubscribeCall =
+duration:
 
-        onSnapshot(
+callConnected && callStartedAt
 
-            callRef,
+?
 
-            async snapshot => {
+Math.floor(
+(Date.now()-callStartedAt)
+/1000
+)
 
-                if(
-                    !snapshot.exists()
-                ){
+:
 
-                    return;
-
-                }
-
-
-                const data =
-                    snapshot.data();
+0,
 
 
-                if(
-                    data.status ===
-                    "ended"
-                ){
 
-                    await finishCall(false);
+status:
 
-                    return;
+callConnected
 
-                }
+?
+"completed"
 
+:
 
-                if(
-                    data.answer &&
-                    peerConnection &&
-                    !peerConnection.currentRemoteDescription
-                ){
-
-                    try{
-
-                        await peerConnection
-                            .setRemoteDescription(
-
-                                new RTCSessionDescription(
-                                    data.answer
-                                )
-
-                            );
+"missed",
 
 
-                        await flushPendingCandidates();
 
+createdAt:
+serverTimestamp()
 
-                        setStatus(
-                            "متصل"
-                        );
-
-                    }
-
-                    catch(error){
-
-                        console.error(
-                            "Answer error:",
-                            error
-                        );
-
-                    }
-
-                }
-
-            }
-
-        );
-
-
-    setStatus(
-        "بانتظار الرد..."
-    );
 
 }
 
 
-// ============================================================
-// الرد على المكالمة
-// ============================================================
+);
 
-async function answerIncomingCall(){
-
-    callId =
-        incomingCallId;
-
-
-    const callRef =
-        doc(
-
-            db,
-
-            "videoCalls",
-
-            callId
-
-        );
-
-
-    const callSnap =
-        await getDoc(
-            callRef
-        );
-
-
-    if(!callSnap.exists()){
-
-        throw new Error(
-            "المكالمة غير موجودة أو انتهت"
-        );
-
-    }
-
-
-    const data =
-        callSnap.data();
-
-
-    if(
-        data.status ===
-        "ended"
-    ){
-
-        throw new Error(
-            "المكالمة انتهت"
-        );
-
-    }
-
-
-    cachedCallerId =
-        data.callerId;
-
-
-    if(data.callerId){
-
-        const callerSnap =
-            await getDoc(
-
-                doc(
-                    db,
-                    "users",
-                    data.callerId
-                )
-
-            );
-
-
-        if(callerSnap.exists()){
-
-            const caller =
-                callerSnap.data();
-
-
-            friendUser = {
-
-                uid:
-                    data.callerId,
-
-                name:
-                    caller.name ||
-                    data.callerName ||
-                    "مستخدم Mecd",
-
-                photo:
-                    caller.photo ||
-                    data.callerPhoto ||
-                    ""
-
-            };
-
-        }
-
-        else{
-
-            friendUser = {
-
-                uid:
-                    data.callerId,
-
-                name:
-                    data.callerName ||
-                    "مستخدم Mecd",
-
-                photo:
-                    data.callerPhoto ||
-                    ""
-
-            };
-
-        }
-
-    }
-
-
-    if(friendUser){
-
-        if(remoteName){
-
-            remoteName.textContent =
-                friendUser.name;
-
-        }
-
-
-        if(topName){
-
-            topName.textContent =
-                friendUser.name;
-
-        }
-
-
-        if(
-            friendUser.photo &&
-            remoteAvatar
-        ){
-
-            remoteAvatar.innerHTML =
-
-                '<img src="' +
-                escapeHtml(
-                    friendUser.photo
-                ) +
-                '" alt="صورة الحساب">';
-
-        }
-
-    }
-
-
-    setStatus(
-        "جارٍ الرد..."
-    );
-
-
-    await getLocalMedia();
-
-
-    createPeerConnection();
-
-
-    addLocalTracks();
-
-
-    listenCandidates(
-        "callerCandidates"
-    );
-
-
-    if(!data.offer){
-
-        throw new Error(
-            "بيانات المكالمة ناقصة"
-        );
-
-    }
-
-
-    await peerConnection
-        .setRemoteDescription(
-
-            new RTCSessionDescription(
-                data.offer
-            )
-
-        );
-
-
-    await flushPendingCandidates();
-
-
-    const answer =
-        await peerConnection
-            .createAnswer();
-
-
-    await peerConnection
-        .setLocalDescription(
-            answer
-        );
-
-
-    await updateDoc(
-
-        callRef,
-
-        {
-
-            answer:{
-
-                type:
-                    answer.type,
-
-                sdp:
-                    answer.sdp
-
-            },
-
-            status:
-                "connected"
-
-        }
-
-    );
-
-
-    unsubscribeCall =
-
-        onSnapshot(
-
-            callRef,
-
-            async snapshot => {
-
-                if(
-                    !snapshot.exists()
-                ){
-
-                    await finishCall(false);
-
-                    return;
-
-                }
-
-
-                const call =
-                    snapshot.data();
-
-
-                if(
-                    call.status ===
-                    "ended"
-                ){
-
-                    await finishCall(false);
-
-                }
-
-            }
-
-        );
-
-
-    setStatus(
-        "متصل"
-    );
 
 }
 
 
-// ============================================================
-// ☎️ إنهاء المكالمة
-// ============================================================
+
+
+
 
 async function endCall(){
 
-    if(ended){
-
-        return;
-
-    }
 
 
-    ended =
-        true;
+if(ended)
+return;
 
 
-    // حفظ سجل المكالمة قبل التنظيف
 
-    await createVideoCallMessage();
-
-
-    try{
-
-        if(callId){
-
-            await updateDoc(
-
-                doc(
-                    db,
-                    "videoCalls",
-                    callId
-                ),
-
-                {
-
-                    status:
-                        "ended",
-
-                    endedAt:
-                        serverTimestamp()
-
-                }
-
-            );
-
-        }
-
-    }
-
-    catch(error){
-
-        console.error(
-            "End call error:",
-            error
-        );
-
-    }
+ended=true;
 
 
-    cleanup();
+
+await saveCallHistory()
+.catch(console.error);
 
 
-    window.history.back();
+
+if(callId){
+
+
+await updateDoc(
+
+doc(
+
+db,
+
+"videoCalls",
+
+callId
+
+),
+
+{
+
+
+status:
+"ended",
+
+
+endedAt:
+serverTimestamp()
+
+
+}
+
+)
+.catch(()=>{});
+
 
 }
 
 
-// ============================================================
-// الطرف الآخر أنهى المكالمة
-// ============================================================
 
-async function finishCall(
-    goBack = true
-){
-
-    if(ended){
-
-        return;
-
-    }
+cleanup();
 
 
-    ended =
-        true;
+
+history.back();
 
 
-    setStatus(
-        "انتهت المكالمة"
-    );
-
-
-    // حفظ سجل المكالمة
-
-    await createVideoCallMessage();
-
-
-    cleanup();
-
-
-    if(goBack){
-
-        setTimeout(
-
-            () => {
-
-                window.history.back();
-
-            },
-
-            700
-
-        );
-
-    }
 
 }
 
 
-// ============================================================
-// تنظيف
-// ============================================================
+
+
+
+
+async function endRemote(){
+
+
+if(ended)
+return;
+
+
+ended=true;
+
+
+
+await saveCallHistory()
+.catch(()=>{});
+
+
+cleanup();
+
+
+
+setTimeout(()=>{
+
+history.back();
+
+},700);
+
+
+}
+
+
+
+
+
+
+
+// ================= Cleanup =================
+
+
 
 function cleanup(){
 
-    if(unsubscribeCall){
-
-        unsubscribeCall();
-
-        unsubscribeCall =
-            null;
-
-    }
 
 
-    if(unsubscribeCandidates){
+if(unsubscribeCall){
 
-        unsubscribeCandidates();
+unsubscribeCall();
 
-        unsubscribeCandidates =
-            null;
-
-    }
-
-
-    if(peerConnection){
-
-        peerConnection.ontrack =
-            null;
-
-        peerConnection.onicecandidate =
-            null;
-
-        peerConnection.onconnectionstatechange =
-            null;
-
-        peerConnection.close();
-
-        peerConnection =
-            null;
-
-    }
-
-
-    if(localStream){
-
-        localStream
-            .getTracks()
-            .forEach(
-
-                track => {
-
-                    track.stop();
-
-                }
-
-            );
-
-
-        localStream =
-            null;
-
-    }
-
-
-    if(remoteVideo){
-
-        remoteVideo.srcObject =
-            null;
-
-    }
-
-
-    if(localVideo){
-
-        localVideo.srcObject =
-            null;
-
-    }
+unsubscribeCall=null;
 
 }
 
 
-// ============================================================
-// أزرار التحكم
-// ============================================================
 
-function setupVideoControls(){
+if(unsubscribeCandidates){
 
-    if(!isVideoPage){
+unsubscribeCandidates();
 
-        return;
-
-    }
-
-
-    // ========================================================
-    // المايك
-    // ========================================================
-
-    if(muteButton){
-
-        muteButton.addEventListener(
-
-            "click",
-
-            () => {
-
-                if(!localStream){
-
-                    return;
-
-                }
-
-
-                const tracks =
-                    localStream
-                        .getAudioTracks();
-
-
-                if(!tracks.length){
-
-                    return;
-
-                }
-
-
-                microphoneEnabled =
-                    !microphoneEnabled;
-
-
-                tracks.forEach(
-
-                    track => {
-
-                        track.enabled =
-                            microphoneEnabled;
-
-                    }
-
-                );
-
-
-                muteButton.textContent =
-
-                    microphoneEnabled
-                    ?
-                    "🎤"
-                    :
-                    "🔇";
-
-
-                muteButton.classList.toggle(
-
-                    "off",
-
-                    !microphoneEnabled
-
-                );
-
-            }
-
-        );
-
-    }
-
-
-    // ========================================================
-    // الكاميرا
-    // ========================================================
-
-    if(cameraButton){
-
-        cameraButton.addEventListener(
-
-            "click",
-
-            () => {
-
-                if(!localStream){
-
-                    return;
-
-                }
-
-
-                const tracks =
-                    localStream
-                        .getVideoTracks();
-
-
-                if(!tracks.length){
-
-                    return;
-
-                }
-
-
-                cameraEnabled =
-                    !cameraEnabled;
-
-
-                tracks.forEach(
-
-                    track => {
-
-                        track.enabled =
-                            cameraEnabled;
-
-                    }
-
-                );
-
-
-                cameraButton.textContent =
-
-                    cameraEnabled
-                    ?
-                    "📹"
-                    :
-                    "🚫";
-
-
-                cameraButton.classList.toggle(
-
-                    "off",
-
-                    !cameraEnabled
-
-                );
-
-            }
-
-        );
-
-    }
-
-
-    // ========================================================
-    // إنهاء
-    // ========================================================
-
-    if(endButton){
-
-        endButton.addEventListener(
-
-            "click",
-
-            endCall
-
-        );
-
-    }
-
-
-    // ========================================================
-    // رجوع
-    // ========================================================
-
-    if(backButton){
-
-        backButton.addEventListener(
-
-            "click",
-
-            endCall
-
-        );
-
-    }
-
-
-    // ========================================================
-    // عند مغادرة الصفحة
-    // ========================================================
-
-    window.addEventListener(
-
-        "pagehide",
-
-        () => {
-
-            if(
-                !ended &&
-                callId
-            ){
-
-                updateDoc(
-
-                    doc(
-                        db,
-                        "videoCalls",
-                        callId
-                    ),
-
-                    {
-
-                        status:
-                            "ended",
-
-                        endedAt:
-                            serverTimestamp()
-
-                    }
-
-                )
-                .catch(
-                    console.error
-                );
-
-            }
-
-
-            cleanup();
-
-        }
-
-    );
+unsubscribeCandidates=null;
 
 }
 
 
-// ============================================================
-// تشغيل الصفحة
-// ============================================================
 
-function initVideoPage(){
-
-    if(!isVideoPage){
-
-        return;
-
-    }
+if(peerConnection){
 
 
-    setupVideoSwap();
+peerConnection.close();
 
+peerConnection=null;
 
-    setupVideoControls();
-
-
-    onAuthStateChanged(
-
-        auth,
-
-        async user => {
-
-            if(!user){
-
-                showError(
-                    "يجب تسجيل الدخول أولاً"
-                );
-
-                return;
-
-            }
-
-
-            currentUser =
-                user;
-
-
-            try{
-
-                if(incomingCallId){
-
-                    await answerIncomingCall();
-
-                }
-
-                else{
-
-                    await loadFriend();
-
-                    await startOutgoingCall();
-
-                }
-
-
-                if(loading){
-
-                    loading.classList.add(
-                        "hidden"
-                    );
-
-                }
-
-            }
-
-            catch(error){
-
-                console.error(
-                    "Video init error:",
-                    error
-                );
-
-
-                showError(
-
-                    error?.message ||
-                    "تعذر تشغيل مكالمة الفيديو"
-
-                );
-
-            }
-
-        }
-
-    );
 
 }
+
+
+
+if(localStream){
+
+
+localStream
+.getTracks()
+.forEach(
+
+t=>t.stop()
+
+);
+
+
+localStream=null;
+
+
+}
+
+
+
+if(localVideo)
+
+localVideo.srcObject=null;
+
+
+
+if(remoteVideo)
+
+remoteVideo.srcObject=null;
+
+
+
+}
+
+
+
+
+
+
+
+// ================= Controls =================
+
+
+
+function setupControls(){
+
+
+
+const mute =
+$("muteButton");
+
+const camera =
+$("cameraButton");
+
+const end =
+$("endButton");
+
+const back =
+$("backButton");
+
+
+
+
+
+if(mute){
+
+
+mute.onclick=()=>{
+
+
+if(!localStream)
+return;
+
+
+
+localStream
+.getAudioTracks()
+.forEach(
+
+t=>{
+
+t.enabled =
+!t.enabled;
+
+mute.textContent =
+t.enabled
+?
+"🎤"
+:
+"🔇";
+
+}
+
+);
+
+
+
+};
+
+
+}
+
+
+
+
+
+
+if(camera){
+
+
+camera.onclick=()=>{
+
+
+if(!localStream)
+return;
+
+
+
+localStream
+.getVideoTracks()
+.forEach(
+
+t=>{
+
+t.enabled =
+!t.enabled;
+
+
+camera.textContent =
+t.enabled
+?
+"📹"
+:
+"🚫";
+
+}
+
+);
+
+
+
+};
+
+
+}
+
+
+
+
+
+
+if(end)
+
+end.onclick =
+endCall;
+
+
+
+if(back)
+
+back.onclick =
+endCall;
+
+
+
+}
+
+
+
+
+
+
+
+
+// ================= Incoming Calls =================
+
+
 
 export function listenIncomingCalls(){
 
-    if(!currentUser){
-        return;
-    }
-
-    const q =
-        collection(
-            db,
-            "videoCalls"
-        );
 
 
-    onSnapshot(
-        q,
-        snapshot=>{
-
-            snapshot.docChanges().forEach(
-                change=>{
-
-                    if(change.type !== "added"){
-                        return;
-                    }
+if(!currentUser)
+return;
 
 
-                    const data =
-                        change.doc.data();
+
+onSnapshot(
+
+collection(
+db,
+"videoCalls"
+),
+
+snapshot=>{
 
 
-                    if(
-                        data.calleeId === currentUser.uid &&
-                        data.status === "ringing"
-                    ){
+snapshot.docChanges()
+.forEach(
 
-                        const callId =
-                            change.doc.id;
+change=>{
 
 
-                        const open =
-                            confirm(
-                                "📹 مكالمة فيديو واردة"
-                            );
+if(
+change.type !==
+"added"
+)
+
+return;
 
 
-                        if(open){
 
-                            window.location.href =
-                            "./Video-call.html?call="
-                            + callId;
+const data =
+change.doc.data();
 
-                        }
-                        else{
 
-                            updateDoc(
 
-                                doc(
-                                    db,
-                                    "videoCalls",
-                                    callId
-                                ),
+if(
 
-                                {
-                                    status:"ended"
-                                }
+data.calleeId === currentUser.uid &&
 
-                            );
+data.status==="ringing"
 
-                        }
+){
 
-                    }
 
-                }
-            );
 
-        }
-    );
+const id =
+change.doc.id;
+
+
+
+const accept =
+confirm(
+"📹 مكالمة فيديو واردة"
+);
+
+
+
+if(accept){
+
+
+location.href =
+"./Video-call.html?call="
++
+id;
+
 
 }
-// ============================================================
-// تشغيل
-// ============================================================
 
-initVideoPage();
+else{
+
+
+updateDoc(
+
+doc(
+db,
+"videoCalls",
+id
+),
+
+{
+
+status:"ended"
+
+}
+
+);
+
+
+}
+
+
+
+}
+
+
+
+}
+
+);
+
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ================= Init =================
+
+
+
+function init(){
+
+
+if(!isVideoPage)
+return;
+
+
+
+setupControls();
+
+
+
+onAuthStateChanged(
+
+auth,
+
+async user=>{
+
+
+if(!user){
+
+
+showError(
+"يجب تسجيل الدخول"
+);
+
+
+return;
+
+
+}
+
+
+
+currentUser =
+user;
+
+
+
+try{
+
+
+if(incomingCall){
+
+
+await answerCall();
+
+
+
+}
+
+else{
+
+
+await loadFriend();
+
+
+await startOutgoingCall();
+
+
+
+}
+
+
+
+if(loading)
+
+loading.classList.add(
+"hidden"
+);
+
+
+
+}
+
+catch(e){
+
+
+showError(
+e.message
+);
+
+
+}
+
+
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+init();
+
