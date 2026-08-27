@@ -23,12 +23,7 @@
 
 body{
     height:100vh;
-
-    font-family:
-        Arial,
-        Tahoma,
-        sans-serif;
-
+    font-family:Arial,Tahoma,sans-serif;
     color:white;
 
     background:
@@ -48,13 +43,10 @@ body{
 
 .app{
     height:100vh;
-
     max-width:650px;
-
     margin:auto;
 
     display:flex;
-
     flex-direction:column;
 }
 
@@ -62,7 +54,6 @@ header{
     height:75px;
 
     display:flex;
-
     align-items:center;
 
     gap:12px;
@@ -83,7 +74,6 @@ header{
     height:45px;
 
     border:0;
-
     border-radius:15px;
 
     background:#18231f;
@@ -104,9 +94,7 @@ header{
     background:#12352c;
 
     display:flex;
-
     align-items:center;
-
     justify-content:center;
 
     overflow:hidden;
@@ -119,25 +107,20 @@ header{
 .avatar img{
     width:100%;
     height:100%;
-
     object-fit:cover;
 }
 
 .user-info{
     flex:1;
-
     min-width:0;
 }
 
 .user-name{
     font-size:17px;
-
     font-weight:bold;
 
     white-space:nowrap;
-
     overflow:hidden;
-
     text-overflow:ellipsis;
 }
 
@@ -155,9 +138,7 @@ header{
 
 .call-buttons{
     display:flex;
-
     gap:8px;
-
     flex-shrink:0;
 }
 
@@ -166,7 +147,6 @@ header{
     height:42px;
 
     border:0;
-
     border-radius:14px;
 
     background:#18231f;
@@ -189,13 +169,9 @@ header{
 
     overflow-y:auto;
 
-    padding:
-        20px
-        15px
-        150px;
+    padding:20px 15px 150px;
 
     display:flex;
-
     flex-direction:column;
 
     gap:10px;
@@ -424,7 +400,7 @@ header{
 
 
 /* ============================================================
-   📞 رسالة المكالمة
+   🎧 رسالة المكالمة
 ============================================================ */
 
 .call-message{
@@ -432,23 +408,18 @@ header{
 
     max-width:310px;
 
-    padding:
-        10px
-        12px
-        !important;
+    padding:10px 12px !important;
 
     overflow:visible;
 }
 
 .call-message.mine{
     background:#00c96b;
-
     color:#00150e;
 }
 
 .call-message.other{
     background:#18231f;
-
     color:white;
 }
 
@@ -471,7 +442,6 @@ header{
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
     flex-shrink:0;
@@ -543,14 +513,13 @@ header{
 
 
 /* ============================================================
-   الهاتف
+   📱 تحسين الهاتف
 ============================================================ */
 
 @media(max-width:500px){
 
     .call-message{
         min-width:225px;
-
         max-width:85%;
     }
 
@@ -718,37 +687,56 @@ header{
 <script type="module">
 
 
-// ============================================================
-// Firebase
-// ============================================================
+/* =========================================
+   Firebase
+========================================= */
 
 import {
+
     initializeApp
+
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
+
     getAuth,
+
     onAuthStateChanged
+
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
+
     getFirestore,
+
     doc,
+
     getDoc,
+
     setDoc,
+
     collection,
+
     query,
+
     orderBy,
+
     onSnapshot,
+
     addDoc,
+
     deleteDoc,
+
     updateDoc,
+
     arrayUnion,
+
     serverTimestamp
+
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
@@ -794,17 +782,17 @@ const db =
     );
 
 
-// ============================================================
-// ربط نظام المكالمات
-// ============================================================
+/* =========================================
+   ⭐ مهم جداً للـ voice.js
+========================================= */
 
 window.chatDB =
     db;
 
 
-// ============================================================
-// العناصر
-// ============================================================
+/* =========================================
+   العناصر
+========================================= */
 
 const $ =
     id =>
@@ -814,66 +802,82 @@ const $ =
 const messages =
     $("messages");
 
+
 const messageInput =
     $("messageInput");
+
 
 const sendButton =
     $("sendButton");
 
+
 const friendName =
     $("friendName");
+
 
 const friendAvatar =
     $("friendAvatar");
 
+
 const friendStatus =
     $("friendStatus");
+
 
 const backButton =
     $("backButton");
 
+
 const callButton =
     $("callButton");
+
 
 const videoButton =
     $("videoButton");
 
+
 const loading =
     $("loading");
+
 
 const app =
     $("app");
 
 
-// ============================================================
-// المتغيرات
-// ============================================================
+/* =========================================
+   المتغيرات
+========================================= */
 
 let currentUser =
     null;
 
+
 let friendUser =
     null;
+
 
 let chatID =
     null;
 
+
 let unsubscribeMessages =
     null;
+
 
 let unsubscribeFriendStatus =
     null;
 
+
 let presenceInterval =
     null;
+
 
 let callModule =
     null;
 
 
-// ============================================================
-// تحميل نظام المكالمات
-// ============================================================
+/* =========================================
+   نظام المكالمات
+========================================= */
 
 async function loadCallSystem(){
 
@@ -891,14 +895,21 @@ async function loadCallSystem(){
 
 
         if(
-            typeof callModule.listenIncomingCalls ===
+            typeof
+            callModule.listenIncomingCalls ===
             "function"
         ){
 
             await callModule
                 .listenIncomingCalls();
 
+
+            console.log(
+                "Incoming calls listener started"
+            );
+
         }
+
 
     }catch(error){
 
@@ -912,15 +923,16 @@ async function loadCallSystem(){
 }
 
 
-// ============================================================
-// Chat ID
-// ============================================================
+/* =========================================
+   إنشاء Chat ID
+========================================= */
 
 function createChatID(a,b){
 
     return [
 
         a,
+
         b
 
     ]
@@ -930,14 +942,15 @@ function createChatID(a,b){
 }
 
 
-// ============================================================
-// إظهار التطبيق
-// ============================================================
+/* =========================================
+   إظهار التطبيق
+========================================= */
 
 function showApp(){
 
     loading.style.display =
         "none";
+
 
     app.style.display =
         "flex";
@@ -945,9 +958,9 @@ function showApp(){
 }
 
 
-// ============================================================
-// الخطأ
-// ============================================================
+/* =========================================
+   الخطأ
+========================================= */
 
 function showError(error){
 
@@ -977,9 +990,9 @@ function showError(error){
 }
 
 
-// ============================================================
-// حماية HTML
-// ============================================================
+/* =========================================
+   حماية النص
+========================================= */
 
 function escapeHtml(value){
 
@@ -1012,19 +1025,16 @@ function escapeHtml(value){
 }
 
 
-// ============================================================
-// Presence
-// ============================================================
+/* =========================================
+   Presence
+========================================= */
 
 async function updateMyPresence(
     online=true
 ){
 
-    if(!currentUser){
-
+    if(!currentUser)
         return;
-
-    }
 
 
     try{
@@ -1067,7 +1077,9 @@ async function updateMyPresence(
 
 function startPresence(){
 
-    updateMyPresence(true);
+    updateMyPresence(
+        true
+    );
 
 
     if(presenceInterval){
@@ -1129,17 +1141,14 @@ function stopPresence(){
 }
 
 
-// ============================================================
-// حالة الصديق
-// ============================================================
+/* =========================================
+   حالة الصديق
+========================================= */
 
 function listenFriendStatus(){
 
-    if(!friendUser){
-
+    if(!friendUser)
         return;
-
-    }
 
 
     if(unsubscribeFriendStatus){
@@ -1169,9 +1178,11 @@ function listenFriendStatus(){
                     friendStatus.textContent =
                         "● غير متصل";
 
+
                     friendStatus.classList.remove(
                         "online"
                     );
+
 
                     return;
 
@@ -1190,9 +1201,7 @@ function listenFriendStatus(){
                 const online =
                     data.online === true &&
                     lastSeen > 0 &&
-                    Date.now() -
-                    lastSeen <
-                    30000;
+                    Date.now() - lastSeen < 30000;
 
 
                 friendStatus.textContent =
@@ -1224,9 +1233,9 @@ function listenFriendStatus(){
 }
 
 
-// ============================================================
-// تحميل الصديق
-// ============================================================
+/* =========================================
+   تحميل الصديق
+========================================= */
 
 async function loadFriend(){
 
@@ -1319,11 +1328,14 @@ async function loadFriend(){
     window.chatDB =
         db;
 
+
     window.chatID =
         chatID;
 
+
     window.chatUser =
         currentUser;
+
 
     window.chatFriend =
         friendUser;
@@ -1361,9 +1373,9 @@ async function loadFriend(){
 }
 
 
-// ============================================================
-// مدة المكالمة
-// ============================================================
+/* =========================================
+   ⏱️ تنسيق مدة المكالمة
+========================================= */
 
 function formatCallDuration(
     seconds
@@ -1376,10 +1388,13 @@ function formatCallDuration(
 
 
     if(
-        !Number.isFinite(seconds)
+        !Number.isFinite(
+            seconds
+        )
     ){
 
-        seconds = 0;
+        seconds =
+            0;
 
     }
 
@@ -1387,7 +1402,9 @@ function formatCallDuration(
     seconds =
         Math.max(
             0,
-            Math.floor(seconds)
+            Math.floor(
+                seconds
+            )
         );
 
 
@@ -1448,9 +1465,9 @@ function formatCallDuration(
 }
 
 
-// ============================================================
-// رسالة المكالمة
-// ============================================================
+/* =========================================
+   📞 إنشاء رسالة مكالمة
+========================================= */
 
 function createCallMessageElement(
     box,
@@ -1462,48 +1479,13 @@ function createCallMessageElement(
         "completed";
 
 
-    /*
-     الاتجاه الحقيقي يعتمد على callerId
-     وليس على الشخص الذي أنشأ سجل الرسالة.
-    */
-
-    let direction;
-
-
-    if(
-        data.callerId &&
-        currentUser
-    ){
-
-        direction =
-            data.callerId ===
-            currentUser.uid
-
-            ?
-
-            "outgoing"
-
-            :
-
-            "incoming";
-
-    }
-
-    else{
-
-        direction =
-            data.callDirection ===
-            "incoming"
-
-            ?
-
-            "incoming"
-
-            :
-
-            "outgoing";
-
-    }
+    const direction =
+        data.callDirection ===
+        "incoming"
+        ?
+        "incoming"
+        :
+        "outgoing";
 
 
     const missed =
@@ -1572,14 +1554,30 @@ function createCallMessageElement(
     if(missed){
 
         title.textContent =
-            "مكالمة فائتة";
+            direction === "incoming"
+
+            ?
+
+            "مكالمة واردة لم يتم الرد عليها"
+
+            :
+
+            "مكالمة صادرة لم يتم الرد عليها";
 
     }
 
     else{
 
         title.textContent =
-            "مكالمة صوتية";
+            direction === "incoming"
+
+            ?
+
+            "مكالمة واردة"
+
+            :
+
+            "مكالمة صادرة";
 
     }
 
@@ -1597,30 +1595,14 @@ function createCallMessageElement(
     if(missed){
 
         subtitle.textContent =
-            direction === "incoming"
-
-            ?
-
-            "مكالمة واردة لم يتم الرد عليها"
-
-            :
-
-            "مكالمة صادرة لم يتم الرد عليها";
+            "لم يتم الرد";
 
     }
 
     else{
 
         subtitle.textContent =
-            direction === "incoming"
-
-            ?
-
-            "مكالمة واردة"
-
-            :
-
-            "مكالمة صادرة";
+            "تم الاتصال بنجاح";
 
     }
 
@@ -1701,9 +1683,9 @@ function createCallMessageElement(
 }
 
 
-// ============================================================
-// الرسائل
-// ============================================================
+/* =========================================
+   الرسائل
+========================================= */
 
 function renderMessages(snap){
 
@@ -1771,9 +1753,9 @@ function renderMessages(snap){
             );
 
 
-        // ====================================================
-        // 📞 مكالمة
-        // ====================================================
+        /* =================================
+           📞 رسالة مكالمة
+        ================================= */
 
         if(
             data.type ===
@@ -1788,9 +1770,9 @@ function renderMessages(snap){
         }
 
 
-        // ====================================================
-        // 🎤 صوت
-        // ====================================================
+        /* =================================
+           🎤 رسالة صوتية
+        ================================= */
 
         else if(
             data.type ===
@@ -1850,9 +1832,9 @@ function renderMessages(snap){
         }
 
 
-        // ====================================================
-        // 💬 رسالة عادية
-        // ====================================================
+        /* =================================
+           💬 رسالة عادية
+        ================================= */
 
         else{
 
@@ -1869,10 +1851,6 @@ function renderMessages(snap){
 
         }
 
-
-        // ====================================================
-        // الوقت
-        // ====================================================
 
         const time =
             document.createElement(
@@ -1891,22 +1869,22 @@ function renderMessages(snap){
             time.textContent =
 
                 data.createdAt
-                    .toDate()
-                    .toLocaleTimeString(
+                .toDate()
+                .toLocaleTimeString(
 
-                        "ar",
+                    "ar",
 
-                        {
+                    {
 
-                            hour:
-                                "2-digit",
+                        hour:
+                            "2-digit",
 
-                            minute:
-                                "2-digit"
+                        minute:
+                            "2-digit"
 
-                        }
+                    }
 
-                    );
+                );
 
         }
 
@@ -1916,10 +1894,10 @@ function renderMessages(snap){
         );
 
 
-        // ====================================================
-        // مهم جدًا:
-        // رسالة المكالمة بدون حذف
-        // ====================================================
+        /* =================================
+           🚫 الحذف
+           رسائل المكالمات مستثناة
+        ================================= */
 
         if(
             data.type !==
@@ -2030,11 +2008,8 @@ function renderMessages(snap){
                         );
 
 
-                    if(!newElement){
-
+                    if(!newElement)
                         return;
-
-                    }
 
 
                     if(oldElement){
@@ -2160,9 +2135,9 @@ function renderMessages(snap){
 }
 
 
-// ============================================================
-// استقبال الرسائل
-// ============================================================
+/* =========================================
+   استقبال الرسائل
+========================================= */
 
 function listenMessages(){
 
@@ -2221,9 +2196,9 @@ function listenMessages(){
 }
 
 
-// ============================================================
-// إرسال رسالة
-// ============================================================
+/* =========================================
+   إرسال الرسالة
+========================================= */
 
 async function sendMessage(){
 
@@ -2342,9 +2317,9 @@ messageInput.addEventListener(
 );
 
 
-// ============================================================
-// حذف الرسائل العادية
-// ============================================================
+/* =========================================
+   حذف الرسائل العادية فقط
+========================================= */
 
 function removeMenus(){
 
@@ -2423,20 +2398,29 @@ function addMessageActions(
 
 
     element.addEventListener(
+
         "pointerup",
+
         cancel
+
     );
 
 
     element.addEventListener(
+
         "pointercancel",
+
         cancel
+
     );
 
 
     element.addEventListener(
+
         "pointerleave",
+
         cancel
+
     );
 
 
@@ -2602,9 +2586,9 @@ document.addEventListener(
 );
 
 
-// ============================================================
-// 📞 الاتصال
-// ============================================================
+/* =========================================
+   📞 المكالمة الصوتية
+========================================= */
 
 callButton.addEventListener(
 
@@ -2647,12 +2631,13 @@ callButton.addEventListener(
 
 
             if(
-                typeof callModule.startCall !==
+                typeof
+                callModule.startCall !==
                 "function"
             ){
 
                 throw new Error(
-                    "startCall غير موجودة"
+                    "startCall غير موجودة في call.js"
                 );
 
             }
@@ -2699,9 +2684,9 @@ callButton.addEventListener(
 );
 
 
-// ============================================================
-// فيديو
-// ============================================================
+/* =========================================
+   فيديو
+========================================= */
 
 videoButton.addEventListener(
 
@@ -2718,9 +2703,9 @@ videoButton.addEventListener(
 );
 
 
-// ============================================================
-// رجوع
-// ============================================================
+/* =========================================
+   الرجوع
+========================================= */
 
 backButton.addEventListener(
 
@@ -2752,9 +2737,9 @@ backButton.addEventListener(
 );
 
 
-// ============================================================
-// Visibility
-// ============================================================
+/* =========================================
+   Visibility
+========================================= */
 
 document.addEventListener(
 
@@ -2762,11 +2747,8 @@ document.addEventListener(
 
     () => {
 
-        if(!currentUser){
-
+        if(!currentUser)
             return;
-
-        }
 
 
         if(
@@ -2793,9 +2775,9 @@ document.addEventListener(
 );
 
 
-// ============================================================
-// مغادرة الصفحة
-// ============================================================
+/* =========================================
+   مغادرة الصفحة
+========================================= */
 
 window.addEventListener(
 
@@ -2816,9 +2798,9 @@ window.addEventListener(
 );
 
 
-// ============================================================
-// التشغيل
-// ============================================================
+/* =========================================
+   تشغيل
+========================================= */
 
 function init(){
 
@@ -2891,12 +2873,13 @@ function init(){
 
 init();
 
+
 </script>
 
 
-<!-- =========================================================
-     الرسائل الصوتية
-========================================================= -->
+<!-- =========================================
+     نظام الرسائل الصوتية
+========================================= -->
 
 <script
     type="module"
