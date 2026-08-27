@@ -2,13 +2,19 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#050807">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#050807">
 
 <title>Mecd Chat</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
@@ -19,9 +25,19 @@ body{
     height:100vh;
     font-family:Arial,Tahoma,sans-serif;
     color:white;
+
     background:
-        radial-gradient(circle at top,#123d35,transparent 40%),
-        linear-gradient(180deg,#07110f,#020504);
+        radial-gradient(
+            circle at top,
+            #123d35,
+            transparent 40%
+        ),
+        linear-gradient(
+            180deg,
+            #07110f,
+            #020504
+        );
+
     overflow:hidden;
 }
 
@@ -29,42 +45,62 @@ body{
     height:100vh;
     max-width:650px;
     margin:auto;
+
     display:flex;
     flex-direction:column;
 }
 
 header{
     height:75px;
+
     display:flex;
     align-items:center;
+
     gap:12px;
+
     padding:12px 15px;
+
     background:#050807;
-    border-bottom:1px solid rgba(255,255,255,.08);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+
     flex-shrink:0;
 }
 
 .back{
     width:45px;
     height:45px;
+
     border:0;
     border-radius:15px;
+
     background:#18231f;
+
     color:white;
+
     font-size:22px;
+
     cursor:pointer;
 }
 
 .avatar{
     width:48px;
     height:48px;
+
     border-radius:16px;
+
     background:#12352c;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     overflow:hidden;
+
     font-size:24px;
+
     flex-shrink:0;
 }
 
@@ -82,6 +118,7 @@ header{
 .user-name{
     font-size:17px;
     font-weight:bold;
+
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -89,7 +126,9 @@ header{
 
 .user-status{
     font-size:12px;
+
     color:#777;
+
     margin-top:5px;
 }
 
@@ -100,91 +139,136 @@ header{
 .call-buttons{
     display:flex;
     gap:8px;
-    flex-shrink:0;
 }
 
 .call-buttons button{
     width:42px;
     height:42px;
+
     border:0;
     border-radius:14px;
+
     background:#18231f;
+
     color:white;
+
     font-size:18px;
+
     cursor:pointer;
 }
 
 .messages{
     flex:1;
+
     min-height:0;
+
     overflow-y:auto;
-    padding:20px 15px 150px;
+
+    padding:
+        20px
+        15px
+        150px;
+
     display:flex;
     flex-direction:column;
+
     gap:10px;
 }
 
 .empty{
     margin:auto;
+
     text-align:center;
+
     color:#72817c;
 }
 
 .message{
     max-width:78%;
+
     padding:12px 15px;
+
     border-radius:18px;
-    position:relative;
+
     word-break:break-word;
-    user-select:none;
-    -webkit-user-select:none;
-    -webkit-touch-callout:none;
 }
 
 .message.mine{
     align-self:flex-start;
+
     background:#00c96b;
+
     color:#00150e;
+
     border-bottom-left-radius:5px;
 }
 
 .message.other{
     align-self:flex-end;
+
     background:#18231f;
-    border:1px solid rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
     border-bottom-right-radius:5px;
 }
 
 .time{
     display:block;
+
     font-size:9px;
+
     opacity:.6;
+
     margin-top:5px;
 }
 
 .input-area{
     position:fixed;
+
     bottom:0;
+
     left:50%;
-    transform:translateX(-50%);
+
+    transform:
+        translateX(-50%);
+
     width:100%;
+
     max-width:650px;
+
     padding:10px;
+
     display:flex;
+
     gap:8px;
+
     background:#050807;
+
     z-index:50;
 }
 
 #messageInput{
     flex:1;
+
     min-width:0;
+
     padding:14px;
+
     border-radius:17px;
-    border:1px solid #27332f;
+
+    border:
+        1px solid
+        #27332f;
+
     background:#111916;
+
     color:white;
+
     outline:none;
+
     font-size:15px;
 }
 
@@ -192,10 +276,15 @@ header{
 #sendButton{
     width:50px;
     height:50px;
+
     border:0;
+
     border-radius:16px;
+
     font-size:22px;
+
     cursor:pointer;
+
     flex-shrink:0;
 }
 
@@ -209,52 +298,8 @@ header{
     color:#00150e;
 }
 
-#sendButton:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-}
-
-.message-menu{
-    position:absolute;
-    left:50%;
-    bottom:calc(100% + 8px);
-    transform:translateX(-50%);
-    width:max-content;
-    min-width:150px;
-    max-width:calc(100vw - 30px);
-    padding:5px;
-    background:#0b1512;
-    border:1px solid rgba(0,232,137,.18);
-    border-radius:15px;
-    box-shadow:0 8px 25px rgba(0,0,0,.55);
-    z-index:99999;
-}
-
-.message-menu button{
-    width:100%;
-    min-width:140px;
-    padding:10px 14px;
-    border:0;
-    border-radius:11px;
-    background:#18231f;
-    color:white;
-    font-size:13px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-@media(max-width:400px){
-    .call-buttons button{
-        width:38px;
-        height:38px;
-    }
-
-    .avatar{
-        width:44px;
-        height:44px;
-    }
-}
 </style>
+
 </head>
 
 <body>
@@ -270,66 +315,91 @@ header{
      color:white;
      font-size:18px;
      z-index:9999;">
+
     جارٍ فتح الدردشة...
+
 </div>
+
 
 <main id="app"
       class="app"
       style="display:none;">
+
 
 <header>
 
 <button id="backButton"
         class="back"
         type="button">
+
     →
+
 </button>
+
 
 <div id="friendAvatar"
      class="avatar">
+
     👤
+
 </div>
+
 
 <div class="user-info">
 
 <div id="friendName"
      class="user-name">
+
     جار التحميل...
+
 </div>
+
 
 <div id="friendStatus"
      class="user-status">
+
     ● غير متصل
+
 </div>
 
 </div>
+
 
 <div class="call-buttons">
 
 <button id="callButton"
         type="button">
+
     📞
+
 </button>
+
 
 <button id="videoButton"
         type="button">
+
     📹
+
 </button>
 
 </div>
 
 </header>
 
+
 <div id="messages"
      class="messages">
 
 <div class="empty">
+
     💬
     <br>
     ابدأ المحادثة الآن
+
 </div>
 
 </div>
+
 
 <div class="input-area">
 
@@ -338,23 +408,913 @@ header{
        autocomplete="off"
        maxlength="2000">
 
+
 <button id="voiceButton"
         type="button">
+
     🎤
+
 </button>
+
 
 <button id="sendButton"
         type="button">
+
     ➤
+
 </button>
 
 </div>
 
 </main>
 
-<script type="module" src="./chat.js"></script>
 
-<script type="module" src="./voice.js"></script>
+<script type="module">
+
+import {
+    initializeApp
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+/* =========================================
+   Firebase
+========================================= */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+    authDomain:
+        "mecd-tools.firebaseapp.com",
+
+    projectId:
+        "mecd-tools",
+
+    storageBucket:
+        "mecd-tools.firebasestorage.app",
+
+    messagingSenderId:
+        "643005547408",
+
+    appId:
+        "1:643005547408:web:b1719060ec340dd0e0a915"
+
+};
+
+
+const appFirebase =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const auth =
+    getAuth(
+        appFirebase
+    );
+
+
+const db =
+    getFirestore(
+        appFirebase
+    );
+
+
+/* =========================================
+   العناصر
+========================================= */
+
+const loading =
+    document.getElementById(
+        "loading"
+    );
+
+const app =
+    document.getElementById(
+        "app"
+    );
+
+const friendName =
+    document.getElementById(
+        "friendName"
+    );
+
+const friendAvatar =
+    document.getElementById(
+        "friendAvatar"
+    );
+
+const friendStatus =
+    document.getElementById(
+        "friendStatus"
+    );
+
+const messages =
+    document.getElementById(
+        "messages"
+    );
+
+const messageInput =
+    document.getElementById(
+        "messageInput"
+    );
+
+const sendButton =
+    document.getElementById(
+        "sendButton"
+    );
+
+const callButton =
+    document.getElementById(
+        "callButton"
+    );
+
+const videoButton =
+    document.getElementById(
+        "videoButton"
+    );
+
+const backButton =
+    document.getElementById(
+        "backButton"
+    );
+
+
+/* =========================================
+   المتغيرات
+========================================= */
+
+let currentUser =
+    null;
+
+let friendUser =
+    null;
+
+let chatID =
+    null;
+
+let unsubscribeMessages =
+    null;
+
+
+/* =========================================
+   حماية HTML
+========================================= */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(
+            /[&<>'"]/g,
+            c => ({
+
+                "&":
+                    "&amp;",
+
+                "<":
+                    "&lt;",
+
+                ">":
+                    "&gt;",
+
+                "'":
+                    "&#39;",
+
+                '"':
+                    "&quot;"
+
+            }[c])
+        );
+
+}
+
+
+/* =========================================
+   Chat ID
+========================================= */
+
+function createChatID(
+    a,
+    b
+){
+
+    return [
+        a,
+        b
+    ]
+    .sort()
+    .join("_");
+
+}
+
+
+/* =========================================
+   تحميل الصديق
+========================================= */
+
+async function loadFriend(){
+
+    const friendId =
+        new URLSearchParams(
+            location.search
+        ).get("friend");
+
+
+    if(!friendId){
+
+        throw new Error(
+            "لا يوجد صديق في الرابط"
+        );
+
+    }
+
+
+    const snap =
+        await getDoc(
+
+            doc(
+                db,
+                "users",
+                friendId
+            )
+
+        );
+
+
+    if(!snap.exists()){
+
+        throw new Error(
+            "المستخدم غير موجود"
+        );
+
+    }
+
+
+    const data =
+        snap.data();
+
+
+    friendUser = {
+
+        uid:
+            friendId,
+
+        name:
+            data.name ||
+            "مستخدم Mecd",
+
+        photo:
+            data.photo ||
+            ""
+
+    };
+
+
+    friendName.textContent =
+        friendUser.name;
+
+
+    if(friendUser.photo){
+
+        const img =
+            document.createElement(
+                "img"
+            );
+
+        img.src =
+            friendUser.photo;
+
+        img.alt =
+            "صورة الحساب";
+
+        img.onerror =
+            () => {
+
+                friendAvatar.innerHTML =
+                    "👤";
+
+            };
+
+        friendAvatar.innerHTML =
+            "";
+
+        friendAvatar.appendChild(
+            img
+        );
+
+    }
+
+
+    chatID =
+        createChatID(
+            currentUser.uid,
+            friendUser.uid
+        );
+
+
+    await setDoc(
+
+        doc(
+            db,
+            "chats",
+            chatID
+        ),
+
+        {
+
+            members: [
+
+                currentUser.uid,
+
+                friendUser.uid
+
+            ],
+
+            updatedAt:
+                serverTimestamp()
+
+        },
+
+        {
+            merge:true
+        }
+
+    );
+
+}
+
+
+/* =========================================
+   الرسائل
+========================================= */
+
+function listenMessages(){
+
+    if(unsubscribeMessages){
+
+        unsubscribeMessages();
+
+    }
+
+
+    const ref =
+        collection(
+            db,
+            "chats",
+            chatID,
+            "messages"
+        );
+
+
+    const q =
+        query(
+
+            ref,
+
+            orderBy(
+                "createdAt",
+                "asc"
+            )
+
+        );
+
+
+    unsubscribeMessages =
+        onSnapshot(
+
+            q,
+
+            snapshot => {
+
+                messages.innerHTML =
+                    "";
+
+
+                if(snapshot.empty){
+
+                    messages.innerHTML =
+                        `
+                        <div class="empty">
+                            💬
+                            <br>
+                            ابدأ المحادثة الآن
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                snapshot.forEach(
+                    messageDoc => {
+
+                        const data =
+                            messageDoc.data();
+
+
+                        if(
+                            Array.isArray(
+                                data.deletedFor
+                            )
+                            &&
+                            data.deletedFor.includes(
+                                currentUser.uid
+                            )
+                        ){
+
+                            return;
+
+                        }
+
+
+                        const box =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        box.className =
+                            "message " +
+                            (
+                                data.senderId ===
+                                currentUser.uid
+
+                                ?
+
+                                "mine"
+
+                                :
+
+                                "other"
+                            );
+
+
+                        box.textContent =
+                            data.text ||
+                            "";
+
+
+                        if(
+                            data.createdAt?.toDate
+                        ){
+
+                            const time =
+                                document.createElement(
+                                    "span"
+                                );
+
+                            time.className =
+                                "time";
+
+                            time.textContent =
+                                data.createdAt
+                                    .toDate()
+                                    .toLocaleTimeString(
+                                        "ar",
+                                        {
+                                            hour:
+                                                "2-digit",
+
+                                            minute:
+                                                "2-digit"
+                                        }
+                                    );
+
+                            box.appendChild(
+                                time
+                            );
+
+                        }
+
+
+                        messages.appendChild(
+                            box
+                        );
+
+                    }
+                );
+
+
+                messages.scrollTop =
+                    messages.scrollHeight;
+
+            },
+
+            error => {
+
+                console.error(
+                    "Messages error:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   إرسال رسالة
+========================================= */
+
+async function sendMessage(){
+
+    const text =
+        messageInput.value.trim();
+
+
+    if(
+        !text ||
+        !currentUser ||
+        !friendUser ||
+        !chatID
+    ){
+
+        return;
+
+    }
+
+
+    sendButton.disabled =
+        true;
+
+
+    try{
+
+        await addDoc(
+
+            collection(
+                db,
+                "chats",
+                chatID,
+                "messages"
+            ),
+
+            {
+
+                text:
+                    text,
+
+                senderId:
+                    currentUser.uid,
+
+                receiverId:
+                    friendUser.uid,
+
+                type:
+                    "text",
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        messageInput.value =
+            "";
+
+        messageInput.focus();
+
+
+    }catch(error){
+
+        console.error(
+            "Send message error:",
+            error
+        );
+
+        alert(
+            "فشل إرسال الرسالة\n\n" +
+            error.message
+        );
+
+    }
+
+
+    sendButton.disabled =
+        false;
+
+}
+
+
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+messageInput.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key ===
+            "Enter"
+        ){
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   📞 المكالمة
+========================================= */
+
+callButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        if(!currentUser){
+
+            alert(
+                "يجب تسجيل الدخول أولاً"
+            );
+
+            return;
+
+        }
+
+
+        if(!friendUser){
+
+            alert(
+                "لم يتم تحميل الصديق"
+            );
+
+            return;
+
+        }
+
+
+        callButton.disabled =
+            true;
+
+
+        try{
+
+            /*
+             * مهم:
+             * ?v=2 يمنع تحميل النسخة القديمة
+             */
+
+            const callModule =
+                await import(
+                    "./call.js?v=2"
+                );
+
+
+            console.log(
+                "call.js exports:",
+                Object.keys(
+                    callModule
+                )
+            );
+
+
+            if(
+                typeof
+                callModule.startCall !==
+                "function"
+            ){
+
+                throw new Error(
+                    "ملف call.js المحمّل لا يحتوي على startCall. تأكد أنك استبدلت call.js بالكود الجديد."
+                );
+
+            }
+
+
+            await callModule.startCall({
+
+                friendId:
+                    friendUser.uid,
+
+                friendName:
+                    friendUser.name,
+
+                friendPhoto:
+                    friendUser.photo
+
+            });
+
+
+        }catch(error){
+
+            console.error(
+                "Call error:",
+                error
+            );
+
+
+            alert(
+
+                "❌ تعذر بدء المكالمة\n\n" +
+
+                (
+                    error.message ||
+                    "خطأ غير معروف"
+                )
+
+            );
+
+        }
+
+
+        callButton.disabled =
+            false;
+
+    }
+
+);
+
+
+/* =========================================
+   فيديو
+========================================= */
+
+videoButton.addEventListener(
+
+    "click",
+
+    () => {
+
+        alert(
+            "📹 مكالمة الفيديو قيد التطوير"
+        );
+
+    }
+
+);
+
+
+/* =========================================
+   رجوع
+========================================= */
+
+backButton.addEventListener(
+
+    "click",
+
+    () => {
+
+        if(unsubscribeMessages){
+
+            unsubscribeMessages();
+
+        }
+
+        history.back();
+
+    }
+
+);
+
+
+/* =========================================
+   تشغيل
+========================================= */
+
+onAuthStateChanged(
+
+    auth,
+
+    async user => {
+
+        if(!user){
+
+            loading.textContent =
+                "يجب تسجيل الدخول أولاً";
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        try{
+
+            await loadFriend();
+
+            listenMessages();
+
+
+            /*
+             * تحميل call.js مسبقًا
+             * للتأكد أنه صحيح
+             */
+
+            const callModule =
+                await import(
+                    "./call.js?v=2"
+                );
+
+
+            console.log(
+                "✅ call.js loaded",
+                Object.keys(
+                    callModule
+                )
+            );
+
+
+            if(
+                typeof
+                callModule.startCall !==
+                "function"
+            ){
+
+                console.error(
+                    "❌ startCall غير موجودة في call.js"
+                );
+
+            }else{
+
+                console.log(
+                    "✅ startCall موجودة وجاهزة"
+                );
+
+            }
+
+
+            loading.style.display =
+                "none";
+
+            app.style.display =
+                "flex";
+
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+
+            loading.innerHTML =
+
+                "❌ تعذر فتح الدردشة<br><br>" +
+
+                "<small>" +
+
+                escapeHtml(
+                    error.message ||
+                    "حدث خطأ"
+                ) +
+
+                "</small>";
+
+        }
+
+    }
+
+);
+
+</script>
+
+
+<script
+    type="module"
+    src="./voice.js">
+</script>
 
 </body>
 </html>
