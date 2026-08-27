@@ -397,6 +397,146 @@ header{
 
 }
 
+
+/* ============================================================
+   🎧 رسالة المكالمة
+============================================================ */
+
+.call-message{
+    min-width:245px;
+
+    max-width:310px;
+
+    padding:10px 12px !important;
+
+    overflow:visible;
+}
+
+.call-message.mine{
+    background:#00c96b;
+    color:#00150e;
+}
+
+.call-message.other{
+    background:#18231f;
+    color:white;
+}
+
+.call-box{
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    min-height:55px;
+}
+
+.call-icon{
+    width:46px;
+    height:46px;
+
+    border-radius:15px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    flex-shrink:0;
+
+    font-size:22px;
+
+    background:
+        rgba(0,232,137,.14);
+
+    color:#00e889;
+}
+
+.call-message.missed .call-icon{
+    background:
+        rgba(255,80,80,.15);
+
+    color:#ff6464;
+}
+
+.call-info{
+    min-width:0;
+
+    flex:1;
+}
+
+.call-title{
+    font-size:14px;
+
+    font-weight:bold;
+
+    line-height:1.4;
+}
+
+.call-subtitle{
+    font-size:11px;
+
+    opacity:.65;
+
+    margin-top:4px;
+}
+
+.call-duration{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    font-size:11px;
+
+    margin-top:4px;
+
+    opacity:.75;
+}
+
+.call-direction{
+    font-size:10px;
+
+    opacity:.55;
+
+    margin-top:3px;
+}
+
+.call-message .time{
+    text-align:left;
+
+    margin-top:6px;
+}
+
+
+/* ============================================================
+   📱 تحسين الهاتف
+============================================================ */
+
+@media(max-width:500px){
+
+    .call-message{
+        min-width:225px;
+        max-width:85%;
+    }
+
+    .message{
+        max-width:84%;
+    }
+
+    header{
+        padding:12px;
+    }
+
+    .call-buttons button{
+        width:40px;
+        height:40px;
+    }
+
+}
+
 </style>
 
 </head>
@@ -549,7 +689,6 @@ header{
 /* =========================================
    Firebase
 ========================================= */
-
 
 import {
 
@@ -1238,6 +1377,320 @@ async function loadFriend(){
 
 
 /* =========================================
+   ⏱️ تنسيق مدة المكالمة
+========================================= */
+
+function formatCallDuration(
+    seconds
+){
+
+    seconds =
+        Number(
+            seconds || 0
+        );
+
+
+    if(
+        !Number.isFinite(
+            seconds
+        )
+    ){
+
+        seconds =
+            0;
+
+    }
+
+
+    seconds =
+        Math.max(
+            0,
+            Math.floor(
+                seconds
+            )
+        );
+
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    const secs =
+        seconds % 60;
+
+
+    const hours =
+        Math.floor(
+            minutes / 60
+        );
+
+
+    const finalMinutes =
+        minutes % 60;
+
+
+    if(hours > 0){
+
+        return (
+
+            String(hours)
+                .padStart(2,"0")
+
+            + ":" +
+
+            String(finalMinutes)
+                .padStart(2,"0")
+
+            + ":" +
+
+            String(secs)
+                .padStart(2,"0")
+
+        );
+
+    }
+
+
+    return (
+
+        String(minutes)
+            .padStart(2,"0")
+
+        + ":" +
+
+        String(secs)
+            .padStart(2,"0")
+
+    );
+
+}
+
+
+/* =========================================
+   📞 إنشاء رسالة مكالمة
+========================================= */
+
+function createCallMessageElement(
+    box,
+    data
+){
+
+    const status =
+        data.callStatus ||
+        "completed";
+
+
+    const direction =
+        data.callDirection ===
+        "incoming"
+        ?
+        "incoming"
+        :
+        "outgoing";
+
+
+    const missed =
+        status ===
+        "missed";
+
+
+    box.classList.add(
+        "call-message"
+    );
+
+
+    if(missed){
+
+        box.classList.add(
+            "missed"
+        );
+
+    }
+
+
+    const callBox =
+        document.createElement(
+            "div"
+        );
+
+
+    callBox.className =
+        "call-box";
+
+
+    const icon =
+        document.createElement(
+            "div"
+        );
+
+
+    icon.className =
+        "call-icon";
+
+
+    icon.textContent =
+        missed
+        ?
+        "📞"
+        :
+        "📞";
+
+
+    const info =
+        document.createElement(
+            "div"
+        );
+
+
+    info.className =
+        "call-info";
+
+
+    const title =
+        document.createElement(
+            "div"
+        );
+
+
+    title.className =
+        "call-title";
+
+
+    if(missed){
+
+        title.textContent =
+            direction === "incoming"
+
+            ?
+
+            "مكالمة واردة لم يتم الرد عليها"
+
+            :
+
+            "مكالمة صادرة لم يتم الرد عليها";
+
+    }
+
+    else{
+
+        title.textContent =
+            direction === "incoming"
+
+            ?
+
+            "مكالمة واردة"
+
+            :
+
+            "مكالمة صادرة";
+
+    }
+
+
+    const subtitle =
+        document.createElement(
+            "div"
+        );
+
+
+    subtitle.className =
+        "call-subtitle";
+
+
+    if(missed){
+
+        subtitle.textContent =
+            "لم يتم الرد";
+
+    }
+
+    else{
+
+        subtitle.textContent =
+            "تم الاتصال بنجاح";
+
+    }
+
+
+    const duration =
+        document.createElement(
+            "div"
+        );
+
+
+    duration.className =
+        "call-duration";
+
+
+    duration.textContent =
+        "⏱️ " +
+        formatCallDuration(
+            data.duration
+        );
+
+
+    const directionText =
+        document.createElement(
+            "div"
+        );
+
+
+    directionText.className =
+        "call-direction";
+
+
+    directionText.textContent =
+        direction === "incoming"
+
+        ?
+
+        "↙ واردة"
+
+        :
+
+        "↗ صادرة";
+
+
+    info.appendChild(
+        title
+    );
+
+
+    info.appendChild(
+        subtitle
+    );
+
+
+    info.appendChild(
+        duration
+    );
+
+
+    info.appendChild(
+        directionText
+    );
+
+
+    callBox.appendChild(
+        icon
+    );
+
+
+    callBox.appendChild(
+        info
+    );
+
+
+    box.appendChild(
+        callBox
+    );
+
+}
+
+
+/* =========================================
    الرسائل
 ========================================= */
 
@@ -1308,10 +1761,27 @@ function renderMessages(snap){
 
 
         /* =================================
-           رسالة صوتية
+           📞 رسالة مكالمة
         ================================= */
 
         if(
+            data.type ===
+            "call"
+        ){
+
+            createCallMessageElement(
+                box,
+                data
+            );
+
+        }
+
+
+        /* =================================
+           🎤 رسالة صوتية
+        ================================= */
+
+        else if(
             data.type ===
             "voice"
         ){
@@ -1367,6 +1837,11 @@ function renderMessages(snap){
             );
 
         }
+
+
+        /* =================================
+           💬 رسالة عادية
+        ================================= */
 
         else{
 
@@ -1427,7 +1902,7 @@ function renderMessages(snap){
 
 
         /* =================================
-           الحذف - محفوظ كما هو
+           الحذف
         ================================= */
 
         addMessageActions(
@@ -2111,7 +2586,7 @@ document.addEventListener(
 
 
 /* =========================================
-   المكالمة الصوتية
+   📞 المكالمة الصوتية
 ========================================= */
 
 callButton.addEventListener(
