@@ -2,9 +2,14 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050807">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="theme-color"
+      content="#050807">
 
 <title>Mecd Call</title>
 
@@ -16,16 +21,26 @@
     padding:0;
 }
 
+html,
 body{
     width:100%;
-    height:100vh;
+    height:100%;
+}
+
+body{
+
     overflow:hidden;
-    font-family:Arial,Tahoma,sans-serif;
+
+    font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
     color:white;
 
     background:
         radial-gradient(
-            circle at 50% 20%,
+            circle at 50% 18%,
             #123d35 0%,
             #07110f 45%,
             #020504 100%
@@ -34,9 +49,11 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
+
 }
 
 .call{
+
     width:100%;
     max-width:650px;
     height:100vh;
@@ -45,7 +62,13 @@ body{
     flex-direction:column;
     align-items:center;
 
-    padding:55px 25px 0;
+    position:relative;
+
+    padding:
+        45px
+        25px
+        22px;
+
 }
 
 
@@ -54,21 +77,28 @@ body{
 ========================= */
 
 .info{
+
     width:100%;
+
     display:flex;
     flex-direction:column;
     align-items:center;
+
     text-align:center;
+
 }
 
 
 /* =========================
-   صورة المستخدم
+   الصورة
 ========================= */
 
 .avatar{
+
     width:125px;
     height:125px;
+
+    margin-top:5px;
 
     border-radius:38px;
 
@@ -82,21 +112,25 @@ body{
 
     font-size:55px;
 
-    border:3px solid
+    border:
+        3px solid
         rgba(0,232,137,.18);
 
     box-shadow:
         0 0 35px
         rgba(0,232,137,.12);
 
-    flex-shrink:0;
 }
 
 .avatar img{
+
     width:100%;
     height:100%;
+
     object-fit:cover;
+
     display:block;
+
 }
 
 
@@ -105,28 +139,36 @@ body{
 ========================= */
 
 .name{
-    margin-top:20px;
+
+    margin-top:18px;
 
     font-size:24px;
+
     font-weight:bold;
 
     max-width:320px;
 
     overflow:hidden;
+
     text-overflow:ellipsis;
+
     white-space:nowrap;
+
 }
 
 
 /* =========================
-   النوع
+   نوع المكالمة
 ========================= */
 
 .type{
+
     margin-top:8px;
 
     color:#7f918b;
+
     font-size:14px;
+
 }
 
 
@@ -135,31 +177,15 @@ body{
 ========================= */
 
 .status{
+
+    margin-top:9px;
+
     color:#00e889;
+
     font-size:14px;
+
     font-weight:bold;
 
-    margin-top:10px;
-}
-
-
-/* =========================
-   أزرار التحكم
-========================= */
-
-.controls{
-    width:100%;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:18px;
-
-    /*
-      تنزيل الأزرار شوي للأسفل
-    */
-    margin-top:180px;
 }
 
 
@@ -167,11 +193,39 @@ body{
    الأزرار
 ========================= */
 
+.controls{
+
+    position:absolute;
+
+    left:0;
+    right:0;
+
+    bottom:22px;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+
+/* =========================
+   زر عادي
+========================= */
+
 .control{
+
     width:62px;
     height:62px;
 
     border:0;
+
     border-radius:21px;
 
     background:#18231f;
@@ -182,18 +236,32 @@ body{
 
     cursor:pointer;
 
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
     transition:
         transform .15s,
         background .15s;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
 }
 
 .control:active{
+
     transform:scale(.92);
+
 }
 
 .control.active{
+
     background:#00e889;
+
     color:#00150e;
+
 }
 
 
@@ -202,10 +270,12 @@ body{
 ========================= */
 
 .end{
+
     width:72px;
     height:72px;
 
     border:0;
+
     border-radius:25px;
 
     background:#d93636;
@@ -216,12 +286,23 @@ body{
 
     cursor:pointer;
 
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
     transition:
         transform .15s;
+
+    -webkit-tap-highlight-color:
+        transparent;
+
 }
 
 .end:active{
+
     transform:scale(.92);
+
 }
 
 
@@ -230,7 +311,9 @@ body{
 ========================= */
 
 .error{
+
     position:fixed;
+
     inset:0;
 
     display:none;
@@ -243,9 +326,11 @@ body{
     background:#020504;
 
     z-index:100;
+
 }
 
 .error-box{
+
     width:100%;
     max-width:400px;
 
@@ -255,37 +340,50 @@ body{
 
     background:#0b1512;
 
-    border:1px solid
+    border:
+        1px solid
         rgba(255,255,255,.08);
 
     text-align:center;
+
 }
 
 .error-box h2{
+
     margin-bottom:12px;
+
 }
 
 .error-box p{
+
     color:#9aa8a3;
+
     line-height:1.7;
+
 }
 
 .error-box button{
+
     margin-top:20px;
 
     width:100%;
+
     padding:14px;
 
     border:0;
+
     border-radius:15px;
 
     background:#00e889;
+
     color:#00150e;
 
     font-weight:bold;
+
     font-size:15px;
 
     cursor:pointer;
+
 }
 
 
@@ -294,39 +392,58 @@ body{
 ========================= */
 
 #remoteAudio{
+
     display:none;
+
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <div class="call">
+
 
     <div class="info">
 
-        <div id="avatar" class="avatar">
+
+        <div
+            id="avatar"
+            class="avatar">
             👤
         </div>
 
-        <div id="name" class="name">
-            جارٍ الاتصال...
+
+        <div
+            id="name"
+            class="name">
+            جاري تحميل البيانات...
         </div>
 
-        <div id="type" class="type">
+
+        <div
+            id="type"
+            class="type">
             مكالمة صوتية
         </div>
 
-        <div id="status" class="status">
+
+        <div
+            id="status"
+            class="status">
             جاري الاتصال...
         </div>
+
 
     </div>
 
 
     <div class="controls">
+
 
         <button
             id="muteButton"
@@ -336,6 +453,7 @@ body{
             🎤
         </button>
 
+
         <button
             id="speakerButton"
             class="control"
@@ -343,6 +461,7 @@ body{
             title="مكبر الصوت">
             🔊
         </button>
+
 
         <button
             id="endButton"
@@ -352,7 +471,9 @@ body{
             📞
         </button>
 
+
     </div>
+
 
 </div>
 
@@ -364,11 +485,15 @@ body{
 </audio>
 
 
-<div id="error" class="error">
+<div
+    id="error"
+    class="error">
 
     <div class="error-box">
 
-        <h2>⚠️ حدث خطأ</h2>
+        <h2>
+            ⚠️ حدث خطأ
+        </h2>
 
         <p id="errorText">
             تعذر تشغيل المكالمة.
@@ -398,62 +523,92 @@ import {
 from "./call.js";
 
 
+/* =========================
+   العناصر
+========================= */
+
 const avatar =
-    document.getElementById("avatar");
+    document.getElementById(
+        "avatar"
+    );
 
 const name =
-    document.getElementById("name");
+    document.getElementById(
+        "name"
+    );
 
 const type =
-    document.getElementById("type");
+    document.getElementById(
+        "type"
+    );
 
 const status =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
 
 const muteButton =
-    document.getElementById("muteButton");
+    document.getElementById(
+        "muteButton"
+    );
 
 const speakerButton =
-    document.getElementById("speakerButton");
+    document.getElementById(
+        "speakerButton"
+    );
 
 const endButton =
-    document.getElementById("endButton");
+    document.getElementById(
+        "endButton"
+    );
 
 const remoteAudio =
-    document.getElementById("remoteAudio");
+    document.getElementById(
+        "remoteAudio"
+    );
 
 const error =
-    document.getElementById("error");
+    document.getElementById(
+        "error"
+    );
 
 const errorText =
-    document.getElementById("errorText");
+    document.getElementById(
+        "errorText"
+    );
 
 const errorButton =
-    document.getElementById("errorButton");
+    document.getElementById(
+        "errorButton"
+    );
 
+
+/* =========================
+   بيانات الرابط
+========================= */
 
 const params =
     new URLSearchParams(
         window.location.search
     );
 
+
 const callId =
     params.get("callId");
+
 
 const mode =
     params.get("mode");
 
-const urlName =
-    params.get("name") ||
-    "مستخدم Mecd";
 
-const urlPhoto =
-    params.get("photo") ||
-    "";
-
+/* =========================
+   حالة الصفحة
+========================= */
 
 let ended = false;
+
 let muted = false;
+
 let speaker = true;
 
 
@@ -470,12 +625,19 @@ function showUser(
         userName ||
         "مستخدم Mecd";
 
+
     avatar.innerHTML = "";
 
-    if(userPhoto){
+
+    if(
+        userPhoto &&
+        userPhoto.trim()
+    ){
 
         const img =
-            document.createElement("img");
+            document.createElement(
+                "img"
+            );
 
         img.src =
             userPhoto;
@@ -483,16 +645,18 @@ function showUser(
         img.alt =
             "صورة الحساب";
 
-        img.onload = () => {
-            avatar.innerHTML = "";
-            avatar.appendChild(img);
-        };
 
         img.onerror = () => {
-            avatar.textContent = "👤";
+
+            avatar.textContent =
+                "👤";
+
         };
 
-        avatar.appendChild(img);
+
+        avatar.appendChild(
+            img
+        );
 
     }else{
 
@@ -527,7 +691,7 @@ function showError(message){
 window.onRemoteStream =
     stream => {
 
-        try{
+        try {
 
             remoteAudio.srcObject =
                 stream;
@@ -536,19 +700,18 @@ window.onRemoteStream =
                 false;
 
             remoteAudio.volume =
-                speaker ? 1 : 0;
+                speaker
+                ? 1
+                : 0;
 
             remoteAudio.play()
                 .catch(() => {});
 
-            status.textContent =
-                "● متصل";
-
-        }catch(e){
+        } catch(error) {
 
             console.error(
-                "Remote audio:",
-                e
+                "Remote audio error:",
+                error
             );
 
         }
@@ -557,11 +720,14 @@ window.onRemoteStream =
 
 
 /* =========================
-   الاتصال
+   عند الاتصال
 ========================= */
 
 window.onCallConnected =
     () => {
+
+        if(ended)
+            return;
 
         status.textContent =
             "● متصل";
@@ -575,6 +741,9 @@ window.onCallConnected =
 
 window.onCallFailed =
     () => {
+
+        if(ended)
+            return;
 
         status.textContent =
             "تعذر الاتصال";
@@ -597,11 +766,15 @@ window.onCallEnded =
         status.textContent =
             "انتهت المكالمة";
 
-        setTimeout(() => {
 
-            window.history.back();
+        setTimeout(
+            () => {
 
-        },1000);
+                window.history.back();
+
+            },
+            700
+        );
 
     };
 
@@ -617,6 +790,7 @@ muteButton.addEventListener(
         const stream =
             window.localStream;
 
+
         if(!stream){
 
             alert(
@@ -627,26 +801,34 @@ muteButton.addEventListener(
 
         }
 
+
         const tracks =
             stream.getAudioTracks();
+
 
         if(!tracks.length)
             return;
 
+
         muted =
             !muted;
 
-        tracks.forEach(track => {
 
-            track.enabled =
-                !muted;
+        tracks.forEach(
+            track => {
 
-        });
+                track.enabled =
+                    !muted;
+
+            }
+        );
+
 
         muteButton.textContent =
             muted
             ? "🔇"
             : "🎤";
+
 
         muteButton.classList.toggle(
             "active",
@@ -668,13 +850,18 @@ speakerButton.addEventListener(
         speaker =
             !speaker;
 
+
         remoteAudio.volume =
-            speaker ? 1 : 0;
+            speaker
+            ? 1
+            : 0;
+
 
         speakerButton.textContent =
             speaker
             ? "🔊"
             : "🔇";
+
 
         speakerButton.classList.toggle(
             "active",
@@ -694,31 +881,38 @@ async function end(){
     if(ended)
         return;
 
+
     ended = true;
+
 
     status.textContent =
         "جاري إنهاء المكالمة...";
 
-    try{
+
+    try {
 
         await cleanupCall(
             callId
         );
 
-    }catch(e){
+    } catch(error) {
 
         console.error(
             "End error:",
-            e
+            error
         );
 
     }
 
-    setTimeout(() => {
 
-        window.history.back();
+    setTimeout(
+        () => {
 
-    },300);
+            window.history.back();
+
+        },
+        300
+    );
 
 }
 
@@ -749,7 +943,7 @@ errorButton.addEventListener(
 
 async function init(){
 
-    try{
+    try {
 
         if(!callId){
 
@@ -760,32 +954,48 @@ async function init(){
         }
 
 
-        /* =====================
-           صادرة
-        ===================== */
+        /* =========================
+           نجيب بيانات المكالمة
+           مباشرة من Firestore
+        ========================= */
 
-        if(mode === "outgoing"){
+        const call =
+            await getCall(
+                callId
+            );
 
-            const call =
-                await getCall(
-                    callId
-                );
 
-            if(!call){
+        if(!call){
 
-                throw new Error(
-                    "المكالمة غير موجودة"
-                );
+            throw new Error(
+                "المكالمة غير موجودة"
+            );
 
-            }
+        }
 
+
+        /* =========================
+           الصادر
+        ========================= */
+
+        if(
+            mode ===
+            "outgoing"
+        ){
 
             showUser(
+
                 call.receiverName ||
-                urlName,
+                "مستخدم Mecd",
+
                 call.receiverPhoto ||
-                urlPhoto
+                ""
+
             );
+
+
+            type.textContent =
+                "مكالمة صوتية";
 
 
             status.textContent =
@@ -797,25 +1007,39 @@ async function init(){
             );
 
 
-            status.textContent =
-                "في انتظار الرد...";
+            if(!ended){
+
+                status.textContent =
+                    "في انتظار الرد...";
+
+            }
 
         }
 
 
-        /* =====================
-           واردة
-        ===================== */
+        /* =========================
+           الوارد
+        ========================= */
 
-        else if(mode === "incoming"){
+        else if(
+            mode ===
+            "incoming"
+        ){
 
             showUser(
-                urlName,
-                urlPhoto
+
+                call.callerName ||
+                "مستخدم Mecd",
+
+                call.callerPhoto ||
+                ""
+
             );
+
 
             type.textContent =
                 "📞 مكالمة واردة";
+
 
             status.textContent =
                 "مكالمة واردة";
@@ -823,9 +1047,14 @@ async function init(){
 
             const accept =
                 confirm(
+
                     "📞 " +
-                    urlName +
+                    (
+                        call.callerName ||
+                        "مستخدم Mecd"
+                    ) +
                     "\n\nهل تريد قبول المكالمة؟"
+
                 );
 
 
@@ -856,8 +1085,12 @@ async function init(){
             );
 
 
-            status.textContent =
-                "● متصل";
+            if(!ended){
+
+                status.textContent =
+                    "● متصل";
+
+            }
 
 
             await watchIncomingCall(
@@ -867,7 +1100,7 @@ async function init(){
         }
 
 
-        else{
+        else {
 
             throw new Error(
                 "نوع المكالمة غير معروف"
@@ -875,15 +1108,17 @@ async function init(){
 
         }
 
-    }catch(e){
+
+    } catch(error) {
 
         console.error(
             "Call page error:",
-            e
+            error
         );
 
+
         showError(
-            e.message ||
+            error.message ||
             "تعذر تشغيل المكالمة"
         );
 
@@ -892,8 +1127,16 @@ async function init(){
 }
 
 
+/* =========================
+   تشغيل
+========================= */
+
 init();
 
+
+/* =========================
+   عند مغادرة الصفحة
+========================= */
 
 window.addEventListener(
     "pagehide",
@@ -916,4 +1159,5 @@ window.addEventListener(
 </script>
 
 </body>
+
 </html>
