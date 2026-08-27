@@ -841,6 +841,9 @@ let typingState =
 let callModule =
     null;
 
+let videoCallModule =
+    null;
+
 
 function createChatID(a,b){
 
@@ -2359,9 +2362,10 @@ callButton.addEventListener(
 // ============================================================
 // 📹 مكالمة الفيديو
 // ============================================================
-
 videoButton.addEventListener(
+
     "click",
+
     async () => {
 
         if(!currentUser){
@@ -2390,7 +2394,7 @@ videoButton.addEventListener(
 
                 videoCallModule =
                     await import(
-                        "./Video-call.js?v=1"
+                        "./Video-call.js"
                     );
 
             }
@@ -2422,7 +2426,9 @@ videoButton.addEventListener(
 
             });
 
-        }catch(error){
+        }
+
+        catch(error){
 
             console.error(
                 "Video call error:",
@@ -2430,17 +2436,22 @@ videoButton.addEventListener(
             );
 
             alert(
+
                 "❌ تعذر بدء مكالمة الفيديو\n\n" +
+
                 (
                     error?.message ||
                     "حدث خطأ"
                 )
+
             );
 
         }
 
     }
+
 );
+
 
 
 // ============================================================
