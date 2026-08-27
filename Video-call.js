@@ -126,3 +126,13 @@ function endCall(){
 
 
 }
+export async function startVideoCall(data){
+
+    console.log("بدء مكالمة فيديو مع:", data.friendId);
+
+    // هنا نفتح صفحة مكالمة الفيديو
+    window.location.href =
+    "video-call.html?friend=" +
+    data.friendId;
+
+}
