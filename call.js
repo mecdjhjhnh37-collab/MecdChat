@@ -1,8 +1,8 @@
 /* =========================================
-   Mecd Chat - Real Voice Call System
+   Mecd Chat - Voice Call
    WebRTC + Firestore
    Firebase v10.12.2
-   ========================================= */
+========================================= */
 
 import {
     getApps,
@@ -32,9 +32,7 @@ import {
 ========================================= */
 
 const firebaseApp =
-    getApps().length
-        ? getApp()
-        : null;
+    getApps().length ? getApp() : null;
 
 if (!firebaseApp) {
     throw new Error(
@@ -42,11 +40,8 @@ if (!firebaseApp) {
     );
 }
 
-const auth =
-    getAuth(firebaseApp);
-
-const db =
-    getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 
 /* =========================================
@@ -57,21 +52,14 @@ let currentUser = null;
 
 let authReadyResolve;
 
-const authReady =
-    new Promise(resolve => {
-        authReadyResolve = resolve;
-    });
+const authReady = new Promise(resolve => {
+    authReadyResolve = resolve;
+});
 
-onAuthStateChanged(
-    auth,
-    user => {
-
-        currentUser = user;
-
-        authReadyResolve(user);
-
-    }
-);
+onAuthStateChanged(auth, user => {
+    currentUser = user;
+    authReadyResolve(user);
+});
 
 
 /* =========================================
@@ -79,9 +67,7 @@ onAuthStateChanged(
 ========================================= */
 
 let peerConnection = null;
-
 let localStream = null;
-
 let remoteStream = null;
 
 let stopCallListeners = [];
@@ -92,14 +78,11 @@ let remoteDescriptionReady = false;
 
 
 /* =========================================
-   جعل الـ Stream متاحًا لـ call.html
+   إظهار المايك لـ call.html
 ========================================= */
 
 function exposeLocalStream() {
-
-    window.localStream =
-        localStream;
-
+    window.localStream = localStream;
 }
 
 
@@ -116,7 +99,6 @@ function createCallID() {
             .toString(36)
             .substring(2, 10)
     );
-
 }
 
 
@@ -149,8 +131,7 @@ export async function startCall({
 
     try {
 
-        const callId =
-            createCallID();
+        const callId = createCallID();
 
         const callData = {
 
@@ -186,30 +167,22 @@ export async function startCall({
 
             createdAt:
                 serverTimestamp()
-
         };
 
 
         await setDoc(
-            doc(
-                db,
-                "calls",
-                callId
-            ),
+            doc(db, "calls", callId),
             callData
         );
 
 
         await setDoc(
-
             doc(
                 db,
                 "users",
                 friendId
             ),
-
             {
-
                 incomingCall: {
 
                     callId,
@@ -233,15 +206,11 @@ export async function startCall({
 
                     createdAt:
                         serverTimestamp()
-
                 }
-
             },
-
             {
                 merge: true
             }
-
         );
 
 
@@ -286,7 +255,6 @@ export async function startCall({
         alert(
             "❌ تعذر بدء المكالمة"
         );
-
     }
 }
 
@@ -312,7 +280,6 @@ export async function listenIncomingCalls() {
 
 
     return onSnapshot(
-
         userRef,
 
         snapshot => {
@@ -327,11 +294,9 @@ export async function listenIncomingCalls() {
             const incoming =
                 data.incomingCall;
 
-
             if (!incoming) {
                 return;
             }
-
 
             if (
                 incoming.receiverId !==
@@ -340,7 +305,6 @@ export async function listenIncomingCalls() {
                 return;
             }
 
-
             if (
                 incoming.status !==
                 "ringing"
@@ -348,14 +312,12 @@ export async function listenIncomingCalls() {
                 return;
             }
 
-
             if (
                 window.currentIncomingCallId ===
                 incoming.callId
             ) {
                 return;
             }
-
 
             window.currentIncomingCallId =
                 incoming.callId;
@@ -390,7 +352,6 @@ export async function listenIncomingCalls() {
             window.location.href =
                 "call.html?" +
                 params.toString();
-
         },
 
         error => {
@@ -399,11 +360,8 @@ export async function listenIncomingCalls() {
                 "Incoming call error:",
                 error
             );
-
         }
-
     );
-
 }
 
 
@@ -411,9 +369,7 @@ export async function listenIncomingCalls() {
    الحصول على المكالمة
 ========================================= */
 
-export async function getCall(
-    callId
-) {
+export async function getCall(callId) {
 
     if (!callId) {
         return null;
@@ -433,14 +389,9 @@ export async function getCall(
     }
 
     return {
-
-        id:
-            snapshot.id,
-
+        id: snapshot.id,
         ...snapshot.data()
-
     };
-
 }
 
 
@@ -448,9 +399,7 @@ export async function getCall(
    إنهاء المكالمة
 ========================================= */
 
-export async function endCall(
-    callId
-) {
+export async function endCall(callId) {
 
     if (!callId) {
         return;
@@ -459,23 +408,18 @@ export async function endCall(
     try {
 
         await updateDoc(
-
             doc(
                 db,
                 "calls",
                 callId
             ),
-
             {
-
                 status:
                     "ended",
 
                 endedAt:
                     serverTimestamp()
-
             }
-
         );
 
     } catch (error) {
@@ -484,9 +428,7 @@ export async function endCall(
             "End call error:",
             error
         );
-
     }
-
 }
 
 
@@ -505,18 +447,15 @@ export async function clearIncomingCall() {
     try {
 
         await updateDoc(
-
             doc(
                 db,
                 "users",
                 currentUser.uid
             ),
-
             {
                 incomingCall:
                     null
             }
-
         );
 
     } catch (error) {
@@ -525,19 +464,18 @@ export async function clearIncomingCall() {
             "Clear incoming call error:",
             error
         );
-
     }
-
 }
 
 
 /* =========================================
-   الحصول على الميكروفون
+   الميكروفون
 ========================================= */
 
 async function getMicrophone() {
 
     if (localStream) {
+        exposeLocalStream();
         return localStream;
     }
 
@@ -557,17 +495,14 @@ async function getMicrophone() {
 
                         autoGainControl:
                             true
-
                     },
 
                     video:
                         false
-
                 });
 
 
         exposeLocalStream();
-
 
         return localStream;
 
@@ -581,19 +516,15 @@ async function getMicrophone() {
         throw new Error(
             "لم يتم السماح باستخدام الميكروفون"
         );
-
     }
-
 }
 
 
 /* =========================================
-   PeerConnection
+   إنشاء PeerConnection
 ========================================= */
 
-function createPeerConnection(
-    callId
-) {
+function createPeerConnection(callId) {
 
     const pc =
         new RTCPeerConnection({
@@ -609,11 +540,11 @@ function createPeerConnection(
                     urls:
                         "stun:stun1.l.google.com:19302"
                 }
-
             ]
-
         });
 
+
+    /* ICE */
 
     pc.onicecandidate =
         async event => {
@@ -625,14 +556,12 @@ function createPeerConnection(
             try {
 
                 await addDoc(
-
                     collection(
                         db,
                         "calls",
                         callId,
                         "candidates"
                     ),
-
                     {
 
                         candidate:
@@ -643,9 +572,7 @@ function createPeerConnection(
 
                         createdAt:
                             serverTimestamp()
-
                     }
-
                 );
 
             } catch (error) {
@@ -654,26 +581,22 @@ function createPeerConnection(
                     "ICE error:",
                     error
                 );
-
             }
-
         };
 
+
+    /* الصوت القادم */
 
     pc.ontrack =
         event => {
 
             if (!remoteStream) {
-
                 remoteStream =
                     new MediaStream();
-
             }
-
 
             const stream =
                 event.streams?.[0];
-
 
             if (stream) {
 
@@ -694,13 +617,9 @@ function createPeerConnection(
                             remoteStream.addTrack(
                                 track
                             );
-
                         }
-
                     });
-
             }
-
 
             if (
                 window.onRemoteStream
@@ -709,20 +628,19 @@ function createPeerConnection(
                 window.onRemoteStream(
                     remoteStream
                 );
-
             }
-
         };
 
+
+    /* حالة الاتصال */
 
     pc.onconnectionstatechange =
         () => {
 
             console.log(
-                "WebRTC state:",
+                "WebRTC:",
                 pc.connectionState
             );
-
 
             if (
                 pc.connectionState ===
@@ -734,11 +652,8 @@ function createPeerConnection(
                 ) {
 
                     window.onCallConnected();
-
                 }
-
             }
-
 
             if (
                 pc.connectionState ===
@@ -750,21 +665,17 @@ function createPeerConnection(
                 ) {
 
                     window.onCallFailed();
-
                 }
-
             }
-
         };
 
 
     return pc;
-
 }
 
 
 /* =========================================
-   إضافة Tracks
+   إضافة المايك
 ========================================= */
 
 function addLocalTracks() {
@@ -776,7 +687,6 @@ function addLocalTracks() {
         return;
     }
 
-
     localStream
         .getTracks()
         .forEach(track => {
@@ -785,9 +695,7 @@ function addLocalTracks() {
                 track,
                 localStream
             );
-
         });
-
 }
 
 
@@ -807,28 +715,20 @@ function listenCallDocument(
             callId
         );
 
-
     const unsubscribe =
         onSnapshot(
-
             ref,
 
             snapshot => {
 
-                if (
-                    !snapshot.exists()
-                ) {
-
+                if (!snapshot.exists()) {
                     callback(null);
                     return;
-
                 }
-
 
                 callback(
                     snapshot.data()
                 );
-
             },
 
             error => {
@@ -837,19 +737,14 @@ function listenCallDocument(
                     "Call listener error:",
                     error
                 );
-
             }
-
         );
-
 
     stopCallListeners.push(
         unsubscribe
     );
 
-
     return unsubscribe;
-
 }
 
 
@@ -870,10 +765,8 @@ function listenCandidates(
             "candidates"
         );
 
-
     const unsubscribe =
         onSnapshot(
-
             ref,
 
             snapshot => {
@@ -890,10 +783,8 @@ function listenCandidates(
                                 return;
                             }
 
-
                             const data =
                                 change.doc.data();
-
 
                             if (
                                 data.senderId ===
@@ -902,13 +793,11 @@ function listenCandidates(
                                 return;
                             }
 
-
                             if (
                                 !data.candidate
                             ) {
                                 return;
                             }
-
 
                             const candidate =
                                 new RTCIceCandidate(
@@ -916,21 +805,16 @@ function listenCandidates(
                                 );
 
 
-                            /*
-                             * إذا لم يصل Remote Description
-                             * نخزن الـ candidate مؤقتًا.
-                             */
-
                             if (
                                 !remoteDescriptionReady
                             ) {
 
-                                pendingCandidates.push(
-                                    candidate
-                                );
+                                pendingCandidates
+                                    .push(
+                                        candidate
+                                    );
 
                                 return;
-
                             }
 
 
@@ -947,12 +831,9 @@ function listenCandidates(
                                     "ICE add error:",
                                     error
                                 );
-
                             }
-
                         }
                     );
-
             },
 
             error => {
@@ -961,24 +842,19 @@ function listenCandidates(
                     "ICE listener error:",
                     error
                 );
-
             }
-
         );
-
 
     stopCallListeners.push(
         unsubscribe
     );
 
-
     return unsubscribe;
-
 }
 
 
 /* =========================================
-   إضافة الـ ICE المخزن
+   إضافة ICE المؤجل
 ========================================= */
 
 async function flushPendingCandidates() {
@@ -990,13 +866,10 @@ async function flushPendingCandidates() {
         return;
     }
 
-
     const candidates =
         [...pendingCandidates];
 
-
     pendingCandidates = [];
-
 
     for (
         const candidate
@@ -1016,11 +889,8 @@ async function flushPendingCandidates() {
                 "Pending ICE error:",
                 error
             );
-
         }
-
     }
-
 }
 
 
@@ -1034,45 +904,29 @@ export async function startOutgoingCall(
 
     await authReady;
 
-
     if (!currentUser) {
-
         throw new Error(
             "يجب تسجيل الدخول"
         );
-
     }
-
 
     const call =
         await getCall(callId);
 
-
     if (!call) {
-
         throw new Error(
             "المكالمة غير موجودة"
         );
-
     }
 
-
     await getMicrophone();
-
 
     peerConnection =
         createPeerConnection(
             callId
         );
 
-
     addLocalTracks();
-
-
-    /*
-     * نبدأ الاستماع للـ ICE
-     * قبل إنشاء Offer.
-     */
 
     listenCandidates(
         callId,
@@ -1092,13 +946,11 @@ export async function startOutgoingCall(
 
 
     await updateDoc(
-
         doc(
             db,
             "calls",
             callId
         ),
-
         {
 
             offer: {
@@ -1108,57 +960,34 @@ export async function startOutgoingCall(
 
                 sdp:
                     offer.sdp
-
             },
 
             status:
                 "calling"
-
         }
-
     );
 
 
-    /*
-     * مراقبة Answer
-     */
-
     listenCallDocument(
-
         callId,
 
         async data => {
 
             if (!data) {
 
-                if (
-                    window.onCallEnded
-                ) {
-
-                    window.onCallEnded();
-
-                }
+                window.onCallEnded?.();
 
                 return;
-
             }
-
 
             if (
                 data.status ===
                 "ended"
             ) {
 
-                if (
-                    window.onCallEnded
-                ) {
-
-                    window.onCallEnded();
-
-                }
+                window.onCallEnded?.();
 
                 return;
-
             }
 
 
@@ -1172,11 +1001,9 @@ export async function startOutgoingCall(
 
                     await peerConnection
                         .setRemoteDescription(
-
                             new RTCSessionDescription(
                                 data.answer
                             )
-
                         );
 
 
@@ -1186,7 +1013,6 @@ export async function startOutgoingCall(
 
                     await flushPendingCandidates();
 
-
                 } catch (error) {
 
                     console.error(
@@ -1194,19 +1020,16 @@ export async function startOutgoingCall(
                         error
                     );
 
+                    window.onCallFailed?.();
                 }
-
             }
-
         }
-
     );
-
 }
 
 
 /* =========================================
-   قبول المكالمة الواردة
+   قبول المكالمة
 ========================================= */
 
 export async function acceptIncomingCall(
@@ -1215,32 +1038,22 @@ export async function acceptIncomingCall(
 
     await authReady;
 
-
     if (!currentUser) {
 
         throw new Error(
             "يجب تسجيل الدخول"
         );
-
     }
 
-
-    /*
-     * ننتظر الـ Offer.
-     */
-
-    let call =
+    const call =
         await getCall(callId);
-
 
     if (!call) {
 
         throw new Error(
             "المكالمة غير موجودة"
         );
-
     }
-
 
     if (
         call.receiverId !==
@@ -1250,35 +1063,13 @@ export async function acceptIncomingCall(
         throw new Error(
             "هذه المكالمة ليست لك"
         );
-
     }
-
-
-    /*
-     * إذا لم يصل Offer بعد،
-     * ننتظر Firestore قليلاً.
-     */
 
     if (!call.offer) {
 
-        call =
-            await waitForOffer(
-                callId,
-                15000
-            );
-
-    }
-
-
-    if (
-        !call ||
-        !call.offer
-    ) {
-
         throw new Error(
-            "لم يصل طلب الاتصال"
+            "لم يصل طلب الاتصال بعد"
         );
-
     }
 
 
@@ -1294,27 +1085,17 @@ export async function acceptIncomingCall(
     addLocalTracks();
 
 
-    /*
-     * الاستماع للـ ICE
-     */
-
     listenCandidates(
         callId,
         currentUser.uid
     );
 
 
-    /*
-     * وضع Offer
-     */
-
     await peerConnection
         .setRemoteDescription(
-
             new RTCSessionDescription(
                 call.offer
             )
-
         );
 
 
@@ -1324,10 +1105,6 @@ export async function acceptIncomingCall(
 
     await flushPendingCandidates();
 
-
-    /*
-     * إنشاء Answer
-     */
 
     const answer =
         await peerConnection
@@ -1341,13 +1118,11 @@ export async function acceptIncomingCall(
 
 
     await updateDoc(
-
         doc(
             db,
             "calls",
             callId
         ),
-
         {
 
             answer: {
@@ -1357,23 +1132,15 @@ export async function acceptIncomingCall(
 
                 sdp:
                     answer.sdp
-
             },
 
             status:
                 "connected"
-
         }
-
     );
 
 
-    /*
-     * مراقبة انتهاء المكالمة
-     */
-
     listenCallDocument(
-
         callId,
 
         data => {
@@ -1384,135 +1151,15 @@ export async function acceptIncomingCall(
                 "ended"
             ) {
 
-                if (
-                    window.onCallEnded
-                ) {
-
-                    window.onCallEnded();
-
-                }
-
+                window.onCallEnded?.();
             }
-
         }
-
     );
-
 }
 
 
 /* =========================================
-   انتظار Offer
-========================================= */
-
-function waitForOffer(
-    callId,
-    timeout = 15000
-) {
-
-    return new Promise(
-        (resolve, reject) => {
-
-            let finished =
-                false;
-
-
-            const ref =
-                doc(
-                    db,
-                    "calls",
-                    callId
-                );
-
-
-            const unsubscribe =
-                onSnapshot(
-
-                    ref,
-
-                    snapshot => {
-
-                        if (
-                            !snapshot.exists()
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        const data =
-                            snapshot.data();
-
-
-                        if (
-                            data.offer
-                        ) {
-
-                            finished =
-                                true;
-
-                            unsubscribe();
-
-                            resolve({
-                                id:
-                                    snapshot.id,
-                                ...data
-                            });
-
-                        }
-
-                    },
-
-                    error => {
-
-                        if (!finished) {
-
-                            finished =
-                                true;
-
-                            unsubscribe();
-
-                            reject(error);
-
-                        }
-
-                    }
-
-                );
-
-
-            setTimeout(
-                () => {
-
-                    if (finished)
-                        return;
-
-
-                    finished =
-                        true;
-
-                    unsubscribe();
-
-
-                    reject(
-                        new Error(
-                            "انتهى وقت انتظار الاتصال"
-                        )
-                    );
-
-                },
-                timeout
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   مراقبة المكالمة
+   مراقبة المكالمة الواردة
 ========================================= */
 
 export async function watchIncomingCall(
@@ -1521,52 +1168,25 @@ export async function watchIncomingCall(
 
     await authReady;
 
-
     if (!currentUser) {
         return;
     }
 
-
     listenCallDocument(
-
         callId,
 
         data => {
 
-            if (!data) {
-
-                if (
-                    window.onCallEnded
-                ) {
-
-                    window.onCallEnded();
-
-                }
-
-                return;
-
-            }
-
-
             if (
+                !data ||
                 data.status ===
                 "ended"
             ) {
 
-                if (
-                    window.onCallEnded
-                ) {
-
-                    window.onCallEnded();
-
-                }
-
+                window.onCallEnded?.();
             }
-
         }
-
     );
-
 }
 
 
@@ -1584,18 +1204,15 @@ export async function cleanupCall(
 
             localStream
                 .getTracks()
-                .forEach(
-                    track => {
-                        track.stop();
-                    }
-                );
+                .forEach(track => {
+                    track.stop();
+                });
 
             localStream =
                 null;
 
             window.localStream =
                 null;
-
         }
 
 
@@ -1605,7 +1222,6 @@ export async function cleanupCall(
 
             peerConnection =
                 null;
-
         }
 
 
@@ -1613,38 +1229,29 @@ export async function cleanupCall(
             null;
 
 
-        pendingCandidates =
-            [];
-
-
-        remoteDescriptionReady =
-            false;
-
-
         stopCallListeners
-            .forEach(
-                unsubscribe => {
+            .forEach(unsubscribe => {
 
-                    try {
-                        unsubscribe();
-                    } catch {}
-
-                }
-            );
+                try {
+                    unsubscribe();
+                } catch {}
+            });
 
 
         stopCallListeners =
             [];
 
 
+        pendingCandidates =
+            [];
+
+        remoteDescriptionReady =
+            false;
+
+
         if (callId) {
-
-            await endCall(
-                callId
-            );
-
+            await endCall(callId);
         }
-
 
     } catch (error) {
 
@@ -1652,7 +1259,5 @@ export async function cleanupCall(
             "Cleanup error:",
             error
         );
-
     }
-
 }
