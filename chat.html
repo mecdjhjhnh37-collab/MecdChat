@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -126,9 +125,7 @@ header{
 
 .user-status{
     font-size:12px;
-
     color:#777;
-
     margin-top:5px;
 }
 
@@ -293,6 +290,11 @@ header{
     color:white;
 }
 
+#voiceButton.recording{
+    background:#e53935;
+    color:white;
+}
+
 #sendButton{
     background:#00e889;
     color:#00150e;
@@ -303,6 +305,7 @@ header{
 </head>
 
 <body>
+
 
 <div id="loading"
      style="
@@ -409,8 +412,15 @@ header{
        maxlength="2000">
 
 
+<!--
+    مهم جداً:
+    هذا الزر لا يحتوي على كود ميكروفون.
+    voice.js هو المسؤول عنه.
+-->
+
 <button id="voiceButton"
-        type="button">
+        type="button"
+        aria-label="تسجيل صوت">
 
     🎤
 
@@ -509,76 +519,50 @@ const db =
 ========================================= */
 
 const loading =
-    document.getElementById(
-        "loading"
-    );
+    document.getElementById("loading");
 
 const app =
-    document.getElementById(
-        "app"
-    );
+    document.getElementById("app");
 
 const friendName =
-    document.getElementById(
-        "friendName"
-    );
+    document.getElementById("friendName");
 
 const friendAvatar =
-    document.getElementById(
-        "friendAvatar"
-    );
+    document.getElementById("friendAvatar");
 
 const friendStatus =
-    document.getElementById(
-        "friendStatus"
-    );
+    document.getElementById("friendStatus");
 
 const messages =
-    document.getElementById(
-        "messages"
-    );
+    document.getElementById("messages");
 
 const messageInput =
-    document.getElementById(
-        "messageInput"
-    );
+    document.getElementById("messageInput");
 
 const sendButton =
-    document.getElementById(
-        "sendButton"
-    );
+    document.getElementById("sendButton");
 
 const callButton =
-    document.getElementById(
-        "callButton"
-    );
+    document.getElementById("callButton");
 
 const videoButton =
-    document.getElementById(
-        "videoButton"
-    );
+    document.getElementById("videoButton");
 
 const backButton =
-    document.getElementById(
-        "backButton"
-    );
+    document.getElementById("backButton");
 
 
 /* =========================================
    المتغيرات
 ========================================= */
 
-let currentUser =
-    null;
+let currentUser = null;
 
-let friendUser =
-    null;
+let friendUser = null;
 
-let chatID =
-    null;
+let chatID = null;
 
-let unsubscribeMessages =
-    null;
+let unsubscribeMessages = null;
 
 
 /* =========================================
@@ -592,20 +576,11 @@ function escapeHtml(value){
             /[&<>'"]/g,
             c => ({
 
-                "&":
-                    "&amp;",
-
-                "<":
-                    "&lt;",
-
-                ">":
-                    "&gt;",
-
-                "'":
-                    "&#39;",
-
-                '"':
-                    "&quot;"
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                "'":"&#39;",
+                '"':"&quot;"
 
             }[c])
         );
@@ -617,10 +592,7 @@ function escapeHtml(value){
    Chat ID
 ========================================= */
 
-function createChatID(
-    a,
-    b
-){
+function createChatID(a,b){
 
     return [
         a,
@@ -680,8 +652,7 @@ async function loadFriend(){
 
     friendUser = {
 
-        uid:
-            friendId,
+        uid:friendId,
 
         name:
             data.name ||
@@ -701,9 +672,7 @@ async function loadFriend(){
     if(friendUser.photo){
 
         const img =
-            document.createElement(
-                "img"
-            );
+            document.createElement("img");
 
         img.src =
             friendUser.photo;
@@ -746,12 +715,9 @@ async function loadFriend(){
 
         {
 
-            members: [
-
+            members:[
                 currentUser.uid,
-
                 friendUser.uid
-
             ],
 
             updatedAt:
@@ -792,14 +758,11 @@ function listenMessages(){
 
     const q =
         query(
-
             ref,
-
             orderBy(
                 "createdAt",
                 "asc"
             )
-
         );
 
 
@@ -874,9 +837,45 @@ function listenMessages(){
                             );
 
 
-                        box.textContent =
-                            data.text ||
-                            "";
+                        /*
+                         * الرسالة الصوتية
+                         */
+
+                        if(
+                            data.type ===
+                            "voice"
+                            &&
+                            data.audioUrl
+                        ){
+
+                            const audio =
+                                document.createElement(
+                                    "audio"
+                                );
+
+                            audio.controls =
+                                true;
+
+                            audio.preload =
+                                "metadata";
+
+                            audio.src =
+                                data.audioUrl;
+
+                            audio.style.width =
+                                "220px";
+
+                            box.appendChild(
+                                audio
+                            );
+
+                        }else{
+
+                            box.textContent =
+                                data.text ||
+                                "";
+
+                        }
 
 
                         if(
@@ -897,11 +896,8 @@ function listenMessages(){
                                     .toLocaleTimeString(
                                         "ar",
                                         {
-                                            hour:
-                                                "2-digit",
-
-                                            minute:
-                                                "2-digit"
+                                            hour:"2-digit",
+                                            minute:"2-digit"
                                         }
                                     );
 
@@ -978,8 +974,7 @@ async function sendMessage(){
 
             {
 
-                text:
-                    text,
+                text,
 
                 senderId:
                     currentUser.uid,
@@ -1051,7 +1046,7 @@ messageInput.addEventListener(
 
 
 /* =========================================
-   📞 المكالمة
+   المكالمة
 ========================================= */
 
 callButton.addEventListener(
@@ -1088,33 +1083,19 @@ callButton.addEventListener(
 
         try{
 
-            /*
-             * مهم:
-             * ?v=2 يمنع تحميل النسخة القديمة
-             */
-
             const callModule =
                 await import(
-                    "./call.js?v=2"
+                    "./call.js?v=3"
                 );
 
 
-            console.log(
-                "call.js exports:",
-                Object.keys(
-                    callModule
-                )
-            );
-
-
             if(
-                typeof
-                callModule.startCall !==
+                typeof callModule.startCall !==
                 "function"
             ){
 
                 throw new Error(
-                    "ملف call.js المحمّل لا يحتوي على startCall. تأكد أنك استبدلت call.js بالكود الجديد."
+                    "startCall غير موجودة في call.js"
                 );
 
             }
@@ -1143,14 +1124,11 @@ callButton.addEventListener(
 
 
             alert(
-
                 "❌ تعذر بدء المكالمة\n\n" +
-
                 (
                     error.message ||
                     "خطأ غير معروف"
                 )
-
             );
 
         }
@@ -1207,7 +1185,7 @@ backButton.addEventListener(
 
 
 /* =========================================
-   تشغيل
+   تسجيل الدخول
 ========================================= */
 
 onAuthStateChanged(
@@ -1238,41 +1216,14 @@ onAuthStateChanged(
 
 
             /*
-             * تحميل call.js مسبقًا
-             * للتأكد أنه صحيح
+             * مهم:
+             * voice.js يتم تحميله هنا فقط.
+             * لا يوجد أي كود ميكروفون هنا.
              */
 
-            const callModule =
-                await import(
-                    "./call.js?v=2"
-                );
-
-
-            console.log(
-                "✅ call.js loaded",
-                Object.keys(
-                    callModule
-                )
+            await import(
+                "./voice.js?v=3"
             );
-
-
-            if(
-                typeof
-                callModule.startCall !==
-                "function"
-            ){
-
-                console.error(
-                    "❌ startCall غير موجودة في call.js"
-                );
-
-            }else{
-
-                console.log(
-                    "✅ startCall موجودة وجاهزة"
-                );
-
-            }
 
 
             loading.style.display =
@@ -1290,16 +1241,12 @@ onAuthStateChanged(
 
 
             loading.innerHTML =
-
                 "❌ تعذر فتح الدردشة<br><br>" +
-
                 "<small>" +
-
                 escapeHtml(
                     error.message ||
                     "حدث خطأ"
                 ) +
-
                 "</small>";
 
         }
@@ -1308,12 +1255,6 @@ onAuthStateChanged(
 
 );
 
-</script>
-
-
-<script
-    type="module"
-    src="./voice.js">
 </script>
 
 </body>
