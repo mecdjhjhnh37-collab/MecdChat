@@ -2582,9 +2582,49 @@ function init(){
 
                 await loadFriend();
 
-                listenMessages();
+listenMessages();
 
-                showApp();
+
+// ============================================================
+// تشغيل نظام استقبال المكالمات
+// ============================================================
+
+try{
+
+    if(!callModule){
+
+        callModule =
+            await import(
+                "./call.js"
+            );
+
+    }
+
+
+    if(
+        typeof callModule.listenIncomingCalls ===
+        "function"
+    ){
+
+        await callModule.listenIncomingCalls();
+
+        console.log(
+            "📞 نظام استقبال المكالمات جاهز"
+        );
+
+    }
+
+}catch(error){
+
+    console.error(
+        "❌ Incoming call system error:",
+        error
+    );
+
+}
+
+
+showApp();
 
             }catch(error){
 
