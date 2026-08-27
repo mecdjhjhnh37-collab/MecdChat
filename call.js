@@ -1,1908 +1,1259 @@
 /* =========================================
-   Mecd Chat
-   Real Voice Call System
+   Mecd Chat - Real Voice Call System
    WebRTC + Firestore
    Firebase v10.12.2
-========================================= */
+   ========================================= */
 
 import {
-initializeApp,
-getApps,
-getApp
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+    getApps,
+    getApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-getAuth,
-onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-getFirestore,
-doc,
-setDoc,
-getDoc,
-onSnapshot,
-updateDoc,
-serverTimestamp,
-collection,
-addDoc
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    onSnapshot,
+    updateDoc,
+    serverTimestamp,
+    collection,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 /* =========================================
    Firebase
-========================================= */
-
-const firebaseConfig = {
-
-apiKey:
-"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
-
-authDomain:
-"mecd-tools.firebaseapp.com",
-
-projectId:
-"mecd-tools",
-
-storageBucket:
-"mecd-tools.firebasestorage.app",
-
-messagingSenderId:
-"643005547408",
-
-appId:
-"1:643005547408:web:b1719060ec340dd0e0a915"
-
-};
-
+   ========================================= */
 
 const firebaseApp =
-getApps().length
-? getApp()
-: initializeApp(
-firebaseConfig
-);
+    getApps().length ? getApp() : null;
 
+if (!firebaseApp) {
+    throw new Error(
+        "Firebase لم يتم تشغيله قبل تحميل call.js"
+    );
+}
 
-const auth =
-getAuth(
-firebaseApp
-);
-
-
-const db =
-getFirestore(
-firebaseApp
-);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 
 
 /* =========================================
    المستخدم
-========================================= */
+   ========================================= */
 
-let currentUser =
-null;
+let currentUser = null;
 
 let authReadyResolve;
 
-const authReady =
-new Promise(
-resolve => {
+const authReady = new Promise(resolve => {
+    authReadyResolve = resolve;
+});
 
-authReadyResolve =
-resolve;
-
-}
-);
-
-
-onAuthStateChanged(
-auth,
-user => {
-
-currentUser =
-user;
-
-authReadyResolve(
-user
-);
-
-}
-);
+onAuthStateChanged(auth, user => {
+    currentUser = user;
+    authReadyResolve(user);
+});
 
 
 /* =========================================
    Call ID
-========================================= */
+   ========================================= */
 
-function createCallID(){
-
-return (
-
-Date.now()
-.toString(36)
-
-+
-
-"_"
-
-+
-
-Math.random()
-.toString(36)
-.substring(2,10)
-
-);
-
+function createCallID() {
+    return (
+        Date.now().toString(36) +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2, 10)
+    );
 }
 
 
 /* =========================================
-   بدء المكالمة من Chat
-========================================= */
+   بدء المكالمة
+   ========================================= */
 
 export async function startCall({
+    friendId,
+    friendName,
+    friendPhoto
+}) {
 
-friendId,
-friendName,
-friendPhoto
+    await authReady;
 
-}){
+    if (!currentUser) {
+        alert("⚠️ يجب تسجيل الدخول أولاً");
+        return;
+    }
 
-await authReady;
+    if (!friendId) {
+        alert("⚠️ لم يتم تحديد الصديق");
+        return;
+    }
 
+    if (friendId === currentUser.uid) {
+        alert("⚠️ لا يمكنك الاتصال بنفسك");
+        return;
+    }
 
-if(!currentUser){
+    try {
 
-throw new Error(
-"يجب تسجيل الدخول أولاً"
-);
+        const callId = createCallID();
 
-}
+        const callData = {
 
+            callId,
 
-if(!friendId){
+            callerId:
+                currentUser.uid,
 
-throw new Error(
-"لم يتم تحديد الصديق"
-);
+            receiverId:
+                friendId,
 
-}
+            callerName:
+                currentUser.displayName ||
+                "مستخدم Mecd",
 
+            callerPhoto:
+                currentUser.photoURL ||
+                "",
 
-if(
-friendId ===
-currentUser.uid
-){
+            receiverName:
+                friendName ||
+                "مستخدم Mecd",
 
-throw new Error(
-"لا يمكنك الاتصال بنفسك"
-);
+            receiverPhoto:
+                friendPhoto ||
+                "",
 
-}
+            type:
+                "audio",
 
+            status:
+                "ringing",
 
-const callId =
-createCallID();
+            createdAt:
+                serverTimestamp()
 
+        };
 
-const callerName =
-currentUser.displayName ||
-"مستخدم Mecd";
 
+        /* إنشاء المكالمة */
 
-const callerPhoto =
-currentUser.photoURL ||
-"";
+        await setDoc(
+            doc(db, "calls", callId),
+            callData
+        );
 
 
-const callData = {
+        /* إرسال المكالمة للطرف الثاني */
 
-callId:
+        await setDoc(
 
-callId,
+            doc(
+                db,
+                "users",
+                friendId
+            ),
 
-callerId:
+            {
 
-currentUser.uid,
+                incomingCall: {
 
-receiverId:
+                    callId,
 
-friendId,
+                    callerId:
+                        currentUser.uid,
 
-callerName:
+                    callerName:
+                        currentUser.displayName ||
+                        "مستخدم Mecd",
 
-callerName,
+                    callerPhoto:
+                        currentUser.photoURL ||
+                        "",
 
-callerPhoto:
+                    receiverId:
+                        friendId,
 
-callerPhoto,
+                    status:
+                        "ringing",
 
-receiverName:
+                    createdAt:
+                        serverTimestamp()
 
-friendName ||
-"مستخدم Mecd",
+                }
 
-receiverPhoto:
+            },
 
-friendPhoto ||
-"",
+            {
+                merge: true
+            }
 
-type:
+        );
 
-"audio",
 
-status:
+        /* فتح شاشة الاتصال */
 
-"ringing",
+        const params =
+            new URLSearchParams();
 
-createdAt:
+        params.set(
+            "callId",
+            callId
+        );
 
-serverTimestamp()
+        params.set(
+            "mode",
+            "outgoing"
+        );
 
-};
+        params.set(
+            "name",
+            friendName ||
+            "مستخدم Mecd"
+        );
 
+        params.set(
+            "photo",
+            friendPhoto ||
+            ""
+        );
 
-try{
+        window.location.href =
+            "call.html?" +
+            params.toString();
 
-/*
-إنشاء وثيقة المكالمة
-*/
 
-await setDoc(
+    } catch (error) {
 
-doc(
-db,
-"calls",
-callId
-),
+        console.error(
+            "Start call error:",
+            error
+        );
 
-callData
+        alert(
+            "❌ تعذر بدء المكالمة"
+        );
 
-);
-
-
-/*
-إرسال إشعار للطرف الآخر
-*/
-
-await setDoc(
-
-doc(
-db,
-"users",
-friendId
-),
-
-{
-
-incomingCall: {
-
-callId:
-
-callId,
-
-callerId:
-
-currentUser.uid,
-
-callerName:
-
-callerName,
-
-callerPhoto:
-
-callerPhoto,
-
-receiverId:
-
-friendId,
-
-status:
-
-"ringing",
-
-createdAt:
-
-serverTimestamp()
-
-}
-
-},
-
-{
-merge:true
-}
-
-);
-
-
-/*
-فتح call.html
-*/
-
-const params =
-new URLSearchParams();
-
-
-params.set(
-"callId",
-callId
-);
-
-
-params.set(
-"mode",
-"outgoing"
-);
-
-
-params.set(
-"name",
-friendName ||
-"مستخدم Mecd"
-);
-
-
-params.set(
-"photo",
-friendPhoto ||
-""
-);
-
-
-window.location.href =
-"call.html?" +
-params.toString();
-
-
-}catch(error){
-
-console.error(
-"Start call error:",
-error
-);
-
-throw error;
-
-}
-
+    }
 }
 
 
 /* =========================================
-   استقبال المكالمات
-========================================= */
+   المكالمات الواردة
+   ========================================= */
 
-export async function listenIncomingCalls(){
+export async function listenIncomingCalls() {
 
-await authReady;
+    await authReady;
 
+    if (!currentUser) {
+        return null;
+    }
 
-if(!currentUser)
-return null;
+    const userRef =
+        doc(
+            db,
+            "users",
+            currentUser.uid
+        );
 
+    return onSnapshot(
 
-const userRef =
-doc(
-db,
-"users",
-currentUser.uid
-);
+        userRef,
 
+        snapshot => {
 
-return onSnapshot(
+            if (!snapshot.exists()) {
+                return;
+            }
 
-userRef,
+            const data =
+                snapshot.data();
 
-snapshot => {
+            const incoming =
+                data.incomingCall;
 
-if(!snapshot.exists())
-return;
+            if (!incoming) {
+                return;
+            }
 
+            if (
+                incoming.receiverId !==
+                currentUser.uid
+            ) {
+                return;
+            }
 
-const data =
-snapshot.data();
+            if (
+                incoming.status !==
+                "ringing"
+            ) {
+                return;
+            }
 
+            if (
+                window.currentIncomingCallId ===
+                incoming.callId
+            ) {
+                return;
+            }
 
-const incoming =
-data.incomingCall;
-
-
-if(!incoming)
-return;
-
-
-if(
-incoming.receiverId !==
-currentUser.uid
-)
-return;
-
-
-if(
-incoming.status !==
-"ringing"
-)
-return;
-
-
-if(
-window.currentIncomingCallId ===
-incoming.callId
-)
-return;
-
-
-window.currentIncomingCallId =
-incoming.callId;
+            window.currentIncomingCallId =
+                incoming.callId;
 
 
-const params =
-new URLSearchParams();
+            const params =
+                new URLSearchParams();
 
+            params.set(
+                "callId",
+                incoming.callId
+            );
 
-params.set(
-"callId",
-incoming.callId
-);
+            params.set(
+                "mode",
+                "incoming"
+            );
 
+            params.set(
+                "name",
+                incoming.callerName ||
+                "مستخدم Mecd"
+            );
 
-params.set(
-"mode",
-"incoming"
-);
+            params.set(
+                "photo",
+                incoming.callerPhoto ||
+                ""
+            );
 
+            window.location.href =
+                "call.html?" +
+                params.toString();
 
-params.set(
-"name",
-incoming.callerName ||
-"مستخدم Mecd"
-);
+        },
 
+        error => {
 
-params.set(
-"photo",
-incoming.callerPhoto ||
-""
-);
+            console.error(
+                "Incoming call error:",
+                error
+            );
 
-
-window.location.href =
-"call.html?" +
-params.toString();
-
-},
-
-error => {
-
-console.error(
-"Incoming call error:",
-error
-);
-
-}
-
-);
-
+        }
+    );
 }
 
 
 /* =========================================
-   جلب المكالمة
-========================================= */
+   الحصول على المكالمة
+   ========================================= */
 
-export async function getCall(
-callId
-){
+export async function getCall(callId) {
 
-if(!callId)
-return null;
+    if (!callId) {
+        return null;
+    }
 
+    const snapshot =
+        await getDoc(
+            doc(
+                db,
+                "calls",
+                callId
+            )
+        );
 
-const snapshot =
-await getDoc(
+    if (!snapshot.exists()) {
+        return null;
+    }
 
-doc(
-db,
-"calls",
-callId
-)
-
-);
-
-
-if(!snapshot.exists())
-return null;
-
-
-return {
-
-id:
-snapshot.id,
-
-...snapshot.data()
-
-};
-
+    return {
+        id: snapshot.id,
+        ...snapshot.data()
+    };
 }
 
 
 /* =========================================
-   WebRTC
-========================================= */
+   إنهاء المكالمة
+   ========================================= */
 
-let peerConnection =
-null;
+export async function endCall(callId) {
 
-let localStream =
-null;
+    if (!callId) {
+        return;
+    }
 
-let remoteStream =
-null;
+    try {
 
-let stopCallListeners =
-[];
+        await updateDoc(
 
-let pendingCandidates =
-[];
+            doc(
+                db,
+                "calls",
+                callId
+            ),
 
-let candidateListenerStarted =
-false;
+            {
 
+                status:
+                    "ended",
 
-/* =========================================
-   إنشاء Peer Connection
-========================================= */
+                endedAt:
+                    serverTimestamp()
 
-function createPeerConnection(
-callId
-){
+            }
+        );
 
-const pc =
-new RTCPeerConnection({
+    } catch (error) {
 
-iceServers:[
+        console.error(
+            "End call error:",
+            error
+        );
 
-{
-urls:
-"stun:stun.l.google.com:19302"
-},
-
-{
-urls:
-"stun:stun1.l.google.com:19302"
-},
-
-{
-urls:
-"stun:stun2.l.google.com:19302"
-}
-
-]
-
-});
-
-
-/* =========================
-   ICE
-========================= */
-
-pc.onicecandidate =
-async event => {
-
-if(!event.candidate)
-return;
-
-
-if(!currentUser)
-return;
-
-
-try{
-
-await addDoc(
-
-collection(
-db,
-"calls",
-callId,
-"candidates"
-),
-
-{
-
-candidate:
-event.candidate.toJSON(),
-
-senderId:
-currentUser.uid,
-
-createdAt:
-serverTimestamp()
-
-}
-
-);
-
-}catch(error){
-
-console.error(
-"ICE error:",
-error
-);
-
-}
-
-};
-
-
-/* =========================
-   الصوت القادم
-========================= */
-
-pc.ontrack =
-event => {
-
-if(!remoteStream){
-
-remoteStream =
-new MediaStream();
-
-}
-
-
-if(
-event.streams &&
-event.streams[0]
-){
-
-event.streams[0]
-.getTracks()
-.forEach(
-track => {
-
-if(
-!remoteStream
-.getTracks()
-.some(
-t =>
-t.id ===
-track.id
-)
-){
-
-remoteStream.addTrack(
-track
-);
-
-}
-
-}
-);
-
-}
-
-else{
-
-if(
-!remoteStream
-.getTracks()
-.some(
-t =>
-t.id ===
-event.track.id
-)
-){
-
-remoteStream.addTrack(
-event.track
-);
-
-}
-
-}
-
-
-window.onRemoteStream?.(
-remoteStream
-);
-
-};
-
-
-/* =========================
-   حالة الاتصال
-========================= */
-
-pc.onconnectionstatechange =
-() => {
-
-console.log(
-"WebRTC:",
-pc.connectionState
-);
-
-
-if(
-pc.connectionState ===
-"connected"
-){
-
-window.onCallConnected?.();
-
-}
-
-
-if(
-pc.connectionState ===
-"failed"
-){
-
-window.onCallError?.(
-"فشل الاتصال بين الهاتفين"
-);
-
-}
-
-
-if(
-pc.connectionState ===
-"closed"
-){
-
-console.log(
-"WebRTC closed"
-);
-
-}
-
-};
-
-
-/* =========================
-   ICE state
-========================= */
-
-pc.oniceconnectionstatechange =
-() => {
-
-console.log(
-"ICE:",
-pc.iceConnectionState
-);
-
-
-if(
-pc.iceConnectionState ===
-"failed"
-){
-
-console.log(
-"ICE failed"
-);
-
-}
-
-};
-
-
-return pc;
-
-}
-
-
-/* =========================================
-   الميكروفون
-========================================= */
-
-async function getMicrophone(){
-
-if(
-!navigator.mediaDevices ||
-!navigator.mediaDevices.getUserMedia
-){
-
-throw new Error(
-"المتصفح لا يدعم الميكروفون"
-);
-
-}
-
-
-try{
-
-localStream =
-await navigator.mediaDevices
-.getUserMedia({
-
-audio:{
-echoCancellation:true,
-noiseSuppression:true,
-autoGainControl:true
-},
-
-video:false
-
-});
-
-
-window.localCallStream =
-localStream;
-
-
-return localStream;
-
-
-}catch(error){
-
-console.error(
-"Microphone error:",
-error
-);
-
-
-if(
-error.name ===
-"NotAllowedError"
-){
-
-throw new Error(
-"يجب السماح باستخدام الميكروفون"
-);
-
-}
-
-
-if(
-error.name ===
-"NotFoundError"
-){
-
-throw new Error(
-"لم يتم العثور على ميكروفون"
-);
-
-}
-
-
-throw new Error(
-"تعذر تشغيل الميكروفون"
-);
-
-}
-
-}
-
-
-/* =========================================
-   إضافة الصوت
-========================================= */
-
-function addLocalTracks(){
-
-if(
-!peerConnection ||
-!localStream
-)
-return;
-
-
-localStream
-.getTracks()
-.forEach(
-track => {
-
-peerConnection.addTrack(
-track,
-localStream
-);
-
-}
-);
-
-}
-
-
-/* =========================================
-   مراقبة المكالمة
-========================================= */
-
-function listenCallDocument(
-callId,
-callback
-){
-
-const callRef =
-doc(
-db,
-"calls",
-callId
-);
-
-
-const unsubscribe =
-onSnapshot(
-
-callRef,
-
-snapshot => {
-
-if(
-!snapshot.exists()
-){
-
-callback(null);
-
-return;
-
-}
-
-
-callback(
-snapshot.data()
-);
-
-},
-
-error => {
-
-console.error(
-"Call listener error:",
-error
-);
-
-}
-
-);
-
-
-stopCallListeners.push(
-unsubscribe
-);
-
-
-return unsubscribe;
-
-}
-
-
-/* =========================================
-   ICE Candidates
-========================================= */
-
-function listenCandidates(
-callId,
-ownUserId
-){
-
-if(candidateListenerStarted)
-return;
-
-
-candidateListenerStarted =
-true;
-
-
-const candidatesRef =
-collection(
-db,
-"calls",
-callId,
-"candidates"
-);
-
-
-const unsubscribe =
-onSnapshot(
-
-candidatesRef,
-
-snapshot => {
-
-snapshot.docChanges()
-.forEach(
-async change => {
-
-if(
-change.type !==
-"added"
-)
-return;
-
-
-const data =
-change.doc.data();
-
-
-if(
-data.senderId ===
-ownUserId
-)
-return;
-
-
-if(
-!data.candidate
-)
-return;
-
-
-const candidate =
-new RTCIceCandidate(
-data.candidate
-);
-
-
-/*
-إذا لم يصل Remote Description
-نحفظ الـ ICE مؤقتاً
-*/
-
-if(
-!peerConnection ||
-!peerConnection.remoteDescription
-){
-
-pendingCandidates.push(
-candidate
-);
-
-return;
-
-}
-
-
-try{
-
-await peerConnection
-.addIceCandidate(
-candidate
-);
-
-}catch(error){
-
-console.error(
-"ICE add error:",
-error
-);
-
-}
-
-}
-);
-
-},
-
-error => {
-
-console.error(
-"Candidates listener error:",
-error
-);
-
-}
-
-);
-
-
-stopCallListeners.push(
-unsubscribe
-);
-
-}
-
-
-/* =========================================
-   إضافة ICE المؤجل
-========================================= */
-
-async function flushPendingCandidates(){
-
-if(
-!peerConnection ||
-!peerConnection.remoteDescription
-)
-return;
-
-
-const list =
-[
-...pendingCandidates
-];
-
-
-pendingCandidates =
-[];
-
-
-for(
-const candidate
-of list
-){
-
-try{
-
-await peerConnection
-.addIceCandidate(
-candidate
-);
-
-}catch(error){
-
-console.error(
-"Pending ICE error:",
-error
-);
-
-}
-
-}
-
-}
-
-
-/* =========================================
-   المكالمة الصادرة
-========================================= */
-
-export async function startOutgoingCall(
-callId
-){
-
-await authReady;
-
-
-if(!currentUser){
-
-throw new Error(
-"يجب تسجيل الدخول"
-);
-
-}
-
-
-const call =
-await getCall(
-callId
-);
-
-
-if(!call){
-
-throw new Error(
-"المكالمة غير موجودة"
-);
-
-}
-
-
-if(
-call.callerId !==
-currentUser.uid
-){
-
-throw new Error(
-"لا يمكنك بدء هذه المكالمة"
-);
-
-}
-
-
-localStream =
-await getMicrophone();
-
-
-peerConnection =
-createPeerConnection(
-callId
-);
-
-
-addLocalTracks();
-
-
-listenCandidates(
-callId,
-currentUser.uid
-);
-
-
-/*
-إنشاء Offer
-*/
-
-const offer =
-await peerConnection
-.createOffer();
-
-
-await peerConnection
-.setLocalDescription(
-offer
-);
-
-
-/*
-حفظ Offer
-*/
-
-await updateDoc(
-
-doc(
-db,
-"calls",
-callId
-),
-
-{
-
-offer:{
-
-type:
-offer.type,
-
-sdp:
-offer.sdp
-
-},
-
-status:
-"calling"
-
-}
-
-);
-
-
-/*
-انتظار Answer
-*/
-
-listenCallDocument(
-
-callId,
-
-async data => {
-
-if(!data){
-
-window.onCallEnded?.();
-
-return;
-
-}
-
-
-if(
-data.status ===
-"ended"
-){
-
-window.onCallEnded?.();
-
-return;
-
-}
-
-
-if(
-data.answer &&
-peerConnection &&
-!peerConnection.currentRemoteDescription
-){
-
-try{
-
-await peerConnection
-.setRemoteDescription(
-
-new RTCSessionDescription(
-data.answer
-)
-
-);
-
-
-await flushPendingCandidates();
-
-
-}catch(error){
-
-console.error(
-"Answer error:",
-error
-);
-
-window.onCallError?.(
-"تعذر إنشاء الاتصال"
-);
-
-}
-
-}
-
-}
-
-);
-
-}
-
-
-/* =========================================
-   قبول المكالمة
-========================================= */
-
-export async function acceptIncomingCall(
-callId
-){
-
-await authReady;
-
-
-if(!currentUser){
-
-throw new Error(
-"يجب تسجيل الدخول"
-);
-
-}
-
-
-const call =
-await getCall(
-callId
-);
-
-
-if(!call){
-
-throw new Error(
-"المكالمة غير موجودة"
-);
-
-}
-
-
-if(
-call.receiverId !==
-currentUser.uid
-){
-
-throw new Error(
-"هذه المكالمة ليست لك"
-);
-
-}
-
-
-if(!call.offer){
-
-throw new Error(
-"لم يصل طلب الاتصال بعد"
-);
-
-}
-
-
-/*
-تشغيل الميكروفون
-*/
-
-localStream =
-await getMicrophone();
-
-
-/*
-إنشاء WebRTC
-*/
-
-peerConnection =
-createPeerConnection(
-callId
-);
-
-
-addLocalTracks();
-
-
-listenCandidates(
-callId,
-currentUser.uid
-);
-
-
-/*
-وضع Offer
-*/
-
-await peerConnection
-.setRemoteDescription(
-
-new RTCSessionDescription(
-call.offer
-)
-
-);
-
-
-/*
-إضافة ICE المؤجل
-*/
-
-await flushPendingCandidates();
-
-
-/*
-إنشاء Answer
-*/
-
-const answer =
-await peerConnection
-.createAnswer();
-
-
-await peerConnection
-.setLocalDescription(
-answer
-);
-
-
-/*
-حفظ Answer
-*/
-
-await updateDoc(
-
-doc(
-db,
-"calls",
-callId
-),
-
-{
-
-answer:{
-
-type:
-answer.type,
-
-sdp:
-answer.sdp
-
-},
-
-status:
-"connected"
-
-}
-
-);
-
-
-/*
-إظهار الاتصال
-*/
-
-window.onCallConnected?.();
-
-
-/*
-مراقبة انتهاء المكالمة
-*/
-
-listenCallDocument(
-
-callId,
-
-data => {
-
-if(
-!data ||
-data.status ===
-"ended"
-){
-
-window.onCallEnded?.();
-
-}
-
-}
-
-);
-
-}
-
-
-/* =========================================
-   مراقبة المكالمة الواردة
-========================================= */
-
-export async function watchIncomingCall(
-callId
-){
-
-await authReady;
-
-
-if(!currentUser){
-
-throw new Error(
-"يجب تسجيل الدخول"
-);
-
-}
-
-
-if(!callId){
-
-throw new Error(
-"رقم المكالمة غير موجود"
-);
-
-}
-
-
-return listenCallDocument(
-
-callId,
-
-data => {
-
-if(!data){
-
-window.onCallEnded?.();
-
-return;
-
-}
-
-
-if(
-data.status ===
-"ended"
-){
-
-window.onCallEnded?.();
-
-return;
-
-}
-
-}
-
-);
-
-}
-
-
-/* =========================================
-   تنظيف
-========================================= */
-
-export async function cleanupCall(
-callId
-){
-
-/*
-إيقاف listeners
-*/
-
-stopCallListeners.forEach(
-unsubscribe => {
-
-try{
-
-unsubscribe();
-
-}catch(error){
-
-console.error(
-error
-);
-
-}
-
-}
-);
-
-
-stopCallListeners =
-[];
-
-
-candidateListenerStarted =
-false;
-
-
-/*
-إيقاف الميكروفون
-*/
-
-if(localStream){
-
-localStream
-.getTracks()
-.forEach(
-track => {
-
-try{
-
-track.stop();
-
-}catch(error){
-
-console.error(
-error
-);
-
-}
-
-}
-);
-
-localStream =
-null;
-
-}
-
-
-window.localCallStream =
-null;
-
-
-/*
-إغلاق WebRTC
-*/
-
-if(peerConnection){
-
-try{
-
-peerConnection.close();
-
-}catch(error){
-
-console.error(
-error
-);
-
-}
-
-peerConnection =
-null;
-
-}
-
-
-remoteStream =
-null;
-
-pendingCandidates =
-[];
-
-
-/*
-تحديث الحالة
-*/
-
-if(
-callId &&
-currentUser
-){
-
-try{
-
-const callRef =
-doc(
-db,
-"calls",
-callId
-);
-
-
-const snapshot =
-await getDoc(
-callRef
-);
-
-
-if(snapshot.exists()){
-
-const data =
-snapshot.data();
-
-
-if(
-data.callerId ===
-currentUser.uid ||
-
-data.receiverId ===
-currentUser.uid
-){
-
-if(
-data.status !==
-"ended"
-){
-
-await updateDoc(
-
-callRef,
-
-{
-
-status:
-"ended",
-
-endedAt:
-serverTimestamp()
-
-}
-
-);
-
-}
-
-}
-
-}
-
-}catch(error){
-
-console.error(
-"Cleanup error:",
-error
-);
-
-}
-
-}
-
+    }
 }
 
 
 /* =========================================
    حذف المكالمة الواردة
-========================================= */
+   ========================================= */
 
-export async function clearIncomingCall(){
+export async function clearIncomingCall() {
 
-await authReady;
+    await authReady;
 
+    if (!currentUser) {
+        return;
+    }
 
-if(!currentUser)
-return;
+    try {
 
+        await updateDoc(
 
-try{
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            ),
 
-await updateDoc(
+            {
+                incomingCall: null
+            }
 
-doc(
-db,
-"users",
-currentUser.uid
-),
+        );
 
-{
+    } catch (error) {
 
-incomingCall:
-null
+        console.error(
+            "Clear incoming call error:",
+            error
+        );
 
-}
-
-);
-
-}catch(error){
-
-console.error(
-"Clear incoming call error:",
-error
-);
-
-}
-
+    }
 }
 
 
 /* =========================================
-   رفض المكالمة
-========================================= */
+   WebRTC
+   ========================================= */
 
-export async function rejectCall(
-callId
-){
+let peerConnection = null;
+let localStream = null;
+let remoteStream = null;
 
-await authReady;
-
-
-if(!currentUser ||
-!callId)
-return;
+let stopCallListeners = [];
 
 
-try{
+/* =========================================
+   إنشاء PeerConnection
+   ========================================= */
 
-const callRef =
-doc(
-db,
-"calls",
-callId
-);
+function createPeerConnection(callId) {
 
+    const pc =
+        new RTCPeerConnection({
 
-const snapshot =
-await getDoc(
-callRef
-);
+            iceServers: [
 
+                {
+                    urls:
+                        "stun:stun.l.google.com:19302"
+                },
 
-if(snapshot.exists()){
+                {
+                    urls:
+                        "stun:stun1.l.google.com:19302"
+                }
 
-const data =
-snapshot.data();
+            ]
 
-
-if(
-data.receiverId ===
-currentUser.uid
-){
-
-await updateDoc(
-
-callRef,
-
-{
-
-status:
-"ended",
-
-endedAt:
-serverTimestamp()
-
-}
-
-);
-
-}
-
-}
-
-}catch(error){
-
-console.error(
-"Reject error:",
-error
-);
-
-}
+        });
 
 
-await clearIncomingCall();
+    /* ICE */
+
+    pc.onicecandidate =
+        async event => {
+
+            if (!event.candidate) {
+                return;
+            }
+
+            try {
+
+                await addDoc(
+
+                    collection(
+                        db,
+                        "calls",
+                        callId,
+                        "candidates"
+                    ),
+
+                    {
+
+                        candidate:
+                            event.candidate.toJSON(),
+
+                        senderId:
+                            currentUser.uid,
+
+                        createdAt:
+                            serverTimestamp()
+
+                    }
+
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "ICE candidate error:",
+                    error
+                );
+
+            }
+
+        };
 
 
-await cleanupCall(
-null
-);
+    /* الصوت القادم */
 
+    pc.ontrack =
+        event => {
+
+            if (!remoteStream) {
+                remoteStream =
+                    new MediaStream();
+            }
+
+            const stream =
+                event.streams[0];
+
+            if (stream) {
+
+                stream
+                    .getTracks()
+                    .forEach(track => {
+
+                        if (
+                            !remoteStream
+                                .getTracks()
+                                .some(
+                                    t =>
+                                        t.id ===
+                                        track.id
+                                )
+                        ) {
+
+                            remoteStream.addTrack(
+                                track
+                            );
+
+                        }
+
+                    });
+
+            }
+
+            if (
+                window.onRemoteStream
+            ) {
+
+                window.onRemoteStream(
+                    remoteStream
+                );
+
+            }
+
+        };
+
+
+    return pc;
 }
 
 
 /* =========================================
-   المستخدم الحالي
-========================================= */
+   الميكروفون
+   ========================================= */
 
-export function getCurrentUser(){
+async function getMicrophone() {
 
-return currentUser;
+    try {
 
+        localStream =
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    audio: {
+
+                        echoCancellation:
+                            true,
+
+                        noiseSuppression:
+                            true,
+
+                        autoGainControl:
+                            true
+
+                    },
+
+                    video: false
+
+                });
+
+        return localStream;
+
+    } catch (error) {
+
+        console.error(
+            "Microphone error:",
+            error
+        );
+
+        throw new Error(
+            "لم يتم السماح باستخدام الميكروفون"
+        );
+
+    }
+}
+
+
+/* =========================================
+   إضافة الصوت
+   ========================================= */
+
+function addLocalTracks() {
+
+    if (
+        !peerConnection ||
+        !localStream
+    ) {
+        return;
+    }
+
+    localStream
+        .getTracks()
+        .forEach(track => {
+
+            peerConnection.addTrack(
+                track,
+                localStream
+            );
+
+        });
+}
+
+
+/* =========================================
+   مراقبة المكالمة
+   ========================================= */
+
+function listenCallDocument(
+    callId,
+    onCallChange
+) {
+
+    const callRef =
+        doc(
+            db,
+            "calls",
+            callId
+        );
+
+    const unsubscribe =
+        onSnapshot(
+
+            callRef,
+
+            snapshot => {
+
+                if (!snapshot.exists()) {
+
+                    onCallChange(null);
+                    return;
+
+                }
+
+                onCallChange(
+                    snapshot.data()
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    "Call listener error:",
+                    error
+                );
+
+            }
+
+        );
+
+    stopCallListeners.push(
+        unsubscribe
+    );
+
+    return unsubscribe;
+}
+
+
+/* =========================================
+   مراقبة ICE
+   ========================================= */
+
+function listenCandidates(
+    callId,
+    senderId
+) {
+
+    const candidatesRef =
+        collection(
+            db,
+            "calls",
+            callId,
+            "candidates"
+        );
+
+    const unsubscribe =
+        onSnapshot(
+
+            candidatesRef,
+
+            snapshot => {
+
+                snapshot.docChanges()
+                    .forEach(
+                        async change => {
+
+                            if (
+                                change.type !==
+                                "added"
+                            ) {
+                                return;
+                            }
+
+                            const data =
+                                change.doc.data();
+
+                            if (
+                                data.senderId ===
+                                senderId
+                            ) {
+                                return;
+                            }
+
+                            if (
+                                !data.candidate
+                            ) {
+                                return;
+                            }
+
+                            try {
+
+                                if (
+                                    peerConnection
+                                ) {
+
+                                    await peerConnection
+                                        .addIceCandidate(
+
+                                            new RTCIceCandidate(
+                                                data.candidate
+                                            )
+
+                                        );
+
+                                }
+
+                            } catch (error) {
+
+                                console.error(
+                                    "Add ICE error:",
+                                    error
+                                );
+
+                            }
+
+                        }
+                    );
+
+            },
+
+            error => {
+
+                console.error(
+                    "ICE listener error:",
+                    error
+                );
+
+            }
+
+        );
+
+    stopCallListeners.push(
+        unsubscribe
+    );
+
+    return unsubscribe;
+}
+
+
+/* =========================================
+   الطرف المتصل
+   ========================================= */
+
+export async function startOutgoingCall(
+    callId
+) {
+
+    await authReady;
+
+    if (!currentUser) {
+        throw new Error(
+            "يجب تسجيل الدخول"
+        );
+    }
+
+    const call =
+        await getCall(callId);
+
+    if (!call) {
+        throw new Error(
+            "المكالمة غير موجودة"
+        );
+    }
+
+
+    /* الميكروفون */
+
+    await getMicrophone();
+
+
+    /* Peer */
+
+    peerConnection =
+        createPeerConnection(
+            callId
+        );
+
+
+    addLocalTracks();
+
+
+    /* Offer */
+
+    const offer =
+        await peerConnection
+            .createOffer();
+
+    await peerConnection
+        .setLocalDescription(
+            offer
+        );
+
+
+    /* حفظ Offer */
+
+    await updateDoc(
+
+        doc(
+            db,
+            "calls",
+            callId
+        ),
+
+        {
+
+            offer: {
+
+                type:
+                    offer.type,
+
+                sdp:
+                    offer.sdp
+
+            },
+
+            status:
+                "calling"
+
+        }
+
+    );
+
+
+    /* مراقبة Answer */
+
+    listenCallDocument(
+
+        callId,
+
+        async data => {
+
+            if (!data) {
+
+                if (
+                    window.onCallEnded
+                ) {
+                    window.onCallEnded();
+                }
+
+                return;
+            }
+
+
+            if (
+                data.status ===
+                "ended"
+            ) {
+
+                if (
+                    window.onCallEnded
+                ) {
+                    window.onCallEnded();
+                }
+
+                return;
+            }
+
+
+            if (
+                data.answer &&
+                peerConnection &&
+                !peerConnection
+                    .currentRemoteDescription
+            ) {
+
+                try {
+
+                    await peerConnection
+                        .setRemoteDescription(
+
+                            new RTCSessionDescription(
+                                data.answer
+                            )
+
+                        );
+
+                } catch (error) {
+
+                    console.error(
+                        "Set answer error:",
+                        error
+                    );
+
+                }
+
+            }
+
+        }
+
+    );
+
+
+    listenCandidates(
+        callId,
+        currentUser.uid
+    );
+}
+
+
+/* =========================================
+   الطرف المستقبل
+   ========================================= */
+
+export async function acceptIncomingCall(
+    callId
+) {
+
+    await authReady;
+
+    if (!currentUser) {
+        throw new Error(
+            "يجب تسجيل الدخول"
+        );
+    }
+
+    const call =
+        await getCall(callId);
+
+    if (!call) {
+        throw new Error(
+            "المكالمة غير موجودة"
+        );
+    }
+
+    if (
+        call.receiverId !==
+        currentUser.uid
+    ) {
+
+        throw new Error(
+            "هذه المكالمة ليست لك"
+        );
+
+    }
+
+
+    if (!call.offer) {
+
+        throw new Error(
+            "لم يصل طلب الاتصال بعد"
+        );
+
+    }
+
+
+    /* الميكروفون */
+
+    await getMicrophone();
+
+
+    /* Peer */
+
+    peerConnection =
+        createPeerConnection(
+            callId
+        );
+
+
+    addLocalTracks();
+
+
+    /* Offer */
+
+    await peerConnection
+        .setRemoteDescription(
+
+            new RTCSessionDescription(
+                call.offer
+            )
+
+        );
+
+
+    /* Answer */
+
+    const answer =
+        await peerConnection
+            .createAnswer();
+
+    await peerConnection
+        .setLocalDescription(
+            answer
+        );
+
+
+    /* حفظ Answer */
+
+    await updateDoc(
+
+        doc(
+            db,
+            "calls",
+            callId
+        ),
+
+        {
+
+            answer: {
+
+                type:
+                    answer.type,
+
+                sdp:
+                    answer.sdp
+
+            },
+
+            status:
+                "connected"
+
+        }
+
+    );
+
+
+    /* مراقبة الإنهاء */
+
+    listenCallDocument(
+
+        callId,
+
+        data => {
+
+            if (
+                !data ||
+                data.status ===
+                "ended"
+            ) {
+
+                if (
+                    window.onCallEnded
+                ) {
+                    window.onCallEnded();
+                }
+
+            }
+
+        }
+
+    );
+
+
+    listenCandidates(
+        callId,
+        currentUser.uid
+    );
+}
+
+
+/* =========================================
+   مراقبة المكالمة الواردة
+   ========================================= */
+
+export async function watchIncomingCall(
+    callId
+) {
+
+    await authReady;
+
+    if (!currentUser) {
+        return;
+    }
+
+    listenCallDocument(
+
+        callId,
+
+        data => {
+
+            if (!data) {
+
+                if (
+                    window.onCallEnded
+                ) {
+                    window.onCallEnded();
+                }
+
+                return;
+            }
+
+            if (
+                data.status ===
+                "ended"
+            ) {
+
+                if (
+                    window.onCallEnded
+                ) {
+                    window.onCallEnded();
+                }
+
+            }
+
+        }
+
+    );
+}
+
+
+/* =========================================
+   تنظيف المكالمة
+   ========================================= */
+
+export async function cleanupCall(
+    callId
+) {
+
+    try {
+
+        if (localStream) {
+
+            localStream
+                .getTracks()
+                .forEach(track => {
+                    track.stop();
+                });
+
+            localStream = null;
+        }
+
+
+        if (peerConnection) {
+
+            peerConnection.close();
+
+            peerConnection = null;
+        }
+
+
+        remoteStream = null;
+
+
+        stopCallListeners
+            .forEach(unsubscribe => {
+
+                try {
+                    unsubscribe();
+                } catch {}
+
+            });
+
+
+        stopCallListeners = [];
+
+
+        if (callId) {
+
+            await endCall(
+                callId
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Cleanup error:",
+            error
+        );
+
+    }
 }
