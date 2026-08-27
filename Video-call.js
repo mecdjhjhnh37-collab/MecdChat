@@ -1366,10 +1366,16 @@ async function startOutgoingCall(){
         {
 
             callerId:
-                currentUser.uid,
+    currentUser.uid,
 
-            calleeId:
-                friendUser.uid,
+calleeId:
+    friendUser.uid,
+
+receiverId:
+    friendUser.uid,
+
+receiverName:
+    friendUser.name,
 
             callerName:
                 currentUser.displayName ||
