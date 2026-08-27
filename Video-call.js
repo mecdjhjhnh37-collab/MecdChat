@@ -2296,7 +2296,84 @@ function initVideoPage(){
 
 }
 
+export function listenIncomingCalls(){
 
+    if(!currentUser){
+        return;
+    }
+
+    const q =
+        collection(
+            db,
+            "videoCalls"
+        );
+
+
+    onSnapshot(
+        q,
+        snapshot=>{
+
+            snapshot.docChanges().forEach(
+                change=>{
+
+                    if(change.type !== "added"){
+                        return;
+                    }
+
+
+                    const data =
+                        change.doc.data();
+
+
+                    if(
+                        data.calleeId === currentUser.uid &&
+                        data.status === "ringing"
+                    ){
+
+                        const callId =
+                            change.doc.id;
+
+
+                        const open =
+                            confirm(
+                                "📹 مكالمة فيديو واردة"
+                            );
+
+
+                        if(open){
+
+                            window.location.href =
+                            "./Video-call.html?call="
+                            + callId;
+
+                        }
+                        else{
+
+                            updateDoc(
+
+                                doc(
+                                    db,
+                                    "videoCalls",
+                                    callId
+                                ),
+
+                                {
+                                    status:"ended"
+                                }
+
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
 // ============================================================
 // تشغيل
 // ============================================================
