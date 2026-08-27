@@ -2,7 +2,9 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
@@ -20,83 +22,53 @@
 }
 
 body{
+
     width:100%;
     height:100vh;
+
     overflow:hidden;
-    font-family:Arial,Tahoma,sans-serif;
+
+    font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
     color:white;
 
     background:
         radial-gradient(
-            circle at 50% 20%,
+            circle at 50% 15%,
             #123d35 0%,
             #07110f 45%,
             #020504 100%
         );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
 }
+
+
+/* =========================
+   الصفحة
+========================= */
 
 .call{
+
     width:100%;
     max-width:650px;
+
     height:100vh;
 
+    margin:auto;
+
     display:flex;
+
     flex-direction:column;
+
     align-items:center;
-    justify-content:space-between;
 
-    padding:55px 25px 40px;
-}
+    padding:
 
-
-/* =========================
-   الحالة
-========================= */
-
-.status{
-    color:#00e889;
-    font-size:14px;
-    font-weight:bold;
-    margin-top:10px;
-}
-
-
-/* =========================
-   صورة المستخدم
-========================= */
-
-.avatar{
-    width:125px;
-    height:125px;
-
-    border-radius:38px;
-
-    background:#12352c;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    overflow:hidden;
-
-    font-size:55px;
-
-    border:3px solid
-        rgba(0,232,137,.18);
-
-    box-shadow:
-        0 0 35px
-        rgba(0,232,137,.12);
-}
-
-.avatar img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+        35px
+        22px
+        25px;
 }
 
 
@@ -105,49 +77,142 @@ body{
 ========================= */
 
 .info{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
     text-align:center;
 }
 
-.name{
-    margin-top:20px;
 
-    font-size:24px;
-    font-weight:bold;
+/* =========================
+   الصورة
+========================= */
 
-    max-width:320px;
+.avatar{
+
+    width:125px;
+    height:125px;
+
+    border-radius:38px;
+
+    background:#12352c;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
 
     overflow:hidden;
+
+    font-size:52px;
+
+    border:
+
+        3px solid
+        rgba(0,232,137,.20);
+
+    box-shadow:
+
+        0 0 40px
+        rgba(0,232,137,.13);
+}
+
+.avatar img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+}
+
+
+/* =========================
+   الاسم
+========================= */
+
+.name{
+
+    margin-top:15px;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    max-width:300px;
+
+    overflow:hidden;
+
     text-overflow:ellipsis;
+
     white-space:nowrap;
 }
 
-.type{
-    margin-top:8px;
 
-    color:#7f918b;
+/* =========================
+   النوع
+========================= */
+
+.type{
+
+    margin-top:7px;
+
+    color:#82938e;
+
     font-size:14px;
 }
 
 
 /* =========================
-   أزرار التحكم
+   الحالة
+========================= */
+
+.status{
+
+    margin-top:9px;
+
+    color:#00e889;
+
+    font-size:14px;
+
+    font-weight:bold;
+}
+
+
+/* =========================
+   الأزرار
 ========================= */
 
 .controls{
+
     width:100%;
 
     display:flex;
+
     justify-content:center;
+
     align-items:center;
 
     gap:18px;
+
+    /* رفع الأزرار */
+
+    margin-top:70px;
 }
 
+
 .control{
+
     width:62px;
     height:62px;
 
     border:0;
+
     border-radius:21px;
 
     background:#18231f;
@@ -158,30 +223,44 @@ body{
 
     cursor:pointer;
 
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     transition:
         transform .15s,
         background .15s;
 }
 
+
 .control:active{
-    transform:scale(.92);
+
+    transform:
+        scale(.90);
 }
 
+
 .control.active{
+
     background:#00e889;
+
     color:#00150e;
 }
 
 
 /* =========================
-   زر إنهاء المكالمة
+   إنهاء
 ========================= */
 
 .end{
+
     width:72px;
     height:72px;
 
     border:0;
+
     border-radius:25px;
 
     background:#d93636;
@@ -192,26 +271,38 @@ body{
 
     cursor:pointer;
 
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     transition:
         transform .15s;
 }
 
+
 .end:active{
-    transform:scale(.92);
+
+    transform:
+        scale(.90);
 }
 
 
 /* =========================
-   رسالة الخطأ
+   الخطأ
 ========================= */
 
 .error{
+
     position:fixed;
+
     inset:0;
 
     display:none;
 
     align-items:center;
+
     justify-content:center;
 
     padding:25px;
@@ -221,7 +312,9 @@ body{
     z-index:100;
 }
 
+
 .error-box{
+
     width:100%;
     max-width:400px;
 
@@ -231,49 +324,60 @@ body{
 
     background:#0b1512;
 
-    border:1px solid
+    border:
+
+        1px solid
         rgba(255,255,255,.08);
 
     text-align:center;
 }
 
+
 .error-box h2{
+
     margin-bottom:12px;
 }
 
+
 .error-box p{
+
     color:#9aa8a3;
+
     line-height:1.7;
 }
 
+
 .error-box button{
+
     margin-top:20px;
 
     width:100%;
+
     padding:14px;
 
     border:0;
+
     border-radius:15px;
 
     background:#00e889;
+
     color:#00150e;
 
     font-weight:bold;
+
     font-size:15px;
 
     cursor:pointer;
 }
 
 
-/* =========================
-   صوت مخفي
-========================= */
-
 #remoteAudio{
+
     display:none;
 }
 
 </style>
+
 </head>
 
 
@@ -283,11 +387,8 @@ body{
 <div class="call">
 
 
-    <!-- =========================
-         معلومات الاتصال
-    ========================== -->
-
     <div class="info">
+
 
         <div
             id="avatar"
@@ -295,11 +396,13 @@ body{
             👤
         </div>
 
+
         <div
             id="name"
             class="name">
             جارٍ الاتصال...
         </div>
+
 
         <div
             id="type"
@@ -307,55 +410,55 @@ body{
             مكالمة صوتية
         </div>
 
+
         <div
             id="status"
             class="status">
             جاري الاتصال...
         </div>
 
+
     </div>
 
 
-    <!-- =========================
-         أزرار التحكم
-    ========================== -->
-
     <div class="controls">
+
 
         <button
             id="muteButton"
             class="control"
-            type="button"
-            title="كتم الميكروفون">
+            type="button">
+
             🎤
+
         </button>
 
 
         <button
             id="speakerButton"
             class="control"
-            type="button"
-            title="مكبر الصوت">
+            type="button">
+
             🔊
+
         </button>
 
 
         <button
             id="endButton"
             class="end"
-            type="button"
-            title="إنهاء المكالمة">
+            type="button">
+
             📞
+
         </button>
+
 
     </div>
 
+
 </div>
 
-
-<!-- =========================
-     الصوت القادم
-========================= -->
 
 <audio
     id="remoteAudio"
@@ -363,10 +466,6 @@ body{
     playsinline>
 </audio>
 
-
-<!-- =========================
-     شاشة الخطأ
-========================= -->
 
 <div
     id="error"
@@ -385,7 +484,9 @@ body{
         <button
             id="errorButton"
             type="button">
+
             العودة
+
         </button>
 
     </div>
@@ -396,19 +497,17 @@ body{
 <script type="module">
 
 import {
+
     startOutgoingCall,
     acceptIncomingCall,
     watchIncomingCall,
     cleanupCall,
     getCall,
     clearIncomingCall
+
 }
 from "./call.js";
 
-
-/* =========================
-   عناصر الصفحة
-========================= */
 
 const avatar =
     document.getElementById("avatar");
@@ -450,7 +549,7 @@ const errorButton =
 
 const params =
     new URLSearchParams(
-        window.location.search
+        location.search
     );
 
 const callId =
@@ -459,17 +558,17 @@ const callId =
 const mode =
     params.get("mode");
 
-const callerName =
+const urlName =
     params.get("name") ||
     "مستخدم Mecd";
 
-const callerPhoto =
+const urlPhoto =
     params.get("photo") ||
     "";
 
 
 /* =========================
-   حالة الصفحة
+   الحالة
 ========================= */
 
 let ended = false;
@@ -478,7 +577,7 @@ let speaker = true;
 
 
 /* =========================
-   عرض معلومات المستخدم
+   عرض المستخدم
 ========================= */
 
 function showUser(
@@ -493,95 +592,79 @@ function showUser(
 
     if(userPhoto){
 
-        avatar.innerHTML =
-            `<img src="${
-                escapeHtml(userPhoto)
-            }" alt="صورة الحساب">`;
+        avatar.innerHTML = "";
+
+        const img =
+            document.createElement("img");
+
+        img.src =
+            userPhoto;
+
+        img.alt =
+            "صورة الحساب";
+
+        img.onerror =
+            () => {
+                avatar.textContent =
+                    "👤";
+            };
+
+        avatar.appendChild(img);
 
     }else{
 
         avatar.textContent =
             "👤";
-
     }
-
 }
 
 
 /* =========================
-   حماية HTML
-========================= */
-
-function escapeHtml(value){
-
-    return String(value).replace(
-        /[&<>'"]/g,
-        c => ({
-            '&':'&amp;',
-            '<':'&lt;',
-            '>':'&gt;',
-            "'":'&#39;',
-            '"':'&quot;'
-        }[c])
-    );
-
-}
-
-
-/* =========================
-   عرض الخطأ
-========================= */
-
-function showError(message){
-
-    errorText.textContent =
-        message ||
-        "تعذر تشغيل المكالمة.";
-
-    error.style.display =
-        "flex";
-
-}
-
-
-/* =========================
-   استقبال الصوت
+   الصوت القادم
 ========================= */
 
 window.onRemoteStream =
     stream => {
 
-        try{
+        remoteAudio.srcObject =
+            stream;
 
-            remoteAudio.srcObject =
-                stream;
+        remoteAudio.muted =
+            false;
 
-            remoteAudio.muted =
-                false;
+        remoteAudio.volume =
+            speaker ? 1 : 0;
 
-            remoteAudio.volume =
-                speaker ? 1 : 0;
+        remoteAudio.play()
+            .catch(() => {});
 
-            remoteAudio.play()
-                .catch(() => {});
-
-            status.textContent =
-                "● متصل";
-
-        }catch(e){
-
-            console.error(
-                "Remote audio error:",
-                e
-            );
-
-        }
-
+        status.textContent =
+            "● متصل";
     };
 
 
 /* =========================
-   عند انتهاء المكالمة
+   الاتصال
+========================= */
+
+window.onCallConnected =
+    () => {
+
+        status.textContent =
+            "● متصل";
+    };
+
+
+window.onCallFailed =
+    () => {
+
+        status.textContent =
+            "فشل الاتصال";
+    };
+
+
+/* =========================
+   انتهاء المكالمة
 ========================= */
 
 window.onCallEnded =
@@ -597,16 +680,15 @@ window.onCallEnded =
 
         setTimeout(
             () => {
-                window.history.back();
+                history.back();
             },
-            1000
+            800
         );
-
     };
 
 
 /* =========================
-   كتم الميكروفون
+   المايك
 ========================= */
 
 muteButton.addEventListener(
@@ -618,17 +700,11 @@ muteButton.addEventListener(
 
         if(!stream){
 
-            /*
-             * call.js يحتفظ بالـ stream داخلياً،
-             * لذلك إذا لم يكن مكشوفاً لا نفعل شيئاً.
-             */
-
             alert(
                 "🎤 الميكروفون لم يبدأ بعد"
             );
 
             return;
-
         }
 
         const tracks =
@@ -642,6 +718,7 @@ muteButton.addEventListener(
 
         tracks.forEach(
             track => {
+
                 track.enabled =
                     !muted;
             }
@@ -656,13 +733,12 @@ muteButton.addEventListener(
             "active",
             muted
         );
-
     }
 );
 
 
 /* =========================
-   مكبر الصوت
+   السماعة
 ========================= */
 
 speakerButton.addEventListener(
@@ -684,16 +760,15 @@ speakerButton.addEventListener(
             "active",
             !speaker
         );
-
     }
 );
 
 
 /* =========================
-   إنهاء المكالمة
+   إنهاء
 ========================= */
 
-async function end(){
+async function endCallPage(){
 
     if(ended)
         return;
@@ -709,47 +784,51 @@ async function end(){
             callId
         );
 
-    }catch(e){
+    }catch(error){
 
-        console.error(
-            "End error:",
-            e
-        );
-
+        console.error(error);
     }
 
     setTimeout(
         () => {
-            window.history.back();
+            history.back();
         },
-        300
+        250
     );
-
 }
 
 
 endButton.addEventListener(
     "click",
-    end
+    endCallPage
 );
 
 
 /* =========================
-   زر الخطأ
+   الخطأ
 ========================= */
+
+function showError(message){
+
+    errorText.textContent =
+        message ||
+        "تعذر تشغيل المكالمة.";
+
+    error.style.display =
+        "flex";
+}
+
 
 errorButton.addEventListener(
     "click",
     () => {
-
-        window.history.back();
-
+        history.back();
     }
 );
 
 
 /* =========================
-   تشغيل المكالمة
+   تشغيل
 ========================= */
 
 async function init(){
@@ -761,13 +840,12 @@ async function init(){
             throw new Error(
                 "رقم المكالمة غير موجود"
             );
-
         }
 
 
-        /* =========================
-           المكالمة الصادرة
-        ========================== */
+        /* =====================
+           صادرة
+        ===================== */
 
         if(mode === "outgoing"){
 
@@ -781,13 +859,17 @@ async function init(){
                 throw new Error(
                     "المكالمة غير موجودة"
                 );
-
             }
 
+
             showUser(
-                call.receiverName,
-                call.receiverPhoto
+                call.receiverName ||
+                urlName,
+
+                call.receiverPhoto ||
+                urlPhoto
             );
+
 
             status.textContent =
                 "جاري الاتصال...";
@@ -800,19 +882,18 @@ async function init(){
 
             status.textContent =
                 "في انتظار الرد...";
-
         }
 
 
-        /* =========================
-           المكالمة الواردة
-        ========================== */
+        /* =====================
+           واردة
+        ===================== */
 
         else if(mode === "incoming"){
 
             showUser(
-                callerName,
-                callerPhoto
+                urlName,
+                urlPhoto
             );
 
             type.textContent =
@@ -822,30 +903,25 @@ async function init(){
                 "مكالمة واردة";
 
 
-            /*
-             * هنا نعرض نافذة قبول
-             */
-
-            const accept =
+            const accepted =
                 confirm(
                     "📞 " +
-                    callerName +
+                    urlName +
                     "\n\nهل تريد قبول المكالمة؟"
                 );
 
 
-            if(!accept){
+            if(!accepted){
+
+                await clearIncomingCall();
 
                 await cleanupCall(
                     callId
                 );
 
-                await clearIncomingCall();
-
-                window.history.back();
+                history.back();
 
                 return;
-
             }
 
 
@@ -853,17 +929,21 @@ async function init(){
                 "جاري الاتصال...";
 
 
-            await clearIncomingCall();
-
-
             await acceptIncomingCall(
                 callId
             );
 
 
+            await clearIncomingCall();
+
+
             status.textContent =
                 "● متصل";
 
+
+            await watchIncomingCall(
+                callId
+            );
         }
 
 
@@ -872,20 +952,6 @@ async function init(){
             throw new Error(
                 "نوع المكالمة غير معروف"
             );
-
-        }
-
-
-        /* =========================
-           مراقبة المكالمة
-        ========================== */
-
-        if(mode === "incoming"){
-
-            await watchIncomingCall(
-                callId
-            );
-
         }
 
     }catch(e){
@@ -896,24 +962,17 @@ async function init(){
         );
 
         showError(
-            e.message ||
-            "تعذر تشغيل المكالمة"
+            e.message
         );
-
     }
-
 }
 
-
-/* =========================
-   بدء الصفحة
-========================= */
 
 init();
 
 
 /* =========================
-   منع الخروج بدون تنظيف
+   تنظيف عند إغلاق الصفحة
 ========================= */
 
 window.addEventListener(
@@ -928,13 +987,12 @@ window.addEventListener(
             cleanupCall(
                 callId
             );
-
         }
-
     }
 );
 
 </script>
 
 </body>
+
 </html>
