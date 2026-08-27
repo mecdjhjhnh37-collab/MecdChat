@@ -281,10 +281,6 @@ header{
     opacity:1;
 }
 
-.message-status.pending{
-    opacity:.5;
-}
-
 .input-area{
     position:fixed;
 
@@ -452,10 +448,6 @@ header{
 
 }
 
-/* ============================================================
-   رسالة المكالمة
-============================================================ */
-
 .call-message{
     min-width:245px;
 
@@ -563,10 +555,6 @@ header{
 
     margin-top:6px;
 }
-
-/* ============================================================
-   الهاتف
-============================================================ */
 
 @media(max-width:500px){
 
@@ -711,11 +699,8 @@ header{
 
 </main>
 
-<script type="module">
 
-// ============================================================
-// Firebase
-// ============================================================
+<script type="module">
 
 import {
     initializeApp
@@ -745,6 +730,7 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
 const firebaseConfig = {
 
     apiKey:
@@ -767,6 +753,7 @@ const firebaseConfig = {
 
 };
 
+
 const firebaseApp =
     initializeApp(
         firebaseConfig
@@ -782,17 +769,13 @@ const db =
         firebaseApp
     );
 
-window.chatDB =
-    db;
+window.chatDB = db;
 
-
-// ============================================================
-// العناصر
-// ============================================================
 
 const $ =
     id =>
         document.getElementById(id);
+
 
 const messages =
     $("messages");
@@ -828,10 +811,6 @@ const app =
     $("app");
 
 
-// ============================================================
-// المتغيرات
-// ============================================================
-
 let currentUser =
     null;
 
@@ -862,109 +841,18 @@ let typingState =
 let callModule =
     null;
 
-let videoCallModule =
-    null;
-
-
-// ============================================================
-// تحميل نظام المكالمات الصوتية
-// ============================================================
-
-async function loadCallSystem(){
-
-    try{
-
-        callModule =
-            await import(
-                "./call.js"
-            );
-
-        console.log(
-            "Mecd Call system loaded"
-        );
-
-        if(
-            typeof callModule.listenIncomingCalls ===
-            "function"
-        ){
-
-            await callModule
-                .listenIncomingCalls();
-
-        }
-
-    }catch(error){
-
-        console.error(
-            "Call system error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ============================================================
-// 📹 تحميل نظام مكالمات الفيديو
-// ============================================================
-
-async function loadVideoCallSystem(){
-
-    try{
-
-        videoCallModule =
-            await import(
-                "./Video-call.js"
-            );
-
-        console.log(
-            "Mecd Video Call system loaded"
-        );
-
-        if(
-            typeof videoCallModule.listenIncomingVideoCalls ===
-            "function"
-        ){
-
-            await videoCallModule
-                .listenIncomingVideoCalls();
-
-        }
-
-    }catch(error){
-
-        console.error(
-            "Video call system error:",
-            error
-        );
-
-    }
-
-}
-
-
-// ============================================================
-// Chat ID
-// ============================================================
 
 function createChatID(a,b){
 
     return [
-
         a,
         b
-
     ]
     .sort()
     .join("_");
 
 }
 
-
-// ============================================================
-// إظهار التطبيق
-// ============================================================
 
 function showApp(){
 
@@ -976,10 +864,6 @@ function showApp(){
 
 }
 
-
-// ============================================================
-// الخطأ
-// ============================================================
 
 function showError(error){
 
@@ -1001,16 +885,10 @@ function showError(error){
             "حدث خطأ"
         ) +
 
-        '</small>' +
-
-        '</div>';
+        '</small></div>';
 
 }
 
-
-// ============================================================
-// حماية HTML
-// ============================================================
 
 function escapeHtml(value){
 
@@ -1021,20 +899,11 @@ function escapeHtml(value){
 
             c => ({
 
-                '&':
-                    '&amp;',
-
-                '<':
-                    '&lt;',
-
-                '>':
-                    '&gt;',
-
-                "'":
-                    '&#39;',
-
-                '"':
-                    '&quot;'
+                '&':'&amp;',
+                '<':'&lt;',
+                '>':'&gt;',
+                "'":'&#39;',
+                '"':'&quot;'
 
             }[c])
 
@@ -1043,18 +912,12 @@ function escapeHtml(value){
 }
 
 
-// ============================================================
-// Presence
-// ============================================================
-
 async function updateMyPresence(
     online = true
 ){
 
     if(!currentUser){
-
         return;
-
     }
 
     try{
@@ -1068,13 +931,8 @@ async function updateMyPresence(
             ),
 
             {
-
-                online:
-                    online,
-
-                lastSeen:
-                    serverTimestamp()
-
+                online:online,
+                lastSeen:serverTimestamp()
             },
 
             {
@@ -1097,9 +955,7 @@ async function updateMyPresence(
 
 function startPresence(){
 
-    updateMyPresence(
-        true
-    );
+    updateMyPresence(true);
 
     if(presenceInterval){
 
@@ -1119,9 +975,7 @@ function startPresence(){
                     "visible"
                 ){
 
-                    updateMyPresence(
-                        true
-                    );
+                    updateMyPresence(true);
 
                 }
 
@@ -1149,31 +1003,21 @@ function stopPresence(){
 
     if(currentUser){
 
-        updateMyPresence(
-            false
-        );
+        updateMyPresence(false);
 
     }
 
 }
 
 
-// ============================================================
-// حالة الصديق
-// ============================================================
-
 function listenFriendStatus(){
 
     if(!friendUser){
-
         return;
-
     }
 
     if(unsubscribeFriendStatus){
-
         unsubscribeFriendStatus();
-
     }
 
     const ref =
@@ -1190,9 +1034,7 @@ function listenFriendStatus(){
 
             snap => {
 
-                if(
-                    !snap.exists()
-                ){
+                if(!snap.exists()){
 
                     friendStatus.textContent =
                         "● غير متصل";
@@ -1255,37 +1097,23 @@ function listenFriendStatus(){
 }
 
 
-// ============================================================
-// ✍️ حالة الكتابة - الاستماع
-// ============================================================
-
 function listenFriendTyping(){
 
     if(!friendUser){
-
         return;
-
     }
 
     if(unsubscribeFriendTyping){
-
         unsubscribeFriendTyping();
-
     }
 
     const typingRef =
         doc(
-
             db,
-
             "chats",
-
             chatID,
-
             "typing",
-
             friendUser.uid
-
         );
 
     unsubscribeFriendTyping =
@@ -1295,13 +1123,9 @@ function listenFriendTyping(){
 
             snap => {
 
-                if(
-                    !snap.exists()
-                ){
+                if(!snap.exists()){
 
-                    setTypingUI(
-                        false
-                    );
+                    setTypingUI(false);
 
                     return;
 
@@ -1327,15 +1151,6 @@ function listenFriendTyping(){
                     isFresh
                 );
 
-            },
-
-            error => {
-
-                console.error(
-                    "Typing listener error:",
-                    error
-                );
-
             }
 
         );
@@ -1343,13 +1158,7 @@ function listenFriendTyping(){
 }
 
 
-// ============================================================
-// ✍️ واجهة يكتب...
-// ============================================================
-
-function setTypingUI(
-    typing
-){
+function setTypingUI(typing){
 
     if(typing){
 
@@ -1377,30 +1186,20 @@ function setTypingUI(
 }
 
 
-// ============================================================
-// ✍️ تحديث حالة الكتابة
-// ============================================================
-
-async function updateTyping(
-    typing
-){
+async function updateTyping(typing){
 
     if(
         !currentUser ||
         !chatID
     ){
-
         return;
-
     }
 
     if(
         typingState ===
         typing
     ){
-
         return;
-
     }
 
     typingState =
@@ -1411,27 +1210,16 @@ async function updateTyping(
         await setDoc(
 
             doc(
-
                 db,
-
                 "chats",
-
                 chatID,
-
                 "typing",
-
                 currentUser.uid
-
             ),
 
             {
-
-                typing:
-                    typing,
-
-                updatedAt:
-                    serverTimestamp()
-
+                typing:typing,
+                updatedAt:serverTimestamp()
             },
 
             {
@@ -1452,10 +1240,6 @@ async function updateTyping(
 }
 
 
-// ============================================================
-// ✍️ عند الكتابة
-// ============================================================
-
 messageInput.addEventListener(
 
     "input",
@@ -1472,17 +1256,13 @@ messageInput.addEventListener(
                 typingTimer
             );
 
-            updateTyping(
-                false
-            );
+            updateTyping(false);
 
             return;
 
         }
 
-        updateTyping(
-            true
-        );
+        updateTyping(true);
 
         clearTimeout(
             typingTimer
@@ -1492,11 +1272,7 @@ messageInput.addEventListener(
             setTimeout(
 
                 () => {
-
-                    updateTyping(
-                        false
-                    );
-
+                    updateTyping(false);
                 },
 
                 1500
@@ -1507,10 +1283,6 @@ messageInput.addEventListener(
 
 );
 
-
-// ============================================================
-// تحميل الصديق
-// ============================================================
 
 async function loadFriend(){
 
@@ -1538,9 +1310,7 @@ async function loadFriend(){
 
         );
 
-    if(
-        !userDoc.exists()
-    ){
+    if(!userDoc.exists()){
 
         throw new Error(
             "المستخدم غير موجود"
@@ -1553,8 +1323,7 @@ async function loadFriend(){
 
     friendUser = {
 
-        uid:
-            id,
+        uid:id,
 
         name:
             data.name ||
@@ -1571,26 +1340,19 @@ async function loadFriend(){
 
     friendAvatar.innerHTML =
         friendUser.photo
-
         ?
-
         '<img src="' +
         escapeHtml(
             friendUser.photo
         ) +
         '" alt="صورة الحساب">'
-
         :
-
         "👤";
 
     chatID =
         createChatID(
-
             currentUser.uid,
-
             friendUser.uid
-
         );
 
     window.chatDB =
@@ -1614,12 +1376,9 @@ async function loadFriend(){
         ),
 
         {
-
             members:[
-
                 currentUser.uid,
                 friendUser.uid
-
             ],
 
             createdAt:
@@ -1640,35 +1399,13 @@ async function loadFriend(){
 }
 
 
-// ============================================================
-// مدة المكالمة
-// ============================================================
-
-function formatCallDuration(
-    seconds
-){
-
-    seconds =
-        Number(
-            seconds || 0
-        );
-
-    if(
-        !Number.isFinite(
-            seconds
-        )
-    ){
-
-        seconds =
-            0;
-
-    }
+function formatCallDuration(seconds){
 
     seconds =
         Math.max(
             0,
             Math.floor(
-                seconds
+                Number(seconds || 0)
             )
         );
 
@@ -1679,35 +1416,6 @@ function formatCallDuration(
 
     const secs =
         seconds % 60;
-
-    const hours =
-        Math.floor(
-            minutes / 60
-        );
-
-    const finalMinutes =
-        minutes % 60;
-
-    if(hours > 0){
-
-        return (
-
-            String(hours)
-                .padStart(2,"0")
-
-            + ":" +
-
-            String(finalMinutes)
-                .padStart(2,"0")
-
-            + ":" +
-
-            String(secs)
-                .padStart(2,"0")
-
-        );
-
-    }
 
     return (
 
@@ -1724,10 +1432,6 @@ function formatCallDuration(
 }
 
 
-// ============================================================
-// رسالة المكالمة
-// ============================================================
-
 function createCallMessageElement(
     box,
     data
@@ -1740,43 +1444,30 @@ function createCallMessageElement(
     const direction =
         data.callerId ===
         currentUser.uid
-
         ?
-
         "outgoing"
-
         :
-
         "incoming";
 
     const missed =
-        status ===
-        "missed";
+        status === "missed";
 
     box.classList.add(
         "call-message"
     );
 
     if(missed){
-
-        box.classList.add(
-            "missed"
-        );
-
+        box.classList.add("missed");
     }
 
     const callBox =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     callBox.className =
         "call-box";
 
     const icon =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     icon.className =
         "call-icon";
@@ -1785,77 +1476,51 @@ function createCallMessageElement(
         "📞";
 
     const info =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     info.className =
         "call-info";
 
     const title =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     title.className =
         "call-title";
 
-    if(missed){
-
-        title.textContent =
-
-            direction ===
-            "incoming"
-
+    title.textContent =
+        missed
+        ?
+        (
+            direction === "incoming"
             ?
-
             "مكالمة واردة لم يتم الرد عليها"
-
             :
-
-            "مكالمة صادرة لم يتم الرد عليها";
-
-    }else{
-
-        title.textContent =
-
-            direction ===
-            "incoming"
-
+            "مكالمة صادرة لم يتم الرد عليها"
+        )
+        :
+        (
+            direction === "incoming"
             ?
-
             "مكالمة واردة"
-
             :
-
-            "مكالمة صادرة";
-
-    }
+            "مكالمة صادرة"
+        );
 
     const subtitle =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     subtitle.className =
         "call-subtitle";
 
     subtitle.textContent =
-
         missed
-
         ?
-
         "لم يتم الرد"
-
         :
-
         "تم الاتصال بنجاح";
 
     const duration =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
     duration.className =
         "call-duration";
@@ -1866,73 +1531,25 @@ function createCallMessageElement(
             data.duration
         );
 
-    const directionText =
-        document.createElement(
-            "div"
-        );
+    info.appendChild(title);
+    info.appendChild(subtitle);
+    info.appendChild(duration);
 
-    directionText.className =
-        "call-direction";
+    callBox.appendChild(icon);
+    callBox.appendChild(info);
 
-    directionText.textContent =
-
-        direction ===
-        "incoming"
-
-        ?
-
-        "↙ واردة"
-
-        :
-
-        "↗ صادرة";
-
-    info.appendChild(
-        title
-    );
-
-    info.appendChild(
-        subtitle
-    );
-
-    info.appendChild(
-        duration
-    );
-
-    info.appendChild(
-        directionText
-    );
-
-    callBox.appendChild(
-        icon
-    );
-
-    callBox.appendChild(
-        info
-    );
-
-    box.appendChild(
-        callBox
-    );
+    box.appendChild(callBox);
 
 }
 
 
-// ============================================================
-// 🔵 حالة الرسالة
-// ============================================================
-
-function createMessageStatus(
-    data
-){
+function createMessageStatus(data){
 
     if(
         data.senderId !==
         currentUser.uid
     ){
-
         return null;
-
     }
 
     const status =
@@ -1942,39 +1559,24 @@ function createMessageStatus(
         :
         "sent";
 
-    const statusElement =
-        document.createElement(
-            "span"
-        );
+    const element =
+        document.createElement("span");
 
-    statusElement.className =
+    element.className =
         "message-status " +
         status;
 
-    statusElement.textContent =
-        status ===
-        "read"
+    element.textContent =
+        status === "read"
         ?
         "✓✓"
         :
         "✓";
 
-    statusElement.title =
-        status ===
-        "read"
-        ?
-        "مقروءة"
-        :
-        "تم الإرسال";
-
-    return statusElement;
+    return element;
 
 }
 
-
-// ============================================================
-// 📖 تعليم الرسالة كمقروءة
-// ============================================================
 
 async function markMessageAsRead(
     id,
@@ -1984,20 +1586,10 @@ async function markMessageAsRead(
     if(
         !currentUser ||
         data.senderId ===
-        currentUser.uid
+        currentUser.uid ||
+        data.read === true
     ){
-
         return;
-
-    }
-
-    if(
-        data.read ===
-        true
-    ){
-
-        return;
-
     }
 
     try{
@@ -2005,27 +1597,16 @@ async function markMessageAsRead(
         await updateDoc(
 
             doc(
-
                 db,
-
                 "chats",
-
                 chatID,
-
                 "messages",
-
                 id
-
             ),
 
             {
-
-                read:
-                    true,
-
-                readAt:
-                    serverTimestamp()
-
+                read:true,
+                readAt:serverTimestamp()
             }
 
         );
@@ -2041,10 +1622,6 @@ async function markMessageAsRead(
 
 }
 
-
-// ============================================================
-// الرسائل
-// ============================================================
 
 function renderMessages(snap){
 
@@ -2066,56 +1643,33 @@ function renderMessages(snap){
         messages.clientHeight <
         120;
 
-    function createMessageElement(
-        id,
-        data
-    ){
+    function createElement(id,data){
 
         if(
-            Array.isArray(
-                data.deletedFor
-            )
-            &&
+            Array.isArray(data.deletedFor) &&
             data.deletedFor.includes(
                 currentUser.uid
             )
         ){
-
             return null;
-
         }
 
         const box =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         box.className =
             "message " +
 
             (
-
                 data.senderId ===
                 currentUser.uid
-
                 ?
-
                 "mine"
-
                 :
-
                 "other"
-
             );
 
-        // ====================================================
-        // 📞 مكالمة
-        // ====================================================
-
-        if(
-            data.type ===
-            "call"
-        ){
+        if(data.type === "call"){
 
             createCallMessageElement(
                 box,
@@ -2124,26 +1678,16 @@ function renderMessages(snap){
 
         }
 
-        // ====================================================
-        // 🎤 صوت
-        // ====================================================
-
-        else if(
-            data.type ===
-            "voice"
-        ){
+        else if(data.type === "voice"){
 
             const audio =
-                document.createElement(
-                    "audio"
-                );
+                document.createElement("audio");
 
             audio.controls =
                 true;
 
             audio.src =
-                data.audio ||
-                "";
+                data.audio || "";
 
             audio.style.width =
                 "230px";
@@ -2151,131 +1695,66 @@ function renderMessages(snap){
             audio.style.maxWidth =
                 "100%";
 
-            box.appendChild(
-                audio
-            );
-
-            const voiceText =
-                document.createElement(
-                    "span"
-                );
-
-            voiceText.textContent =
-                "🎤 رسالة صوتية";
-
-            voiceText.style.display =
-                "block";
-
-            voiceText.style.fontSize =
-                "12px";
-
-            box.appendChild(
-                voiceText
-            );
+            box.appendChild(audio);
 
         }
-
-        // ====================================================
-        // 💬 نص
-        // ====================================================
 
         else{
 
             box.appendChild(
 
                 document.createTextNode(
-
-                    data.text ||
-                    ""
-
+                    data.text || ""
                 )
 
             );
 
         }
 
-        // ====================================================
-        // الوقت والحالة
-        // ====================================================
-
         const meta =
-            document.createElement(
-                "span"
-            );
+            document.createElement("span");
 
         meta.className =
             "message-meta";
 
         const time =
-            document.createElement(
-                "span"
-            );
+            document.createElement("span");
 
         time.className =
             "time";
 
-        if(
-            data.createdAt?.toDate
-        ){
+        if(data.createdAt?.toDate){
 
             time.textContent =
-
                 data.createdAt
                     .toDate()
                     .toLocaleTimeString(
-
                         "ar",
-
                         {
-
-                            hour:
-                                "2-digit",
-
-                            minute:
-                                "2-digit"
-
+                            hour:"2-digit",
+                            minute:"2-digit"
                         }
-
                     );
 
         }
 
-        meta.appendChild(
-            time
-        );
+        meta.appendChild(time);
 
         const status =
-            createMessageStatus(
-                data
-            );
+            createMessageStatus(data);
 
         if(status){
-
-            meta.appendChild(
-                status
-            );
-
+            meta.appendChild(status);
         }
 
-        box.appendChild(
-            meta
-        );
+        box.appendChild(meta);
 
-        // ====================================================
-        // حذف
-        // ====================================================
-
-        if(
-            data.type !==
-            "call"
-        ){
+        if(data.type !== "call"){
 
             addMessageActions(
 
                 box,
-
                 id,
-
                 data.senderId ===
                 currentUser.uid
 
@@ -2288,160 +1767,128 @@ function renderMessages(snap){
     }
 
 
-    snap.docChanges()
-        .forEach(
+    snap.docChanges().forEach(
 
-            change => {
+        change => {
 
-                const id =
-                    change.doc.id;
+            const id =
+                change.doc.id;
 
-                const data =
-                    change.doc.data();
+            const data =
+                change.doc.data();
 
-                // ------------------------------------------------
-                // 📖 أي رسالة واردة تظهر = مقروءة
-                // ------------------------------------------------
+            if(
+                change.type === "added" ||
+                change.type === "modified"
+            ){
 
                 if(
-                    change.type ===
-                    "added" ||
-                    change.type ===
-                    "modified"
+                    data.senderId !==
+                    currentUser.uid
                 ){
 
-                    if(
-                        data.senderId !==
-                        currentUser.uid
-                    ){
-
-                        markMessageAsRead(
-                            id,
-                            data
-                        );
-
-                    }
+                    markMessageAsRead(
+                        id,
+                        data
+                    );
 
                 }
 
-                if(
-                    change.type ===
-                    "added"
-                ){
+            }
 
-                    const element =
-                        createMessageElement(
-                            id,
-                            data
-                        );
+            if(change.type === "added"){
 
-                    if(element){
+                const element =
+                    createElement(
+                        id,
+                        data
+                    );
 
-                        elements.set(
-                            id,
-                            element
-                        );
+                if(element){
 
-                        messages.appendChild(
-                            element
-                        );
+                    elements.set(
+                        id,
+                        element
+                    );
 
-                    }
+                    messages.appendChild(
+                        element
+                    );
 
                 }
 
-                else if(
-                    change.type ===
-                    "modified"
-                ){
+            }
 
-                    const oldElement =
-                        elements.get(
-                            id
-                        );
+            else if(
+                change.type === "modified"
+            ){
 
-                    if(
-                        Array.isArray(
-                            data.deletedFor
-                        )
-                        &&
-                        data.deletedFor.includes(
-                            currentUser.uid
-                        )
-                    ){
+                const oldElement =
+                    elements.get(id);
 
-                        if(oldElement){
+                const newElement =
+                    createElement(
+                        id,
+                        data
+                    );
 
-                            oldElement.remove();
+                if(oldElement){
 
-                            elements.delete(
-                                id
-                            );
-
-                        }
-
-                        return;
-
-                    }
-
-                    const newElement =
-                        createMessageElement(
-                            id,
-                            data
-                        );
-
-                    if(!newElement){
-
-                        return;
-
-                    }
-
-                    if(oldElement){
+                    if(newElement){
 
                         oldElement.replaceWith(
                             newElement
                         );
 
-                    }else{
-
-                        messages.appendChild(
+                        elements.set(
+                            id,
                             newElement
                         );
 
+                    }else{
+
+                        oldElement.remove();
+
+                        elements.delete(id);
+
                     }
+
+                }else if(newElement){
 
                     elements.set(
                         id,
                         newElement
                     );
 
-                }
-
-                else if(
-                    change.type ===
-                    "removed"
-                ){
-
-                    const element =
-                        elements.get(
-                            id
-                        );
-
-                    if(element){
-
-                        element.remove();
-
-                        elements.delete(
-                            id
-                        );
-
-                    }
+                    messages.appendChild(
+                        newElement
+                    );
 
                 }
 
             }
 
-        );
+            else if(
+                change.type === "removed"
+            ){
+
+                const element =
+                    elements.get(id);
+
+                if(element){
+
+                    element.remove();
+
+                    elements.delete(id);
+
+                }
+
+            }
+
+        }
+
+    );
+
 
     const realMessages =
         messages.querySelectorAll(
@@ -2453,17 +1900,12 @@ function renderMessages(snap){
             ".empty"
         );
 
-    if(
-        realMessages.length ===
-        0
-    ){
+    if(realMessages.length === 0){
 
         if(!empty){
 
             const emptyBox =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
             emptyBox.className =
                 "empty";
@@ -2480,92 +1922,63 @@ function renderMessages(snap){
     }else{
 
         if(empty){
-
             empty.remove();
-
         }
 
     }
 
+
     if(nearBottom){
 
         requestAnimationFrame(
-
             () => {
-
                 messages.scrollTop =
                     messages.scrollHeight;
-
             }
-
         );
 
     }
 
 }
 
-
-// ============================================================
-// استقبال الرسائل
-// ============================================================
 
 function listenMessages(){
 
     if(unsubscribeMessages){
-
         unsubscribeMessages();
-
     }
 
     const ref =
         collection(
-
             db,
-
             "chats",
-
             chatID,
-
             "messages"
-
         );
 
     const q =
         query(
-
             ref,
-
             orderBy(
                 "createdAt",
                 "asc"
             )
-
         );
 
     unsubscribeMessages =
         onSnapshot(
-
             q,
-
             renderMessages,
-
             error => {
-
                 console.error(
                     "Messages error:",
                     error
                 );
-
             }
-
         );
 
 }
 
-
-// ============================================================
-// إرسال رسالة
-// ============================================================
 
 async function sendMessage(){
 
@@ -2578,9 +1991,7 @@ async function sendMessage(){
         !friendUser ||
         !chatID
     ){
-
         return;
-
     }
 
     sendButton.disabled =
@@ -2590,30 +2001,21 @@ async function sendMessage(){
         typingTimer
     );
 
-    await updateTyping(
-        false
-    );
+    await updateTyping(false);
 
     try{
 
         await addDoc(
 
             collection(
-
                 db,
-
                 "chats",
-
                 chatID,
-
                 "messages"
-
             ),
 
             {
-
-                text:
-                    text,
+                text:text,
 
                 senderId:
                     currentUser.uid,
@@ -2624,12 +2026,10 @@ async function sendMessage(){
                 type:
                     "text",
 
-                read:
-                    false,
+                read:false,
 
                 createdAt:
                     serverTimestamp()
-
             }
 
         );
@@ -2639,9 +2039,7 @@ async function sendMessage(){
 
         messageInput.focus();
 
-    }
-
-    catch(error){
+    }catch(error){
 
         console.error(
             "Send message error:",
@@ -2667,15 +2065,10 @@ sendButton.addEventListener(
 
 
 messageInput.addEventListener(
-
     "keydown",
-
     e => {
 
-        if(
-            e.key ===
-            "Enter"
-        ){
+        if(e.key === "Enter"){
 
             e.preventDefault();
 
@@ -2684,13 +2077,8 @@ messageInput.addEventListener(
         }
 
     }
-
 );
 
-
-// ============================================================
-// حذف الرسائل
-// ============================================================
 
 function removeMenus(){
 
@@ -2699,10 +2087,7 @@ function removeMenus(){
             ".message-menu"
         )
         .forEach(
-
-            menu =>
-                menu.remove()
-
+            menu => menu.remove()
         );
 
 }
@@ -2721,21 +2106,17 @@ function addMessageActions(
 
         if(timer){
 
-            clearTimeout(
-                timer
-            );
+            clearTimeout(timer);
 
-            timer =
-                null;
+            timer = null;
 
         }
 
     };
 
+
     element.addEventListener(
-
         "pointerdown",
-
         e => {
 
             if(
@@ -2743,25 +2124,20 @@ function addMessageActions(
                     ".message-menu"
                 )
             ){
-
                 return;
-
             }
 
             cancel();
 
             timer =
                 setTimeout(
-
                     showDeleteMenu,
-
                     500
-
                 );
 
         }
-
     );
+
 
     element.addEventListener(
         "pointerup",
@@ -2778,10 +2154,9 @@ function addMessageActions(
         cancel
     );
 
+
     element.addEventListener(
-
         "contextmenu",
-
         e => {
 
             e.preventDefault();
@@ -2789,42 +2164,32 @@ function addMessageActions(
             showDeleteMenu();
 
         }
-
     );
+
 
     function showDeleteMenu(){
 
         removeMenus();
 
         const menu =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
         menu.className =
             "message-menu";
 
         const button =
-            document.createElement(
-                "button"
-            );
+            document.createElement("button");
 
         button.textContent =
-
             mine
-
             ?
-
             "🗑️ إلغاء الإرسال"
-
             :
-
             "🗑️ حذف لدي";
 
+
         button.addEventListener(
-
             "click",
-
             async e => {
 
                 e.stopPropagation();
@@ -2833,17 +2198,11 @@ function addMessageActions(
 
                     const messageRef =
                         doc(
-
                             db,
-
                             "chats",
-
                             chatID,
-
                             "messages",
-
                             id
-
                         );
 
                     if(mine){
@@ -2859,12 +2218,10 @@ function addMessageActions(
                             messageRef,
 
                             {
-
                                 deletedFor:
                                     arrayUnion(
                                         currentUser.uid
                                     )
-
                             }
 
                         );
@@ -2873,9 +2230,7 @@ function addMessageActions(
 
                     removeMenus();
 
-                }
-
-                catch(error){
+                }catch(error){
 
                     console.error(
                         "Delete error:",
@@ -2889,16 +2244,11 @@ function addMessageActions(
                 }
 
             }
-
         );
 
-        menu.appendChild(
-            button
-        );
+        menu.appendChild(button);
 
-        element.appendChild(
-            menu
-        );
+        element.appendChild(menu);
 
     }
 
@@ -2906,9 +2256,7 @@ function addMessageActions(
 
 
 document.addEventListener(
-
     "pointerdown",
-
     e => {
 
         if(
@@ -2922,18 +2270,15 @@ document.addEventListener(
         }
 
     }
-
 );
 
 
 // ============================================================
-// 📞 الاتصال الصوتي
+// 📞 المكالمة الصوتية - كما هي
 // ============================================================
 
 callButton.addEventListener(
-
     "click",
-
     async () => {
 
         if(!currentUser){
@@ -2991,9 +2336,7 @@ callButton.addEventListener(
 
             });
 
-        }
-
-        catch(error){
+        }catch(error){
 
             console.error(
                 "Call error:",
@@ -3001,31 +2344,24 @@ callButton.addEventListener(
             );
 
             alert(
-
-                "❌ تعذر بدء المكالمة\n" +
-
+                "❌ تعذر بدء المكالمة\n\n" +
                 (
-                    error?.message ||
-                    ""
+                    error?.message || ""
                 )
-
             );
 
         }
 
     }
-
 );
 
 
 // ============================================================
-// 📹 الاتصال بالفيديو
+// 📹 مكالمة الفيديو
 // ============================================================
 
 videoButton.addEventListener(
-
     "click",
-
     async () => {
 
         if(!currentUser){
@@ -3054,7 +2390,7 @@ videoButton.addEventListener(
 
                 videoCallModule =
                     await import(
-                        "./Video-call.js"
+                        "./Video-call.js?v=1"
                     );
 
             }
@@ -3086,9 +2422,7 @@ videoButton.addEventListener(
 
             });
 
-        }
-
-        catch(error){
+        }catch(error){
 
             console.error(
                 "Video call error:",
@@ -3096,20 +2430,16 @@ videoButton.addEventListener(
             );
 
             alert(
-
                 "❌ تعذر بدء مكالمة الفيديو\n\n" +
-
                 (
                     error?.message ||
                     "حدث خطأ"
                 )
-
             );
 
         }
 
     }
-
 );
 
 
@@ -3118,35 +2448,25 @@ videoButton.addEventListener(
 // ============================================================
 
 backButton.addEventListener(
-
     "click",
-
     () => {
 
         clearTimeout(
             typingTimer
         );
 
-        updateTyping(
-            false
-        );
+        updateTyping(false);
 
         if(unsubscribeMessages){
-
             unsubscribeMessages();
-
         }
 
         if(unsubscribeFriendStatus){
-
             unsubscribeFriendStatus();
-
         }
 
         if(unsubscribeFriendTyping){
-
             unsubscribeFriendTyping();
-
         }
 
         stopPresence();
@@ -3154,7 +2474,6 @@ backButton.addEventListener(
         history.back();
 
     }
-
 );
 
 
@@ -3163,15 +2482,11 @@ backButton.addEventListener(
 // ============================================================
 
 document.addEventListener(
-
     "visibilitychange",
-
     () => {
 
         if(!currentUser){
-
             return;
-
         }
 
         if(
@@ -3179,62 +2494,42 @@ document.addEventListener(
             "visible"
         ){
 
-            updateMyPresence(
-                true
-            );
+            updateMyPresence(true);
 
             if(
                 messageInput.value.trim()
                     .length === 0
             ){
 
-                updateTyping(
-                    false
-                );
+                updateTyping(false);
 
             }
 
         }else{
 
-            updateMyPresence(
-                false
-            );
+            updateMyPresence(false);
 
-            updateTyping(
-                false
-            );
+            updateTyping(false);
 
         }
 
     }
-
 );
 
 
-// ============================================================
-// مغادرة الصفحة
-// ============================================================
-
 window.addEventListener(
-
     "pagehide",
-
     () => {
 
         if(currentUser){
 
-            updateMyPresence(
-                false
-            );
+            updateMyPresence(false);
 
-            updateTyping(
-                false
-            );
+            updateTyping(false);
 
         }
 
     }
-
 );
 
 
@@ -3245,9 +2540,7 @@ window.addEventListener(
 function init(){
 
     onAuthStateChanged(
-
         auth,
-
         async user => {
 
             if(!user){
@@ -3278,30 +2571,17 @@ function init(){
 
                 listenMessages();
 
-                await loadCallSystem();
-
-                // ==================================================
-                // 📹 تشغيل نظام مكالمات الفيديو
-                // ==================================================
-
-                await loadVideoCallSystem();
-
                 showApp();
 
-            }
-
-            catch(error){
+            }catch(error){
 
                 stopPresence();
 
-                showError(
-                    error
-                );
+                showError(error);
 
             }
 
         }
-
     );
 
 }
@@ -3311,11 +2591,11 @@ init();
 
 </script>
 
+
 <script
     type="module"
     src="./voice.js?v=3">
 </script>
 
 </body>
-
 </html>
