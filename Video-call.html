@@ -6,7 +6,9 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0,
+      user-scalable=no">
 
 <meta name="theme-color"
       content="#050807">
@@ -51,13 +53,7 @@ body{
 
 }
 
-/* =========================================================
-   التطبيق
-========================================================= */
-
 .video-app{
-
-    position:relative;
 
     width:100%;
     height:100dvh;
@@ -65,6 +61,8 @@ body{
     max-width:650px;
 
     margin:auto;
+
+    position:relative;
 
     overflow:hidden;
 
@@ -74,7 +72,7 @@ body{
 
 
 /* =========================================================
-   فيديو الطرف الآخر - كبير
+   فيديو الطرف الآخر - الفيديو الكبير
 ========================================================= */
 
 .remote-video{
@@ -92,11 +90,111 @@ body{
 
     z-index:1;
 
+    cursor:pointer;
+
 }
 
 
 /* =========================================================
-   شاشة الانتظار
+   فيديو المستخدم - صغير بالبداية
+========================================================= */
+
+.local-video{
+
+    position:absolute;
+
+    left:12px;
+    bottom:92px;
+
+    width:105px;
+    height:145px;
+
+    object-fit:cover;
+
+    background:#111916;
+
+    border-radius:17px;
+
+    border:
+        2px solid
+        rgba(0,232,137,.55);
+
+    z-index:20;
+
+    box-shadow:
+        0 6px 25px
+        rgba(0,0,0,.55);
+
+    cursor:pointer;
+
+    transition:
+        width .25s ease,
+        height .25s ease,
+        left .25s ease,
+        right .25s ease,
+        top .25s ease,
+        bottom .25s ease,
+        border-radius .25s ease;
+
+}
+
+
+/* =========================================================
+   عند التبديل:
+   المستخدم يصبح كبير
+========================================================= */
+
+.video-app.local-big .local-video{
+
+    position:absolute;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    border:0;
+
+    border-radius:0;
+
+    object-fit:cover;
+
+    z-index:5;
+
+}
+
+
+/* الطرف الآخر يصبح صغير */
+
+.video-app.local-big .remote-video{
+
+    left:auto;
+    right:12px;
+    top:82px;
+    bottom:auto;
+
+    width:105px;
+    height:145px;
+
+    border-radius:17px;
+
+    border:
+        2px solid
+        rgba(0,232,137,.55);
+
+    object-fit:cover;
+
+    z-index:20;
+
+    box-shadow:
+        0 6px 25px
+        rgba(0,0,0,.55);
+
+}
+
+
+/* =========================================================
+   Placeholder
 ========================================================= */
 
 .remote-placeholder{
@@ -124,14 +222,16 @@ body{
 
     z-index:2;
 
+    pointer-events:none;
+
 }
 
 .remote-avatar{
 
-    width:90px;
-    height:90px;
+    width:82px;
+    height:82px;
 
-    border-radius:28px;
+    border-radius:25px;
 
     display:flex;
 
@@ -142,9 +242,9 @@ body{
 
     background:#18231f;
 
-    font-size:40px;
+    font-size:36px;
 
-    margin-bottom:15px;
+    margin-bottom:12px;
 
 }
 
@@ -159,7 +259,7 @@ body{
 
 .remote-name{
 
-    font-size:19px;
+    font-size:18px;
 
     font-weight:bold;
 
@@ -171,7 +271,7 @@ body{
 
     color:#00e889;
 
-    font-size:13px;
+    font-size:12px;
 
 }
 
@@ -189,44 +289,40 @@ body{
     right:0;
 
     padding:
-        max(10px, env(safe-area-inset-top))
-        12px
-        12px;
+        10px 12px;
 
     display:flex;
 
     align-items:center;
 
-    gap:10px;
+    gap:9px;
 
     background:
         linear-gradient(
             180deg,
-            rgba(0,0,0,.75),
+            rgba(0,0,0,.72),
             transparent
         );
 
-    z-index:40;
+    z-index:30;
 
 }
 
 .back-button{
 
-    width:42px;
-    height:42px;
-
-    flex-shrink:0;
+    width:40px;
+    height:40px;
 
     border:0;
 
-    border-radius:14px;
+    border-radius:13px;
 
     background:
         rgba(24,35,31,.9);
 
     color:white;
 
-    font-size:21px;
+    font-size:20px;
 
     cursor:pointer;
 
@@ -266,103 +362,6 @@ body{
 
 
 /* =========================================================
-   فيديو المستخدم الصغير
-========================================================= */
-
-.local-video{
-
-    position:absolute;
-
-    left:12px;
-
-    bottom:110px;
-
-    width:105px;
-    height:145px;
-
-    object-fit:cover;
-
-    background:#111916;
-
-    border-radius:17px;
-
-    border:
-        2px solid
-        rgba(0,232,137,.55);
-
-    z-index:30;
-
-    box-shadow:
-        0 7px 25px
-        rgba(0,0,0,.55);
-
-    cursor:pointer;
-
-    transition:
-        all .25s ease;
-
-}
-
-
-/* =========================================================
-   عندما يصبح فيديو المستخدم كبير
-========================================================= */
-
-.video-app.local-big
-.local-video{
-
-    inset:0;
-
-    width:100%;
-    height:100%;
-
-    border:0;
-
-    border-radius:0;
-
-    z-index:10;
-
-}
-
-
-/* =========================================================
-   فيديو الطرف الآخر يصبح صغير
-========================================================= */
-
-.video-app.local-big
-.remote-video{
-
-    top:auto;
-    left:auto;
-
-    right:12px;
-
-    bottom:110px;
-
-    width:105px;
-    height:145px;
-
-    border-radius:17px;
-
-    border:
-        2px solid
-        rgba(0,232,137,.55);
-
-    z-index:30;
-
-    box-shadow:
-        0 7px 25px
-        rgba(0,0,0,.55);
-
-    cursor:pointer;
-
-    transition:
-        all .25s ease;
-
-}
-
-
-/* =========================================================
    الأزرار
 ========================================================= */
 
@@ -370,65 +369,48 @@ body{
 
     position:absolute;
 
+    bottom:14px;
+
     left:0;
     right:0;
-
-    bottom:
-        max(12px, env(safe-area-inset-bottom));
-
-    height:70px;
 
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
-    gap:12px;
+    gap:10px;
 
-    z-index:50;
+    z-index:40;
 
 }
 
-
-/* =========================================================
-   زر المايك والكاميرا
-========================================================= */
-
 .control-button{
 
-    width:52px;
-    height:52px;
-
-    flex-shrink:0;
+    width:48px;
+    height:48px;
 
     border:0;
 
-    border-radius:18px;
+    border-radius:16px;
 
     background:#18231f;
 
     color:white;
 
-    font-size:21px;
+    font-size:20px;
 
     cursor:pointer;
 
     box-shadow:
-        0 5px 18px
-        rgba(0,0,0,.4);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
+        0 4px 15px
+        rgba(0,0,0,.35);
 
 }
 
 .control-button:active{
 
-    transform:scale(.92);
+    transform:scale(.94);
 
 }
 
@@ -438,52 +420,65 @@ body{
 
 }
 
-
-/* =========================================================
-   زر إنهاء المكالمة
-========================================================= */
-
 .end-button{
 
-    width:58px;
-    height:58px;
-
-    flex-shrink:0;
+    width:54px;
+    height:54px;
 
     border:0;
 
-    border-radius:20px;
+    border-radius:18px;
 
     background:#e83f3f;
 
     color:white;
 
-    font-size:24px;
+    font-size:22px;
 
     cursor:pointer;
 
     box-shadow:
-        0 5px 20px
-        rgba(0,0,0,.45);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
+        0 4px 18px
+        rgba(0,0,0,.4);
 
 }
 
 .end-button:active{
 
-    transform:scale(.92);
+    transform:scale(.94);
 
 }
 
 
 /* =========================================================
-   Loading
+   رسالة الخطأ
 ========================================================= */
+
+.error-box{
+
+    position:absolute;
+
+    left:15px;
+    right:15px;
+
+    bottom:90px;
+
+    padding:12px;
+
+    border-radius:14px;
+
+    background:
+        rgba(70,20,20,.95);
+
+    color:#ffb3b3;
+
+    text-align:center;
+
+    font-size:12px;
+
+    z-index:50;
+
+}
 
 .loading{
 
@@ -494,23 +489,17 @@ body{
     display:flex;
 
     align-items:center;
-
     justify-content:center;
 
     background:#020504;
 
     color:white;
 
-    font-size:16px;
+    font-size:15px;
 
     z-index:100;
 
 }
-
-
-/* =========================================================
-   Hidden
-========================================================= */
 
 .hidden{
 
@@ -520,293 +509,44 @@ body{
 
 
 /* =========================================================
-   Error
-========================================================= */
-
-.error-box{
-
-    position:absolute;
-
-    left:15px;
-    right:15px;
-
-    bottom:95px;
-
-    padding:14px;
-
-    border-radius:15px;
-
-    background:
-        rgba(70,20,20,.95);
-
-    color:#ffb3b3;
-
-    text-align:center;
-
-    font-size:13px;
-
-    z-index:60;
-
-}
-
-
-/* =========================================================
-   الهاتف
+   شاشات الهاتف
 ========================================================= */
 
 @media(max-width:500px){
 
     .local-video{
 
-        width:95px;
-        height:135px;
+        width:92px;
+        height:128px;
 
         left:10px;
-
-        bottom:105px;
+        bottom:82px;
 
         border-radius:15px;
 
     }
 
-
-    .video-app.local-big
-    .remote-video{
-
-        width:95px;
-        height:135px;
+    .video-app.local-big .remote-video{
 
         right:10px;
+        top:70px;
 
-        bottom:105px;
+        width:92px;
+        height:128px;
 
         border-radius:15px;
 
     }
-
 
     .control-button{
 
-        width:50px;
-        height:50px;
+        width:46px;
+        height:46px;
 
-        border-radius:17px;
+        border-radius:15px;
 
-    }
-
-
-    .end-button{
-
-        width:56px;
-        height:56px;
-
-        border-radius:19px;
+        font-size:19px;
 
     }
 
-
-    .controls{
-
-        gap:10px;
-
-    }
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<!-- =======================================================
-     Loading
-======================================================== -->
-
-<div id="loading"
-     class="loading">
-
-    جارٍ تشغيل مكالمة الفيديو...
-
-</div>
-
-
-<!-- =======================================================
-     التطبيق
-======================================================== -->
-
-<main class="video-app">
-
-
-    <!-- =====================================================
-         فيديو الطرف الآخر
-    ====================================================== -->
-
-    <video
-        id="remoteVideo"
-        class="remote-video"
-        autoplay
-        playsinline>
-    </video>
-
-
-    <!-- =====================================================
-         Placeholder
-    ====================================================== -->
-
-    <div
-        id="remotePlaceholder"
-        class="remote-placeholder">
-
-
-        <div
-            id="remoteAvatar"
-            class="remote-avatar">
-
-            👤
-
-        </div>
-
-
-        <div
-            id="remoteName"
-            class="remote-name">
-
-            جارٍ التحميل...
-
-        </div>
-
-
-        <div
-            id="callStatus"
-            class="call-status">
-
-            جارٍ الاتصال...
-
-        </div>
-
-
-    </div>
-
-
-    <!-- =====================================================
-         Top bar
-    ====================================================== -->
-
-    <div class="top-bar">
-
-
-        <button
-            id="backButton"
-            class="back-button"
-            type="button">
-
-            →
-
-        </button>
-
-
-        <div class="top-info">
-
-
-            <div
-                id="topName"
-                class="top-name">
-
-                جارٍ الاتصال...
-
-            </div>
-
-
-            <div
-                id="topStatus"
-                class="top-status">
-
-                جارٍ الاتصال...
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-    <!-- =====================================================
-         فيديو المستخدم
-    ====================================================== -->
-
-    <video
-        id="localVideo"
-        class="local-video"
-        autoplay
-        muted
-        playsinline>
-    </video>
-
-
-    <!-- =====================================================
-         Error
-    ====================================================== -->
-
-    <div
-        id="errorBox"
-        class="error-box hidden">
-    </div>
-
-
-    <!-- =====================================================
-         Controls
-    ====================================================== -->
-
-    <div class="controls">
-
-
-        <button
-            id="muteButton"
-            class="control-button"
-            type="button">
-
-            🎤
-
-        </button>
-
-
-        <button
-            id="cameraButton"
-            class="control-button"
-            type="button">
-
-            📹
-
-        </button>
-
-
-        <button
-            id="endButton"
-            class="end-button"
-            type="button">
-
-            ☎
-
-        </button>
-
-
-    </div>
-
-
-</main>
-
-
-<script
-    type="module"
-    src="./Video-call.js?v=3">
-</script>
-
-
-</body>
-
-</html>
+    .
