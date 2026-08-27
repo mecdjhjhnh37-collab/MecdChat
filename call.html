@@ -2,16 +2,14 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
 
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<meta name="theme-color"
-      content="#050807">
+<meta name="theme-color" content="#050807">
 
-<title>Mecd Call</title>
+<title>Mecd Chat - مكالمة</title>
 
 <style>
 
@@ -28,34 +26,31 @@ body{
 }
 
 body{
-
     overflow:hidden;
-
-    font-family:
-        Arial,
-        Tahoma,
-        sans-serif;
-
+    font-family:Arial,Tahoma,sans-serif;
     color:white;
 
     background:
         radial-gradient(
-            circle at 50% 18%,
-            #123d35 0%,
-            #07110f 45%,
-            #020504 100%
+            circle at top,
+            #123d35,
+            transparent 42%
+        ),
+        linear-gradient(
+            180deg,
+            #07110f,
+            #020504
         );
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
 }
 
-.call{
+
+/* =========================================
+   الصفحة
+========================================= */
+
+.call-page{
 
     width:100%;
-    max-width:650px;
     height:100vh;
 
     display:flex;
@@ -64,21 +59,16 @@ body{
 
     position:relative;
 
-    padding:
-        45px
-        25px
-        22px;
-
 }
 
 
-/* =========================
-   معلومات المستخدم
-========================= */
+/* =========================================
+   معلومات الشخص
+========================================= */
 
-.info{
+.user-area{
 
-    width:100%;
+    margin-top:95px;
 
     display:flex;
     flex-direction:column;
@@ -89,16 +79,14 @@ body{
 }
 
 
-/* =========================
+/* =========================================
    الصورة
-========================= */
+========================================= */
 
 .avatar{
 
     width:125px;
     height:125px;
-
-    margin-top:5px;
 
     border-radius:38px;
 
@@ -112,15 +100,13 @@ body{
 
     font-size:55px;
 
-    border:
-        3px solid
-        rgba(0,232,137,.18);
+    border:2px solid rgba(0,232,137,.15);
 
     box-shadow:
-        0 0 35px
-        rgba(0,232,137,.12);
+        0 15px 45px rgba(0,0,0,.35);
 
 }
+
 
 .avatar img{
 
@@ -129,104 +115,87 @@ body{
 
     object-fit:cover;
 
-    display:block;
-
 }
 
 
-/* =========================
+/* =========================================
    الاسم
-========================= */
+========================================= */
 
-.name{
+.user-name{
 
-    margin-top:18px;
+    margin-top:20px;
 
-    font-size:24px;
+    max-width:85vw;
+
+    font-size:22px;
 
     font-weight:bold;
 
-    max-width:320px;
+    white-space:nowrap;
 
     overflow:hidden;
 
     text-overflow:ellipsis;
 
-    white-space:nowrap;
-
 }
 
 
-/* =========================
-   نوع المكالمة
-========================= */
-
-.type{
-
-    margin-top:8px;
-
-    color:#7f918b;
-
-    font-size:14px;
-
-}
-
-
-/* =========================
+/* =========================================
    الحالة
-========================= */
+========================================= */
 
-.status{
+.call-status{
 
     margin-top:9px;
 
-    color:#00e889;
+    color:#899792;
 
     font-size:14px;
-
-    font-weight:bold;
 
 }
 
 
-/* =========================
-   الأزرار
-========================= */
+.call-status.connected{
 
-.controls{
+    color:#00e889;
+
+}
+
+
+/* =========================================
+   الأزرار
+========================================= */
+
+.call-controls{
 
     position:absolute;
 
-    left:0;
-    right:0;
+    bottom:105px;
 
-    bottom:22px;
+    left:50%;
 
-    width:100%;
+    transform:translateX(-50%);
 
     display:flex;
 
-    justify-content:center;
-
     align-items:center;
+
+    justify-content:center;
 
     gap:18px;
 
 }
 
 
-/* =========================
-   زر عادي
-========================= */
-
-.control{
+.call-button{
 
     width:62px;
     height:62px;
 
-    border:0;
+    border:none;
 
-    border-radius:21px;
+    border-radius:20px;
 
     background:#18231f;
 
@@ -239,140 +208,83 @@ body{
     display:flex;
 
     align-items:center;
+
     justify-content:center;
 
-    transition:
-        transform .15s,
-        background .15s;
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.3);
 
-    -webkit-tap-highlight-color:
-        transparent;
+    transition:
+        transform .15s ease,
+        background .15s ease;
 
 }
 
-.control:active{
+
+.call-button:active{
 
     transform:scale(.92);
 
 }
 
-.control.active{
 
-    background:#00e889;
+.call-button.end{
+
+    background:#d93636;
+
+}
+
+
+.call-button.muted{
+
+    background:#00c96b;
 
     color:#00150e;
 
 }
 
 
-/* =========================
-   إنهاء المكالمة
-========================= */
-
-.end{
-
-    width:72px;
-    height:72px;
-
-    border:0;
-
-    border-radius:25px;
-
-    background:#d93636;
-
-    color:white;
-
-    font-size:30px;
-
-    cursor:pointer;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    transition:
-        transform .15s;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-}
-
-.end:active{
-
-    transform:scale(.92);
-
-}
-
-
-/* =========================
-   الخطأ
-========================= */
-
-.error{
-
-    position:fixed;
-
-    inset:0;
-
-    display:none;
-
-    align-items:center;
-    justify-content:center;
-
-    padding:25px;
-
-    background:#020504;
-
-    z-index:100;
-
-}
+/* =========================================
+   رسالة الخطأ
+========================================= */
 
 .error-box{
 
-    width:100%;
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:calc(100% - 40px);
+
     max-width:400px;
 
-    padding:25px;
-
-    border-radius:22px;
-
-    background:#0b1512;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
+    padding:22px;
 
     text-align:center;
 
-}
+    background:#0b1512;
 
-.error-box h2{
+    border:1px solid rgba(255,255,255,.08);
 
-    margin-bottom:12px;
+    border-radius:20px;
 
-}
-
-.error-box p{
-
-    color:#9aa8a3;
-
-    line-height:1.7;
+    display:none;
 
 }
+
 
 .error-box button{
 
-    margin-top:20px;
-
-    width:100%;
-
-    padding:14px;
+    margin-top:15px;
 
     border:0;
 
-    border-radius:15px;
+    padding:11px 22px;
+
+    border-radius:13px;
 
     background:#00e889;
 
@@ -380,94 +292,65 @@ body{
 
     font-weight:bold;
 
-    font-size:15px;
-
-    cursor:pointer;
-
 }
 
 
-/* =========================
+/* =========================================
    الصوت
-========================= */
+========================================= */
 
-#remoteAudio{
+#audioRemote{
 
     display:none;
 
 }
 
 </style>
-
 </head>
 
 
 <body>
 
-
-<div class="call">
-
-
-    <div class="info">
+<main class="call-page">
 
 
-        <div
-            id="avatar"
-            class="avatar">
+    <section class="user-area">
+
+
+        <div id="friendAvatar"
+             class="avatar">
             👤
         </div>
 
 
-        <div
-            id="name"
-            class="name">
-            جاري تحميل البيانات...
+        <div id="friendName"
+             class="user-name">
+            مستخدم Mecd
         </div>
 
 
-        <div
-            id="type"
-            class="type">
-            مكالمة صوتية
+        <div id="callStatus"
+             class="call-status">
+            جارٍ الاتصال...
         </div>
 
 
-        <div
-            id="status"
-            class="status">
-            جاري الاتصال...
-        </div>
+    </section>
 
 
-    </div>
+    <div class="call-controls">
 
 
-    <div class="controls">
-
-
-        <button
-            id="muteButton"
-            class="control"
-            type="button"
-            title="كتم الميكروفون">
+        <button id="muteButton"
+                class="call-button"
+                type="button">
             🎤
         </button>
 
 
-        <button
-            id="speakerButton"
-            class="control"
-            type="button"
-            title="مكبر الصوت">
-            🔊
-        </button>
-
-
-        <button
-            id="endButton"
-            class="end"
-            type="button"
-            title="إنهاء المكالمة">
+        <button id="endButton"
+                class="call-button end"
+                type="button">
             📞
         </button>
 
@@ -475,76 +358,84 @@ body{
     </div>
 
 
-</div>
+    <audio id="audioRemote"
+           autoplay
+           playsinline>
+    </audio>
 
 
-<audio
-    id="remoteAudio"
-    autoplay
-    playsinline>
-</audio>
+    <div id="errorBox"
+         class="error-box">
 
+        <div id="errorText">
+            حدث خطأ في المكالمة
+        </div>
 
-<div
-    id="error"
-    class="error">
-
-    <div class="error-box">
-
-        <h2>
-            ⚠️ حدث خطأ
-        </h2>
-
-        <p id="errorText">
-            تعذر تشغيل المكالمة.
-        </p>
-
-        <button
-            id="errorButton"
-            type="button">
-            العودة
+        <button id="backErrorButton"
+                type="button">
+            رجوع
         </button>
 
     </div>
 
-</div>
+
+</main>
 
 
 <script type="module">
 
+/* =========================================
+   Firebase
+========================================= */
+
 import {
-    startOutgoingCall,
-    acceptIncomingCall,
-    watchIncomingCall,
-    cleanupCall,
-    getCall,
-    clearIncomingCall
-}
-from "./call.js";
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-/* =========================
-   العناصر
-========================= */
+const firebaseConfig = {
 
-const avatar =
+    apiKey:
+        "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+    authDomain:
+        "mecd-tools.firebaseapp.com",
+
+    projectId:
+        "mecd-tools",
+
+    storageBucket:
+        "mecd-tools.firebasestorage.app",
+
+    messagingSenderId:
+        "643005547408",
+
+    appId:
+        "1:643005547408:web:b1719060ec340dd0e0a915"
+
+};
+
+
+initializeApp(firebaseConfig);
+
+
+/* =========================================
+   عناصر الصفحة
+========================================= */
+
+const friendAvatar =
     document.getElementById(
-        "avatar"
+        "friendAvatar"
     );
 
-const name =
+const friendName =
     document.getElementById(
-        "name"
+        "friendName"
     );
 
-const type =
+const callStatus =
     document.getElementById(
-        "type"
-    );
-
-const status =
-    document.getElementById(
-        "status"
+        "callStatus"
     );
 
 const muteButton =
@@ -552,24 +443,19 @@ const muteButton =
         "muteButton"
     );
 
-const speakerButton =
-    document.getElementById(
-        "speakerButton"
-    );
-
 const endButton =
     document.getElementById(
         "endButton"
     );
 
-const remoteAudio =
+const audioRemote =
     document.getElementById(
-        "remoteAudio"
+        "audioRemote"
     );
 
-const error =
+const errorBox =
     document.getElementById(
-        "error"
+        "errorBox"
     );
 
 const errorText =
@@ -577,15 +463,15 @@ const errorText =
         "errorText"
     );
 
-const errorButton =
+const backErrorButton =
     document.getElementById(
-        "errorButton"
+        "backErrorButton"
     );
 
 
-/* =========================
-   بيانات الرابط
-========================= */
+/* =========================================
+   بيانات chat.html
+========================================= */
 
 const params =
     new URLSearchParams(
@@ -598,116 +484,194 @@ const callId =
 
 
 const mode =
-    params.get("mode");
+    params.get("mode") ||
+    "outgoing";
 
 
-/* =========================
-   حالة الصفحة
-========================= */
-
-let ended = false;
-
-let muted = false;
-
-let speaker = true;
+const name =
+    params.get("name") ||
+    "مستخدم Mecd";
 
 
-/* =========================
-   عرض المستخدم
-========================= */
-
-function showUser(
-    userName,
-    userPhoto
-){
-
-    name.textContent =
-        userName ||
-        "مستخدم Mecd";
+const photo =
+    params.get("photo") ||
+    "";
 
 
-    avatar.innerHTML = "";
+/* =========================================
+   عرض الاسم والصورة فوراً
+========================================= */
+
+friendName.textContent =
+    name;
 
 
-    if(
-        userPhoto &&
-        userPhoto.trim()
-    ){
+if(photo){
 
-        const img =
-            document.createElement(
-                "img"
-            );
+    const img =
+        document.createElement(
+            "img"
+        );
 
-        img.src =
-            userPhoto;
+    img.src = photo;
 
-        img.alt =
-            "صورة الحساب";
+    img.alt = "صورة الحساب";
 
+    img.onload = () => {
 
-        img.onerror = () => {
+        friendAvatar.innerHTML = "";
 
-            avatar.textContent =
-                "👤";
-
-        };
-
-
-        avatar.appendChild(
+        friendAvatar.appendChild(
             img
         );
 
-    }else{
+    };
 
-        avatar.textContent =
+    img.onerror = () => {
+
+        friendAvatar.textContent =
             "👤";
+
+    };
+
+}else{
+
+    friendAvatar.textContent =
+        "👤";
+
+}
+
+
+/* =========================================
+   لا يوجد Call ID
+========================================= */
+
+if(!callId){
+
+    showError(
+        "لم يتم العثور على رقم المكالمة"
+    );
+
+}
+
+
+/* =========================================
+   تحميل call.js
+========================================= */
+
+let callSystem = null;
+
+
+async function loadCallSystem(){
+
+    try{
+
+        callSystem =
+            await import("./call.js");
+
+
+        startCallProcess();
+
+    }catch(error){
+
+        console.error(
+            "call.js error:",
+            error
+        );
+
+        showError(
+            "تعذر تشغيل نظام المكالمة"
+        );
 
     }
 
 }
 
 
-/* =========================
-   الخطأ
-========================= */
+/* =========================================
+   تشغيل المكالمة
+========================================= */
 
-function showError(message){
+async function startCallProcess(){
 
-    errorText.textContent =
-        message ||
-        "تعذر تشغيل المكالمة.";
+    try{
 
-    error.style.display =
-        "flex";
+        if(mode === "outgoing"){
+
+            callStatus.textContent =
+                "جارٍ الاتصال...";
+
+
+            await callSystem
+                .startOutgoingCall(
+                    callId
+                );
+
+        }else{
+
+            callStatus.textContent =
+                "مكالمة واردة";
+
+
+            await callSystem
+                .watchIncomingCall(
+                    callId
+                );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Call process error:",
+            error
+        );
+
+        showError(
+            error?.message ||
+            "تعذر تشغيل المكالمة"
+        );
+
+    }
 
 }
 
 
-/* =========================
+/* =========================================
    الصوت القادم
-========================= */
+========================================= */
 
 window.onRemoteStream =
     stream => {
 
-        try {
+        try{
 
-            remoteAudio.srcObject =
+            audioRemote.srcObject =
                 stream;
 
-            remoteAudio.muted =
-                false;
+            const playPromise =
+                audioRemote.play();
 
-            remoteAudio.volume =
-                speaker
-                ? 1
-                : 0;
+            if(
+                playPromise &&
+                typeof playPromise.then ===
+                "function"
+            ){
 
-            remoteAudio.play()
-                .catch(() => {});
+                playPromise.catch(
+                    error => {
 
-        } catch(error) {
+                        console.log(
+                            "Audio play waiting:",
+                            error
+                        );
+
+                    }
+                );
+
+            }
+
+        }catch(error){
 
             console.error(
                 "Remote audio error:",
@@ -719,72 +683,71 @@ window.onRemoteStream =
     };
 
 
-/* =========================
-   عند الاتصال
-========================= */
+/* =========================================
+   تم الاتصال
+========================================= */
 
 window.onCallConnected =
     () => {
 
-        if(ended)
-            return;
-
-        status.textContent =
+        callStatus.textContent =
             "● متصل";
 
-    };
-
-
-/* =========================
-   فشل الاتصال
-========================= */
-
-window.onCallFailed =
-    () => {
-
-        if(ended)
-            return;
-
-        status.textContent =
-            "تعذر الاتصال";
-
-    };
-
-
-/* =========================
-   انتهاء المكالمة
-========================= */
-
-window.onCallEnded =
-    () => {
-
-        if(ended)
-            return;
-
-        ended = true;
-
-        status.textContent =
-            "انتهت المكالمة";
-
-
-        setTimeout(
-            () => {
-
-                window.history.back();
-
-            },
-            700
+        callStatus.classList.add(
+            "connected"
         );
 
     };
 
 
-/* =========================
-   كتم الميكروفون
-========================= */
+/* =========================================
+   فشل الاتصال
+========================================= */
 
-muteButton.addEventListener(
-    "click",
+window.onCallFailed =
+    () => {
+
+        callStatus.textContent =
+            "تعذر الاتصال";
+
+        callStatus.classList.remove(
+            "connected"
+        );
+
+    };
+
+
+/* =========================================
+   انتهاء المكالمة
+========================================= */
+
+window.onCallEnded =
+    () => {
+
+        callStatus.textContent =
+            "انتهت المكالمة";
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "chat.html";
+
+            },
+            900
+        );
+
+    };
+
+
+/* =========================================
+   كتم الميكروفون
+========================================= */
+
+let muted = false;
+
+
+muteButton.onclick =
     () => {
 
         const stream =
@@ -792,10 +755,6 @@ muteButton.addEventListener(
 
 
         if(!stream){
-
-            alert(
-                "🎤 الميكروفون لم يبدأ بعد"
-            );
 
             return;
 
@@ -806,8 +765,11 @@ muteButton.addEventListener(
             stream.getAudioTracks();
 
 
-        if(!tracks.length)
+        if(!tracks.length){
+
             return;
+
+        }
 
 
         muted =
@@ -824,340 +786,119 @@ muteButton.addEventListener(
         );
 
 
-        muteButton.textContent =
-            muted
-            ? "🔇"
-            : "🎤";
+        if(muted){
+
+            muteButton.textContent =
+                "🔇";
+
+            muteButton.classList.add(
+                "muted"
+            );
+
+        }else{
+
+            muteButton.textContent =
+                "🎤";
+
+            muteButton.classList.remove(
+                "muted"
+            );
+
+        }
+
+    };
 
 
-        muteButton.classList.toggle(
-            "active",
-            muted
-        );
-
-    }
-);
-
-
-/* =========================
-   مكبر الصوت
-========================= */
-
-speakerButton.addEventListener(
-    "click",
-    () => {
-
-        speaker =
-            !speaker;
-
-
-        remoteAudio.volume =
-            speaker
-            ? 1
-            : 0;
-
-
-        speakerButton.textContent =
-            speaker
-            ? "🔊"
-            : "🔇";
-
-
-        speakerButton.classList.toggle(
-            "active",
-            !speaker
-        );
-
-    }
-);
-
-
-/* =========================
+/* =========================================
    إنهاء المكالمة
-========================= */
+========================================= */
 
-async function end(){
-
-    if(ended)
-        return;
+let ending = false;
 
 
-    ended = true;
+endButton.onclick =
+    async () => {
+
+        if(ending){
+
+            return;
+
+        }
 
 
-    status.textContent =
-        "جاري إنهاء المكالمة...";
+        ending = true;
 
 
-    try {
-
-        await cleanupCall(
-            callId
-        );
-
-    } catch(error) {
-
-        console.error(
-            "End error:",
-            error
-        );
-
-    }
+        endButton.disabled =
+            true;
 
 
-    setTimeout(
-        () => {
+        try{
 
-            window.history.back();
+            if(callSystem){
 
-        },
-        300
-    );
+                await callSystem
+                    .cleanupCall(
+                        callId
+                    );
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "End call error:",
+                error
+            );
+
+        }
+
+
+        window.location.href =
+            "chat.html";
+
+    };
+
+
+/* =========================================
+   إظهار الخطأ
+========================================= */
+
+function showError(message){
+
+    errorText.textContent =
+        message;
+
+    errorBox.style.display =
+        "block";
 
 }
 
 
-endButton.addEventListener(
-    "click",
-    end
-);
+/* =========================================
+   رجوع
+========================================= */
 
-
-/* =========================
-   زر الخطأ
-========================= */
-
-errorButton.addEventListener(
-    "click",
+backErrorButton.onclick =
     () => {
 
-        window.history.back();
+        window.location.href =
+            "chat.html";
 
-    }
-);
+    };
 
 
-/* =========================
-   تشغيل الصفحة
-========================= */
-
-async function init(){
-
-    try {
-
-        if(!callId){
-
-            throw new Error(
-                "رقم المكالمة غير موجود"
-            );
-
-        }
-
-
-        /* =========================
-           نجيب بيانات المكالمة
-           مباشرة من Firestore
-        ========================= */
-
-        const call =
-            await getCall(
-                callId
-            );
-
-
-        if(!call){
-
-            throw new Error(
-                "المكالمة غير موجودة"
-            );
-
-        }
-
-
-        /* =========================
-           الصادر
-        ========================= */
-
-        if(
-            mode ===
-            "outgoing"
-        ){
-
-            showUser(
-
-                call.receiverName ||
-                "مستخدم Mecd",
-
-                call.receiverPhoto ||
-                ""
-
-            );
-
-
-            type.textContent =
-                "مكالمة صوتية";
-
-
-            status.textContent =
-                "جاري الاتصال...";
-
-
-            await startOutgoingCall(
-                callId
-            );
-
-
-            if(!ended){
-
-                status.textContent =
-                    "في انتظار الرد...";
-
-            }
-
-        }
-
-
-        /* =========================
-           الوارد
-        ========================= */
-
-        else if(
-            mode ===
-            "incoming"
-        ){
-
-            showUser(
-
-                call.callerName ||
-                "مستخدم Mecd",
-
-                call.callerPhoto ||
-                ""
-
-            );
-
-
-            type.textContent =
-                "📞 مكالمة واردة";
-
-
-            status.textContent =
-                "مكالمة واردة";
-
-
-            const accept =
-                confirm(
-
-                    "📞 " +
-                    (
-                        call.callerName ||
-                        "مستخدم Mecd"
-                    ) +
-                    "\n\nهل تريد قبول المكالمة؟"
-
-                );
-
-
-            if(!accept){
-
-                await cleanupCall(
-                    callId
-                );
-
-                await clearIncomingCall();
-
-                window.history.back();
-
-                return;
-
-            }
-
-
-            status.textContent =
-                "جاري الاتصال...";
-
-
-            await clearIncomingCall();
-
-
-            await acceptIncomingCall(
-                callId
-            );
-
-
-            if(!ended){
-
-                status.textContent =
-                    "● متصل";
-
-            }
-
-
-            await watchIncomingCall(
-                callId
-            );
-
-        }
-
-
-        else {
-
-            throw new Error(
-                "نوع المكالمة غير معروف"
-            );
-
-        }
-
-
-    } catch(error) {
-
-        console.error(
-            "Call page error:",
-            error
-        );
-
-
-        showError(
-            error.message ||
-            "تعذر تشغيل المكالمة"
-        );
-
-    }
-
-}
-
-
-/* =========================
+/* =========================================
    تشغيل
-========================= */
+========================================= */
 
-init();
+if(callId){
 
+    loadCallSystem();
 
-/* =========================
-   عند مغادرة الصفحة
-========================= */
-
-window.addEventListener(
-    "pagehide",
-    () => {
-
-        if(
-            !ended &&
-            callId
-        ){
-
-            cleanupCall(
-                callId
-            );
-
-        }
-
-    }
-);
+}
 
 </script>
 
 </body>
-
 </html>
