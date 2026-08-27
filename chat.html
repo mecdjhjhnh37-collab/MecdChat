@@ -551,26 +551,20 @@ header{
    Firebase
 ========================================= */
 
-
 import {
-
     initializeApp
-
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-
     getAuth,
     onAuthStateChanged
-
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
 import {
-
     getFirestore,
     doc,
     getDoc,
@@ -584,17 +578,14 @@ import {
     updateDoc,
     arrayUnion,
     serverTimestamp
-
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 import {
-
     getMessaging,
     getToken,
     onMessage
-
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
@@ -602,7 +593,6 @@ import {
 /* =========================================
    Firebase Config
 ========================================= */
-
 
 const firebaseConfig = {
 
@@ -655,7 +645,6 @@ const messaging =
    عناصر الصفحة
 ========================================= */
 
-
 const $ =
     id => document.getElementById(id);
 
@@ -663,42 +652,32 @@ const $ =
 const messages =
     $("messages");
 
-
 const messageInput =
     $("messageInput");
-
 
 const sendButton =
     $("sendButton");
 
-
 const friendName =
     $("friendName");
-
 
 const friendAvatar =
     $("friendAvatar");
 
-
 const friendStatus =
     $("friendStatus");
-
 
 const backButton =
     $("backButton");
 
-
 const callButton =
     $("callButton");
-
 
 const videoButton =
     $("videoButton");
 
-
 const loading =
     $("loading");
-
 
 const app =
     $("app");
@@ -708,34 +687,26 @@ const app =
    المتغيرات
 ========================================= */
 
-
 let currentUser =
     null;
-
 
 let friendUser =
     null;
 
-
 let chatID =
     null;
-
 
 let unsubscribeMessages =
     null;
 
-
 let unsubscribeFriendStatus =
     null;
-
 
 let presenceInterval =
     null;
 
-
 let callModule =
     null;
-
 
 let notificationToken =
     null;
@@ -744,7 +715,6 @@ let notificationToken =
 /* =========================================
    حماية النص
 ========================================= */
-
 
 function escapeHtml(value){
 
@@ -756,13 +726,9 @@ function escapeHtml(value){
             c => ({
 
                 '&':'&amp;',
-
                 '<':'&lt;',
-
                 '>':'&gt;',
-
                 "'":'&#39;',
-
                 '"':'&quot;'
 
             }[c])
@@ -773,9 +739,8 @@ function escapeHtml(value){
 
 
 /* =========================================
-   تسجيل Service Worker
+   Service Worker
 ========================================= */
-
 
 async function registerMessagingServiceWorker(){
 
@@ -783,7 +748,7 @@ async function registerMessagingServiceWorker(){
         !("serviceWorker" in navigator)
     ){
 
-        console.log(
+        console.error(
             "❌ Service Worker غير مدعوم"
         );
 
@@ -795,7 +760,6 @@ async function registerMessagingServiceWorker(){
     try{
 
         const registration =
-
             await navigator
                 .serviceWorker
                 .register(
@@ -803,9 +767,13 @@ async function registerMessagingServiceWorker(){
                 );
 
 
+        await navigator
+            .serviceWorker
+            .ready;
+
+
         console.log(
-            "✅ Firebase Messaging Service Worker جاهز",
-            registration
+            "✅ Firebase Messaging Service Worker جاهز"
         );
 
 
@@ -819,7 +787,6 @@ async function registerMessagingServiceWorker(){
             error
         );
 
-
         return null;
 
     }
@@ -828,14 +795,13 @@ async function registerMessagingServiceWorker(){
 
 
 /* =========================================
-   تشغيل الإشعارات
+   تشغيل FCM
 ========================================= */
-
 
 async function enableNotifications(){
 
     console.log(
-        "🔔 بدء تشغيل نظام الإشعارات..."
+        "🔔 تشغيل FCM..."
     );
 
 
@@ -843,8 +809,8 @@ async function enableNotifications(){
         !("Notification" in window)
     ){
 
-        console.log(
-            "❌ المتصفح لا يدعم Notification API"
+        console.error(
+            "❌ Notification API غير مدعوم"
         );
 
         return null;
@@ -870,7 +836,7 @@ async function enableNotifications(){
 
 
         console.log(
-            "🔔 Notification permission:",
+            "Notification permission:",
             permission
         );
 
@@ -880,7 +846,7 @@ async function enableNotifications(){
             "granted"
         ){
 
-            console.log(
+            console.warn(
                 "❌ الإشعارات غير مسموحة"
             );
 
@@ -900,8 +866,12 @@ async function enableNotifications(){
         }
 
 
-        const token =
+        /*
+         * هذا هو VAPID Public Key
+         * الموجود عندك.
+         */
 
+        const token =
             await getToken(
 
                 messaging,
@@ -921,7 +891,7 @@ async function enableNotifications(){
 
         if(!token){
 
-            console.log(
+            console.error(
                 "❌ لم يتم الحصول على FCM Token"
             );
 
@@ -935,7 +905,7 @@ async function enableNotifications(){
 
 
         console.log(
-            "✅ FCM Token حصلنا عليه:",
+            "✅ FCM Token:",
             token
         );
 
@@ -978,7 +948,7 @@ async function enableNotifications(){
     }catch(error){
 
         console.error(
-            "❌ Notification error:",
+            "❌ FCM error:",
             error
         );
 
@@ -990,9 +960,8 @@ async function enableNotifications(){
 
 
 /* =========================================
-   استقبال إشعار أثناء فتح الصفحة
+   استقبال FCM أثناء فتح الموقع
 ========================================= */
-
 
 onMessage(
 
@@ -1006,44 +975,80 @@ onMessage(
         );
 
 
-        const title =
-            payload.notification?.title ||
-            "Mecd Chat";
+        const data =
+            payload.data || {};
 
-
-        const body =
-            payload.notification?.body ||
-            "لديك رسالة جديدة";
-
-
-        /*
-         إشعار محلي فقط أثناء فتح الصفحة
-        */
 
         if(
-            "Notification" in window &&
-            Notification.permission ===
+            data.type !==
+            "chat_message"
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            data.receiverId &&
+            currentUser &&
+            data.receiverId !==
+            currentUser.uid
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            !("Notification" in window) ||
+            Notification.permission !==
             "granted"
         ){
 
-            try{
+            return;
 
-                new Notification(
-                    title,
-                    {
-                        body:body,
-                        icon:"./icon-192.png"
-                    }
-                );
+        }
 
-            }catch(error){
 
-                console.error(
-                    "Local notification error:",
-                    error
-                );
+        try{
 
-            }
+            new Notification(
+
+                "💬 " +
+                (
+                    data.senderName ||
+                    "مستخدم Mecd"
+                ),
+
+                {
+
+                    body:
+                        data.messageText ||
+                        "لديك رسالة جديدة",
+
+                    icon:
+                        data.senderPhoto ||
+                        "./icon-192.png",
+
+                    tag:
+                        "mecd-chat-" +
+                        (
+                            data.chatId ||
+                            "message"
+                        )
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(
+                "❌ Foreground notification error:",
+                error
+            );
 
         }
 
@@ -1053,106 +1058,8 @@ onMessage(
 
 
 /* =========================================
-   اختبار الإشعار المؤقت
+   Chat ID
 ========================================= */
-
-
-async function testNotificationAfterSend(){
-
-    console.log(
-        "🧪 بدء اختبار الإشعار بعد إرسال الرسالة"
-    );
-
-
-    if(
-        !("Notification" in window)
-    ){
-
-        alert(
-            "❌ المتصفح لا يدعم الإشعارات"
-        );
-
-        return;
-
-    }
-
-
-    const permission =
-        Notification.permission;
-
-
-    if(
-        permission !==
-        "granted"
-    ){
-
-        alert(
-
-            "❌ الإشعارات غير مفعلة\n\n" +
-
-            "الحالة الحالية: " +
-
-            permission
-
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        new Notification(
-
-            "🔔 Mecd Chat - اختبار",
-
-            {
-
-                body:
-                    "✅ وصل الإشعار التجريبي بعد إرسال الرسالة",
-
-                icon:
-                    "./icon-192.png",
-
-                tag:
-                    "mecd-chat-test"
-
-            }
-
-        );
-
-
-        console.log(
-            "✅ تم إرسال الإشعار التجريبي"
-        );
-
-
-    }catch(error){
-
-        console.error(
-            "❌ فشل الإشعار التجريبي:",
-            error
-        );
-
-
-        alert(
-
-            "❌ فشل إظهار الإشعار\n\n" +
-
-            error.message
-
-        );
-
-    }
-
-}
-
-
-/* =========================================
-   إنشاء Chat ID
-========================================= */
-
 
 function createChatID(a,b){
 
@@ -1173,7 +1080,6 @@ function createChatID(a,b){
 /* =========================================
    Presence
 ========================================= */
-
 
 async function updateMyPresence(
     online=true
@@ -1285,7 +1191,6 @@ function stopPresence(){
    حالة الصديق
 ========================================= */
 
-
 function listenFriendStatus(){
 
     if(!friendUser)
@@ -1376,7 +1281,6 @@ function listenFriendStatus(){
    تحميل الصديق
 ========================================= */
 
-
 async function loadFriend(){
 
     const id =
@@ -1465,10 +1369,8 @@ async function loadFriend(){
     window.chatID =
         chatID;
 
-
     window.chatUser =
         currentUser;
-
 
     window.chatFriend =
         friendUser;
@@ -1509,7 +1411,6 @@ async function loadFriend(){
 /* =========================================
    عرض الرسائل
 ========================================= */
-
 
 function renderMessages(snap){
 
@@ -1915,7 +1816,6 @@ function renderMessages(snap){
    استقبال الرسائل
 ========================================= */
 
-
 function listenMessages(){
 
     if(unsubscribeMessages){
@@ -1972,7 +1872,6 @@ function listenMessages(){
    إرسال رسالة
 ========================================= */
 
-
 async function sendMessage(){
 
     const text =
@@ -1999,6 +1898,15 @@ async function sendMessage(){
 
     try{
 
+        /*
+         * مهم جدًا:
+         *
+         * receiverId = الصديق فقط
+         *
+         * Cloud Function ستستخدمه
+         * لإرسال FCM إلى Token الصديق.
+         */
+
         await addDoc(
 
             collection(
@@ -2019,6 +1927,15 @@ async function sendMessage(){
                 receiverId:
                     friendUser.uid,
 
+                senderName:
+                    currentUser.displayName ||
+                    currentUser.email?.split("@")[0] ||
+                    "مستخدم Mecd",
+
+                senderPhoto:
+                    currentUser.photoURL ||
+                    "",
+
                 type:
                     "text",
 
@@ -2035,15 +1952,6 @@ async function sendMessage(){
 
 
         messageInput.focus();
-
-
-        /*
-         =====================================
-         🧪 اختبار الإشعار المؤقت
-         =====================================
-        */
-
-        await testNotificationAfterSend();
 
 
     }catch(error){
@@ -2069,23 +1977,18 @@ async function sendMessage(){
 
 
 /* =========================================
-   زر إرسال الرسالة
+   زر الإرسال
 ========================================= */
 
-
 sendButton.addEventListener(
-
     "click",
-
     sendMessage
-
 );
 
 
 /* =========================================
    Enter
 ========================================= */
-
 
 messageInput.addEventListener(
 
@@ -2112,7 +2015,6 @@ messageInput.addEventListener(
 /* =========================================
    قوائم الرسائل
 ========================================= */
-
 
 function removeMenus(){
 
@@ -2366,9 +2268,8 @@ document.addEventListener(
 
 
 /* =========================================
-   زر المكالمة الصوتية
+   المكالمة الصوتية
 ========================================= */
-
 
 callButton.addEventListener(
 
@@ -2466,9 +2367,8 @@ callButton.addEventListener(
 
 
 /* =========================================
-   فيديو
+   الفيديو
 ========================================= */
-
 
 videoButton.addEventListener(
 
@@ -2488,7 +2388,6 @@ videoButton.addEventListener(
 /* =========================================
    تحميل نظام المكالمات
 ========================================= */
-
 
 async function loadCallSystem(){
 
@@ -2540,7 +2439,6 @@ async function loadCallSystem(){
    الرجوع
 ========================================= */
 
-
 backButton.addEventListener(
 
     "click",
@@ -2575,7 +2473,6 @@ backButton.addEventListener(
    Visibility
 ========================================= */
 
-
 document.addEventListener(
 
     "visibilitychange",
@@ -2605,9 +2502,8 @@ document.addEventListener(
 
 
 /* =========================================
-   عند مغادرة الصفحة
+   مغادرة الصفحة
 ========================================= */
-
 
 window.addEventListener(
 
@@ -2629,7 +2525,6 @@ window.addEventListener(
 /* =========================================
    تشغيل التطبيق
 ========================================= */
-
 
 function init(){
 
@@ -2659,47 +2554,29 @@ function init(){
 
             try{
 
-                /*
-                 Presence
-                */
-
                 startPresence();
 
 
                 /*
-                 الإشعارات
-                */
+                 * تسجيل جهاز المستخدم في FCM.
+                 *
+                 * كل مستخدم يحصل على Token خاص بجهازه.
+                 */
 
                 await
                     enableNotifications();
 
 
-                /*
-                 تحميل الصديق
-                */
-
                 await
                     loadFriend();
 
 
-                /*
-                 الرسائل
-                */
-
                 listenMessages();
 
-
-                /*
-                 المكالمات
-                */
 
                 await
                     loadCallSystem();
 
-
-                /*
-                 إظهار التطبيق
-                */
 
                 loading.style.display =
                     "none";
@@ -2712,6 +2589,7 @@ function init(){
             }catch(error){
 
                 stopPresence();
+
 
                 console.error(
                     error
@@ -2748,11 +2626,6 @@ init();
 
 
 </script>
-
-
-<!-- =========================================
-     نظام الرسائل الصوتية
-========================================= -->
 
 
 <script
