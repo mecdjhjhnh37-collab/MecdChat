@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -10,7 +11,7 @@
 <meta name="theme-color"
       content="#050807">
 
-<title>Mecd Chat</title>
+<title>Mecd Chat - مكالمة</title>
 
 <style>
 
@@ -21,2042 +22,726 @@
 }
 
 body{
+
+    width:100%;
     height:100vh;
-    font-family:Arial,Tahoma,sans-serif;
+
+    overflow:hidden;
+
+    font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
     color:white;
 
     background:
         radial-gradient(
             circle at top,
             #123d35,
-            transparent 40%
+            transparent 42%
         ),
         linear-gradient(
             180deg,
             #07110f,
             #020504
         );
-
-    overflow:hidden;
 }
 
-.app{
+.call-page{
+
+    width:100%;
     height:100vh;
+
     max-width:650px;
+
     margin:auto;
 
     display:flex;
+
     flex-direction:column;
-}
 
-header{
-    height:75px;
-
-    display:flex;
     align-items:center;
 
-    gap:12px;
-
-    padding:12px 15px;
-
-    background:#050807;
-
-    border-bottom:
-        1px solid
-        rgba(255,255,255,.08);
-
-    flex-shrink:0;
+    position:relative;
 }
 
-.back{
-    width:45px;
-    height:45px;
+.top{
 
-    border:0;
-    border-radius:15px;
-
-    background:#18231f;
-
-    color:white;
-
-    font-size:22px;
-
-    cursor:pointer;
-}
-
-.avatar{
-    width:48px;
-    height:48px;
-
-    border-radius:16px;
-
-    background:#12352c;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    overflow:hidden;
-
-    font-size:24px;
-
-    flex-shrink:0;
-}
-
-.avatar img{
     width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.user-info{
-    flex:1;
-    min-width:0;
-}
-
-.user-name{
-    font-size:17px;
-    font-weight:bold;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.user-status{
-    font-size:12px;
-    color:#777;
-    margin-top:5px;
-}
-
-.user-status.online{
-    color:#00e889;
-}
-
-.call-buttons{
-    display:flex;
-    gap:8px;
-    flex-shrink:0;
-}
-
-.call-buttons button{
-    width:42px;
-    height:42px;
-
-    border:0;
-    border-radius:14px;
-
-    background:#18231f;
-
-    color:white;
-
-    font-size:18px;
-
-    cursor:pointer;
-}
-
-.call-buttons button:active{
-    transform:scale(.94);
-}
-
-.messages{
-    flex:1;
-    min-height:0;
-
-    overflow-y:auto;
 
     padding:
         20px
-        15px
-        150px;
-
-    display:flex;
-    flex-direction:column;
-
-    gap:10px;
-}
-
-.empty{
-    margin:auto;
+        18px
+        0;
 
     text-align:center;
 
-    color:#72817c;
+    font-size:14px;
+
+    color:#71807b;
 }
 
-.message{
-    max-width:78%;
-
-    padding:12px 15px;
-
-    border-radius:18px;
-
-    position:relative;
-
-    word-break:break-word;
-
-    user-select:none;
-
-    -webkit-user-select:none;
-
-    -webkit-touch-callout:none;
-}
-
-.message.mine{
-    align-self:flex-start;
-
-    background:#00c96b;
-
-    color:#00150e;
-
-    border-bottom-left-radius:5px;
-}
-
-.message.other{
-    align-self:flex-end;
-
-    background:#18231f;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
-
-    border-bottom-right-radius:5px;
-}
-
-.time{
-    display:block;
-
-    font-size:9px;
-
-    opacity:.6;
-
-    margin-top:5px;
-}
-
-.input-area{
-    position:fixed;
-
-    bottom:0;
-
-    left:50%;
-
-    transform:
-        translateX(-50%);
+.person{
 
     width:100%;
 
-    max-width:650px;
+    display:flex;
 
-    padding:10px;
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin-top:45px;
+}
+
+.avatar{
+
+    width:125px;
+    height:125px;
+
+    border-radius:38px;
+
+    overflow:hidden;
+
+    background:#12352c;
+
+    border:
+        2px solid
+        rgba(0,232,137,.18);
 
     display:flex;
 
-    gap:8px;
+    align-items:center;
 
-    background:#050807;
+    justify-content:center;
 
-    z-index:50;
+    font-size:55px;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.35);
 }
 
-#messageInput{
-    flex:1;
+.avatar img{
 
-    min-width:0;
+    width:100%;
+    height:100%;
 
-    padding:14px;
-
-    border-radius:17px;
-
-    border:
-        1px solid
-        #27332f;
-
-    background:#111916;
-
-    color:white;
-
-    outline:none;
-
-    font-size:15px;
+    object-fit:cover;
 }
 
-#voiceButton,
-#sendButton{
-    width:50px;
-    height:50px;
+.name{
+
+    margin-top:20px;
+
+    max-width:90%;
+
+    font-size:23px;
+
+    font-weight:bold;
+
+    text-align:center;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+}
+
+.status{
+
+    margin-top:9px;
+
+    font-size:14px;
+
+    color:#00e889;
+}
+
+.status.ended{
+
+    color:#777;
+}
+
+.controls{
+
+    position:absolute;
+
+    bottom:82px;
+
+    left:0;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:0 20px;
+}
+
+.control{
+
+    width:58px;
+    height:58px;
 
     border:0;
 
-    border-radius:16px;
+    border-radius:19px;
+
+    background:#18231f;
+
+    color:white;
 
     font-size:22px;
 
     cursor:pointer;
 
-    flex-shrink:0;
+    box-shadow:
+        0 8px 25px
+        rgba(0,0,0,.25);
 }
 
-#voiceButton{
-    background:#18231f;
-    color:white;
+.control:active{
+
+    transform:scale(.93);
 }
 
-#sendButton{
+.control.green{
+
     background:#00e889;
+
     color:#00150e;
 }
 
-#sendButton:disabled{
-    opacity:.6;
-    cursor:not-allowed;
+.control.red{
+
+    background:#e53935;
+
+    color:white;
 }
 
-.message-menu{
-    position:absolute;
-
-    left:50%;
-
-    bottom:
-        calc(100% + 8px);
-
-    transform:
-        translateX(-50%);
-
-    width:max-content;
-
-    min-width:150px;
-
-    max-width:
-        calc(100vw - 30px);
-
-    padding:5px;
-
-    background:#0b1512;
-
-    border:
-        1px solid
-        rgba(0,232,137,.18);
-
-    border-radius:15px;
-
-    box-shadow:
-        0 8px 25px
-        rgba(0,0,0,.55);
-
-    z-index:99999;
-
-    animation:
-        showMenu .18s ease;
-}
-
-.message-menu button{
-    width:100%;
-
-    min-width:140px;
-
-    padding:10px 14px;
-
-    border:0;
-
-    border-radius:11px;
+.control.off{
 
     background:#18231f;
 
+    color:#ff5555;
+}
+
+.incoming-actions{
+
+    display:none;
+
+    position:absolute;
+
+    bottom:82px;
+
+    left:0;
+
+    width:100%;
+
+    justify-content:center;
+
+    gap:18px;
+}
+
+.incoming-actions button{
+
+    width:65px;
+    height:65px;
+
+    border:0;
+
+    border-radius:22px;
+
+    font-size:25px;
+
+    cursor:pointer;
+}
+
+#acceptButton{
+
+    background:#00e889;
+
+    color:#00150e;
+}
+
+#rejectButton{
+
+    background:#e53935;
+
     color:white;
+}
+
+.hidden{
+
+    display:none !important;
+}
+
+.loader{
+
+    width:18px;
+    height:18px;
+
+    border:
+        2px solid
+        rgba(255,255,255,.2);
+
+    border-top-color:#00e889;
+
+    border-radius:50%;
+
+    display:inline-block;
+
+    animation:
+        spin .7s linear infinite;
+
+    vertical-align:middle;
+
+    margin-left:6px;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+#errorBox{
+
+    position:absolute;
+
+    top:20px;
+
+    left:20px;
+
+    right:20px;
+
+    padding:13px;
+
+    border-radius:14px;
+
+    background:#251111;
+
+    border:
+        1px solid
+        rgba(255,80,80,.2);
+
+    color:#ff7777;
+
+    text-align:center;
 
     font-size:13px;
 
-    font-weight:bold;
-
-    cursor:pointer;
-
-    white-space:nowrap;
-
-    text-align:center;
+    display:none;
 }
 
-@keyframes showMenu{
-
-    from{
-        opacity:0;
-
-        transform:
-            translate(-50%,8px);
-    }
-
-    to{
-        opacity:1;
-
-        transform:
-            translate(-50%,0);
-    }
-
+audio{
+    display:none;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<div id="loading"
-     style="
-     position:fixed;
-     inset:0;
-     display:flex;
-     align-items:center;
-     justify-content:center;
-     background:#020504;
-     color:white;
-     font-size:18px;
-     z-index:9999;">
+<main class="call-page">
 
-    جارٍ فتح الدردشة...
+    <div class="top">
+        Mecd Chat
+    </div>
 
-</div>
+    <div id="errorBox"></div>
 
-<main id="app"
-      class="app"
-      style="display:none;">
+    <section class="person">
 
-<header>
+        <div id="avatar"
+             class="avatar">
+            👤
+        </div>
 
-<button id="backButton"
-        class="back"
-        type="button">
+        <div id="name"
+             class="name">
+            مستخدم Mecd
+        </div>
 
-    →
+        <div id="status"
+             class="status">
+            جارٍ الاتصال...
+        </div>
 
-</button>
+    </section>
 
-<div id="friendAvatar"
-     class="avatar">
+    <audio id="remoteAudio"
+           autoplay
+           playsinline>
+    </audio>
 
-    👤
+    <!-- المكالمة العادية -->
 
-</div>
+    <div id="controls"
+         class="controls">
 
-<div class="user-info">
+        <button id="muteButton"
+                class="control"
+                type="button">
+            🎤
+        </button>
 
-<div id="friendName"
-     class="user-name">
+        <button id="endButton"
+                class="control red"
+                type="button">
+            📞
+        </button>
 
-    جار التحميل...
+    </div>
 
-</div>
+    <!-- المكالمة الواردة -->
 
-<div id="friendStatus"
-     class="user-status">
+    <div id="incomingActions"
+         class="incoming-actions">
 
-    ● غير متصل
+        <button id="rejectButton"
+                type="button">
+            📞
+        </button>
 
-</div>
+        <button id="acceptButton"
+                type="button">
+            📞
+        </button>
 
-</div>
-
-<div class="call-buttons">
-
-<button id="callButton"
-        type="button">
-
-    📞
-
-</button>
-
-<button id="videoButton"
-        type="button">
-
-    📹
-
-</button>
-
-</div>
-
-</header>
-
-<div id="messages"
-     class="messages">
-
-<div class="empty">
-
-    💬
-    <br>
-    ابدأ المحادثة الآن
-
-</div>
-
-</div>
-
-<div class="input-area">
-
-<input id="messageInput"
-       placeholder="اكتب رسالة..."
-       autocomplete="off"
-       maxlength="2000">
-
-<button id="voiceButton"
-        type="button">
-
-    🎤
-
-</button>
-
-<button id="sendButton"
-        type="button">
-
-    ➤
-
-</button>
-
-</div>
+    </div>
 
 </main>
 
 <script type="module">
 
 /* =========================================
-   Firebase
+   تحميل call.js
 ========================================= */
 
-import {
-    initializeApp
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-    getAuth,
-    onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-    getFirestore,
-    doc,
-    getDoc,
-    setDoc,
-    collection,
-    query,
-    orderBy,
-    onSnapshot,
-    addDoc,
-    deleteDoc,
-    updateDoc,
-    arrayUnion,
-    serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {
-    getMessaging,
-    getToken,
-    onMessage
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
+let callModule = null;
 
 
 /* =========================================
-   Firebase Config
+   عناصر الصفحة
 ========================================= */
 
-const firebaseConfig = {
+const avatar =
+    document.getElementById("avatar");
 
-    apiKey:
-        "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+const nameElement =
+    document.getElementById("name");
 
-    authDomain:
-        "mecd-tools.firebaseapp.com",
+const statusElement =
+    document.getElementById("status");
 
-    projectId:
-        "mecd-tools",
+const controls =
+    document.getElementById("controls");
 
-    storageBucket:
-        "mecd-tools.firebasestorage.app",
+const incomingActions =
+    document.getElementById("incomingActions");
 
-    messagingSenderId:
-        "643005547408",
+const muteButton =
+    document.getElementById("muteButton");
 
-    appId:
-        "1:643005547408:web:b1719060ec340dd0e0a915"
+const endButton =
+    document.getElementById("endButton");
 
-};
+const acceptButton =
+    document.getElementById("acceptButton");
 
+const rejectButton =
+    document.getElementById("rejectButton");
 
-const firebaseApp =
-    initializeApp(firebaseConfig);
+const remoteAudio =
+    document.getElementById("remoteAudio");
 
-const auth =
-    getAuth(firebaseApp);
-
-const db =
-    getFirestore(firebaseApp);
-
-const messaging =
-    getMessaging(firebaseApp);
+const errorBox =
+    document.getElementById("errorBox");
 
 
 /* =========================================
-   العناصر
+   بيانات الرابط
 ========================================= */
 
-const $ =
-    id => document.getElementById(id);
+const params =
+    new URLSearchParams(
+        location.search
+    );
 
-const messages =
-    $("messages");
+const callId =
+    params.get("callId") || "";
 
-const messageInput =
-    $("messageInput");
-
-const sendButton =
-    $("sendButton");
+const mode =
+    params.get("mode") || "outgoing";
 
 const friendName =
-    $("friendName");
+    params.get("name") ||
+    "مستخدم Mecd";
 
-const friendAvatar =
-    $("friendAvatar");
-
-const friendStatus =
-    $("friendStatus");
-
-const backButton =
-    $("backButton");
-
-const callButton =
-    $("callButton");
-
-const videoButton =
-    $("videoButton");
-
-const loading =
-    $("loading");
-
-const app =
-    $("app");
+const friendPhoto =
+    params.get("photo") ||
+    "";
 
 
 /* =========================================
-   المتغيرات
+   عرض بيانات الصديق
 ========================================= */
 
-let currentUser =
-    null;
+nameElement.textContent =
+    friendName;
 
-let friendUser =
-    null;
 
-let chatID =
-    null;
+if(friendPhoto){
 
-let unsubscribeMessages =
-    null;
+    const img =
+        document.createElement("img");
 
-let unsubscribeFriendStatus =
-    null;
+    img.src =
+        friendPhoto;
 
-let presenceInterval =
-    null;
+    img.alt =
+        "صورة الحساب";
 
-let callModule =
-    null;
+    img.onload =
+        () => {
 
+            avatar.innerHTML = "";
 
-/* =========================================
-   حماية النص
-========================================= */
+            avatar.appendChild(img);
 
-function escapeHtml(value){
+        };
 
-    return String(value)
-        .replace(
-            /[&<>'"]/g,
-            c => ({
-                '&':'&amp;',
-                '<':'&lt;',
-                '>':'&gt;',
-                "'":'&#39;',
-                '"':'&quot;'
-            }[c])
-        );
+    img.onerror =
+        () => {
 
-}
+            avatar.innerHTML =
+                "👤";
 
+        };
 
-/* =========================================
-   Service Worker للإشعارات
-========================================= */
+}else{
 
-async function registerMessagingServiceWorker(){
-
-    if(!("serviceWorker" in navigator)){
-
-        console.error(
-            "Service Worker غير مدعوم"
-        );
-
-        return null;
-
-    }
-
-    try{
-
-        const registration =
-            await navigator.serviceWorker.register(
-                "./firebase-messaging-sw.js"
-            );
-
-        console.log(
-            "✅ Messaging Service Worker جاهز"
-        );
-
-        return registration;
-
-    }catch(error){
-
-        console.error(
-            "❌ Service Worker:",
-            error
-        );
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================
-   تفعيل FCM
-========================================= */
-
-async function enableNotifications(){
-
-    if(!("Notification" in window)){
-
-        console.log(
-            "❌ Notification API غير مدعوم"
-        );
-
-        return null;
-
-    }
-
-    try{
-
-        let permission =
-            Notification.permission;
-
-        if(permission === "default"){
-
-            permission =
-                await Notification.requestPermission();
-
-        }
-
-        console.log(
-            "Notification permission:",
-            permission
-        );
-
-        if(permission !== "granted"){
-
-            console.log(
-                "❌ المستخدم لم يسمح بالإشعارات"
-            );
-
-            return null;
-
-        }
-
-        const registration =
-            await registerMessagingServiceWorker();
-
-        if(!registration){
-
-            return null;
-
-        }
-
-        const token =
-            await getToken(
-                messaging,
-                {
-                    vapidKey:
-                        "BG2QNrIS2QZhTBBWNf8HfWHCIcAEHZzNZkMp8StuwmT1y1OEPkcu2_yK00Y2aGRh1LyAEyyzLnSYbbhpq13u7EQ",
-
-                    serviceWorkerRegistration:
-                        registration
-                }
-            );
-
-        if(!token){
-
-            console.log(
-                "❌ لم يتم الحصول على FCM Token"
-            );
-
-            return null;
-
-        }
-
-        console.log(
-            "✅ FCM Token:",
-            token
-        );
-
-        if(currentUser){
-
-            await setDoc(
-
-                doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                ),
-
-                {
-                    fcmToken:
-                        token,
-
-                    notificationsEnabled:
-                        true,
-
-                    notificationUpdatedAt:
-                        serverTimestamp()
-                },
-
-                {
-                    merge:true
-                }
-
-            );
-
-        }
-
-        return token;
-
-    }catch(error){
-
-        console.error(
-            "❌ Notification error:",
-            error
-        );
-
-        return null;
-
-    }
-
-}
-
-
-/* =========================================
-   إشعار أثناء فتح الموقع
-========================================= */
-
-onMessage(
-    messaging,
-    payload => {
-
-        console.log(
-            "🔔 FCM message:",
-            payload
-        );
-
-        const title =
-            payload.notification?.title ||
-            payload.data?.title ||
-            "Mecd Chat";
-
-        const body =
-            payload.notification?.body ||
-            payload.data?.body ||
-            "لديك رسالة جديدة";
-
-        if(
-            Notification.permission ===
-            "granted"
-        ){
-
-            try{
-
-                new Notification(
-                    title,
-                    {
-                        body:
-                            body,
-
-                        icon:
-                            "./icon-192.png",
-
-                        tag:
-                            "mecd-chat-message"
-                    }
-                );
-
-            }catch(error){
-
-                console.error(
-                    "Foreground notification:",
-                    error
-                );
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   إنشاء Chat ID
-========================================= */
-
-function createChatID(a,b){
-
-    return [
-        a,
-        b
-    ]
-    .sort()
-    .join("_");
-
-}
-
-
-/* =========================================
-   Presence
-========================================= */
-
-async function updateMyPresence(
-    online = true
-){
-
-    if(!currentUser)
-        return;
-
-    try{
-
-        await setDoc(
-
-            doc(
-                db,
-                "users",
-                currentUser.uid
-            ),
-
-            {
-                online:
-                    online,
-
-                lastSeen:
-                    serverTimestamp()
-            },
-
-            {
-                merge:true
-            }
-
-        );
-
-    }catch(error){
-
-        console.error(
-            "Presence error:",
-            error
-        );
-
-    }
-
-}
-
-
-function startPresence(){
-
-    updateMyPresence(true);
-
-    if(presenceInterval){
-
-        clearInterval(
-            presenceInterval
-        );
-
-    }
-
-    presenceInterval =
-        setInterval(
-            () => {
-
-                if(
-                    document.visibilityState ===
-                    "visible"
-                ){
-
-                    updateMyPresence(true);
-
-                }
-
-            },
-            10000
-        );
-
-}
-
-
-function stopPresence(){
-
-    if(presenceInterval){
-
-        clearInterval(
-            presenceInterval
-        );
-
-        presenceInterval =
-            null;
-
-    }
-
-    if(currentUser){
-
-        updateMyPresence(false);
-
-    }
-
-}
-
-
-/* =========================================
-   حالة الصديق
-========================================= */
-
-function listenFriendStatus(){
-
-    if(!friendUser)
-        return;
-
-    if(unsubscribeFriendStatus){
-
-        unsubscribeFriendStatus();
-
-    }
-
-    const ref =
-        doc(
-            db,
-            "users",
-            friendUser.uid
-        );
-
-    unsubscribeFriendStatus =
-        onSnapshot(
-
-            ref,
-
-            snapshot => {
-
-                if(!snapshot.exists()){
-
-                    friendStatus.textContent =
-                        "● غير متصل";
-
-                    friendStatus.classList.remove(
-                        "online"
-                    );
-
-                    return;
-
-                }
-
-                const data =
-                    snapshot.data();
-
-                const lastSeen =
-                    data.lastSeen?.toMillis?.() ||
-                    0;
-
-                const online =
-                    data.online === true &&
-                    lastSeen > 0 &&
-                    Date.now() - lastSeen < 30000;
-
-                friendStatus.textContent =
-                    online
-                    ? "● متصل"
-                    : "● غير متصل";
-
-                friendStatus.classList.toggle(
-                    "online",
-                    online
-                );
-
-            },
-
-            error => {
-
-                console.error(
-                    "Friend status error:",
-                    error
-                );
-
-            }
-
-        );
-
-}
-
-
-/* =========================================
-   تحميل الصديق
-========================================= */
-
-async function loadFriend(){
-
-    const id =
-        new URLSearchParams(
-            location.search
-        ).get("friend");
-
-    if(!id){
-
-        throw new Error(
-            "لا يوجد صديق في الرابط"
-        );
-
-    }
-
-    const userDoc =
-        await getDoc(
-
-            doc(
-                db,
-                "users",
-                id
-            )
-
-        );
-
-    if(!userDoc.exists()){
-
-        throw new Error(
-            "المستخدم غير موجود"
-        );
-
-    }
-
-    const data =
-        userDoc.data();
-
-    friendUser = {
-
-        uid:
-            id,
-
-        name:
-            data.name ||
-            "مستخدم Mecd",
-
-        photo:
-            data.photo ||
-            ""
-
-    };
-
-    friendName.textContent =
-        friendUser.name;
-
-    friendAvatar.innerHTML =
-        friendUser.photo
-        ?
-        '<img src="' +
-        escapeHtml(
-            friendUser.photo
-        ) +
-        '" alt="صورة الحساب">'
-        :
+    avatar.innerHTML =
         "👤";
 
-    chatID =
-        createChatID(
-            currentUser.uid,
-            friendUser.uid
-        );
+}
 
-    window.chatID =
-        chatID;
 
-    window.chatUser =
-        currentUser;
+/* =========================================
+   المكالمة الواردة
+========================================= */
 
-    window.chatFriend =
-        friendUser;
+if(mode === "incoming"){
 
-    await setDoc(
+    statusElement.textContent =
+        "📞 مكالمة واردة";
 
-        doc(
-            db,
-            "chats",
-            chatID
-        ),
-
-        {
-
-            members:[
-                currentUser.uid,
-                friendUser.uid
-            ],
-
-            updatedAt:
-                serverTimestamp(),
-
-            createdAt:
-                serverTimestamp()
-
-        },
-
-        {
-            merge:true
-        }
-
+    controls.classList.add(
+        "hidden"
     );
 
-    listenFriendStatus();
+    incomingActions.style.display =
+        "flex";
 
 }
 
 
 /* =========================================
-   عرض الرسائل
+   رسالة الخطأ
 ========================================= */
 
-function renderMessages(snap){
+function showError(message){
 
-    if(!renderMessages.elements){
+    errorBox.textContent =
+        message;
 
-        renderMessages.elements =
-            new Map();
+    errorBox.style.display =
+        "block";
 
-    }
+    statusElement.textContent =
+        "حدث خطأ";
 
-    const elements =
-        renderMessages.elements;
-
-    const nearBottom =
-        messages.scrollHeight -
-        messages.scrollTop -
-        messages.clientHeight < 120;
-
-
-    function createMessageElement(
-        id,
-        data
-    ){
-
-        if(
-            Array.isArray(
-                data.deletedFor
-            ) &&
-            data.deletedFor.includes(
-                currentUser.uid
-            )
-        ){
-
-            return null;
-
-        }
-
-        const box =
-            document.createElement(
-                "div"
-            );
-
-        box.className =
-            "message " +
-            (
-                data.senderId ===
-                currentUser.uid
-                ?
-                "mine"
-                :
-                "other"
-            );
-
-        if(data.type === "voice"){
-
-            const audio =
-                document.createElement(
-                    "audio"
-                );
-
-            audio.controls =
-                true;
-
-            audio.src =
-                data.audio ||
-                "";
-
-            audio.style.width =
-                "230px";
-
-            audio.style.maxWidth =
-                "100%";
-
-            box.appendChild(
-                audio
-            );
-
-            const voiceText =
-                document.createElement(
-                    "span"
-                );
-
-            voiceText.textContent =
-                "🎤 رسالة صوتية";
-
-            voiceText.style.display =
-                "block";
-
-            voiceText.style.fontSize =
-                "12px";
-
-            box.appendChild(
-                voiceText
-            );
-
-        }else{
-
-            box.appendChild(
-                document.createTextNode(
-                    data.text ||
-                    ""
-                )
-            );
-
-        }
-
-        const time =
-            document.createElement(
-                "span"
-            );
-
-        time.className =
-            "time";
-
-        if(data.createdAt?.toDate){
-
-            time.textContent =
-                data.createdAt
-                    .toDate()
-                    .toLocaleTimeString(
-                        "ar",
-                        {
-                            hour:
-                                "2-digit",
-
-                            minute:
-                                "2-digit"
-                        }
-                    );
-
-        }
-
-        box.appendChild(
-            time
-        );
-
-        addMessageActions(
-            box,
-            id,
-            data.senderId ===
-            currentUser.uid
-        );
-
-        return box;
-
-    }
-
-
-    snap.docChanges()
-        .forEach(
-            change => {
-
-                const id =
-                    change.doc.id;
-
-                const data =
-                    change.doc.data();
-
-                if(change.type === "added"){
-
-                    const element =
-                        createMessageElement(
-                            id,
-                            data
-                        );
-
-                    if(element){
-
-                        elements.set(
-                            id,
-                            element
-                        );
-
-                        messages.appendChild(
-                            element
-                        );
-
-                    }
-
-                }
-
-                else if(change.type === "modified"){
-
-                    const oldElement =
-                        elements.get(id);
-
-                    if(
-                        Array.isArray(
-                            data.deletedFor
-                        ) &&
-                        data.deletedFor.includes(
-                            currentUser.uid
-                        )
-                    ){
-
-                        if(oldElement){
-
-                            oldElement.remove();
-
-                            elements.delete(
-                                id
-                            );
-
-                        }
-
-                        return;
-
-                    }
-
-                    const newElement =
-                        createMessageElement(
-                            id,
-                            data
-                        );
-
-                    if(!newElement)
-                        return;
-
-                    if(oldElement){
-
-                        oldElement.replaceWith(
-                            newElement
-                        );
-
-                    }else{
-
-                        messages.appendChild(
-                            newElement
-                        );
-
-                    }
-
-                    elements.set(
-                        id,
-                        newElement
-                    );
-
-                }
-
-                else if(change.type === "removed"){
-
-                    const element =
-                        elements.get(id);
-
-                    if(element){
-
-                        element.remove();
-
-                        elements.delete(
-                            id
-                        );
-
-                    }
-
-                }
-
-            }
-        );
-
-
-    const realMessages =
-        messages.querySelectorAll(
-            ".message"
-        );
-
-    const empty =
-        messages.querySelector(
-            ".empty"
-        );
-
-    if(realMessages.length === 0){
-
-        if(!empty){
-
-            const emptyBox =
-                document.createElement(
-                    "div"
-                );
-
-            emptyBox.className =
-                "empty";
-
-            emptyBox.innerHTML =
-                "💬<br>ابدأ المحادثة الآن";
-
-            messages.appendChild(
-                emptyBox
-            );
-
-        }
-
-    }else{
-
-        if(empty){
-
-            empty.remove();
-
-        }
-
-    }
-
-    if(nearBottom){
-
-        requestAnimationFrame(
-            () => {
-
-                messages.scrollTop =
-                    messages.scrollHeight;
-
-            }
-        );
-
-    }
+    statusElement.classList.add(
+        "ended"
+    );
 
 }
 
 
 /* =========================================
-   استقبال الرسائل
+   أحداث المكالمة
 ========================================= */
 
-function listenMessages(){
-
-    if(unsubscribeMessages){
-
-        unsubscribeMessages();
-
-    }
-
-    const ref =
-        collection(
-            db,
-            "chats",
-            chatID,
-            "messages"
-        );
-
-    const q =
-        query(
-            ref,
-            orderBy(
-                "createdAt",
-                "asc"
-            )
-        );
-
-    unsubscribeMessages =
-        onSnapshot(
-            q,
-            renderMessages,
-            error => {
-
-                console.error(
-                    "Messages error:",
-                    error
-                );
-
-            }
-        );
-
-}
-
-
-/* =========================================
-   إرسال الرسالة
-========================================= */
-
-async function sendMessage(){
-
-    const text =
-        messageInput.value.trim();
-
-    if(
-        !text ||
-        !currentUser ||
-        !friendUser ||
-        !chatID
-    ){
-
-        return;
-
-    }
-
-    sendButton.disabled =
-        true;
-
-    try{
-
-        await addDoc(
-
-            collection(
-                db,
-                "chats",
-                chatID,
-                "messages"
-            ),
-
-            {
-
-                text:
-                    text,
-
-                senderId:
-                    currentUser.uid,
-
-                receiverId:
-                    friendUser.uid,
-
-                type:
-                    "text",
-
-                createdAt:
-                    serverTimestamp()
-
-            }
-
-        );
-
-        messageInput.value =
-            "";
-
-        messageInput.focus();
-
-        /*
-         * لا يوجد هنا new Notification()
-         *
-         * لأن المرسل لا يجب أن تصله
-         * إشعارات رسالته.
-         *
-         * الإشعار الحقيقي للمستلم يتم
-         * بواسطة Firebase Cloud Function
-         * التي تراقب الرسالة الجديدة.
-         */
-
-    }catch(error){
-
-        console.error(
-            "Send message error:",
-            error
-        );
-
-        alert(
-            "حدث خطأ أثناء إرسال الرسالة\n\n" +
-            error.message
-        );
-
-    }
-
-    sendButton.disabled =
-        false;
-
-}
-
-
-/* =========================================
-   إرسال
-========================================= */
-
-sendButton.addEventListener(
-    "click",
-    sendMessage
-);
-
-
-/* =========================================
-   Enter
-========================================= */
-
-messageInput.addEventListener(
-    "keydown",
-    e => {
-
-        if(e.key === "Enter"){
-
-            e.preventDefault();
-
-            sendMessage();
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   قوائم الرسائل
-========================================= */
-
-function removeMenus(){
-
-    document
-        .querySelectorAll(
-            ".message-menu"
-        )
-        .forEach(
-            menu =>
-                menu.remove()
-        );
-
-}
-
-
-function addMessageActions(
-    element,
-    id,
-    mine
-){
-
-    let timer =
-        null;
-
-    const cancel = () => {
-
-        if(timer){
-
-            clearTimeout(
-                timer
-            );
-
-            timer =
-                null;
-
-        }
-
-    };
-
-    element.addEventListener(
-        "pointerdown",
-        e => {
-
-            if(
-                e.target.closest(
-                    ".message-menu"
-                )
-            ){
-
-                return;
-
-            }
-
-            cancel();
-
-            timer =
-                setTimeout(
-                    showDeleteMenu,
-                    500
-                );
-
-        }
-    );
-
-    element.addEventListener(
-        "pointerup",
-        cancel
-    );
-
-    element.addEventListener(
-        "pointercancel",
-        cancel
-    );
-
-    element.addEventListener(
-        "pointerleave",
-        cancel
-    );
-
-    element.addEventListener(
-        "contextmenu",
-        e => {
-
-            e.preventDefault();
-
-            showDeleteMenu();
-
-        }
-    );
-
-
-    function showDeleteMenu(){
-
-        removeMenus();
-
-        const menu =
-            document.createElement(
-                "div"
-            );
-
-        menu.className =
-            "message-menu";
-
-        const button =
-            document.createElement(
-                "button"
-            );
-
-        button.textContent =
-            mine
-            ?
-            "🗑️ إلغاء الإرسال"
-            :
-            "🗑️ حذف لدي";
-
-        button.addEventListener(
-            "click",
-            async e => {
-
-                e.stopPropagation();
-
-                try{
-
-                    const messageRef =
-                        doc(
-                            db,
-                            "chats",
-                            chatID,
-                            "messages",
-                            id
-                        );
-
-                    if(mine){
-
-                        await deleteDoc(
-                            messageRef
-                        );
-
-                    }else{
-
-                        await updateDoc(
-
-                            messageRef,
-
-                            {
-
-                                deletedFor:
-                                    arrayUnion(
-                                        currentUser.uid
-                                    )
-
-                            }
-
-                        );
-
-                    }
-
-                    removeMenus();
-
-                }catch(error){
-
-                    console.error(
-                        "Delete error:",
-                        error
-                    );
-
-                    alert(
-                        "حدث خطأ أثناء حذف الرسالة"
-                    );
-
-                }
-
-            }
-        );
-
-        menu.appendChild(
-            button
-        );
-
-        element.appendChild(
-            menu
-        );
-
-    }
-
-}
-
-
-document.addEventListener(
-    "pointerdown",
-    e => {
-
-        if(
-            !e.target.closest(
-                ".message-menu"
-            )
-        ){
-
-            removeMenus();
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   المكالمة الصوتية
-========================================= */
-
-callButton.addEventListener(
-    "click",
-    async () => {
-
-        if(!currentUser){
-
-            alert(
-                "⚠️ يجب تسجيل الدخول أولاً"
-            );
-
-            return;
-
-        }
-
-        if(!friendUser){
-
-            alert(
-                "⚠️ لم يتم تحميل بيانات الصديق"
-            );
-
-            return;
-
-        }
+window.onRemoteStream =
+    stream => {
 
         try{
 
-            if(!callModule){
+            remoteAudio.srcObject =
+                stream;
 
-                callModule =
-                    await import(
-                        "./call.js"
-                    );
-
-            }
-
-            if(
-                typeof callModule.startCall !==
-                "function"
-            ){
-
-                throw new Error(
-                    "ملف call.js لا يحتوي على startCall()."
-                );
-
-            }
-
-            await callModule.startCall({
-
-                friendId:
-                    friendUser.uid,
-
-                friendName:
-                    friendUser.name,
-
-                friendPhoto:
-                    friendUser.photo
-
-            });
+            remoteAudio.play()
+                .catch(() => {});
 
         }catch(error){
 
             console.error(
-                "Call error:",
+                "Remote audio error:",
                 error
-            );
-
-            alert(
-                "❌ تعذر بدء المكالمة\n\n" +
-                (
-                    error?.message ||
-                    "حدث خطأ"
-                )
             );
 
         }
 
-    }
-);
+    };
 
 
-/* =========================================
-   الفيديو
-========================================= */
-
-videoButton.addEventListener(
-    "click",
+window.onCallConnected =
     () => {
 
-        alert(
-            "📹 مكالمة الفيديو قيد التطوير"
+        statusElement.textContent =
+            "● متصل";
+
+        statusElement.classList.remove(
+            "ended"
         );
 
-    }
-);
+    };
+
+
+window.onCallFailed =
+    () => {
+
+        statusElement.textContent =
+            "تعذر الاتصال";
+
+        statusElement.classList.add(
+            "ended"
+        );
+
+    };
+
+
+window.onCallEnded =
+    () => {
+
+        statusElement.textContent =
+            "انتهت المكالمة";
+
+        statusElement.classList.add(
+            "ended"
+        );
+
+        controls.classList.add(
+            "hidden"
+        );
+
+        incomingActions.classList.add(
+            "hidden"
+        );
+
+    };
 
 
 /* =========================================
-   تحميل نظام المكالمات
+   تحميل call.js
 ========================================= */
 
-async function loadCallSystem(){
+async function loadCallModule(){
 
     try{
 
         callModule =
-            await import(
-                "./call.js"
-            );
+            await import("./call.js");
 
         console.log(
-            "✅ Mecd Call system loaded"
+            "✅ call.js loaded"
         );
 
+
         if(
-            typeof callModule
-                .listenIncomingCalls ===
+            typeof callModule.startOutgoingCall !==
             "function"
         ){
 
-            await callModule
-                .listenIncomingCalls();
-
-            console.log(
-                "✅ Incoming calls listener started"
+            throw new Error(
+                "startOutgoingCall غير موجودة في call.js"
             );
+
+        }
+
+
+        if(
+            !callId
+        ){
+
+            throw new Error(
+                "لا يوجد callId في الرابط"
+            );
+
+        }
+
+
+        /*
+         * المكالمة الصادرة
+         */
+
+        if(mode === "outgoing"){
+
+            statusElement.innerHTML =
+                '<span class="loader"></span> جارٍ الاتصال...';
+
+            await callModule
+                .startOutgoingCall(
+                    callId
+                );
+
+        }
+
+        /*
+         * المكالمة الواردة
+         */
+
+        else{
+
+            if(
+                typeof callModule.watchIncomingCall ===
+                "function"
+            ){
+
+                await callModule
+                    .watchIncomingCall(
+                        callId
+                    );
+
+            }
 
         }
 
     }catch(error){
 
         console.error(
-            "Call system error:",
+            "call.js error:",
             error
+        );
+
+        showError(
+            "❌ " +
+            (
+                error?.message ||
+                "تعذر تشغيل المكالمة"
+            )
         );
 
     }
@@ -2065,72 +750,282 @@ async function loadCallSystem(){
 
 
 /* =========================================
-   الرجوع
+   كتم الميكروفون
 ========================================= */
 
-backButton.addEventListener(
+let muted = false;
+
+
+muteButton.addEventListener(
     "click",
     () => {
 
-        if(unsubscribeMessages){
+        const stream =
+            callModule?.getLocalStream?.();
 
-            unsubscribeMessages();
+        if(!stream){
 
-        }
-
-        if(unsubscribeFriendStatus){
-
-            unsubscribeFriendStatus();
-
-        }
-
-        stopPresence();
-
-        history.back();
-
-    }
-);
-
-
-/* =========================================
-   Visibility
-========================================= */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if(!currentUser)
             return;
 
-        if(
-            document.visibilityState ===
-            "visible"
-        ){
+        }
 
-            updateMyPresence(true);
+        const tracks =
+            stream.getAudioTracks();
 
-        }else{
+        if(!tracks.length){
 
-            updateMyPresence(false);
+            return;
 
         }
+
+        muted =
+            !muted;
+
+        tracks.forEach(
+            track => {
+
+                track.enabled =
+                    !muted;
+
+            }
+        );
+
+        muteButton.textContent =
+            muted
+            ? "🔇"
+            : "🎤";
+
+        muteButton.classList.toggle(
+            "off",
+            muted
+        );
 
     }
 );
 
 
 /* =========================================
-   إغلاق الصفحة
+   إنهاء المكالمة
 ========================================= */
 
-window.addEventListener(
-    "pagehide",
-    () => {
+async function finishCall(){
 
-        if(currentUser){
+    try{
 
-            updateMyPresence(false);
+        if(
+            callModule &&
+            typeof callModule.cleanupCall ===
+            "function"
+        ){
+
+            await callModule
+                .cleanupCall(
+                    callId
+                );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Finish call error:",
+            error
+        );
+
+    }
+
+    location.href =
+        "chat.html";
+
+}
+
+
+endButton.addEventListener(
+    "click",
+    finishCall
+);
+
+
+/* =========================================
+   رفض المكالمة
+========================================= */
+
+rejectButton.addEventListener(
+    "click",
+    async () => {
+
+        try{
+
+            if(
+                callModule &&
+                typeof callModule.endCall ===
+                "function"
+            ){
+
+                await callModule
+                    .endCall(
+                        callId
+                    );
+
+            }
+
+            if(
+                callModule &&
+                typeof callModule.clearIncomingCall ===
+                "function"
+            ){
+
+                await callModule
+                    .clearIncomingCall();
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "Reject error:",
+                error
+            );
+
+        }
+
+        location.href =
+            "chat.html";
+
+    }
+);
+
+
+/* =========================================
+   قبول المكالمة
+========================================= */
+
+acceptButton.addEventListener(
+    "click",
+    async () => {
+
+        acceptButton.disabled =
+            true;
+
+        statusElement.innerHTML =
+            '<span class="loader"></span> جاري الرد...';
+
+        try{
+
+            if(
+                !callModule ||
+                typeof callModule.acceptIncomingCall !==
+                "function"
+            ){
+
+                throw new Error(
+                    "acceptIncomingCall غير موجودة في call.js"
+                );
+
+            }
+
+
+            let accepted =
+                false;
+
+
+            /*
+             * ننتظر وصول Offer
+             */
+
+            for(
+                let i = 0;
+                i < 12;
+                i++
+            ){
+
+                try{
+
+                    await callModule
+                        .acceptIncomingCall(
+                            callId
+                        );
+
+                    accepted =
+                        true;
+
+                    break;
+
+                }catch(error){
+
+                    if(
+                        error?.message ===
+                        "لم يصل طلب الاتصال بعد"
+                    ){
+
+                        await new Promise(
+                            resolve =>
+                                setTimeout(
+                                    resolve,
+                                    500
+                                )
+                        );
+
+                        continue;
+
+                    }
+
+                    throw error;
+
+                }
+
+            }
+
+
+            if(!accepted){
+
+                throw new Error(
+                    "لم يصل طلب الاتصال بعد"
+                );
+
+            }
+
+
+            if(
+                typeof callModule
+                    .clearIncomingCall ===
+                "function"
+            ){
+
+                await callModule
+                    .clearIncomingCall();
+
+            }
+
+
+            incomingActions.classList.add(
+                "hidden"
+            );
+
+            controls.classList.remove(
+                "hidden"
+            );
+
+            statusElement.textContent =
+                "● متصل";
+
+        }catch(error){
+
+            console.error(
+                "Accept call error:",
+                error
+            );
+
+            acceptButton.disabled =
+                false;
+
+            showError(
+                "❌ " +
+                (
+                    error?.message ||
+                    "تعذر قبول المكالمة"
+                )
+            );
 
         }
 
@@ -2142,115 +1037,28 @@ window.addEventListener(
    تشغيل
 ========================================= */
 
-function init(){
-
-    onAuthStateChanged(
-        auth,
-        async user => {
-
-            if(!user){
-
-                stopPresence();
-
-                loading.textContent =
-                    "يجب تسجيل الدخول أولاً";
-
-                return;
-
-            }
-
-            currentUser =
-                user;
-
-            try{
-
-                /*
-                 * Presence
-                 */
-
-                startPresence();
+loadCallModule();
 
 
-                /*
-                 * FCM
-                 */
+/* =========================================
+   عند مغادرة الصفحة
+========================================= */
 
-                await enableNotifications();
+window.addEventListener(
+    "pagehide",
+    () => {
 
+        /*
+         * لا ننهي المكالمة تلقائياً
+         * هنا.
+         */
 
-                /*
-                 * الصديق
-                 */
+    }
+);
 
-                await loadFriend();
-
-
-                /*
-                 * الرسائل
-                 */
-
-                listenMessages();
-
-
-                /*
-                 * المكالمات
-                 */
-
-                await loadCallSystem();
-
-
-                /*
-                 * إظهار التطبيق
-                 */
-
-                loading.style.display =
-                    "none";
-
-                app.style.display =
-                    "flex";
-
-            }catch(error){
-
-                stopPresence();
-
-                console.error(
-                    error
-                );
-
-                loading.innerHTML =
-
-                    '<div style="text-align:center;padding:20px">' +
-
-                    '⚠️ تعذر فتح الدردشة<br>' +
-
-                    '<small style="color:#777">' +
-
-                    escapeHtml(
-                        error?.message ||
-                        "حدث خطأ"
-                    ) +
-
-                    '</small>' +
-
-                    '</div>';
-
-            }
-
-        }
-    );
-
-}
-
-
-init();
-
-</script>
-
-
-<script
-    type="module"
-    src="voice.js">
 </script>
 
 </body>
 </html>
+
+ملاحظة مهمة: في "chat.html" لا تستعمل "callModule.startCall()" إذا كنت تريد الاعتماد على نسخة "call.js" التي أرسلتها لي؛ لأن نسختك الحالية فيها "startCall()" لإنشاء المكالمة، بينما "call.html" يحتاج "startOutgoingCall()" لتشغيل المكالمة بعد فتح صفحة الاتصال. الكود أعلاه يستخدم الدالتين في المكان الصحيح.
