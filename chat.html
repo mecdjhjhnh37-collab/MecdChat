@@ -3,6 +3,7 @@
 
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
@@ -42,48 +43,69 @@ body{
     height:100vh;
     max-width:650px;
     margin:auto;
+
     display:flex;
     flex-direction:column;
 }
 
 header{
     height:75px;
+
     display:flex;
     align-items:center;
+
     gap:12px;
+
     padding:12px 15px;
+
     background:#050807;
-    border-bottom:1px solid rgba(255,255,255,.08);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+
     flex-shrink:0;
 }
 
 .back{
     width:45px;
     height:45px;
+
     border:0;
     border-radius:15px;
+
     background:#18231f;
+
     color:white;
+
     font-size:22px;
+
     cursor:pointer;
 }
 
 .avatar{
     width:48px;
     height:48px;
+
     border-radius:16px;
+
     background:#12352c;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     overflow:hidden;
+
     font-size:24px;
+
     flex-shrink:0;
 }
 
 .avatar img{
     width:100%;
     height:100%;
+
     object-fit:cover;
 }
 
@@ -95,6 +117,7 @@ header{
 .user-name{
     font-size:17px;
     font-weight:bold;
+
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -102,7 +125,9 @@ header{
 
 .user-status{
     font-size:12px;
+
     color:#777;
+
     margin-top:5px;
 }
 
@@ -113,17 +138,23 @@ header{
 .call-buttons{
     display:flex;
     gap:8px;
+
     flex-shrink:0;
 }
 
 .call-buttons button{
     width:42px;
     height:42px;
+
     border:0;
     border-radius:14px;
+
     background:#18231f;
+
     color:white;
+
     font-size:18px;
+
     cursor:pointer;
 }
 
@@ -133,65 +164,98 @@ header{
 
 .messages{
     flex:1;
+
     min-height:0;
+
     overflow-y:auto;
-    padding:20px 15px 150px;
+
+    padding:
+        20px
+        15px
+        150px;
+
     display:flex;
     flex-direction:column;
+
     gap:10px;
 }
 
 .empty{
     margin:auto;
+
     text-align:center;
+
     color:#72817c;
 }
 
 .message{
     max-width:78%;
+
     padding:12px 15px;
+
     border-radius:18px;
+
     position:relative;
+
     word-break:break-word;
 
     user-select:none;
+
     -webkit-user-select:none;
+
     -webkit-touch-callout:none;
 }
 
 .message.mine{
     align-self:flex-start;
+
     background:#00c96b;
+
     color:#00150e;
+
     border-bottom-left-radius:5px;
 }
 
 .message.other{
     align-self:flex-end;
+
     background:#18231f;
-    border:1px solid rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
     border-bottom-right-radius:5px;
 }
 
 .time{
     display:block;
+
     font-size:9px;
+
     opacity:.6;
+
     margin-top:5px;
 }
 
 .input-area{
     position:fixed;
+
     bottom:0;
+
     left:50%;
-    transform:translateX(-50%);
+
+    transform:
+        translateX(-50%);
 
     width:100%;
+
     max-width:650px;
 
     padding:10px;
 
     display:flex;
+
     gap:8px;
 
     background:#050807;
@@ -201,17 +265,23 @@ header{
 
 #messageInput{
     flex:1;
+
     min-width:0;
 
     padding:14px;
 
     border-radius:17px;
-    border:1px solid #27332f;
+
+    border:
+        1px solid
+        #27332f;
 
     background:#111916;
+
     color:white;
 
     outline:none;
+
     font-size:15px;
 }
 
@@ -221,10 +291,13 @@ header{
     height:50px;
 
     border:0;
+
     border-radius:16px;
 
     font-size:22px;
+
     cursor:pointer;
+
     flex-shrink:0;
 }
 
@@ -247,47 +320,63 @@ header{
     position:absolute;
 
     left:50%;
-    bottom:calc(100% + 8px);
 
-    transform:translateX(-50%);
+    bottom:
+        calc(100% + 8px);
+
+    transform:
+        translateX(-50%);
 
     width:max-content;
+
     min-width:150px;
-    max-width:calc(100vw - 30px);
+
+    max-width:
+        calc(100vw - 30px);
 
     padding:5px;
 
     background:#0b1512;
 
-    border:1px solid rgba(0,232,137,.18);
+    border:
+        1px solid
+        rgba(0,232,137,.18);
+
     border-radius:15px;
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,.55);
+        0 8px 25px
+        rgba(0,0,0,.55);
 
     z-index:99999;
 
-    animation:showMenu .18s ease;
+    animation:
+        showMenu .18s ease;
 }
 
 .message-menu button{
     width:100%;
+
     min-width:140px;
 
     padding:10px 14px;
 
     border:0;
+
     border-radius:11px;
 
     background:#18231f;
+
     color:white;
 
     font-size:13px;
+
     font-weight:bold;
 
     cursor:pointer;
 
     white-space:nowrap;
+
     text-align:center;
 }
 
@@ -295,12 +384,16 @@ header{
 
     from{
         opacity:0;
-        transform:translate(-50%,8px);
+
+        transform:
+            translate(-50%,8px);
     }
 
     to{
         opacity:1;
-        transform:translate(-50%,0);
+
+        transform:
+            translate(-50%,0);
     }
 
 }
@@ -397,6 +490,7 @@ header{
 
 </div>
 
+
 </header>
 
 
@@ -407,6 +501,7 @@ header{
 <div class="empty">
 
     💬
+
     <br>
 
     ابدأ المحادثة الآن
@@ -456,6 +551,7 @@ header{
    Firebase
 ========================================= */
 
+
 import {
 
     initializeApp
@@ -496,16 +592,17 @@ import {
 import {
 
     getMessaging,
-    getToken
+    getToken,
+    onMessage
 
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 
-
 /* =========================================
    Firebase Config
 ========================================= */
+
 
 const firebaseConfig = {
 
@@ -531,25 +628,33 @@ const firebaseConfig = {
 
 
 const firebaseApp =
-    initializeApp(firebaseConfig);
+    initializeApp(
+        firebaseConfig
+    );
 
 
 const auth =
-    getAuth(firebaseApp);
+    getAuth(
+        firebaseApp
+    );
 
 
 const db =
-    getFirestore(firebaseApp);
+    getFirestore(
+        firebaseApp
+    );
 
 
 const messaging =
-    getMessaging(firebaseApp);
-
+    getMessaging(
+        firebaseApp
+    );
 
 
 /* =========================================
    عناصر الصفحة
 ========================================= */
+
 
 const $ =
     id => document.getElementById(id);
@@ -599,10 +704,10 @@ const app =
     $("app");
 
 
-
 /* =========================================
    المتغيرات
 ========================================= */
+
 
 let currentUser =
     null;
@@ -632,18 +737,65 @@ let callModule =
     null;
 
 
+let notificationToken =
+    null;
+
+
+/* =========================================
+   حماية النص
+========================================= */
+
+
+function escapeHtml(value){
+
+    return String(value)
+
+        .replace(
+            /[&<>'"]/g,
+
+            c => ({
+
+                '&':'&amp;',
+
+                '<':'&lt;',
+
+                '>':'&gt;',
+
+                "'":'&#39;',
+
+                '"':'&quot;'
+
+            }[c])
+
+        );
+
+}
+
 
 /* =========================================
    تسجيل Service Worker
 ========================================= */
 
-if(
-    "serviceWorker" in navigator
-){
+
+async function registerMessagingServiceWorker(){
+
+    if(
+        !("serviceWorker" in navigator)
+    ){
+
+        console.log(
+            "❌ Service Worker غير مدعوم"
+        );
+
+        return null;
+
+    }
+
 
     try{
 
         const registration =
+
             await navigator
                 .serviceWorker
                 .register(
@@ -652,63 +804,104 @@ if(
 
 
         console.log(
-            "Mecd Service Worker جاهز:",
+            "✅ Firebase Messaging Service Worker جاهز",
             registration
         );
+
+
+        return registration;
 
 
     }catch(error){
 
         console.error(
-            "Service Worker error:",
+            "❌ Service Worker error:",
             error
         );
+
+
+        return null;
 
     }
 
 }
 
 
-
 /* =========================================
-   تفعيل الإشعارات
+   تشغيل الإشعارات
 ========================================= */
+
 
 async function enableNotifications(){
 
+    console.log(
+        "🔔 بدء تشغيل نظام الإشعارات..."
+    );
+
+
+    if(
+        !("Notification" in window)
+    ){
+
+        console.log(
+            "❌ المتصفح لا يدعم Notification API"
+        );
+
+        return null;
+
+    }
+
+
     try{
 
+        let permission =
+            Notification.permission;
+
+
         if(
-            !("Notification" in window)
+            permission ===
+            "default"
         ){
 
-            console.log(
-                "المتصفح لا يدعم الإشعارات"
-            );
-
-            return;
+            permission =
+                await Notification.requestPermission();
 
         }
 
 
-        const permission =
-            await Notification.requestPermission();
+        console.log(
+            "🔔 Notification permission:",
+            permission
+        );
 
 
         if(
-            permission !== "granted"
+            permission !==
+            "granted"
         ){
 
             console.log(
-                "الإشعارات غير مسموحة"
+                "❌ الإشعارات غير مسموحة"
             );
 
-            return;
+            return null;
+
+        }
+
+
+        const registration =
+            await registerMessagingServiceWorker();
+
+
+        if(!registration){
+
+            return null;
 
         }
 
 
         const token =
+
             await getToken(
 
                 messaging,
@@ -716,7 +909,10 @@ async function enableNotifications(){
                 {
 
                     vapidKey:
-                        "BG2QNrIS2QZhTBBWNf8HfWHCIcAEHZzNZkMp8StuwmT1y1OEPkcu2_yK00Y2aGRh1LyAEyyzLnSYbbhpq13u7EQ"
+                        "BG2QNrIS2QZhTBBWNf8HfWHCIcAEHZzNZkMp8StuwmT1y1OEPkcu2_yK00Y2aGRh1LyAEyyzLnSYbbhpq13u7EQ",
+
+                    serviceWorkerRegistration:
+                        registration
 
                 }
 
@@ -726,16 +922,20 @@ async function enableNotifications(){
         if(!token){
 
             console.log(
-                "لم يتم الحصول على FCM Token"
+                "❌ لم يتم الحصول على FCM Token"
             );
 
-            return;
+            return null;
 
         }
 
 
+        notificationToken =
+            token;
+
+
         console.log(
-            "FCM Token:",
+            "✅ FCM Token حصلنا عليه:",
             token
         );
 
@@ -753,14 +953,18 @@ async function enableNotifications(){
                 {
 
                     fcmToken:
-                        token
+                        token,
+
+                    notificationsEnabled:
+                        true,
+
+                    notificationUpdatedAt:
+                        serverTimestamp()
 
                 },
 
                 {
-
                     merge:true
-
                 }
 
             );
@@ -768,138 +972,174 @@ async function enableNotifications(){
         }
 
 
+        return token;
+
+
     }catch(error){
 
         console.error(
-            "Notification error:",
+            "❌ Notification error:",
             error
         );
+
+        return null;
 
     }
 
 }
 
 
-
 /* =========================================
-   🔔 اختبار إشعار مؤقت
+   استقبال إشعار أثناء فتح الصفحة
 ========================================= */
 
-async function testNotification(){
 
-    try{
+onMessage(
+
+    messaging,
+
+    payload => {
+
+        console.log(
+            "🔔 FCM message received:",
+            payload
+        );
+
+
+        const title =
+            payload.notification?.title ||
+            "Mecd Chat";
+
+
+        const body =
+            payload.notification?.body ||
+            "لديك رسالة جديدة";
+
+
+        /*
+         إشعار محلي فقط أثناء فتح الصفحة
+        */
 
         if(
-            !("Notification" in window)
-        ){
-
-            alert(
-                "❌ هذا المتصفح لا يدعم الإشعارات"
-            );
-
-            return;
-
-        }
-
-
-        if(
-            Notification.permission !==
+            "Notification" in window &&
+            Notification.permission ===
             "granted"
         ){
 
-            const permission =
-                await Notification.requestPermission();
+            try{
 
-
-            if(
-                permission !==
-                "granted"
-            ){
-
-                alert(
-                    "⚠️ الإشعارات غير مسموحة"
+                new Notification(
+                    title,
+                    {
+                        body:body,
+                        icon:"./icon-192.png"
+                    }
                 );
 
-                return;
+            }catch(error){
+
+                console.error(
+                    "Local notification error:",
+                    error
+                );
 
             }
 
         }
 
+    }
 
-        if(
-            "serviceWorker" in navigator
-        ){
-
-            const registration =
-                await navigator
-                    .serviceWorker
-                    .ready;
+);
 
 
-            await registration.showNotification(
-
-                "🔔 Mecd Chat - اختبار",
-
-                {
-
-                    body:
-                        "تم إرسال الرسالة بنجاح. إشعارات الهاتف تعمل.",
-
-                    icon:
-                        "./icon-192.png",
-
-                    badge:
-                        "./icon-192.png",
-
-                    tag:
-                        "mecd-chat-test",
-
-                    vibrate:[
-                        200,
-                        100,
-                        200
-                    ]
-
-                }
-
-            );
+/* =========================================
+   اختبار الإشعار المؤقت
+========================================= */
 
 
-            console.log(
-                "🔔 Test notification displayed"
-            );
+async function testNotificationAfterSend(){
+
+    console.log(
+        "🧪 بدء اختبار الإشعار بعد إرسال الرسالة"
+    );
 
 
-        }else{
+    if(
+        !("Notification" in window)
+    ){
 
-            new Notification(
+        alert(
+            "❌ المتصفح لا يدعم الإشعارات"
+        );
 
-                "🔔 Mecd Chat - اختبار",
+        return;
 
-                {
+    }
 
-                    body:
-                        "تم إرسال الرسالة بنجاح. إشعارات الهاتف تعمل."
 
-                }
+    const permission =
+        Notification.permission;
 
-            );
 
-        }
+    if(
+        permission !==
+        "granted"
+    ){
+
+        alert(
+
+            "❌ الإشعارات غير مفعلة\n\n" +
+
+            "الحالة الحالية: " +
+
+            permission
+
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        new Notification(
+
+            "🔔 Mecd Chat - اختبار",
+
+            {
+
+                body:
+                    "✅ وصل الإشعار التجريبي بعد إرسال الرسالة",
+
+                icon:
+                    "./icon-192.png",
+
+                tag:
+                    "mecd-chat-test"
+
+            }
+
+        );
+
+
+        console.log(
+            "✅ تم إرسال الإشعار التجريبي"
+        );
 
 
     }catch(error){
 
         console.error(
-            "Notification test error:",
+            "❌ فشل الإشعار التجريبي:",
             error
         );
 
 
         alert(
 
-            "❌ فشل اختبار الإشعار:\n\n" +
+            "❌ فشل إظهار الإشعار\n\n" +
+
             error.message
 
         );
@@ -909,58 +1149,10 @@ async function testNotification(){
 }
 
 
-
-/* =========================================
-   تحميل نظام المكالمات
-========================================= */
-
-async function loadCallSystem(){
-
-    try{
-
-        callModule =
-            await import(
-                "./call.js"
-            );
-
-
-        console.log(
-            "Mecd Call system loaded"
-        );
-
-
-        if(
-            typeof callModule.listenIncomingCalls ===
-            "function"
-        ){
-
-            await callModule
-                .listenIncomingCalls();
-
-
-            console.log(
-                "Incoming calls listener started"
-            );
-
-        }
-
-
-    }catch(error){
-
-        console.error(
-            "Call system error:",
-            error
-        );
-
-    }
-
-}
-
-
-
 /* =========================================
    إنشاء Chat ID
 ========================================= */
+
 
 function createChatID(a,b){
 
@@ -970,96 +1162,18 @@ function createChatID(a,b){
         b
 
     ]
+
     .sort()
+
     .join("_");
 
 }
 
 
-
-/* =========================================
-   إظهار التطبيق
-========================================= */
-
-function showApp(){
-
-    loading.style.display =
-        "none";
-
-
-    app.style.display =
-        "flex";
-
-}
-
-
-
-/* =========================================
-   الخطأ
-========================================= */
-
-function showError(error){
-
-    console.error(
-        "Mecd Chat error:",
-        error
-    );
-
-
-    loading.innerHTML =
-
-        '<div style="text-align:center;padding:20px">' +
-
-        '⚠️ تعذر فتح الدردشة<br>' +
-
-        '<small style="color:#777">' +
-
-        escapeHtml(
-
-            error?.message ||
-            "حدث خطأ"
-
-        ) +
-
-        '</small>' +
-
-        '</div>';
-
-}
-
-
-
-/* =========================================
-   حماية النص
-========================================= */
-
-function escapeHtml(value){
-
-    return String(value)
-
-        .replace(
-
-            /[&<>'"]/g,
-
-            c => ({
-
-                '&':'&amp;',
-                '<':'&lt;',
-                '>':'&gt;',
-                "'":'&#39;',
-                '"':'&quot;'
-
-            }[c])
-
-        );
-
-}
-
-
-
 /* =========================================
    Presence
 ========================================= */
+
 
 async function updateMyPresence(
     online=true
@@ -1090,9 +1204,7 @@ async function updateMyPresence(
             },
 
             {
-
                 merge:true
-
             }
 
         );
@@ -1107,7 +1219,6 @@ async function updateMyPresence(
     }
 
 }
-
 
 
 function startPresence(){
@@ -1147,7 +1258,6 @@ function startPresence(){
 }
 
 
-
 function stopPresence(){
 
     if(presenceInterval){
@@ -1171,10 +1281,10 @@ function stopPresence(){
 }
 
 
-
 /* =========================================
    حالة الصديق
 ========================================= */
+
 
 function listenFriendStatus(){
 
@@ -1191,11 +1301,9 @@ function listenFriendStatus(){
 
     const ref =
         doc(
-
             db,
             "users",
             friendUser.uid
-
         );
 
 
@@ -1206,18 +1314,14 @@ function listenFriendStatus(){
 
             snap => {
 
-                if(
-                    !snap.exists()
-                ){
+                if(!snap.exists()){
 
                     friendStatus.textContent =
                         "● غير متصل";
 
-
                     friendStatus.classList.remove(
                         "online"
                     );
-
 
                     return;
 
@@ -1234,34 +1338,22 @@ function listenFriendStatus(){
 
 
                 const online =
-
                     data.online === true &&
-
                     lastSeen > 0 &&
-
-                    Date.now() -
-                    lastSeen < 30000;
+                    Date.now() - lastSeen < 30000;
 
 
                 friendStatus.textContent =
-
                     online
-
                     ?
-
                     "● متصل"
-
                     :
-
                     "● غير متصل";
 
 
                 friendStatus.classList.toggle(
-
                     "online",
-
                     online
-
                 );
 
             },
@@ -1280,10 +1372,10 @@ function listenFriendStatus(){
 }
 
 
-
 /* =========================================
    تحميل الصديق
 ========================================= */
+
 
 async function loadFriend(){
 
@@ -1348,7 +1440,6 @@ async function loadFriend(){
 
 
     friendAvatar.innerHTML =
-
         friendUser.photo
 
         ?
@@ -1366,11 +1457,8 @@ async function loadFriend(){
 
     chatID =
         createChatID(
-
             currentUser.uid,
-
             friendUser.uid
-
         );
 
 
@@ -1397,11 +1485,8 @@ async function loadFriend(){
         {
 
             members:[
-
                 currentUser.uid,
-
                 friendUser.uid
-
             ],
 
             createdAt:
@@ -1410,9 +1495,7 @@ async function loadFriend(){
         },
 
         {
-
             merge:true
-
         }
 
     );
@@ -1423,10 +1506,10 @@ async function loadFriend(){
 }
 
 
-
 /* =========================================
    عرض الرسائل
 ========================================= */
+
 
 function renderMessages(snap){
 
@@ -1447,7 +1530,6 @@ function renderMessages(snap){
         messages.scrollHeight -
         messages.scrollTop -
         messages.clientHeight < 120;
-
 
 
     function createMessageElement(
@@ -1481,7 +1563,6 @@ function renderMessages(snap){
 
 
         box.className =
-
             "message " +
 
             (
@@ -1498,7 +1579,6 @@ function renderMessages(snap){
                 "other"
 
             );
-
 
 
         if(
@@ -1561,16 +1641,13 @@ function renderMessages(snap){
             box.appendChild(
 
                 document.createTextNode(
-
                     data.text ||
                     ""
-
                 )
 
             );
 
         }
-
 
 
         const time =
@@ -1592,19 +1669,14 @@ function renderMessages(snap){
                 data.createdAt
                     .toDate()
                     .toLocaleTimeString(
-
                         "ar",
-
                         {
-
                             hour:
                                 "2-digit",
 
                             minute:
                                 "2-digit"
-
                         }
-
                     );
 
         }
@@ -1632,7 +1704,6 @@ function renderMessages(snap){
     }
 
 
-
     snap.docChanges()
         .forEach(
 
@@ -1646,7 +1717,6 @@ function renderMessages(snap){
                     change.doc.data();
 
 
-
                 if(
                     change.type ===
                     "added"
@@ -1654,10 +1724,8 @@ function renderMessages(snap){
 
                     const element =
                         createMessageElement(
-
                             id,
                             data
-
                         );
 
 
@@ -1676,7 +1744,6 @@ function renderMessages(snap){
                     }
 
                 }
-
 
 
                 else if(
@@ -1719,10 +1786,8 @@ function renderMessages(snap){
 
                     const newElement =
                         createMessageElement(
-
                             id,
                             data
-
                         );
 
 
@@ -1753,7 +1818,6 @@ function renderMessages(snap){
                 }
 
 
-
                 else if(
                     change.type ===
                     "removed"
@@ -1778,7 +1842,6 @@ function renderMessages(snap){
             }
 
         );
-
 
 
     const realMessages =
@@ -1830,7 +1893,6 @@ function renderMessages(snap){
     }
 
 
-
     if(nearBottom){
 
         requestAnimationFrame(
@@ -1849,10 +1911,10 @@ function renderMessages(snap){
 }
 
 
-
 /* =========================================
    استقبال الرسائل
 ========================================= */
+
 
 function listenMessages(){
 
@@ -1865,13 +1927,10 @@ function listenMessages(){
 
     const ref =
         collection(
-
             db,
-
             "chats",
             chatID,
             "messages"
-
         );
 
 
@@ -1909,10 +1968,10 @@ function listenMessages(){
 }
 
 
-
 /* =========================================
    إرسال رسالة
 ========================================= */
+
 
 async function sendMessage(){
 
@@ -1923,11 +1982,8 @@ async function sendMessage(){
     if(
 
         !text ||
-
         !currentUser ||
-
         !friendUser ||
-
         !chatID
 
     ){
@@ -1946,13 +2002,10 @@ async function sendMessage(){
         await addDoc(
 
             collection(
-
                 db,
-
                 "chats",
                 chatID,
                 "messages"
-
             ),
 
             {
@@ -1984,13 +2037,13 @@ async function sendMessage(){
         messageInput.focus();
 
 
+        /*
+         =====================================
+         🧪 اختبار الإشعار المؤقت
+         =====================================
+        */
 
-        /* =====================================
-           🔔 اختبار الإشعار المؤقت
-        ===================================== */
-
-        await testNotification();
-
+        await testNotificationAfterSend();
 
 
     }catch(error){
@@ -2002,7 +2055,8 @@ async function sendMessage(){
 
 
         alert(
-            "حدث خطأ أثناء إرسال الرسالة"
+            "حدث خطأ أثناء إرسال الرسالة\n\n" +
+            error.message
         );
 
     }
@@ -2014,6 +2068,10 @@ async function sendMessage(){
 }
 
 
+/* =========================================
+   زر إرسال الرسالة
+========================================= */
+
 
 sendButton.addEventListener(
 
@@ -2024,6 +2082,10 @@ sendButton.addEventListener(
 );
 
 
+/* =========================================
+   Enter
+========================================= */
+
 
 messageInput.addEventListener(
 
@@ -2031,7 +2093,10 @@ messageInput.addEventListener(
 
     e => {
 
-        if(e.key === "Enter"){
+        if(
+            e.key ===
+            "Enter"
+        ){
 
             e.preventDefault();
 
@@ -2044,10 +2109,10 @@ messageInput.addEventListener(
 );
 
 
-
 /* =========================================
    قوائم الرسائل
 ========================================= */
+
 
 function removeMenus(){
 
@@ -2056,14 +2121,11 @@ function removeMenus(){
             ".message-menu"
         )
         .forEach(
-
             menu =>
                 menu.remove()
-
         );
 
 }
-
 
 
 function addMessageActions(
@@ -2074,7 +2136,6 @@ function addMessageActions(
 
     let timer =
         null;
-
 
 
     const cancel = () => {
@@ -2093,7 +2154,6 @@ function addMessageActions(
     };
 
 
-
     element.addEventListener(
 
         "pointerdown",
@@ -2101,11 +2161,9 @@ function addMessageActions(
         e => {
 
             if(
-
                 e.target.closest(
                     ".message-menu"
                 )
-
             ){
 
                 return;
@@ -2130,7 +2188,6 @@ function addMessageActions(
     );
 
 
-
     element.addEventListener(
         "pointerup",
         cancel
@@ -2149,7 +2206,6 @@ function addMessageActions(
     );
 
 
-
     element.addEventListener(
 
         "contextmenu",
@@ -2163,7 +2219,6 @@ function addMessageActions(
         }
 
     );
-
 
 
     function showDeleteMenu(){
@@ -2200,7 +2255,6 @@ function addMessageActions(
             "🗑️ حذف لدي";
 
 
-
         button.addEventListener(
 
             "click",
@@ -2218,13 +2272,14 @@ function addMessageActions(
                             db,
 
                             "chats",
+
                             chatID,
 
                             "messages",
+
                             id
 
                         );
-
 
 
                     if(mine){
@@ -2289,7 +2344,6 @@ function addMessageActions(
 }
 
 
-
 document.addEventListener(
 
     "pointerdown",
@@ -2297,11 +2351,9 @@ document.addEventListener(
     e => {
 
         if(
-
             !e.target.closest(
                 ".message-menu"
             )
-
         ){
 
             removeMenus();
@@ -2313,10 +2365,10 @@ document.addEventListener(
 );
 
 
-
 /* =========================================
-   المكالمة الصوتية
+   زر المكالمة الصوتية
 ========================================= */
+
 
 callButton.addEventListener(
 
@@ -2360,7 +2412,8 @@ callButton.addEventListener(
 
             if(
 
-                typeof callModule.startCall !==
+                typeof
+                callModule.startCall !==
                 "function"
 
             ){
@@ -2412,10 +2465,10 @@ callButton.addEventListener(
 );
 
 
-
 /* =========================================
    فيديو
 ========================================= */
+
 
 videoButton.addEventListener(
 
@@ -2432,10 +2485,61 @@ videoButton.addEventListener(
 );
 
 
+/* =========================================
+   تحميل نظام المكالمات
+========================================= */
+
+
+async function loadCallSystem(){
+
+    try{
+
+        callModule =
+            await import(
+                "./call.js"
+            );
+
+
+        console.log(
+            "✅ Mecd Call system loaded"
+        );
+
+
+        if(
+
+            typeof
+            callModule.listenIncomingCalls ===
+            "function"
+
+        ){
+
+            await
+                callModule
+                    .listenIncomingCalls();
+
+
+            console.log(
+                "✅ Incoming calls listener started"
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "Call system error:",
+            error
+        );
+
+    }
+
+}
+
 
 /* =========================================
    الرجوع
 ========================================= */
+
 
 backButton.addEventListener(
 
@@ -2467,10 +2571,10 @@ backButton.addEventListener(
 );
 
 
-
 /* =========================================
    Visibility
 ========================================= */
+
 
 document.addEventListener(
 
@@ -2483,10 +2587,8 @@ document.addEventListener(
 
 
         if(
-
             document.visibilityState ===
             "visible"
-
         ){
 
             updateMyPresence(true);
@@ -2502,10 +2604,10 @@ document.addEventListener(
 );
 
 
-
 /* =========================================
    عند مغادرة الصفحة
 ========================================= */
+
 
 window.addEventListener(
 
@@ -2524,10 +2626,10 @@ window.addEventListener(
 );
 
 
-
 /* =========================================
    تشغيل التطبيق
 ========================================= */
+
 
 function init(){
 
@@ -2557,51 +2659,81 @@ function init(){
 
             try{
 
+                /*
+                 Presence
+                */
+
                 startPresence();
 
 
                 /*
-                 تفعيل FCM
+                 الإشعارات
                 */
 
-                await enableNotifications();
+                await
+                    enableNotifications();
 
 
                 /*
                  تحميل الصديق
                 */
 
-                await loadFriend();
+                await
+                    loadFriend();
 
 
                 /*
-                 تشغيل الرسائل
+                 الرسائل
                 */
 
                 listenMessages();
 
 
                 /*
-                 تشغيل المكالمات
+                 المكالمات
                 */
 
-                await loadCallSystem();
+                await
+                    loadCallSystem();
 
 
                 /*
                  إظهار التطبيق
                 */
 
-                showApp();
+                loading.style.display =
+                    "none";
+
+
+                app.style.display =
+                    "flex";
 
 
             }catch(error){
 
                 stopPresence();
 
-                showError(
+                console.error(
                     error
                 );
+
+
+                loading.innerHTML =
+
+                    '<div style="text-align:center;padding:20px">' +
+
+                    '⚠️ تعذر فتح الدردشة<br>' +
+
+                    '<small style="color:#777">' +
+
+                    escapeHtml(
+                        error?.message ||
+                        "حدث خطأ"
+                    ) +
+
+                    '</small>' +
+
+                    '</div>';
 
             }
 
@@ -2618,10 +2750,10 @@ init();
 </script>
 
 
-
 <!-- =========================================
      نظام الرسائل الصوتية
 ========================================= -->
+
 
 <script
     type="module"
