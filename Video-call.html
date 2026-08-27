@@ -1,582 +1,104 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0,
-maximum-scale=1.0,
-user-scalable=no">
+<title>Video Call</title>
 
-<meta name="theme-color" content="#050807">
-
-<title>Mecd Chat - مكالمة فيديو</title>
-
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
 
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
--webkit-tap-highlight-color:transparent;
-}
-
-html,
 body{
-
-width:100%;
-height:100%;
-overflow:hidden;
-
+    margin:0;
+    background:#050807;
+    color:white;
+    font-family:Arial;
+    text-align:center;
 }
 
-body{
-
-font-family:
-Arial,
-Tahoma,
-sans-serif;
-
-background:#020504;
-
-color:white;
-
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:20px;
 }
 
-
-.video-app{
-
-position:relative;
-
-width:100%;
-
-height:100dvh;
-
-max-width:650px;
-
-margin:auto;
-
-background:#020504;
-
-overflow:hidden;
-
+video{
+    width:100%;
+    height:350px;
+    background:black;
+    border-radius:20px;
+    border:2px solid #00e676;
 }
 
-
-/* الفيديو البعيد */
-
-.remote-video{
-
-position:absolute;
-
-inset:0;
-
-width:100%;
-
-height:100%;
-
-object-fit:cover;
-
-background:#07110f;
-
-z-index:1;
-
+button{
+    width:100%;
+    padding:15px;
+    margin-top:15px;
+    border:0;
+    border-radius:15px;
+    background:#00e676;
+    font-size:18px;
 }
 
-
-/* انتظار */
-
-.remote-placeholder{
-
-position:absolute;
-
-inset:0;
-
-display:flex;
-
-flex-direction:column;
-
-justify-content:center;
-
-align-items:center;
-
-background:
-radial-gradient(
-circle,
-#123d35,
-#020504
-);
-
-z-index:2;
-
+#id{
+    margin-top:15px;
+    color:#00e676;
+    word-break:break-all;
 }
-
-
-.remote-avatar{
-
-width:85px;
-
-height:85px;
-
-border-radius:25px;
-
-background:#18231f;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-overflow:hidden;
-
-font-size:35px;
-
-}
-
-
-.remote-avatar img{
-
-width:100%;
-
-height:100%;
-
-object-fit:cover;
-
-}
-
-
-.remote-name{
-
-margin-top:12px;
-
-font-size:18px;
-
-font-weight:bold;
-
-}
-
-
-.call-status{
-
-margin-top:5px;
-
-color:#00e889;
-
-font-size:13px;
-
-}
-
-
-/* الشريط العلوي */
-
-
-.top-bar{
-
-position:absolute;
-
-top:0;
-
-left:0;
-
-right:0;
-
-height:65px;
-
-display:flex;
-
-align-items:center;
-
-gap:10px;
-
-padding:10px;
-
-background:
-linear-gradient(
-rgba(0,0,0,.7),
-transparent
-);
-
-z-index:20;
-
-}
-
-
-.back-button{
-
-width:40px;
-
-height:40px;
-
-border:0;
-
-border-radius:12px;
-
-background:#18231f;
-
-color:white;
-
-font-size:20px;
-
-}
-
-
-.top-info{
-
-flex:1;
-
-}
-
-
-.top-name{
-
-font-size:16px;
-
-font-weight:bold;
-
-}
-
-
-.top-status{
-
-font-size:12px;
-
-color:#00e889;
-
-}
-
-
-
-/* فيديو المستخدم */
-
-
-.local-video{
-
-position:absolute;
-
-left:12px;
-
-bottom:90px;
-
-width:95px;
-
-height:130px;
-
-object-fit:cover;
-
-border-radius:15px;
-
-border:2px solid #00e889;
-
-background:#111;
-
-z-index:25;
-
-}
-
-
-/* التحكم */
-
-
-.controls{
-
-position:absolute;
-
-bottom:15px;
-
-left:0;
-
-right:0;
-
-height:60px;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-gap:12px;
-
-z-index:40;
-
-}
-
-
-.control-button,
-.end-button{
-
-border:0;
-
-color:white;
-
-cursor:pointer;
-
-}
-
-
-.control-button{
-
-width:50px;
-
-height:50px;
-
-border-radius:16px;
-
-background:#18231f;
-
-font-size:20px;
-
-}
-
-
-.end-button{
-
-width:55px;
-
-height:55px;
-
-border-radius:20px;
-
-background:#e83f3f;
-
-font-size:22px;
-
-}
-
-
-
-/* تحميل */
-
-
-.loading{
-
-position:fixed;
-
-inset:0;
-
-background:#020504;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-z-index:100;
-
-}
-
-
-.hidden{
-
-display:none!important;
-
-}
-
-
-
-/* الخطأ */
-
-
-.error-box{
-
-position:absolute;
-
-left:15px;
-
-right:15px;
-
-bottom:90px;
-
-background:#4b2020;
-
-padding:12px;
-
-border-radius:14px;
-
-text-align:center;
-
-font-size:13px;
-
-z-index:60;
-
-}
-
 
 </style>
 
 </head>
 
 
-
 <body>
 
+<div class="container">
 
-<div id="loading"
-class="loading">
+<h1>📞 مكالمة فيديو</h1>
 
-جارٍ تشغيل مكالمة الفيديو...
 
+<video id="myVideo" autoplay muted playsinline></video>
+
+<video id="remoteVideo" autoplay playsinline></video>
+
+
+<div id="id">
+جاري إنشاء المعرف...
 </div>
 
 
-
-<main id="videoApp"
-class="video-app">
-
-
-
-<video id="remoteVideo"
-class="remote-video"
-autoplay
-playsinline>
-</video>
-
-
-
-<div id="remotePlaceholder"
-class="remote-placeholder">
-
-
-<div id="remoteAvatar"
-class="remote-avatar">
-
-👤
-
-</div>
-
-
-<div id="remoteName"
-class="remote-name">
-
-جارٍ التحميل...
-
-</div>
-
-
-<div id="callStatus"
-class="call-status">
-
-جارٍ الاتصال...
-
-</div>
-
-
-</div>
-
-
-
-
-
-<div class="top-bar">
-
-
-<button id="backButton"
-class="back-button">
-
-←
-
+<button onclick="createCall()">
+إنشاء مكالمة
 </button>
 
 
-
-<div class="top-info">
-
-<div id="topName"
-class="top-name">
-
-جارٍ الاتصال...
-
-</div>
-
-
-<div id="topStatus"
-class="top-status">
-
-جارٍ الاتصال...
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<video id="localVideo"
-class="local-video"
-autoplay
-muted
-playsinline>
-</video>
-
-
-
-
-<div id="errorBox"
-class="error-box hidden">
-
-</div>
-
-
-
-
-
-<div class="controls">
-
-
-<button id="muteButton"
-class="control-button">
-
-🎤
-
+<button onclick="joinCall()">
+انضمام
 </button>
 
 
+<input id="callId"
+placeholder="ضع كود الاتصال"
+style="
+width:100%;
+padding:15px;
+margin-top:15px;
+border-radius:15px;
+">
 
-<button id="cameraButton"
-class="control-button">
 
-📹
-
-</button>
-
-
-
-<button id="endButton"
-class="end-button">
-
-☎
-
+<button onclick="endCall()">
+إنهاء المكالمة
 </button>
 
 
 </div>
 
 
-
-</main>
-
-
-
-
-
-<script
-type="module"
-src="./Video-call.js?v=4">
-
-</script>
-
+<script src="video-call.js"></script>
 
 </body>
-
 </html>
