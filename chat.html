@@ -449,6 +449,63 @@ const db =
 const messaging =
     getMessaging(firebaseApp);
 
+async function enableNotifications() {
+
+    try {
+
+        const permission =
+            await Notification.requestPermission();
+
+        if (permission !== "granted") {
+            console.log("الإشعارات غير مسموحة");
+            return;
+        }
+
+        const token =
+            await getToken(
+                messaging,
+                {
+                    vapidKey:
+                        "BG2QNrIS2QZhTBBWNf8HfWHCIcAEHZzNZkMp8StuwmT1y1OEPkcu2_yK00Y2aGRh1LyAEyyzLnSYbbhpq13u7EQ"
+                }
+            );
+
+        if (!token) {
+            console.log("لم يتم الحصول على FCM Token");
+            return;
+        }
+
+        console.log("FCM Token:", token);
+
+        if (currentUser) {
+
+            await setDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                ),
+                {
+                    fcmToken: token
+                },
+                {
+                    merge: true
+                }
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Notification error:",
+            error
+        );
+
+    }
+
+}
+
 /* =========================================
    عناصر الصفحة
 ========================================= */
