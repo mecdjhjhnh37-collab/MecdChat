@@ -2,17 +2,13 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <meta name="theme-color" content="#050807">
 
-<title>Mecd Video Call</title>
+<title>Video Call - Mecd Chat</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -20,411 +16,200 @@ padding:0;
 }
 
 body{
-
 height:100vh;
-
 font-family:Arial,Tahoma,sans-serif;
-
 background:
-
-radial-gradient(
-circle at top,
-#123d35,
-transparent 40%
-),
-
-linear-gradient(
-180deg,
-#07110f,
-#020504
-);
-
+radial-gradient(circle at top,#123d35,transparent 40%),
+linear-gradient(180deg,#07110f,#020504);
 color:white;
-
 overflow:hidden;
-
 }
 
-
-.app{
-
+.video-app{
 height:100vh;
-
-max-width:900px;
-
+max-width:650px;
 margin:auto;
-
-display:flex;
-
-flex-direction:column;
-
+position:relative;
+background:#020504;
+overflow:hidden;
 }
 
+#remoteVideo{
+width:100%;
+height:100%;
+object-fit:cover;
+background:#020504;
+}
 
-header{
+#localVideo{
+position:absolute;
+top:20px;
+right:20px;
+width:125px;
+height:175px;
+object-fit:cover;
+border-radius:18px;
+background:#111916;
+border:2px solid rgba(255,255,255,.2);
+z-index:5;
+}
 
-height:70px;
-
+.top-bar{
+position:absolute;
+top:0;
+left:0;
+right:0;
+height:75px;
 display:flex;
-
 align-items:center;
-
-gap:12px;
-
 padding:12px 15px;
-
-background:#050807;
-
-border-bottom:1px solid rgba(255,255,255,.08);
-
+background:linear-gradient(
+180deg,
+rgba(0,0,0,.65),
+transparent
+);
+z-index:10;
 }
 
-
-.back{
-
-width:45px;
-
-height:45px;
-
-border:0;
-
-border-radius:15px;
-
-background:#18231f;
-
-color:white;
-
-font-size:22px;
-
-cursor:pointer;
-
-}
-
-
-.title{
-
-font-size:18px;
-
-font-weight:bold;
-
+.user-info{
 flex:1;
-
 }
 
+.user-name{
+font-size:17px;
+font-weight:bold;
+}
 
 .status{
-
-font-size:13px;
-
-color:#777;
-
+font-size:12px;
+color:#aaa;
+margin-top:5px;
 }
 
-
-.status.online{
-
+.status.connected{
 color:#00e889;
-
 }
-
-
-/* الفيديو */
-
-.video-area{
-
-flex:1;
-
-position:relative;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-padding:15px;
-
-}
-
-
-.remote-video{
-
-width:100%;
-
-height:100%;
-
-background:#000;
-
-border-radius:25px;
-
-object-fit:cover;
-
-}
-
-
-.local-video{
-
-position:absolute;
-
-bottom:30px;
-
-right:30px;
-
-width:170px;
-
-height:230px;
-
-background:#111;
-
-border-radius:20px;
-
-object-fit:cover;
-
-border:2px solid #00e889;
-
-}
-
-
-/* أزرار التحكم */
 
 .controls{
-
-height:90px;
-
+position:absolute;
+bottom:30px;
+left:0;
+right:0;
 display:flex;
-
-align-items:center;
-
 justify-content:center;
-
 gap:15px;
-
-background:#050807;
-
+z-index:20;
 }
 
-
-.control-btn{
-
-width:60px;
-
-height:60px;
-
+.control{
+width:58px;
+height:58px;
 border:0;
-
-border-radius:20px;
-
+border-radius:50%;
 background:#18231f;
-
 color:white;
-
-font-size:25px;
-
+font-size:22px;
 cursor:pointer;
-
 }
 
-
-.control-btn:hover{
-
-background:#24352f;
-
+.control.off{
+background:#303a36;
 }
-
 
 .end-call{
-
-background:#e80045;
-
+background:#ff4545;
 }
-
-
-.end-call:hover{
-
-background:#ff155c;
-
-}
-
-
-.muted{
-
-background:#00e889;
-
-color:#00150e;
-
-}
-
 
 #loading{
-
-position:fixed;
-
+position:absolute;
 inset:0;
-
 display:flex;
-
 align-items:center;
-
 justify-content:center;
-
 background:#020504;
-
-z-index:999;
-
+z-index:100;
 font-size:18px;
-
 }
 
-
-@media(max-width:600px){
-
-.local-video{
-
-width:120px;
-
-height:170px;
-
-right:15px;
-
-bottom:20px;
-
+.hidden{
+display:none !important;
 }
-
-}
-
 </style>
 
 </head>
 
-
 <body>
 
+<div class="video-app">
 
 <div id="loading">
-
-جارٍ تجهيز الاتصال...
-
+جارٍ تشغيل مكالمة الفيديو...
 </div>
-
-
-<main class="app" id="app" style="display:none">
-
-
-<header>
-
-
-<button class="back" id="backButton">
-
-→
-
-</button>
-
-
-<div class="title">
-
-📹 مكالمة فيديو
-
-</div>
-
-
-<div class="status" id="callStatus">
-
-غير متصل
-
-</div>
-
-
-</header>
-
-
-
-<div class="video-area">
-
 
 <video
-
 id="remoteVideo"
-
-class="remote-video"
-
 autoplay
-
 playsinline>
-
 </video>
-
-
 
 <video
-
 id="localVideo"
-
-class="local-video"
-
 autoplay
-
 muted
-
 playsinline>
-
 </video>
 
+<div class="top-bar">
+
+<div class="user-info">
+
+<div
+id="friendName"
+class="user-name">
+جاري الاتصال...
+</div>
+
+<div
+id="callStatus"
+class="status">
+● جاري الاتصال
+</div>
 
 </div>
 
-
+</div>
 
 <div class="controls">
 
-
 <button
-
-id="micButton"
-
-class="control-btn">
-
-🎤
-
-</button>
-
-
-
-<button
-
 id="cameraButton"
-
-class="control-btn">
-
-📷
-
+class="control"
+type="button">
+📹
 </button>
-
-
 
 <button
-
-id="endButton"
-
-class="control-btn end-call">
-
-📞
-
+id="micButton"
+class="control"
+type="button">
+🎤
 </button>
 
+<button
+id="endButton"
+class="control end-call"
+type="button">
+📞
+</button>
 
 </div>
 
+</div>
 
-</main>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-
-<script type="module" src="Video-call.js"></script>
-
+<script
+type="module"
+src="video-call.js">
+</script>
 
 </body>
-
 </html>
