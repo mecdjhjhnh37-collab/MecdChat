@@ -1475,10 +1475,8 @@ function createCallMessageElement(
     icon.className =
         "call-icon";
 
-   icon.textContent =
-    data.callType === "video"
-    ? "📹"
-    : "📞"; 
+    icon.textContent =
+        "📞";
 
     const info =
         document.createElement("div");
@@ -2582,49 +2580,9 @@ function init(){
 
                 await loadFriend();
 
-listenMessages();
+                listenMessages();
 
-
-// ============================================================
-// تشغيل نظام استقبال المكالمات
-// ============================================================
-
-try{
-
-    if(!callModule){
-
-        callModule =
-            await import(
-                "./call.js"
-            );
-
-    }
-
-
-    if(
-        typeof callModule.listenIncomingCalls ===
-        "function"
-    ){
-
-        await callModule.listenIncomingCalls();
-
-        console.log(
-            "📞 نظام استقبال المكالمات جاهز"
-        );
-
-    }
-
-}catch(error){
-
-    console.error(
-        "❌ Incoming call system error:",
-        error
-    );
-
-}
-
-
-showApp();
+                showApp();
 
             }catch(error){
 
