@@ -2521,7 +2521,8 @@ function setFriendActivity(
             "🎤 يسجل صوت...";
 
         friendStatus.classList.add(
-            "typing"
+        document.getElementById("recordingIndicator").style.display = "none";    "typing"
+      
         );
 
         return;
@@ -2538,6 +2539,7 @@ function setFriendActivity(
 
         friendStatus.classList.add(
             "typing"
+              document.getElementById("typingIndicator").style.display = "none";
         );
 
     }
