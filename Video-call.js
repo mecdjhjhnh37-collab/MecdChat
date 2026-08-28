@@ -5,14 +5,12 @@
 
 import {
     initializeApp
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
     getAuth,
     onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
     getFirestore,
@@ -24,8 +22,7 @@ import {
     addDoc,
     onSnapshot,
     serverTimestamp
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // ============================================================
@@ -54,7 +51,6 @@ const firebaseConfig = {
 
 };
 
-
 const firebaseApp =
     initializeApp(firebaseConfig);
 
@@ -70,12 +66,7 @@ const db =
 // ============================================================
 
 const $ =
-    id =>
-        document.getElementById(id);
-
-
-const loading =
-    $("loading");
+    id => document.getElementById(id);
 
 const remoteVideo =
     $("remoteVideo");
@@ -116,6 +107,9 @@ const endButton =
 const backButton =
     $("backButton");
 
+const loading =
+    $("loading");
+
 const errorBox =
     $("errorBox");
 
@@ -124,34 +118,29 @@ const errorMessage =
 
 
 // ============================================================
-// المتغيرات
+// الحالة
 // ============================================================
 
 let currentUser = null;
-
 let friendUser = null;
 
 let callId = null;
 
 let peerConnection = null;
-
 let localStream = null;
 
 let unsubscribeCall = null;
-
 let unsubscribeCandidates = null;
 
 let ended = false;
 
 let microphoneEnabled = true;
-
 let cameraEnabled = true;
 
+let callerId = null;
+
 const pendingCandidates = [];
-
-const addedCandidateIds = new Set();
-
-let cachedCallerId = null;
+const addedCandidates = new Set();
 
 
 // ============================================================
@@ -178,106 +167,61 @@ const rtcConfiguration = {
 
 
 // ============================================================
-// الرابط
-// ============================================================
-
-const params =
-    new URLSearchParams(
-        window.location.search
-    );
-
-
-const friendId =
-    params.get("friend");
-
-
-const incomingCallId =
-    params.get("call");
-
-
-// ============================================================
-// خطأ
-// ============================================================
-
-function showError(message){
-
-    console.error(
-        "Video Call:",
-        message
-    );
-
-    loading.classList.add(
-        "hidden"
-    );
-
-    errorMessage.textContent =
-        message;
-
-    errorBox.classList.remove(
-        "hidden"
-    );
-
-    setStatus(
-        "تعذر الاتصال"
-    );
-
-}
-
-
-// ============================================================
 // الحالة
 // ============================================================
 
 function setStatus(text){
 
-    if(callStatus){
+    if(callStatus)
+        callStatus.textContent = text;
 
-        callStatus.textContent =
-            text;
-
-    }
-
-    if(topStatus){
-
-        topStatus.textContent =
-            text;
-
-    }
+    if(topStatus)
+        topStatus.textContent = text;
 
 }
 
 
 // ============================================================
-// اسم المستخدم
+// HTML
+// ============================================================
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(
+            /[&<>'"]/g,
+            c => ({
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                "'":"&#39;",
+                '"':"&quot;"
+            }[c])
+        );
+
+}
+
+
+// ============================================================
+// بيانات الصديق
 // ============================================================
 
 function setFriendUI(){
 
-    if(!friendUser){
-
+    if(!friendUser)
         return;
-
-    }
 
     const name =
         friendUser.name ||
         "مستخدم Mecd";
 
-
-    topName.textContent =
-        name;
-
-    callName.textContent =
-        name;
-
-    remotePlaceholderName.textContent =
-        name;
-
+    topName.textContent = name;
+    callName.textContent = name;
+    remotePlaceholderName.textContent = name;
 
     if(friendUser.photo){
 
         remoteAvatar.innerHTML =
-
             '<img src="' +
             escapeHtml(friendUser.photo) +
             '" alt="صورة الحساب">';
@@ -288,56 +232,19 @@ function setFriendUI(){
 
 
 // ============================================================
-// حماية HTML
+// تحميل الصديق
 // ============================================================
 
-function escapeHtml(value){
-
-    return String(value)
-
-        .replace(
-            /[&<>'"]/g,
-
-            c => ({
-
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                "'":"&#39;",
-                '"':"&quot;"
-
-            }[c])
-
-        );
-
-}
-
-
-// ============================================================
-// تحميل بيانات الصديق
-// ============================================================
-
-async function loadFriend(){
-
-    if(!friendId){
-
-        throw new Error(
-            "لم يتم تحديد الصديق"
-        );
-
-    }
+async function loadFriend(id){
 
     const snap =
         await getDoc(
-
             doc(
                 db,
                 "users",
-                friendId
+                id
             )
-
         );
-
 
     if(!snap.exists()){
 
@@ -347,15 +254,12 @@ async function loadFriend(){
 
     }
 
-
     const data =
         snap.data();
 
-
     friendUser = {
 
-        uid:
-            friendId,
+        uid:id,
 
         name:
             data.name ||
@@ -367,24 +271,19 @@ async function loadFriend(){
 
     };
 
-
     setFriendUI();
 
 }
 
 
 // ============================================================
-// الكاميرا والمايك
+// الوسائط
 // ============================================================
 
 async function getLocalMedia(){
 
-    if(localStream){
-
+    if(localStream)
         return localStream;
-
-    }
-
 
     if(
         !navigator.mediaDevices ||
@@ -396,7 +295,6 @@ async function getLocalMedia(){
         );
 
     }
-
 
     try{
 
@@ -413,9 +311,7 @@ async function getLocalMedia(){
 
                 });
 
-
     }
-
     catch(error){
 
         console.error(error);
@@ -426,23 +322,10 @@ async function getLocalMedia(){
 
     }
 
-
     localVideo.srcObject =
         localStream;
 
-
     return localStream;
-
-}
-
-
-// ============================================================
-// Caller ID
-// ============================================================
-
-function getCallerId(){
-
-    return cachedCallerId;
 
 }
 
@@ -453,22 +336,14 @@ function getCallerId(){
 
 function createPeerConnection(){
 
-    if(peerConnection){
-
+    if(peerConnection)
         return peerConnection;
-
-    }
-
 
     peerConnection =
         new RTCPeerConnection(
             rtcConfiguration
         );
 
-
-    // --------------------------------------------------------
-    // ICE
-    // --------------------------------------------------------
 
     peerConnection.onicecandidate =
         async event => {
@@ -477,41 +352,25 @@ function createPeerConnection(){
                 !event.candidate ||
                 !callId ||
                 !currentUser
-            ){
-
+            )
                 return;
 
-            }
-
-
             const collectionName =
-
-                currentUser.uid ===
-                getCallerId()
-
+                currentUser.uid === callerId
                 ?
-
                 "callerCandidates"
-
                 :
-
                 "calleeCandidates";
-
 
             try{
 
                 await addDoc(
 
                     collection(
-
                         db,
-
                         "videoCalls",
-
                         callId,
-
                         collectionName
-
                     ),
 
                     event.candidate.toJSON()
@@ -519,11 +378,10 @@ function createPeerConnection(){
                 );
 
             }
-
             catch(error){
 
                 console.error(
-                    "ICE error:",
+                    "ICE:",
                     error
                 );
 
@@ -531,10 +389,6 @@ function createPeerConnection(){
 
         };
 
-
-    // --------------------------------------------------------
-    // الفيديو البعيد
-    // --------------------------------------------------------
 
     peerConnection.ontrack =
         event => {
@@ -560,29 +414,14 @@ function createPeerConnection(){
         };
 
 
-    // --------------------------------------------------------
-    // حالة الاتصال
-    // --------------------------------------------------------
-
     peerConnection.onconnectionstatechange =
         () => {
 
-            if(!peerConnection){
-
+            if(!peerConnection)
                 return;
-
-            }
-
 
             const state =
                 peerConnection.connectionState;
-
-
-            console.log(
-                "WebRTC:",
-                state
-            );
-
 
             if(state === "connected"){
 
@@ -591,7 +430,6 @@ function createPeerConnection(){
                 );
 
             }
-
             else if(state === "connecting"){
 
                 setStatus(
@@ -599,7 +437,6 @@ function createPeerConnection(){
                 );
 
             }
-
             else if(state === "disconnected"){
 
                 setStatus(
@@ -607,7 +444,6 @@ function createPeerConnection(){
                 );
 
             }
-
             else if(state === "failed"){
 
                 setStatus(
@@ -625,7 +461,7 @@ function createPeerConnection(){
 
 
 // ============================================================
-// إضافة Tracks
+// Tracks
 // ============================================================
 
 function addLocalTracks(){
@@ -633,33 +469,24 @@ function addLocalTracks(){
     if(
         !localStream ||
         !peerConnection
-    ){
-
+    )
         return;
-
-    }
-
 
     const senders =
         peerConnection.getSenders();
 
-
     localStream
         .getTracks()
         .forEach(
-
             track => {
 
                 const exists =
                     senders.some(
-
                         sender =>
                             sender.track &&
                             sender.track.kind ===
                             track.kind
-
                     );
-
 
                 if(!exists){
 
@@ -671,27 +498,22 @@ function addLocalTracks(){
                 }
 
             }
-
         );
 
 }
 
 
 // ============================================================
-// ICE المؤجل
+// ICE
 // ============================================================
 
-async function flushPendingCandidates(){
+async function flushCandidates(){
 
     if(
         !peerConnection ||
         !peerConnection.remoteDescription
-    ){
-
+    )
         return;
-
-    }
-
 
     while(
         pendingCandidates.length
@@ -699,7 +521,6 @@ async function flushPendingCandidates(){
 
         const candidate =
             pendingCandidates.shift();
-
 
         try{
 
@@ -709,11 +530,10 @@ async function flushPendingCandidates(){
                 );
 
         }
-
         catch(error){
 
             console.error(
-                "Candidate error:",
+                "Candidate:",
                 error
             );
 
@@ -724,40 +544,24 @@ async function flushPendingCandidates(){
 }
 
 
-// ============================================================
-// الاستماع للـ ICE
-// ============================================================
-
 function listenCandidates(
     collectionName
 ){
 
-    if(unsubscribeCandidates){
-
+    if(unsubscribeCandidates)
         unsubscribeCandidates();
-
-    }
-
 
     const ref =
         collection(
-
             db,
-
             "videoCalls",
-
             callId,
-
             collectionName
-
         );
-
 
     unsubscribeCandidates =
         onSnapshot(
-
             ref,
-
             async snapshot => {
 
                 for(
@@ -768,38 +572,24 @@ function listenCandidates(
                     if(
                         change.type !==
                         "added"
-                    ){
-
+                    )
                         continue;
-
-                    }
-
 
                     if(
-                        addedCandidateIds.has(
+                        addedCandidates.has(
                             change.doc.id
                         )
-                    ){
-
+                    )
                         continue;
 
-                    }
-
-
-                    addedCandidateIds.add(
+                    addedCandidates.add(
                         change.doc.id
                     );
 
-
-                    const data =
-                        change.doc.data();
-
-
                     const candidate =
                         new RTCIceCandidate(
-                            data
+                            change.doc.data()
                         );
-
 
                     if(
                         peerConnection &&
@@ -814,17 +604,13 @@ function listenCandidates(
                                 );
 
                         }
-
                         catch(error){
 
-                            console.error(
-                                error
-                            );
+                            console.error(error);
 
                         }
 
                     }
-
                     else{
 
                         pendingCandidates.push(
@@ -835,17 +621,7 @@ function listenCandidates(
 
                 }
 
-            },
-
-            error => {
-
-                console.error(
-                    "ICE listener:",
-                    error
-                );
-
             }
-
         );
 
 }
@@ -855,20 +631,17 @@ function listenCandidates(
 // المكالمة الصادرة
 // ============================================================
 
-async function startOutgoingCall(){
+async function startOutgoing(){
 
     setStatus(
         "جارٍ تشغيل الكاميرا..."
     );
 
-
     await getLocalMedia();
-
 
     createPeerConnection();
 
     addLocalTracks();
-
 
     const callRef =
         doc(
@@ -878,35 +651,24 @@ async function startOutgoingCall(){
             )
         );
 
-
     callId =
         callRef.id;
 
-
-    cachedCallerId =
+    callerId =
         currentUser.uid;
-
 
     listenCandidates(
         "calleeCandidates"
     );
 
-
     const offer =
-        await peerConnection.createOffer({
-
-            offerToReceiveAudio:true,
-
-            offerToReceiveVideo:true
-
-        });
-
+        await peerConnection
+            .createOffer();
 
     await peerConnection
         .setLocalDescription(
             offer
         );
-
 
     await setDoc(
 
@@ -930,13 +692,8 @@ async function startOutgoingCall(){
                 "",
 
             offer:{
-
-                type:
-                    offer.type,
-
-                sdp:
-                    offer.sdp
-
+                type:offer.type,
+                sdp:offer.sdp
             },
 
             status:
@@ -950,89 +707,52 @@ async function startOutgoingCall(){
     );
 
 
-    // --------------------------------------------------------
-    // مراقبة المكالمة
-    // --------------------------------------------------------
-
     unsubscribeCall =
         onSnapshot(
 
             callRef,
 
-            async snapshot => {
+            async snap => {
 
-                if(!snapshot.exists()){
-
+                if(!snap.exists())
                     return;
 
-                }
-
-
                 const data =
-                    snapshot.data();
-
+                    snap.data();
 
                 if(
                     data.status ===
                     "ended"
                 ){
 
-                    finishCall(false);
+                    finishCall();
 
                     return;
 
                 }
-
-
-                if(
-                    data.status ===
-                    "rejected"
-                ){
-
-                    finishCall(false);
-
-                    return;
-
-                }
-
 
                 if(
                     data.answer &&
-                    !peerConnection.currentRemoteDescription
+                    !peerConnection
+                        .currentRemoteDescription
                 ){
 
-                    try{
+                    await peerConnection
+                        .setRemoteDescription(
 
-                        await peerConnection
-                            .setRemoteDescription(
+                            new RTCSessionDescription(
+                                data.answer
+                            )
 
-                                new RTCSessionDescription(
-                                    data.answer
-                                )
-
-                            );
-
-
-                        await flushPendingCandidates();
-
-
-                        setStatus(
-                            "جارٍ الاتصال..."
                         );
 
-                    }
+                    await flushCandidates();
 
-                    catch(error){
-
-                        console.error(
-                            "Answer error:",
-                            error
-                        );
-
-                    }
+                    setStatus(
+                        "جارٍ الاتصال..."
+                    );
 
                 }
-
 
                 if(
                     data.status ===
@@ -1045,19 +765,9 @@ async function startOutgoingCall(){
 
                 }
 
-            },
-
-            error => {
-
-                console.error(
-                    "Call listener:",
-                    error
-                );
-
             }
 
         );
-
 
     setStatus(
         "بانتظار الرد..."
@@ -1070,11 +780,12 @@ async function startOutgoingCall(){
 // المكالمة الواردة
 // ============================================================
 
-async function answerIncomingCall(){
+async function answerIncoming(){
 
     callId =
-        incomingCallId;
-
+        new URLSearchParams(
+            location.search
+        ).get("call");
 
     const callRef =
         doc(
@@ -1083,12 +794,10 @@ async function answerIncomingCall(){
             callId
         );
 
-
     const snap =
         await getDoc(
             callRef
         );
-
 
     if(!snap.exists()){
 
@@ -1098,10 +807,8 @@ async function answerIncomingCall(){
 
     }
 
-
     const data =
         snap.data();
-
 
     if(
         data.status ===
@@ -1114,117 +821,22 @@ async function answerIncomingCall(){
 
     }
 
-
-    if(
-        data.status ===
-        "rejected"
-    ){
-
-        throw new Error(
-            "المكالمة مرفوضة"
-        );
-
-    }
-
-
-    cachedCallerId =
+    callerId =
         data.callerId;
 
-
-    // --------------------------------------------------------
-    // بيانات المتصل
-    // --------------------------------------------------------
-
-    if(data.callerId){
-
-        const callerSnap =
-            await getDoc(
-
-                doc(
-                    db,
-                    "users",
-                    data.callerId
-                )
-
-            );
-
-
-        if(callerSnap.exists()){
-
-            const caller =
-                callerSnap.data();
-
-
-            friendUser = {
-
-                uid:
-                    data.callerId,
-
-                name:
-                    caller.name ||
-                    data.callerName ||
-                    "مستخدم Mecd",
-
-                photo:
-                    caller.photo ||
-                    data.callerPhoto ||
-                    ""
-
-            };
-
-        }
-
-        else{
-
-            friendUser = {
-
-                uid:
-                    data.callerId,
-
-                name:
-                    data.callerName ||
-                    "مستخدم Mecd",
-
-                photo:
-                    data.callerPhoto ||
-                    ""
-
-            };
-
-        }
-
-    }
-
-
-    setFriendUI();
-
-
-    setStatus(
-        "جارٍ تشغيل الكاميرا..."
+    await loadFriend(
+        data.callerId
     );
 
-
     await getLocalMedia();
-
 
     createPeerConnection();
 
     addLocalTracks();
 
-
     listenCandidates(
         "callerCandidates"
     );
-
-
-    if(!data.offer){
-
-        throw new Error(
-            "بيانات المكالمة ناقصة"
-        );
-
-    }
-
 
     await peerConnection
         .setRemoteDescription(
@@ -1235,20 +847,16 @@ async function answerIncomingCall(){
 
         );
 
-
-    await flushPendingCandidates();
-
+    await flushCandidates();
 
     const answer =
         await peerConnection
             .createAnswer();
 
-
     await peerConnection
         .setLocalDescription(
             answer
         );
-
 
     await updateDoc(
 
@@ -1257,13 +865,8 @@ async function answerIncomingCall(){
         {
 
             answer:{
-
-                type:
-                    answer.type,
-
-                sdp:
-                    answer.sdp
-
+                type:answer.type,
+                sdp:answer.sdp
             },
 
             status:
@@ -1273,40 +876,25 @@ async function answerIncomingCall(){
 
     );
 
-
     unsubscribeCall =
         onSnapshot(
-
             callRef,
+            snap => {
 
-            snapshot => {
-
-                if(!snapshot.exists()){
-
-                    finishCall(false);
-
+                if(!snap.exists())
                     return;
 
-                }
-
-
-                const data =
-                    snapshot.data();
-
-
                 if(
-                    data.status ===
+                    snap.data().status ===
                     "ended"
                 ){
 
-                    finishCall(false);
+                    finishCall();
 
                 }
 
             }
-
         );
-
 
     setStatus(
         "متصل"
@@ -1316,21 +904,15 @@ async function answerIncomingCall(){
 
 
 // ============================================================
-// إنهاء المكالمة
+// إنهاء
 // ============================================================
 
 async function endCall(){
 
-    if(ended){
-
+    if(ended)
         return;
 
-    }
-
-
-    ended =
-        true;
-
+    ended = true;
 
     try{
 
@@ -1345,13 +927,9 @@ async function endCall(){
                 ),
 
                 {
-
-                    status:
-                        "ended",
-
+                    status:"ended",
                     endedAt:
                         serverTimestamp()
-
                 }
 
             );
@@ -1359,104 +937,55 @@ async function endCall(){
         }
 
     }
-
     catch(error){
 
-        console.error(
-            "End call:",
-            error
-        );
+        console.error(error);
 
     }
 
-
     cleanup();
 
-
-    window.history.back();
+    history.back();
 
 }
 
 
-// ============================================================
-// إنهاء من الطرف الآخر
-// ============================================================
+function finishCall(){
 
-function finishCall(
-    goBack = true
-){
-
-    if(ended){
-
+    if(ended)
         return;
 
-    }
-
-
-    ended =
-        true;
-
+    ended = true;
 
     setStatus(
         "انتهت المكالمة"
     );
 
-
     cleanup();
 
-
-    if(goBack){
-
-        setTimeout(
-
-            () => {
-
-                window.history.back();
-
-            },
-
-            700
-
-        );
-
-    }
+    setTimeout(
+        () => history.back(),
+        700
+    );
 
 }
 
 
-// ============================================================
-// تنظيف
-// ============================================================
-
 function cleanup(){
 
-    if(unsubscribeCall){
-
+    if(unsubscribeCall)
         unsubscribeCall();
 
-        unsubscribeCall =
-            null;
-
-    }
-
-
-    if(unsubscribeCandidates){
-
+    if(unsubscribeCandidates)
         unsubscribeCandidates();
 
-        unsubscribeCandidates =
-            null;
+    unsubscribeCall =
+        null;
 
-    }
-
+    unsubscribeCandidates =
+        null;
 
     if(peerConnection){
-
-        peerConnection.ontrack =
-            null;
-
-        peerConnection.onicecandidate =
-            null;
 
         peerConnection.close();
 
@@ -1464,7 +993,6 @@ function cleanup(){
             null;
 
     }
-
 
     if(localStream){
 
@@ -1480,68 +1008,30 @@ function cleanup(){
 
     }
 
-
-    if(remoteVideo){
-
-        remoteVideo.srcObject =
-            null;
-
-    }
-
-
-    if(localVideo){
-
-        localVideo.srcObject =
-            null;
-
-    }
-
 }
 
 
 // ============================================================
-// 🎤 المايك
+// الأزرار
 // ============================================================
 
 muteButton.addEventListener(
-
     "click",
-
     () => {
 
-        if(!localStream){
-
+        if(!localStream)
             return;
-
-        }
-
-
-        const tracks =
-            localStream.getAudioTracks();
-
-
-        if(!tracks.length){
-
-            return;
-
-        }
-
 
         microphoneEnabled =
             !microphoneEnabled;
 
-
-        tracks.forEach(
-
-            track => {
-
-                track.enabled =
-                    microphoneEnabled;
-
-            }
-
-        );
-
+        localStream
+            .getAudioTracks()
+            .forEach(
+                track =>
+                    track.enabled =
+                        microphoneEnabled
+            );
 
         muteButton.textContent =
             microphoneEnabled
@@ -1550,60 +1040,32 @@ muteButton.addEventListener(
             :
             "🔇";
 
-
         muteButton.classList.toggle(
             "off",
             !microphoneEnabled
         );
 
     }
-
 );
 
 
-// ============================================================
-// 📹 الكاميرا
-// ============================================================
-
 cameraButton.addEventListener(
-
     "click",
-
     () => {
 
-        if(!localStream){
-
+        if(!localStream)
             return;
-
-        }
-
-
-        const tracks =
-            localStream.getVideoTracks();
-
-
-        if(!tracks.length){
-
-            return;
-
-        }
-
 
         cameraEnabled =
             !cameraEnabled;
 
-
-        tracks.forEach(
-
-            track => {
-
-                track.enabled =
-                    cameraEnabled;
-
-            }
-
-        );
-
+        localStream
+            .getVideoTracks()
+            .forEach(
+                track =>
+                    track.enabled =
+                        cameraEnabled
+            );
 
         cameraButton.textContent =
             cameraEnabled
@@ -1612,30 +1074,20 @@ cameraButton.addEventListener(
             :
             "🚫";
 
-
         cameraButton.classList.toggle(
             "off",
             !cameraEnabled
         );
 
     }
-
 );
 
-
-// ============================================================
-// ☎ إنهاء
-// ============================================================
 
 endButton.addEventListener(
     "click",
     endCall
 );
 
-
-// ============================================================
-// رجوع
-// ============================================================
 
 backButton.addEventListener(
     "click",
@@ -1644,133 +1096,105 @@ backButton.addEventListener(
 
 
 // ============================================================
-// إغلاق الصفحة
-// ============================================================
-
-window.addEventListener(
-
-    "pagehide",
-
-    () => {
-
-        if(
-            !ended &&
-            callId
-        ){
-
-            updateDoc(
-
-                doc(
-                    db,
-                    "videoCalls",
-                    callId
-                ),
-
-                {
-
-                    status:
-                        "ended",
-
-                    endedAt:
-                        serverTimestamp()
-
-                }
-
-            ).catch(
-                console.error
-            );
-
-        }
-
-
-        cleanup();
-
-    }
-
-);
-
-
-// ============================================================
-// التشغيل
+// Init
 // ============================================================
 
 async function init(){
 
-    try{
+    onAuthStateChanged(
+        auth,
+        async user => {
 
-        onAuthStateChanged(
+            if(!user){
 
-            auth,
+                showError(
+                    "يجب تسجيل الدخول أولاً"
+                );
 
-            async user => {
-
-                if(!user){
-
-                    showError(
-                        "يجب تسجيل الدخول أولاً"
-                    );
-
-                    return;
-
-                }
-
-
-                currentUser =
-                    user;
-
-
-                try{
-
-                    if(incomingCallId){
-
-                        await answerIncomingCall();
-
-                    }
-
-                    else{
-
-                        await loadFriend();
-
-                        await startOutgoingCall();
-
-                    }
-
-
-                    loading.classList.add(
-                        "hidden"
-                    );
-
-                }
-
-                catch(error){
-
-                    console.error(
-                        error
-                    );
-
-                    showError(
-
-                        error?.message ||
-                        "تعذر تشغيل مكالمة الفيديو"
-
-                    );
-
-                }
+                return;
 
             }
 
-        );
+            currentUser =
+                user;
 
-    }
+            try{
 
-    catch(error){
+                const params =
+                    new URLSearchParams(
+                        location.search
+                    );
 
-        showError(
-            error?.message ||
-            "حدث خطأ"
-        );
+                const incoming =
+                    params.get("call");
 
-    }
+                if(incoming){
+
+                    await answerIncoming();
+
+                }
+                else{
+
+                    const friendId =
+                        params.get("friend");
+
+                    if(!friendId){
+
+                        throw new Error(
+                            "لم يتم تحديد الصديق"
+                        );
+
+                    }
+
+                    await loadFriend(
+                        friendId
+                    );
+
+                    await startOutgoing();
+
+                }
+
+                loading.classList.add(
+                    "hidden"
+                );
+
+            }
+            catch(error){
+
+                console.error(error);
+
+                loading.classList.add(
+                    "hidden"
+                );
+
+                errorMessage.textContent =
+                    error.message ||
+                    "تعذر تشغيل المكالمة";
+
+                errorBox.classList.remove(
+                    "hidden"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+function showError(message){
+
+    loading.classList.add(
+        "hidden"
+    );
+
+    errorMessage.textContent =
+        message;
+
+    errorBox.classList.remove(
+        "hidden"
+    );
 
 }
 
