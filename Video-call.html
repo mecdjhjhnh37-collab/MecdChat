@@ -267,9 +267,11 @@ body{
 
 .controls{
 
+    .controls{
+
     position:absolute;
 
-    bottom:20px;
+    bottom:70px;
 
     left:0;
     right:0;
@@ -279,9 +281,12 @@ body{
     align-items:center;
     justify-content:center;
 
-    gap:14px;
+    gap:16px;
 
     z-index:30;
+
+    padding-bottom:
+        env(safe-area-inset-bottom, 0px);
 
 }
 
@@ -409,7 +414,7 @@ body{
         width:105px;
         height:150px;
 
-        bottom:105px;
+        bottom:145px;
         left:12px;
 
         border-radius:17px;
