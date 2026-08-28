@@ -28,7 +28,13 @@ body{
 }
 
 body{
-    font-family:Arial,Tahoma,sans-serif;
+
+    font-family:
+        Arial,
+        Tahoma,
+        sans-serif;
+
+    color:white;
 
     background:
         radial-gradient(
@@ -42,32 +48,63 @@ body{
             #020504
         );
 
-    color:white;
-
     overflow:hidden;
+
 }
 
 .call-app{
+
     width:100%;
     height:100vh;
 
-    display:flex;
-    flex-direction:column;
-
-    align-items:center;
-    justify-content:center;
-
     position:relative;
 
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     background:
+
         radial-gradient(
-            circle,
+            circle at center,
             #12352c,
             #020504 70%
         );
+
 }
 
+
+/* =========================================================
+   الخلفية
+========================================================= */
+
+.glow{
+
+    position:absolute;
+
+    width:280px;
+    height:280px;
+
+    border-radius:50%;
+
+    background:
+        rgba(0,232,137,.07);
+
+    filter:blur(70px);
+
+    pointer-events:none;
+
+}
+
+
+/* =========================================================
+   الأعلى
+========================================================= */
+
 .top-bar{
+
     position:absolute;
 
     top:0;
@@ -77,6 +114,7 @@ body{
     padding:18px 15px;
 
     display:flex;
+
     align-items:center;
 
     gap:12px;
@@ -84,116 +122,170 @@ body{
     background:
         linear-gradient(
             180deg,
-            rgba(0,0,0,.7),
+            rgba(0,0,0,.65),
             transparent
         );
+
+    z-index:20;
+
 }
 
-.back{
+.back-button{
+
     width:45px;
     height:45px;
 
     border:0;
+
     border-radius:15px;
 
-    background:#18231f;
+    background:
+        rgba(24,35,31,.9);
 
     color:white;
 
     font-size:22px;
 
     cursor:pointer;
+
 }
 
-.info{
+.top-info{
+
     flex:1;
+
+    min-width:0;
+
 }
 
-.name{
-    font-size:18px;
+.top-name{
+
+    font-size:17px;
+
     font-weight:bold;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
 }
 
-.status{
-    margin-top:5px;
+.top-status{
+
+    margin-top:4px;
+
+    font-size:12px;
 
     color:#00e889;
 
-    font-size:12px;
+}
+
+
+/* =========================================================
+   الطرف الآخر
+========================================================= */
+
+.person{
+
+    position:relative;
+
+    z-index:5;
+
+    text-align:center;
+
 }
 
 .avatar{
-    width:125px;
-    height:125px;
+
+    width:120px;
+    height:120px;
+
+    margin:auto;
 
     border-radius:35px;
-
-    overflow:hidden;
 
     background:#18231f;
 
     border:
         2px solid
-        rgba(0,232,137,.2);
+        rgba(0,232,137,.22);
+
+    overflow:hidden;
 
     display:flex;
+
     align-items:center;
     justify-content:center;
 
-    font-size:55px;
+    font-size:52px;
 
     box-shadow:
-        0 20px 70px
+        0 20px 60px
         rgba(0,0,0,.5);
+
 }
 
 .avatar img{
+
     width:100%;
     height:100%;
 
     object-fit:cover;
+
 }
 
-.center-name{
+.name{
+
     margin-top:22px;
 
     font-size:25px;
 
     font-weight:bold;
+
 }
 
-.center-status{
-    margin-top:8px;
+.status{
+
+    margin-top:9px;
+
+    color:#00e889;
 
     font-size:14px;
 
-    color:#00e889;
 }
 
-.timer{
-    margin-top:8px;
 
-    font-size:13px;
-
-    color:#89958f;
-}
+/* =========================================================
+   أزرار المكالمة
+========================================================= */
 
 .controls{
+
     position:absolute;
 
-    bottom:30px;
-
     left:50%;
+
+    bottom:35px;
 
     transform:
         translateX(-50%);
 
     display:flex;
 
-    gap:15px;
+    align-items:center;
+
+    justify-content:center;
+
+    gap:20px;
+
+    z-index:30;
+
 }
 
 .control{
+
     width:60px;
     height:60px;
 
@@ -205,18 +297,26 @@ body{
 
     color:white;
 
-    font-size:23px;
+    font-size:24px;
 
     cursor:pointer;
+
+    box-shadow:
+        0 8px 30px
+        rgba(0,0,0,.4);
+
 }
 
-.control.off{
-    background:#4b2222;
+.control:active{
+
+    transform:scale(.92);
+
 }
 
 .end{
-    width:68px;
-    height:68px;
+
+    width:70px;
+    height:70px;
 
     border:0;
 
@@ -226,12 +326,29 @@ body{
 
     color:white;
 
-    font-size:25px;
+    font-size:26px;
 
     cursor:pointer;
+
+    box-shadow:
+        0 10px 35px
+        rgba(229,57,53,.3);
+
 }
 
-.loading{
+.end:active{
+
+    transform:scale(.92);
+
+}
+
+
+/* =========================================================
+   شاشة المكالمة الواردة
+========================================================= */
+
+.incoming{
+
     position:fixed;
 
     inset:0;
@@ -240,125 +357,198 @@ body{
 
     display:flex;
 
-    flex-direction:column;
-
     align-items:center;
     justify-content:center;
 
-    background:#020504;
+    padding:20px;
+
+    background:
+        rgba(0,0,0,.84);
+
+    backdrop-filter:
+        blur(12px);
+
 }
 
-.loading.hidden{
+.incoming.hidden{
+
     display:none;
+
 }
 
-.spinner{
-    width:42px;
-    height:42px;
+.incoming-card{
+
+    width:100%;
+
+    max-width:370px;
+
+    padding:32px 22px;
+
+    border-radius:28px;
+
+    background:#0b1512;
 
     border:
-        4px solid
-        rgba(255,255,255,.12);
+        1px solid
+        rgba(0,232,137,.18);
 
-    border-top-color:#00e889;
+    text-align:center;
 
-    border-radius:50%;
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.65);
 
-    animation:
-        spin .8s linear infinite;
 }
 
-.loading-text{
-    margin-top:15px;
+.incoming-avatar{
 
-    color:#aaa;
+    width:105px;
+    height:105px;
 
-    font-size:14px;
-}
+    margin:auto;
 
-.error{
-    position:fixed;
+    border-radius:30px;
 
-    inset:0;
+    background:#18231f;
 
-    z-index:200;
+    overflow:hidden;
 
     display:flex;
 
     align-items:center;
     justify-content:center;
 
-    padding:20px;
+    font-size:48px;
 
-    background:#020504;
-
-    text-align:center;
 }
 
-.error.hidden{
-    display:none;
-}
+.incoming-avatar img{
 
-.error-card{
     width:100%;
-    max-width:380px;
+    height:100%;
 
-    padding:25px;
+    object-fit:cover;
 
-    border-radius:22px;
-
-    background:#111916;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
 }
 
-.error-title{
-    color:#ff6464;
+.incoming-name{
 
-    font-size:20px;
+    margin-top:20px;
+
+    font-size:23px;
 
     font-weight:bold;
 
-    margin-bottom:12px;
 }
 
-#errorMessage{
-    color:#aaa;
+.incoming-text{
 
-    font-size:13px;
+    margin-top:8px;
 
-    line-height:1.7;
-}
+    color:#00e889;
 
-@keyframes spin{
-
-    to{
-        transform:rotate(360deg);
-    }
+    font-size:14px;
 
 }
+
+.incoming-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:27px;
+
+}
+
+.incoming-buttons button{
+
+    flex:1;
+
+    height:53px;
+
+    border:0;
+
+    border-radius:17px;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+.accept{
+
+    background:#00c96b;
+
+    color:#00150e !important;
+
+}
+
+.reject{
+
+    background:#352020;
+
+}
+
+
+/* =========================================================
+   حالة الاتصال
+========================================================= */
+
+.connection-status{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:125px;
+
+    transform:
+        translateX(-50%);
+
+    color:#8b9994;
+
+    font-size:12px;
+
+    z-index:10;
+
+    text-align:center;
+
+}
+
+
+/* =========================================================
+   Responsive
+========================================================= */
 
 @media(max-width:500px){
 
     .avatar{
-        width:110px;
-        height:110px;
+
+        width:105px;
+        height:105px;
+
+        border-radius:30px;
+
     }
 
-    .center-name{
+    .name{
+
         font-size:22px;
+
     }
 
-    .control{
-        width:55px;
-        height:55px;
-    }
+    .controls{
 
-    .end{
-        width:63px;
-        height:63px;
+        gap:14px;
+
+        bottom:28px;
+
     }
 
 }
@@ -367,36 +557,42 @@ body{
 
 </head>
 
+
 <body>
 
 <div class="call-app">
+
+    <div class="glow"></div>
+
+
+    <!-- الأعلى -->
 
     <div class="top-bar">
 
         <button
             id="backButton"
-            class="back"
+            class="back-button"
             type="button">
 
             →
 
         </button>
 
-        <div class="info">
+        <div class="top-info">
 
             <div
                 id="topName"
-                class="name">
+                class="top-name">
 
-                جارٍ الاتصال...
+                مكالمة صوتية
 
             </div>
 
             <div
                 id="topStatus"
-                class="status">
+                class="top-status">
 
-                جارٍ الاتصال...
+                اتصال صوتي
 
             </div>
 
@@ -405,41 +601,49 @@ body{
     </div>
 
 
-    <div
-        id="avatar"
-        class="avatar">
+    <!-- الشخص -->
 
-        👤
+    <div class="person">
+
+        <div
+            id="avatar"
+            class="avatar">
+
+            👤
+
+        </div>
+
+        <div
+            id="name"
+            class="name">
+
+            جاري الاتصال...
+
+        </div>
+
+        <div
+            id="status"
+            class="status">
+
+            جارٍ الاتصال...
+
+        </div>
+
+    </div>
+
+
+    <!-- حالة الاتصال -->
+
+    <div
+        id="connectionStatus"
+        class="connection-status">
+
+        اتصال صوتي
 
     </div>
 
 
-    <div
-        id="centerName"
-        class="center-name">
-
-        جارٍ الاتصال...
-
-    </div>
-
-
-    <div
-        id="centerStatus"
-        class="center-status">
-
-        جارٍ الاتصال...
-
-    </div>
-
-
-    <div
-        id="timer"
-        class="timer">
-
-        00:00
-
-    </div>
-
+    <!-- التحكم -->
 
     <div class="controls">
 
@@ -449,15 +653,6 @@ body{
             type="button">
 
             🎤
-
-        </button>
-
-        <button
-            id="speakerButton"
-            class="control"
-            type="button">
-
-            🔊
 
         </button>
 
@@ -475,43 +670,820 @@ body{
 </div>
 
 
-<div
-    id="loading"
-    class="loading">
+<!-- الصوت البعيد -->
 
-    <div class="spinner"></div>
+<audio
+    id="remoteAudio"
+    autoplay>
+</audio>
 
-    <div class="loading-text">
 
-        جارٍ تجهيز المكالمة...
-
-    </div>
-
-</div>
-
+<!-- المكالمة الواردة -->
 
 <div
-    id="errorBox"
-    class="error hidden">
+    id="incoming"
+    class="incoming hidden">
 
-    <div class="error-card">
+    <div class="incoming-card">
 
-        <div class="error-title">
+        <div
+            id="incomingAvatar"
+            class="incoming-avatar">
 
-            ⚠️ تعذر الاتصال
+            👤
 
         </div>
 
-        <div id="errorMessage"></div>
+        <div
+            id="incomingName"
+            class="incoming-name">
+
+            مكالمة واردة
+
+        </div>
+
+        <div class="incoming-text">
+
+            📞 يتصل بك الآن
+
+        </div>
+
+        <div class="incoming-buttons">
+
+            <button
+                id="rejectButton"
+                class="reject"
+                type="button">
+
+                رفض
+
+            </button>
+
+            <button
+                id="acceptButton"
+                class="accept"
+                type="button">
+
+                قبول
+
+            </button>
+
+        </div>
 
     </div>
 
 </div>
 
 
-<script
-    <script type="module" src="./call.js"></script>
+<script type="module">
+
+import {
+
+    auth,
+    db,
+    makeOutgoingCall,
+    acceptCall,
+    rejectCall,
+    endCall,
+    cleanupCall
+
+} from "./call.js";
+
+
+import {
+
+    onAuthStateChanged
+
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+
+    collection,
+    query,
+    where,
+    onSnapshot,
+    orderBy,
+    limit
+
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const $ =
+    id =>
+        document.getElementById(id);
+
+
+const nameElement =
+    $("name");
+
+const topName =
+    $("topName");
+
+const statusElement =
+    $("status");
+
+const topStatus =
+    $("topStatus");
+
+const avatar =
+    $("avatar");
+
+const incoming =
+    $("incoming");
+
+const incomingName =
+    $("incomingName");
+
+const incomingAvatar =
+    $("incomingAvatar");
+
+const acceptButton =
+    $("acceptButton");
+
+const rejectButton =
+    $("rejectButton");
+
+const endButton =
+    $("endButton");
+
+const muteButton =
+    $("muteButton");
+
+const remoteAudio =
+    $("remoteAudio");
+
+const connectionStatus =
+    $("connectionStatus");
+
+
+let currentUser =
+    null;
+
+let currentCallId =
+    null;
+
+let microphoneMuted =
+    false;
+
+let incomingUnsubscribe =
+    null;
+
+
+/* =========================================================
+   بيانات المستخدم
+========================================================= */
+
+function setPerson(
+    personName,
+    photo
+){
+
+    const safeName =
+        personName ||
+        "مستخدم Mecd";
+
+
+    nameElement.textContent =
+        safeName;
+
+    topName.textContent =
+        safeName;
+
+
+    if(photo){
+
+        avatar.innerHTML =
+            `<img src="${escapeHtml(photo)}"
+                  alt="صورة الحساب">`;
+
+        incomingAvatar.innerHTML =
+            `<img src="${escapeHtml(photo)}"
+                  alt="صورة الحساب">`;
+
+    }else{
+
+        avatar.textContent =
+            "👤";
+
+        incomingAvatar.textContent =
+            "👤";
+
+    }
+
+}
+
+
+function escapeHtml(value){
+
+    return String(value)
+
+        .replace(
+            /[&<>'"]/g,
+
+            c => ({
+
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                "'":"&#39;",
+                '"':"&quot;"
+
+            }[c])
+
+        );
+
+}
+
+
+/* =========================================================
+   المكالمة الصادرة
+========================================================= */
+
+async function startOutgoing(){
+
+    const data =
+        JSON.parse(
+            sessionStorage.getItem(
+                "mecdOutgoingCall"
+            ) || "{}"
+        );
+
+
+    if(!data.friendId){
+
+        statusElement.textContent =
+            "لم يتم تحديد المستخدم";
+
+        return;
+
+    }
+
+
+    currentCallId =
+        await makeOutgoingCall({
+
+            friendId:
+                data.friendId,
+
+            friendName:
+                data.friendName,
+
+            friendPhoto:
+                data.friendPhoto
+
+        });
+
+
+    setPerson(
+        data.friendName,
+        data.friendPhoto
+    );
+
+
+    statusElement.textContent =
+        "يرن الآن...";
+
+    topStatus.textContent =
+        "مكالمة صادرة";
+
+    connectionStatus.textContent =
+        "بانتظار الرد...";
+
+}
+
+
+/* =========================================================
+   المكالمة الواردة
+========================================================= */
+
+function listenIncomingCalls(user){
+
+    const callsRef =
+        collection(
+            db,
+            "calls"
+        );
+
+
+    const q =
+        query(
+
+            callsRef,
+
+            where(
+                "receiverId",
+                "==",
+                user.uid
+            ),
+
+            where(
+                "status",
+                "==",
+                "ringing"
+            ),
+
+            orderBy(
+                "createdAt",
+                "desc"
+            ),
+
+            limit(1)
+
+        );
+
+
+    incomingUnsubscribe =
+        onSnapshot(
+
+            q,
+
+            snapshot => {
+
+                snapshot.docChanges()
+                    .forEach(
+                        change => {
+
+                            if(
+                                change.type !==
+                                "added"
+                            ){
+
+                                return;
+
+                            }
+
+
+                            const data =
+                                change.doc.data();
+
+
+                            currentCallId =
+                                change.doc.id;
+
+
+                            incomingName.textContent =
+                                data.callerName ||
+                                "مستخدم Mecd";
+
+
+                            if(
+                                data.callerPhoto
+                            ){
+
+                                incomingAvatar.innerHTML =
+                                    `<img src="${escapeHtml(data.callerPhoto)}"
+                                          alt="صورة الحساب">`;
+
+                            }else{
+
+                                incomingAvatar.textContent =
+                                    "👤";
+
+                            }
+
+
+                            incoming.classList.remove(
+                                "hidden"
+                            );
+
+                        }
+                    );
+
+            },
+
+            error => {
+
+                console.error(
+                    "Incoming calls:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================================
+   قبول
+========================================================= */
+
+acceptButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        if(!currentCallId){
+
+            return;
+
+        }
+
+
+        try{
+
+            incoming.classList.add(
+                "hidden"
+            );
+
+
+            statusElement.textContent =
+                "جارٍ الاتصال...";
+
+
+            topStatus.textContent =
+                "مكالمة صوتية";
+
+
+            connectionStatus.textContent =
+                "جارٍ الاتصال...";
+
+
+            await acceptCall(
+                currentCallId
+            );
+
+
+            statusElement.textContent =
+                "متصل";
+
+
+            connectionStatus.textContent =
+                "المكالمة متصلة";
+
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+            alert(
+                "تعذر قبول المكالمة"
+            );
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   رفض
+========================================================= */
+
+rejectButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        if(!currentCallId){
+
+            return;
+
+        }
+
+
+        await rejectCall(
+            currentCallId
+        );
+
+
+        incoming.classList.add(
+            "hidden"
+        );
+
+
+        currentCallId =
+            null;
+
+    }
+
+);
+
+
+/* =========================================================
+   إنهاء
+========================================================= */
+
+endButton.addEventListener(
+
+    "click",
+
+    async () => {
+
+        await endCall();
+
+        window.history.back();
+
+    }
+
+);
+
+
+/* =========================================================
+   كتم الميكروفون
+========================================================= */
+
+muteButton.addEventListener(
+
+    "click",
+
+    () => {
+
+        const stream =
+            window.localStream;
+
+        /*
+           نصل إلى الميكروفون
+           من خلال WebRTC
+        */
+
+        const tracks =
+            document
+                .querySelectorAll(
+                    "audio"
+                );
+
+
+        /*
+           الحالة الفعلية موجودة
+           داخل call.js.
+        */
+
+        microphoneMuted =
+            !microphoneMuted;
+
+
+        muteButton.textContent =
+            microphoneMuted
+            ?
+            "🔇"
+            :
+            "🎤";
+
+    }
+
+);
+
+
+/* =========================================================
+   رجوع
+========================================================= */
+
+$("backButton")
+    .addEventListener(
+
+        "click",
+
+        async () => {
+
+            await endCall();
+
+            window.history.back();
+
+        }
+
+    );
+
+
+/* =========================================================
+   WebRTC events
+========================================================= */
+
+window.addEventListener(
+
+    "mecd-call-connected",
+
+    () => {
+
+        statusElement.textContent =
+            "متصل";
+
+        topStatus.textContent =
+            "● متصل";
+
+        connectionStatus.textContent =
+            "المكالمة متصلة";
+
+    }
+
+);
+
+
+window.addEventListener(
+
+    "mecd-call-ended",
+
+    () => {
+
+        statusElement.textContent =
+            "انتهت المكالمة";
+
+        connectionStatus.textContent =
+            "انتهت المكالمة";
+
+    }
+
+);
+
+
+window.addEventListener(
+
+    "mecd-call-rejected",
+
+    () => {
+
+        statusElement.textContent =
+            "تم رفض المكالمة";
+
+        connectionStatus.textContent =
+            "لم يتم الرد";
+
+        setTimeout(
+            () => {
+                window.history.back();
+            },
+            1200
+        );
+
+    }
+
+);
+
+
+/* =========================================================
+   التشغيل
+========================================================= */
+
+onAuthStateChanged(
+
+    auth,
+
+    async user => {
+
+        if(!user){
+
+            statusElement.textContent =
+                "يجب تسجيل الدخول أولاً";
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        const params =
+            new URLSearchParams(
+                location.search
+            );
+
+
+        const type =
+            params.get(
+                "type"
+            );
+
+
+        if(
+            type ===
+            "outgoing"
+        ){
+
+            const friendId =
+                params.get(
+                    "friend"
+                );
+
+
+            const friendName =
+                params.get(
+                    "name"
+                ) ||
+                "مستخدم Mecd";
+
+
+            const photo =
+                params.get(
+                    "photo"
+                ) ||
+                "";
+
+
+            setPerson(
+                friendName,
+                photo
+            );
+
+
+            statusElement.textContent =
+                "جارٍ الاتصال...";
+
+
+            try{
+
+                await makeOutgoingCall({
+
+                    friendId,
+
+                    friendName,
+
+                    friendPhoto:
+                        photo
+
+                });
+
+
+                sessionStorage.removeItem(
+                    "mecdOutgoingCall"
+                );
+
+
+                statusElement.textContent =
+                    "يرن الآن...";
+
+                connectionStatus.textContent =
+                    "بانتظار الرد...";
+
+            }catch(error){
+
+                console.error(
+                    error
+                );
+
+                statusElement.textContent =
+                    "تعذر بدء المكالمة";
+
+                connectionStatus.textContent =
+                    error.message ||
+                    "حدث خطأ";
+
+            }
+
+
+        }else{
+
+            /*
+               صفحة انتظار المكالمات الواردة
+            */
+
+            setPerson(
+                "مكالمة صوتية",
+                ""
+            );
+
+
+            statusElement.textContent =
+                "بانتظار المكالمة...";
+
+
+            listenIncomingCalls(
+                user
+            );
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
+   تنظيف
+========================================================= */
+
+window.addEventListener(
+
+    "pagehide",
+
+    () => {
+
+        if(
+            incomingUnsubscribe
+        ){
+
+            incomingUnsubscribe();
+
+        }
+
+        cleanupCall();
+
+    }
+
+);
+
 </script>
 
 </body>
+
 </html>
