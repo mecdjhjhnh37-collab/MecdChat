@@ -30,17 +30,7 @@ body{
 body{
     font-family:Arial,Tahoma,sans-serif;
 
-    background:
-        radial-gradient(
-            circle at top,
-            #123d35,
-            transparent 45%
-        ),
-        linear-gradient(
-            180deg,
-            #07110f,
-            #020504
-        );
+    background:#020504;
 
     color:white;
 
@@ -56,10 +46,6 @@ body{
     background:#020504;
 }
 
-/* =========================================================
-   الفيديو البعيد
-   ========================================================= */
-
 .remote-video{
     position:absolute;
 
@@ -74,10 +60,6 @@ body{
 
     z-index:1;
 }
-
-/* =========================================================
-   صورة الطرف الآخر
-   ========================================================= */
 
 .remote-placeholder{
     position:absolute;
@@ -99,8 +81,6 @@ body{
         );
 
     z-index:2;
-
-    transition:.25s;
 }
 
 .remote-placeholder.hidden{
@@ -127,10 +107,6 @@ body{
     border:
         2px solid
         rgba(0,232,137,.25);
-
-    box-shadow:
-        0 15px 50px
-        rgba(0,0,0,.5);
 }
 
 .remote-avatar img{
@@ -147,10 +123,6 @@ body{
 
     font-weight:bold;
 }
-
-/* =========================================================
-   الفيديو المحلي
-   ========================================================= */
 
 .local-video{
     position:absolute;
@@ -177,10 +149,6 @@ body{
 
     z-index:10;
 }
-
-/* =========================================================
-   الأعلى
-   ========================================================= */
 
 .top-bar{
     position:absolute;
@@ -215,8 +183,7 @@ body{
 
     border-radius:15px;
 
-    background:
-        rgba(24,35,31,.85);
+    background:#18231f;
 
     color:white;
 
@@ -226,21 +193,12 @@ body{
 }
 
 .top-info{
-    min-width:0;
-
     flex:1;
 }
 
 .top-name{
     font-size:17px;
-
     font-weight:bold;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
 }
 
 .top-status{
@@ -251,15 +209,10 @@ body{
     color:#00e889;
 }
 
-/* =========================================================
-   حالة المكالمة وسط الشاشة
-   ========================================================= */
-
 .call-info{
     position:absolute;
 
     left:50%;
-
     top:50%;
 
     transform:
@@ -278,7 +231,6 @@ body{
 
 .call-name{
     font-size:24px;
-
     font-weight:bold;
 }
 
@@ -289,10 +241,6 @@ body{
 
     color:#00e889;
 }
-
-/* =========================================================
-   أزرار المكالمة
-   ========================================================= */
 
 .controls{
     position:absolute;
@@ -307,8 +255,6 @@ body{
 
     align-items:center;
 
-    justify-content:center;
-
     gap:14px;
 
     z-index:30;
@@ -322,22 +268,13 @@ body{
 
     border-radius:50%;
 
-    background:
-        rgba(24,35,31,.95);
+    background:rgba(24,35,31,.95);
 
     color:white;
 
     font-size:23px;
 
     cursor:pointer;
-
-    box-shadow:
-        0 8px 25px
-        rgba(0,0,0,.35);
-}
-
-.control-button:active{
-    transform:scale(.92);
 }
 
 .control-button.off{
@@ -359,19 +296,7 @@ body{
     font-size:25px;
 
     cursor:pointer;
-
-    box-shadow:
-        0 8px 30px
-        rgba(229,57,53,.35);
 }
-
-.end-button:active{
-    transform:scale(.92);
-}
-
-/* =========================================================
-   شاشة التحميل
-   ========================================================= */
 
 .loading{
     position:fixed;
@@ -385,7 +310,6 @@ body{
     flex-direction:column;
 
     align-items:center;
-
     justify-content:center;
 
     z-index:100;
@@ -415,21 +339,7 @@ body{
     margin-top:15px;
 
     color:#aaa;
-
-    font-size:14px;
 }
-
-@keyframes spin{
-
-    to{
-        transform:rotate(360deg);
-    }
-
-}
-
-/* =========================================================
-   الخطأ
-   ========================================================= */
 
 .error-box{
     position:fixed;
@@ -441,11 +351,11 @@ body{
     align-items:center;
     justify-content:center;
 
-    padding:25px;
-
     background:#020504;
 
     z-index:200;
+
+    padding:20px;
 
     text-align:center;
 }
@@ -462,18 +372,14 @@ body{
     border-radius:20px;
 
     background:#111916;
-
-    border:
-        1px solid
-        rgba(255,255,255,.08);
 }
 
 .error-title{
+    color:#ff6464;
+
     font-size:20px;
 
     font-weight:bold;
-
-    color:#ff6464;
 
     margin-bottom:12px;
 }
@@ -486,132 +392,12 @@ body{
     font-size:13px;
 }
 
-/* =========================================================
-   شاشة المكالمة الواردة
-   ========================================================= */
+@keyframes spin{
 
-.incoming{
-    position:fixed;
+    to{
+        transform:rotate(360deg);
+    }
 
-    inset:0;
-
-    background:
-        rgba(0,0,0,.82);
-
-    backdrop-filter:blur(10px);
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    z-index:300;
-
-    padding:20px;
-}
-
-.incoming.hidden{
-    display:none;
-}
-
-.incoming-card{
-    width:100%;
-
-    max-width:360px;
-
-    padding:30px 22px;
-
-    border-radius:28px;
-
-    background:#0b1512;
-
-    border:
-        1px solid
-        rgba(0,232,137,.18);
-
-    text-align:center;
-
-    box-shadow:
-        0 20px 70px
-        rgba(0,0,0,.6);
-}
-
-.incoming-avatar{
-    width:95px;
-    height:95px;
-
-    margin:auto;
-
-    border-radius:28px;
-
-    overflow:hidden;
-
-    background:#18231f;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    font-size:45px;
-}
-
-.incoming-avatar img{
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-}
-
-.incoming-title{
-    margin-top:20px;
-
-    font-size:22px;
-
-    font-weight:bold;
-}
-
-.incoming-subtitle{
-    margin-top:8px;
-
-    color:#00e889;
-
-    font-size:14px;
-}
-
-.incoming-buttons{
-    display:flex;
-
-    gap:12px;
-
-    margin-top:25px;
-}
-
-.incoming-buttons button{
-    flex:1;
-
-    height:52px;
-
-    border:0;
-
-    border-radius:17px;
-
-    color:white;
-
-    font-size:15px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-}
-
-.accept-button{
-    background:#00c96b;
-    color:#00150e !important;
-}
-
-.reject-button{
-    background:#352020;
 }
 
 @media(max-width:500px){
@@ -622,10 +408,6 @@ body{
 
         right:10px;
         bottom:105px;
-    }
-
-    .controls{
-        gap:10px;
     }
 
     .control-button{
@@ -648,8 +430,6 @@ body{
 
 <div class="video-app">
 
-    <!-- فيديو الطرف الآخر -->
-
     <video
         id="remoteVideo"
         class="remote-video"
@@ -657,8 +437,6 @@ body{
         playsinline>
     </video>
 
-
-    <!-- صورة الطرف الآخر قبل وصول الفيديو -->
 
     <div
         id="remotePlaceholder"
@@ -683,8 +461,6 @@ body{
     </div>
 
 
-    <!-- فيديو الهاتف الحالي -->
-
     <video
         id="localVideo"
         class="local-video"
@@ -693,8 +469,6 @@ body{
         playsinline>
     </video>
 
-
-    <!-- الأعلى -->
 
     <div class="top-bar">
 
@@ -730,8 +504,6 @@ body{
     </div>
 
 
-    <!-- المعلومات -->
-
     <div class="call-info">
 
         <div
@@ -752,8 +524,6 @@ body{
 
     </div>
 
-
-    <!-- أزرار التحكم -->
 
     <div class="controls">
 
@@ -789,8 +559,6 @@ body{
 </div>
 
 
-<!-- شاشة التحميل -->
-
 <div
     id="loading"
     class="loading">
@@ -805,8 +573,6 @@ body{
 
 </div>
 
-
-<!-- الخطأ -->
 
 <div
     id="errorBox"
@@ -823,7 +589,6 @@ body{
         <div
             id="errorMessage"
             class="error-message">
-
         </div>
 
     </div>
