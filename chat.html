@@ -1,0 +1,3406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050807">
+<title>Mecd Chat</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    height:100vh;
+    font-family:Arial,Tahoma,sans-serif;
+    color:white;
+    background:
+        radial-gradient(circle at top,#123d35,transparent 40%),
+        linear-gradient(180deg,#07110f,#020504);
+    overflow:hidden;
+}
+
+button,input{
+    font-family:inherit;
+}
+
+.app{
+    height:100vh;
+    max-width:650px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+header{
+    height:75px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 15px;
+    background:#050807;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    flex-shrink:0;
+}
+
+.back{
+    width:45px;
+    height:45px;
+    border:0;
+    border-radius:15px;
+    background:#18231f;
+    color:white;
+    font-size:22px;
+}
+
+.avatar{
+    width:48px;
+    height:48px;
+    border-radius:16px;
+    background:#12352c;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-size:24px;
+    flex-shrink:0;
+}
+
+.avatar img,
+.call-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.user-info{
+    flex:1;
+    min-width:0;
+}
+
+.user-name{
+    font-size:17px;
+    font-weight:bold;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.user-status{
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
+}
+
+.user-status.online,
+.user-status.typing{
+    color:#00e889;
+}
+
+.user-status.typing{
+    font-weight:bold;
+}
+
+.call-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.call-buttons button{
+    width:42px;
+    height:42px;
+    border:0;
+    border-radius:14px;
+    background:#18231f;
+    color:white;
+    font-size:18px;
+}
+
+.messages{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:20px 15px 150px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.empty{
+    margin:auto;
+    text-align:center;
+    color:#72817c;
+}
+
+.message{
+    max-width:78%;
+    padding:12px 15px;
+    border-radius:18px;
+    position:relative;
+    word-break:break-word;
+    user-select:none;
+}
+
+.message.mine{
+    align-self:flex-start;
+    background:#00c96b;
+    color:#00150e;
+    border-bottom-left-radius:5px;
+}
+
+.message.other{
+    align-self:flex-end;
+    background:#18231f;
+    border:1px solid rgba(255,255,255,.08);
+    border-bottom-right-radius:5px;
+}
+
+.time{
+    display:inline-block;
+    font-size:9px;
+    opacity:.6;
+    margin-top:5px;
+}
+
+.message-meta{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.message-status{
+    font-size:12px;
+    direction:ltr;
+}
+
+.message-status.read{
+    color:#006dff;
+}
+
+.input-area{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:650px;
+    padding:10px;
+    display:flex;
+    gap:8px;
+    background:#050807;
+    z-index:50;
+}
+
+#messageInput{
+    flex:1;
+    min-width:0;
+    padding:14px;
+    border-radius:17px;
+    border:1px solid #27332f;
+    background:#111916;
+    color:white;
+    outline:none;
+    font-size:15px;
+}
+
+#messageInput:focus{
+    border-color:#00e889;
+}
+
+#voiceButton,
+#sendButton{
+    width:50px;
+    height:50px;
+    border:0;
+    border-radius:16px;
+    font-size:22px;
+    flex-shrink:0;
+}
+
+#voiceButton{
+    background:#18231f;
+    color:white;
+    touch-action:none;
+}
+
+#voiceButton.recording{
+    background:#d83b3b;
+}
+
+#sendButton{
+    background:#00e889;
+    color:#00150e;
+}
+
+audio{
+    max-width:100%;
+}
+
+
+/* ==============================
+   رسائل المكالمات
+============================== */
+
+.call-message{
+    min-width:250px;
+}
+
+.call-box{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.call-icon{
+    width:45px;
+    height:45px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,232,137,.14);
+    color:#00e889;
+    font-size:21px;
+}
+
+.call-info{
+    flex:1;
+}
+
+.call-title{
+    font-size:14px;
+    font-weight:bold;
+}
+
+.call-subtitle,
+.call-duration{
+    font-size:11px;
+    opacity:.65;
+    margin-top:4px;
+}
+
+
+/* ==============================
+   شاشة الاتصال
+============================== */
+
+#callOverlay{
+    position:fixed;
+    inset:0;
+    z-index:100000;
+    display:none;
+    flex-direction:column;
+    background:#020504;
+    overflow:hidden;
+}
+
+.call-screen{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+}
+
+.call-top{
+    width:100%;
+    padding:25px 20px 10px;
+    text-align:center;
+    z-index:5;
+}
+
+#callName{
+    font-size:22px;
+    font-weight:bold;
+}
+
+#callState{
+    color:#00e889;
+    font-size:14px;
+    margin-top:7px;
+}
+
+.call-main-avatar{
+    width:145px;
+    height:145px;
+    margin-top:55px;
+    border-radius:38px;
+    background:#12352c;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    font-size:60px;
+    transition:.25s;
+    box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+.call-main-avatar.large{
+    width:260px;
+    height:330px;
+    border-radius:30px;
+    margin-top:25px;
+}
+
+.call-main-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+#videoArea{
+    position:absolute;
+    inset:0;
+    display:none;
+    background:#000;
+}
+
+#remoteVideo{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    background:#000;
+}
+
+#localVideo{
+    position:absolute;
+    width:105px;
+    height:145px;
+    left:15px;
+    bottom:125px;
+    object-fit:cover;
+    border-radius:18px;
+    border:2px solid #00e889;
+    background:#000;
+    z-index:4;
+    transition:.3s;
+}
+
+#localVideo.expanded{
+    width:85%;
+    height:70%;
+    left:7.5%;
+    bottom:15%;
+    z-index:20;
+    border-radius:25px;
+}
+
+.video-name{
+    position:absolute;
+    top:25px;
+    left:0;
+    right:0;
+    text-align:center;
+    z-index:10;
+    font-size:20px;
+    font-weight:bold;
+    text-shadow:0 2px 8px #000;
+}
+
+.call-bottom{
+    position:absolute;
+    bottom:35px;
+    left:0;
+    right:0;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    z-index:30;
+}
+
+.call-control{
+    width:58px;
+    height:58px;
+    border:0;
+    border-radius:50%;
+    background:#18231f;
+    color:white;
+    font-size:23px;
+}
+
+.call-control.active{
+    background:#00e889;
+    color:#00150e;
+}
+
+.call-control.end{
+    background:#d83b3b;
+}
+
+.call-control.accept{
+    background:#00e889;
+    color:#00150e;
+}
+
+
+/* ==============================
+   مكالمة واردة
+============================== */
+
+.incoming-label{
+    display:none;
+    margin-top:25px;
+    font-size:15px;
+    color:#aaa;
+}
+
+
+/* ==============================
+   قائمة الرسالة
+============================== */
+
+.message-menu{
+    position:absolute;
+    left:50%;
+    bottom:calc(100% + 8px);
+    transform:translateX(-50%);
+    min-width:150px;
+    padding:5px;
+    background:#0b1512;
+    border:1px solid rgba(0,232,137,.18);
+    border-radius:15px;
+    z-index:99999;
+}
+
+.message-menu button{
+    width:100%;
+    padding:10px;
+    border:0;
+    border-radius:10px;
+    background:#18231f;
+    color:white;
+}
+
+
+/* ==============================
+   موبايل
+============================== */
+
+@media(max-width:500px){
+
+    .message{
+        max-width:84%;
+    }
+
+    header{
+        padding:12px;
+    }
+
+    .call-buttons button{
+        width:40px;
+        height:40px;
+    }
+
+}
+</style>
+</head>
+
+
+<body>
+
+<div id="loading"
+style="
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#020504;
+color:white;
+font-size:18px;
+z-index:9999;">
+جارٍ فتح الدردشة...
+</div>
+
+
+<main id="app" class="app" style="display:none;">
+
+<header>
+
+<button id="backButton" class="back">
+→
+</button>
+
+<div id="friendAvatar" class="avatar">
+👤
+</div>
+
+<div class="user-info">
+
+<div id="friendName" class="user-name">
+جار التحميل...
+</div>
+
+<div id="friendStatus" class="user-status">
+● غير متصل
+</div>
+
+</div>
+
+<div class="call-buttons">
+
+<button id="callButton">
+📞
+</button>
+
+<button id="videoButton">
+📹
+</button>
+
+</div>
+
+</header>
+
+
+<div id="messages" class="messages">
+
+<div class="empty">
+💬
+<br>
+ابدأ المحادثة الآن
+</div>
+
+</div>
+
+
+<div class="input-area">
+
+<input
+id="messageInput"
+placeholder="اكتب رسالة..."
+autocomplete="off"
+maxlength="2000">
+
+<button id="voiceButton">
+🎤
+</button>
+
+<button id="sendButton">
+➤
+</button>
+
+</div>
+
+</main>
+
+
+<!-- ==================================
+     شاشة المكالمة
+================================== -->
+
+<div id="callOverlay">
+
+<div class="call-screen">
+
+<div class="call-top">
+
+<div id="callName">
+مكالمة
+</div>
+
+<div id="callState">
+جارٍ الاتصال...
+</div>
+
+<div id="incomingLabel"
+class="incoming-label">
+📞 مكالمة واردة
+</div>
+
+</div>
+
+
+<div id="videoArea">
+
+<div id="videoName"
+class="video-name">
+</div>
+
+<video
+id="remoteVideo"
+autoplay
+playsinline>
+</video>
+
+<video
+id="localVideo"
+autoplay
+muted
+playsinline>
+</video>
+
+</div>
+
+
+<div
+id="callMainAvatar"
+class="call-main-avatar">
+👤
+</div>
+
+
+<div class="call-bottom">
+
+<button
+id="muteButton"
+class="call-control">
+🎤
+</button>
+
+<button
+id="speakerButton"
+class="call-control">
+🔊
+</button>
+
+<button
+id="cameraButton"
+class="call-control"
+style="display:none">
+📹
+</button>
+
+<button
+id="acceptCallButton"
+class="call-control accept"
+style="display:none">
+✅
+</button>
+
+<button
+id="endCallButton"
+class="call-control end">
+📞
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+/* =========================================
+   Firebase
+========================================= */
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    addDoc,
+    deleteDoc,
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    arrayUnion,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+
+    authDomain:
+        "mecd-tools.firebaseapp.com",
+
+    projectId:
+        "mecd-tools",
+
+    storageBucket:
+        "mecd-tools.firebasestorage.app",
+
+    messagingSenderId:
+        "643005547408",
+
+    appId:
+        "1:643005547408:web:b1719060ec340dd0e0a915"
+
+};
+
+
+const firebaseApp =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(firebaseApp);
+
+const db =
+    getFirestore(firebaseApp);
+
+window.chatDB = db;
+
+
+/* =========================================
+   العناصر
+========================================= */
+
+const $ = id =>
+    document.getElementById(id);
+
+const loading =
+    $("loading");
+
+const app =
+    $("app");
+
+const messages =
+    $("messages");
+
+const messageInput =
+    $("messageInput");
+
+const sendButton =
+    $("sendButton");
+
+const voiceButton =
+    $("voiceButton");
+
+const friendName =
+    $("friendName");
+
+const friendAvatar =
+    $("friendAvatar");
+
+const friendStatus =
+    $("friendStatus");
+
+const backButton =
+    $("backButton");
+
+const callButton =
+    $("callButton");
+
+const videoButton =
+    $("videoButton");
+
+const callOverlay =
+    $("callOverlay");
+
+const callName =
+    $("callName");
+
+const callState =
+    $("callState");
+
+const callMainAvatar =
+    $("callMainAvatar");
+
+const incomingLabel =
+    $("incomingLabel");
+
+const endCallButton =
+    $("endCallButton");
+
+const acceptCallButton =
+    $("acceptCallButton");
+
+const muteButton =
+    $("muteButton");
+
+const speakerButton =
+    $("speakerButton");
+
+const cameraButton =
+    $("cameraButton");
+
+const videoArea =
+    $("videoArea");
+
+const remoteVideo =
+    $("remoteVideo");
+
+const localVideo =
+    $("localVideo");
+
+
+/* =========================================
+   المتغيرات
+========================================= */
+
+let currentUser = null;
+let friendUser = null;
+let chatID = null;
+
+let unsubscribeMessages = null;
+let unsubscribeStatus = null;
+let unsubscribeTyping = null;
+let unsubscribeCall = null;
+let unsubscribeCandidates = null;
+let incomingCallUnsubscribe = null;
+
+let presenceInterval = null;
+
+let typingState = false;
+let typingTimer = null;
+
+let mediaRecorder = null;
+let audioStream = null;
+let audioChunks = [];
+let recording = false;
+
+let localStream = null;
+let peerConnection = null;
+
+let activeCallId = null;
+let activeCallType = null;
+let callSeconds = 0;
+let callTimer = null;
+
+let isIncoming = false;
+
+let speakerMuted = false;
+
+
+/* =========================================
+   WebRTC
+========================================= */
+
+const rtcConfig = {
+
+    iceServers:[
+
+        {
+            urls:
+                "stun:stun.l.google.com:19302"
+        },
+
+        {
+            urls:
+                "stun:stun1.l.google.com:19302"
+        }
+
+    ]
+
+};
+
+
+/* =========================================
+   أدوات
+========================================= */
+
+function createChatID(a,b){
+
+    return [a,b]
+        .sort()
+        .join("_");
+
+}
+
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(
+            /[&<>'"]/g,
+            c => ({
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                "'":"&#39;",
+                '"':"&quot;"
+            }[c])
+        );
+
+}
+
+
+function formatDuration(seconds){
+
+    seconds =
+        Math.max(
+            0,
+            Math.floor(
+                Number(seconds || 0)
+            )
+        );
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    const secs =
+        seconds % 60;
+
+    return (
+        String(minutes).padStart(2,"0")
+        + ":" +
+        String(secs).padStart(2,"0")
+    );
+
+}
+
+
+function formatTime(timestamp){
+
+    if(!timestamp?.toDate)
+        return "";
+
+    return timestamp
+        .toDate()
+        .toLocaleTimeString(
+            "ar",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
+
+}
+
+
+function showApp(){
+
+    loading.style.display =
+        "none";
+
+    app.style.display =
+        "flex";
+
+}
+
+
+/* =========================================
+   Presence
+========================================= */
+
+async function updatePresence(online){
+
+    if(!currentUser)
+        return;
+
+    try{
+
+        await setDoc(
+
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            ),
+
+            {
+                online,
+                lastSeen:
+                    serverTimestamp()
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+function startPresence(){
+
+    updatePresence(true);
+
+    clearInterval(
+        presenceInterval
+    );
+
+    presenceInterval =
+        setInterval(
+            () => {
+
+                if(
+                    document.visibilityState ===
+                    "visible"
+                ){
+
+                    updatePresence(true);
+
+                }
+
+            },
+            10000
+        );
+
+}
+
+
+/* =========================================
+   تحميل الصديق
+========================================= */
+
+async function loadFriend(){
+
+    const friendID =
+        new URLSearchParams(
+            location.search
+        ).get("friend");
+
+    if(!friendID){
+
+        throw new Error(
+            "لا يوجد friend في الرابط"
+        );
+
+    }
+
+    const snap =
+        await getDoc(
+
+            doc(
+                db,
+                "users",
+                friendID
+            )
+
+        );
+
+    if(!snap.exists()){
+
+        throw new Error(
+            "المستخدم غير موجود"
+        );
+
+    }
+
+    const data =
+        snap.data();
+
+    friendUser = {
+
+        uid:
+            friendID,
+
+        name:
+            data.name ||
+            "مستخدم Mecd",
+
+        photo:
+            data.photo ||
+            ""
+
+    };
+
+    friendName.textContent =
+        friendUser.name;
+
+    callName.textContent =
+        friendUser.name;
+
+    if(friendUser.photo){
+
+        const image =
+            document.createElement("img");
+
+        image.src =
+            friendUser.photo;
+
+        friendAvatar.replaceChildren(
+            image
+        );
+
+        const callImage =
+            document.createElement("img");
+
+        callImage.src =
+            friendUser.photo;
+
+        callMainAvatar.replaceChildren(
+            callImage
+        );
+
+    }
+
+    chatID =
+        createChatID(
+            currentUser.uid,
+            friendUser.uid
+        );
+
+    window.chatID =
+        chatID;
+
+    window.chatUser =
+        currentUser;
+
+    window.chatFriend =
+        friendUser;
+
+    await setDoc(
+
+        doc(
+            db,
+            "chats",
+            chatID
+        ),
+
+        {
+            members:[
+                currentUser.uid,
+                friendUser.uid
+            ],
+
+            createdAt:
+                serverTimestamp()
+
+        },
+
+        {
+            merge:true
+        }
+
+    );
+
+    listenFriendStatus();
+
+    listenFriendTyping();
+
+}
+
+
+/* =========================================
+   حالة الصديق
+========================================= */
+
+function listenFriendStatus(){
+
+    unsubscribeStatus?.();
+
+    unsubscribeStatus =
+        onSnapshot(
+
+            doc(
+                db,
+                "users",
+                friendUser.uid
+            ),
+
+            snap => {
+
+                if(!snap.exists())
+                    return;
+
+                const data =
+                    snap.data();
+
+                const last =
+                    data.lastSeen
+                    ?.toMillis?.() || 0;
+
+                const online =
+                    data.online === true &&
+                    Date.now() - last < 30000;
+
+                if(
+                    !friendStatus.classList
+                        .contains("typing")
+                ){
+
+                    friendStatus.textContent =
+                        online
+                        ? "● متصل"
+                        : "● غير متصل";
+
+                }
+
+                friendStatus.classList.toggle(
+                    "online",
+                    online
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   الكتابة
+========================================= */
+
+function listenFriendTyping(){
+
+    unsubscribeTyping?.();
+
+    unsubscribeTyping =
+        onSnapshot(
+
+            doc(
+                db,
+                "chats",
+                chatID,
+                "typing",
+                friendUser.uid
+            ),
+
+            snap => {
+
+                if(!snap.exists()){
+
+                    setTyping(false);
+
+                    return;
+
+                }
+
+                const data =
+                    snap.data();
+
+                const time =
+                    data.updatedAt
+                    ?.toMillis?.() || 0;
+
+                const typing =
+                    data.typing === true &&
+                    Date.now() - time < 5000;
+
+                setTyping(typing);
+
+            }
+
+        );
+
+}
+
+
+function setTyping(value){
+
+    if(value){
+
+        friendStatus.textContent =
+            "يكتب...";
+
+        friendStatus.classList.add(
+            "typing"
+        );
+
+        friendStatus.classList.remove(
+            "online"
+        );
+
+    }else{
+
+        friendStatus.classList.remove(
+            "typing"
+        );
+
+        listenFriendStatus();
+
+    }
+
+}
+
+
+async function updateTyping(value){
+
+    if(!currentUser || !chatID)
+        return;
+
+    if(typingState === value)
+        return;
+
+    typingState =
+        value;
+
+    try{
+
+        await setDoc(
+
+            doc(
+                db,
+                "chats",
+                chatID,
+                "typing",
+                currentUser.uid
+            ),
+
+            {
+                typing:value,
+                updatedAt:
+                    serverTimestamp()
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+
+messageInput.addEventListener(
+    "input",
+    () => {
+
+        const hasText =
+            messageInput.value.trim()
+                .length > 0;
+
+        if(!hasText){
+
+            clearTimeout(
+                typingTimer
+            );
+
+            updateTyping(false);
+
+            return;
+
+        }
+
+        updateTyping(true);
+
+        clearTimeout(
+            typingTimer
+        );
+
+        typingTimer =
+            setTimeout(
+                () => updateTyping(false),
+                1500
+            );
+
+    }
+);
+
+
+/* =========================================
+   إرسال الرسائل
+========================================= */
+
+async function sendMessage(){
+
+    const text =
+        messageInput.value.trim();
+
+    if(
+        !text ||
+        !currentUser ||
+        !friendUser
+    )
+        return;
+
+    sendButton.disabled =
+        true;
+
+    await updateTyping(false);
+
+    try{
+
+        await addDoc(
+
+            collection(
+                db,
+                "chats",
+                chatID,
+                "messages"
+            ),
+
+            {
+                text,
+
+                senderId:
+                    currentUser.uid,
+
+                receiverId:
+                    friendUser.uid,
+
+                type:
+                    "text",
+
+                read:false,
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+        messageInput.value =
+            "";
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "حدث خطأ أثناء إرسال الرسالة"
+        );
+
+    }
+
+    sendButton.disabled =
+        false;
+
+}
+
+
+sendButton.onclick =
+    sendMessage;
+
+
+messageInput.addEventListener(
+    "keydown",
+    e => {
+
+        if(e.key === "Enter"){
+
+            e.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   تسجيل الصوت
+   هذا التسجيل داخل chat.html فقط
+========================================= */
+
+let recordingPointer = null;
+
+voiceButton.addEventListener(
+    "pointerdown",
+    async event => {
+
+        event.preventDefault();
+
+        if(recording)
+            return;
+
+        recordingPointer =
+            event.pointerId;
+
+        try{
+
+            if(
+                !navigator.mediaDevices ||
+                !navigator.mediaDevices.getUserMedia
+            ){
+
+                throw new Error(
+                    "getUserMedia غير مدعوم"
+                );
+
+            }
+
+            audioStream =
+                await navigator.mediaDevices
+                    .getUserMedia({
+
+                        audio:{
+                            echoCancellation:true,
+                            noiseSuppression:true,
+                            autoGainControl:true
+                        }
+
+                    });
+
+            audioChunks = [];
+
+            let mimeType = "";
+
+            const types = [
+
+                "audio/webm;codecs=opus",
+                "audio/webm",
+                "audio/mp4"
+
+            ];
+
+            for(const type of types){
+
+                if(
+                    MediaRecorder
+                        .isTypeSupported(type)
+                ){
+
+                    mimeType =
+                        type;
+
+                    break;
+
+                }
+
+            }
+
+            mediaRecorder =
+                mimeType
+                ?
+                new MediaRecorder(
+                    audioStream,
+                    {
+                        mimeType
+                    }
+                )
+                :
+                new MediaRecorder(
+                    audioStream
+                );
+
+            mediaRecorder.ondataavailable =
+                event => {
+
+                    if(
+                        event.data &&
+                        event.data.size > 0
+                    ){
+
+                        audioChunks.push(
+                            event.data
+                        );
+
+                    }
+
+                };
+
+            mediaRecorder.onstop =
+                async () => {
+
+                    const stream =
+                        audioStream;
+
+                    stream
+                        ?.getTracks()
+                        .forEach(
+                            track =>
+                                track.stop()
+                        );
+
+                    audioStream =
+                        null;
+
+                    try{
+
+                        const blob =
+                            new Blob(
+                                audioChunks,
+                                {
+                                    type:
+                                        mediaRecorder
+                                            ?.mimeType ||
+                                        "audio/webm"
+                                }
+                            );
+
+                        if(!blob.size)
+                            throw new Error(
+                                "ملف فارغ"
+                            );
+
+                        if(
+                            blob.size >
+                            700000
+                        ){
+
+                            alert(
+                                "التسجيل طويل جدًا، سجل مقطعًا أقصر."
+                            );
+
+                            return;
+
+                        }
+
+                        const audio =
+                            await blobToBase64(
+                                blob
+                            );
+
+                        await addDoc(
+
+                            collection(
+                                db,
+                                "chats",
+                                chatID,
+                                "messages"
+                            ),
+
+                            {
+                                type:
+                                    "voice",
+
+                                audio,
+
+                                mimeType:
+                                    blob.type,
+
+                                senderId:
+                                    currentUser.uid,
+
+                                receiverId:
+                                    friendUser.uid,
+
+                                read:false,
+
+                                createdAt:
+                                    serverTimestamp()
+
+                            }
+
+                        );
+
+                    }catch(error){
+
+                        console.error(
+                            "Voice:",
+                            error
+                        );
+
+                        alert(
+                            "تعذر إرسال التسجيل الصوتي"
+                        );
+
+                    }finally{
+
+                        mediaRecorder =
+                            null;
+
+                        audioChunks =
+                            [];
+
+                        recording =
+                            false;
+
+                        voiceButton.classList.remove(
+                            "recording"
+                        );
+
+                        voiceButton.textContent =
+                            "🎤";
+
+                    }
+
+                };
+
+            mediaRecorder.start();
+
+            recording =
+                true;
+
+            voiceButton.classList.add(
+                "recording"
+            );
+
+            voiceButton.textContent =
+                "🔴";
+
+        }catch(error){
+
+            console.error(error);
+
+            audioStream
+                ?.getTracks()
+                .forEach(
+                    t => t.stop()
+                );
+
+            audioStream =
+                null;
+
+            alert(
+                "اسمح للموقع باستخدام الميكروفون"
+            );
+
+        }
+
+    }
+);
+
+
+function stopVoiceRecording(){
+
+    if(
+        !recording ||
+        !mediaRecorder
+    )
+        return;
+
+    if(
+        mediaRecorder.state !==
+        "inactive"
+    ){
+
+        mediaRecorder.stop();
+
+    }
+
+}
+
+
+voiceButton.addEventListener(
+    "pointerup",
+    event => {
+
+        event.preventDefault();
+
+        if(
+            recordingPointer ===
+            event.pointerId
+        ){
+
+            stopVoiceRecording();
+
+        }
+
+    }
+);
+
+
+voiceButton.addEventListener(
+    "pointercancel",
+    stopVoiceRecording
+);
+
+
+voiceButton.addEventListener(
+    "contextmenu",
+    event => {
+
+        event.preventDefault();
+
+    }
+);
+
+
+function blobToBase64(blob){
+
+    return new Promise(
+        (resolve,reject) => {
+
+            const reader =
+                new FileReader();
+
+            reader.onloadend =
+                () =>
+                    resolve(
+                        reader.result
+                    );
+
+            reader.onerror =
+                reject;
+
+            reader.readAsDataURL(
+                blob
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   عرض الرسائل
+========================================= */
+
+const messageElements =
+    new Map();
+
+
+function createCallMessage(
+    box,
+    data
+){
+
+    box.classList.add(
+        "call-message"
+    );
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "call-box";
+
+    const icon =
+        document.createElement("div");
+
+    icon.className =
+        "call-icon";
+
+    icon.textContent =
+        data.callType === "video"
+        ? "📹"
+        : "📞";
+
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "call-info";
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "call-title";
+
+    const incoming =
+        data.callerId !==
+        currentUser.uid;
+
+    if(data.callStatus === "missed"){
+
+        title.textContent =
+            "مكالمة لم يتم الرد عليها";
+
+    }else{
+
+        title.textContent =
+            incoming
+            ? "مكالمة واردة"
+            : "مكالمة صادرة";
+
+    }
+
+    const subtitle =
+        document.createElement("div");
+
+    subtitle.className =
+        "call-subtitle";
+
+    subtitle.textContent =
+        data.callType === "video"
+        ? "مكالمة فيديو"
+        : "مكالمة صوتية";
+
+    const duration =
+        document.createElement("div");
+
+    duration.className =
+        "call-duration";
+
+    duration.textContent =
+        "⏱️ " +
+        formatDuration(
+            data.duration
+        );
+
+    info.append(
+        title,
+        subtitle,
+        duration
+    );
+
+    wrapper.append(
+        icon,
+        info
+    );
+
+    box.appendChild(
+        wrapper
+    );
+
+}
+
+
+function renderMessages(snapshot){
+
+    snapshot.docChanges()
+        .forEach(
+            change => {
+
+                const id =
+                    change.doc.id;
+
+                const data =
+                    change.doc.data();
+
+                if(
+                    change.type ===
+                    "removed"
+                ){
+
+                    messageElements
+                        .get(id)
+                        ?.remove();
+
+                    messageElements
+                        .delete(id);
+
+                    return;
+
+                }
+
+                if(
+                    Array.isArray(
+                        data.deletedFor
+                    ) &&
+                    data.deletedFor.includes(
+                        currentUser.uid
+                    )
+                )
+                    return;
+
+                let box =
+                    messageElements.get(id);
+
+                if(!box){
+
+                    box =
+                        document.createElement(
+                            "div"
+                        );
+
+                    messageElements.set(
+                        id,
+                        box
+                    );
+
+                    messages.appendChild(
+                        box
+                    );
+
+                }
+
+                box.className =
+                    "message " +
+                    (
+                        data.senderId ===
+                        currentUser.uid
+                        ? "mine"
+                        : "other"
+                    );
+
+                box.innerHTML =
+                    "";
+
+                if(data.type === "voice"){
+
+                    const audio =
+                        document.createElement(
+                            "audio"
+                        );
+
+                    audio.controls =
+                        true;
+
+                    audio.src =
+                        data.audio ||
+                        "";
+
+                    box.appendChild(
+                        audio
+                    );
+
+                }else if(data.type === "call"){
+
+                    createCallMessage(
+                        box,
+                        data
+                    );
+
+                }else{
+
+                    box.appendChild(
+                        document.createTextNode(
+                            data.text ||
+                            ""
+                        )
+                    );
+
+                }
+
+                const meta =
+                    document.createElement(
+                        "div"
+                    );
+
+                meta.className =
+                    "message-meta";
+
+                const time =
+                    document.createElement(
+                        "span"
+                    );
+
+                time.className =
+                    "time";
+
+                time.textContent =
+                    formatTime(
+                        data.createdAt
+                    );
+
+                meta.appendChild(
+                    time
+                );
+
+                if(
+                    data.senderId ===
+                    currentUser.uid
+                ){
+
+                    const status =
+                        document.createElement(
+                            "span"
+                        );
+
+                    status.className =
+                        "message-status " +
+                        (
+                            data.read
+                            ? "read"
+                            : ""
+                        );
+
+                    status.textContent =
+                        data.read
+                        ? "✓✓"
+                        : "✓";
+
+                    meta.appendChild(
+                        status
+                    );
+
+                }
+
+                box.appendChild(
+                    meta
+                );
+
+                if(
+                    data.senderId !==
+                    currentUser.uid &&
+                    !data.read
+                ){
+
+                    updateDoc(
+
+                        doc(
+                            db,
+                            "chats",
+                            chatID,
+                            "messages",
+                            id
+                        ),
+
+                        {
+                            read:true
+                        }
+
+                    ).catch(
+                        console.error
+                    );
+
+                }
+
+            }
+        );
+
+    const empty =
+        messages.querySelector(
+            ".empty"
+        );
+
+    const count =
+        messages.querySelectorAll(
+            ".message"
+        ).length;
+
+    if(count)
+        empty?.remove();
+
+    else if(!empty){
+
+        const e =
+            document.createElement(
+                "div"
+            );
+
+        e.className =
+            "empty";
+
+        e.innerHTML =
+            "💬<br>ابدأ المحادثة الآن";
+
+        messages.appendChild(
+            e
+        );
+
+    }
+
+    requestAnimationFrame(
+        () => {
+
+            messages.scrollTop =
+                messages.scrollHeight;
+
+        }
+    );
+
+}
+
+
+function listenMessages(){
+
+    const q =
+        query(
+
+            collection(
+                db,
+                "chats",
+                chatID,
+                "messages"
+            ),
+
+            orderBy(
+                "createdAt",
+                "asc"
+            )
+
+        );
+
+    unsubscribeMessages =
+        onSnapshot(
+            q,
+            renderMessages,
+            console.error
+        );
+
+}
+
+
+/* =========================================
+   WebRTC Peer
+========================================= */
+
+function createPeer(){
+
+    const pc =
+        new RTCPeerConnection(
+            rtcConfig
+        );
+
+    pc.onicecandidate =
+        async event => {
+
+            if(
+                !event.candidate ||
+                !activeCallId
+            )
+                return;
+
+            try{
+
+                await addDoc(
+
+                    collection(
+                        db,
+                        "calls",
+                        activeCallId,
+                        "candidates"
+                    ),
+
+                    {
+                        senderId:
+                            currentUser.uid,
+
+                        candidate:
+                            event.candidate.toJSON()
+
+                    }
+
+                );
+
+            }catch(error){
+
+                console.error(
+                    "ICE:",
+                    error
+                );
+
+            }
+
+        };
+
+
+    pc.ontrack =
+        event => {
+
+            if(
+                event.streams &&
+                event.streams[0]
+            ){
+
+                remoteVideo.srcObject =
+                    event.streams[0];
+
+                remoteVideo.muted =
+                    speakerMuted;
+
+                remoteVideo.play()
+                    .catch(
+                        () => {}
+                    );
+
+            }
+
+        };
+
+
+    pc.onconnectionstatechange =
+        () => {
+
+            if(
+                pc.connectionState ===
+                "connected"
+            ){
+
+                callState.textContent =
+                    "متصل";
+
+                startCallTimer();
+
+            }
+
+            if(
+                pc.connectionState ===
+                "failed"
+            ){
+
+                callState.textContent =
+                    "فشل الاتصال";
+
+            }
+
+        };
+
+    return pc;
+
+}
+
+
+/* =========================================
+   شاشة الاتصال
+========================================= */
+
+function showCallScreen(
+    type,
+    incoming = false
+){
+
+    callOverlay.style.display =
+        "flex";
+
+    callName.textContent =
+        friendUser?.name ||
+        "مكالمة";
+
+    callState.textContent =
+        incoming
+        ?
+        (
+            type === "video"
+            ? "📹 مكالمة فيديو واردة"
+            : "📞 مكالمة صوتية واردة"
+        )
+        :
+        "جارٍ الاتصال...";
+
+    incomingLabel.style.display =
+        incoming
+        ? "block"
+        : "none";
+
+    acceptCallButton.style.display =
+        incoming
+        ? "block"
+        : "none";
+
+    isIncoming =
+        incoming;
+
+    if(type === "video"){
+
+        videoArea.style.display =
+            "block";
+
+        callMainAvatar.style.display =
+            "none";
+
+        cameraButton.style.display =
+            "block";
+
+    }else{
+
+        videoArea.style.display =
+            "none";
+
+        callMainAvatar.style.display =
+            "flex";
+
+        cameraButton.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================
+   بدء مكالمة
+========================================= */
+
+async function startCall(type){
+
+    if(activeCallId){
+
+        alert(
+            "هناك مكالمة نشطة"
+        );
+
+        return;
+
+    }
+
+    activeCallType =
+        type;
+
+    activeCallId =
+        crypto.randomUUID();
+
+    showCallScreen(
+        type,
+        false
+    );
+
+    try{
+
+        localStream =
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    audio:true,
+
+                    video:
+                        type === "video"
+
+                });
+
+        if(type === "video"){
+
+            localVideo.srcObject =
+                localStream;
+
+            videoArea.style.display =
+                "block";
+
+            localVideo.style.display =
+                "block";
+
+        }
+
+        peerConnection =
+            createPeer();
+
+        localStream
+            .getTracks()
+            .forEach(
+                track =>
+                    peerConnection.addTrack(
+                        track,
+                        localStream
+                    )
+            );
+
+        const callRef =
+            doc(
+                db,
+                "calls",
+                activeCallId
+            );
+
+        await setDoc(
+            callRef,
+            {
+
+                callerId:
+                    currentUser.uid,
+
+                receiverId:
+                    friendUser.uid,
+
+                callType:
+                    type,
+
+                status:
+                    "ringing",
+
+                createdAt:
+                    serverTimestamp()
+
+            }
+        );
+
+        const offer =
+            await peerConnection
+                .createOffer();
+
+        await peerConnection
+            .setLocalDescription(
+                offer
+            );
+
+        await updateDoc(
+
+            callRef,
+
+            {
+                offer:{
+                    type:
+                        offer.type,
+
+                    sdp:
+                        offer.sdp
+                }
+            }
+
+        );
+
+        listenActiveCall();
+
+    }catch(error){
+
+        console.error(error);
+
+        await finishCall(
+            "failed"
+        );
+
+        alert(
+            "تعذر بدء المكالمة. اسمح بالميكروفون والكاميرا."
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   مراقبة المكالمة
+========================================= */
+
+function listenActiveCall(){
+
+    unsubscribeCall?.();
+
+    unsubscribeCandidates?.();
+
+    unsubscribeCall =
+        onSnapshot(
+
+            doc(
+                db,
+                "calls",
+                activeCallId
+            ),
+
+            async snap => {
+
+                if(!snap.exists())
+                    return;
+
+                const data =
+                    snap.data();
+
+                if(
+                    data.answer &&
+                    peerConnection &&
+                    !peerConnection
+                        .currentRemoteDescription
+                ){
+
+                    await peerConnection
+                        .setRemoteDescription(
+                            new RTCSessionDescription(
+                                data.answer
+                            )
+                        );
+
+                    callState.textContent =
+                        "متصل";
+
+                }
+
+                if(
+                    data.status ===
+                    "ended"
+                ){
+
+                    cleanupCall();
+
+                }
+
+            }
+
+        );
+
+
+    unsubscribeCandidates =
+        onSnapshot(
+
+            collection(
+                db,
+                "calls",
+                activeCallId,
+                "candidates"
+            ),
+
+            snapshot => {
+
+                snapshot.docChanges()
+                    .forEach(
+                        change => {
+
+                            if(
+                                change.type !==
+                                "added"
+                            )
+                                return;
+
+                            const data =
+                                change.doc.data();
+
+                            if(
+                                data.senderId ===
+                                currentUser.uid
+                            )
+                                return;
+
+                            if(
+                                peerConnection &&
+                                data.candidate
+                            ){
+
+                                peerConnection
+                                    .addIceCandidate(
+                                        new RTCIceCandidate(
+                                            data.candidate
+                                        )
+                                    )
+                                    .catch(
+                                        console.error
+                                    );
+
+                            }
+
+                        }
+                    );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   المكالمات الواردة
+========================================= */
+
+function listenIncomingCalls(){
+
+    incomingCallUnsubscribe?.();
+
+    incomingCallUnsubscribe =
+        onSnapshot(
+
+            query(
+                collection(
+                    db,
+                    "calls"
+                ),
+                orderBy(
+                    "createdAt",
+                    "desc"
+                )
+            ),
+
+            snapshot => {
+
+                snapshot.docChanges()
+                    .forEach(
+                        async change => {
+
+                            if(
+                                change.type !==
+                                "added"
+                            )
+                                return;
+
+                            const data =
+                                change.doc.data();
+
+                            if(
+                                data.receiverId !==
+                                currentUser.uid
+                            )
+                                return;
+
+                            if(
+                                data.status !==
+                                "ringing"
+                            )
+                                return;
+
+                            if(activeCallId)
+                                return;
+
+                            /*
+                               فقط المكالمات الموجهة
+                               لهذا الصديق أثناء فتح الشات
+                            */
+
+                            if(
+                                !friendUser ||
+                                data.callerId !==
+                                friendUser.uid
+                            )
+                                return;
+
+                            activeCallId =
+                                change.doc.id;
+
+                            activeCallType =
+                                data.callType ||
+                                "audio";
+
+                            showCallScreen(
+                                activeCallType,
+                                true
+                            );
+
+                        }
+                    );
+
+            },
+
+            error => {
+
+                console.error(
+                    "Incoming:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+/* =========================================
+   قبول مكالمة
+========================================= */
+
+acceptCallButton.onclick =
+    acceptIncomingCall;
+
+
+async function acceptIncomingCall(){
+
+    if(!activeCallId)
+        return;
+
+    try{
+
+        const callRef =
+            doc(
+                db,
+                "calls",
+                activeCallId
+            );
+
+        const snap =
+            await getDoc(
+                callRef
+            );
+
+        if(!snap.exists())
+            throw new Error(
+                "المكالمة غير موجودة"
+            );
+
+        const data =
+            snap.data();
+
+        localStream =
+            await navigator.mediaDevices
+                .getUserMedia({
+
+                    audio:true,
+
+                    video:
+                        activeCallType ===
+                        "video"
+
+                });
+
+        peerConnection =
+            createPeer();
+
+        localStream
+            .getTracks()
+            .forEach(
+                track =>
+                    peerConnection.addTrack(
+                        track,
+                        localStream
+                    )
+            );
+
+        if(
+            activeCallType ===
+            "video"
+        ){
+
+            localVideo.srcObject =
+                localStream;
+
+            localVideo.style.display =
+                "block";
+
+        }
+
+        await peerConnection
+            .setRemoteDescription(
+
+                new RTCSessionDescription(
+                    data.offer
+                )
+
+            );
+
+        const answer =
+            await peerConnection
+                .createAnswer();
+
+        await peerConnection
+            .setLocalDescription(
+                answer
+            );
+
+        await updateDoc(
+
+            callRef,
+
+            {
+
+                answer:{
+                    type:
+                        answer.type,
+
+                    sdp:
+                        answer.sdp
+                },
+
+                status:
+                    "connected",
+
+                answeredAt:
+                    serverTimestamp()
+
+            }
+
+        );
+
+        acceptCallButton.style.display =
+            "none";
+
+        incomingLabel.style.display =
+            "none";
+
+        callState.textContent =
+            "متصل";
+
+        listenActiveCall();
+
+        startCallTimer();
+
+    }catch(error){
+
+        console.error(error);
+
+        await finishCall(
+            "failed"
+        );
+
+        alert(
+            "تعذر قبول المكالمة"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   مؤقت المكالمة
+========================================= */
+
+function startCallTimer(){
+
+    if(callTimer)
+        return;
+
+    callSeconds =
+        0;
+
+    callTimer =
+        setInterval(
+            () => {
+
+                callSeconds++;
+
+                callState.textContent =
+                    "متصل • " +
+                    formatDuration(
+                        callSeconds
+                    );
+
+            },
+            1000
+        );
+
+}
+
+
+function stopCallTimer(){
+
+    clearInterval(
+        callTimer
+    );
+
+    callTimer =
+        null;
+
+}
+
+
+/* =========================================
+   إنهاء المكالمة
+========================================= */
+
+async function finishCall(
+    status = "ended"
+){
+
+    const id =
+        activeCallId;
+
+    if(id){
+
+        try{
+
+            await updateDoc(
+
+                doc(
+                    db,
+                    "calls",
+                    id
+                ),
+
+                {
+
+                    status,
+
+                    duration:
+                        callSeconds,
+
+                    endedAt:
+                        serverTimestamp()
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+    /*
+       إذا كانت المكالمة لم تبدأ
+       وتم رفضها/إغلاقها، نضيف
+       رسالة مكالمة فائتة.
+    */
+
+    if(
+        id &&
+        callSeconds === 0
+    ){
+
+        try{
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "chats",
+                    chatID,
+                    "messages"
+                ),
+
+                {
+
+                    type:
+                        "call",
+
+                    callType:
+                        activeCallType,
+
+                    callStatus:
+                        "missed",
+
+                    callerId:
+                        friendUser.uid,
+
+                    receiverId:
+                        currentUser.uid,
+
+                    duration:
+                        0,
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(
+                "Missed call message:",
+                error
+            );
+
+        }
+
+    }
+
+    cleanupCall();
+
+}
+
+
+/* =========================================
+   تنظيف الاتصال
+========================================= */
+
+function cleanupCall(){
+
+    stopCallTimer();
+
+    unsubscribeCall?.();
+    unsubscribeCandidates?.();
+
+    unsubscribeCall =
+        null;
+
+    unsubscribeCandidates =
+        null;
+
+    if(localStream){
+
+        localStream
+            .getTracks()
+            .forEach(
+                track =>
+                    track.stop()
+            );
+
+    }
+
+    localStream =
+        null;
+
+    if(peerConnection){
+
+        peerConnection.close();
+
+    }
+
+    peerConnection =
+        null;
+
+    remoteVideo.srcObject =
+        null;
+
+    localVideo.srcObject =
+        null;
+
+    localVideo.classList.remove(
+        "expanded"
+    );
+
+    activeCallId =
+        null;
+
+    activeCallType =
+        null;
+
+    isIncoming =
+        false;
+
+    callSeconds =
+        0;
+
+    callOverlay.style.display =
+        "none";
+
+    acceptCallButton.style.display =
+        "none";
+
+    incomingLabel.style.display =
+        "none";
+
+    muteButton.textContent =
+        "🎤";
+
+    speakerButton.textContent =
+        "🔊";
+
+    cameraButton.textContent =
+        "📹";
+
+    speakerMuted =
+        false;
+
+}
+
+
+/* =========================================
+   أزرار المكالمات
+========================================= */
+
+callButton.onclick =
+    () => {
+
+        startCall(
+            "audio"
+        );
+
+    };
+
+
+videoButton.onclick =
+    () => {
+
+        startCall(
+            "video"
+        );
+
+    };
+
+
+endCallButton.onclick =
+    () => {
+
+        finishCall(
+            "ended"
+        );
+
+    };
+
+
+/* =========================================
+   🎤 كتم صوتي
+========================================= */
+
+muteButton.onclick =
+    () => {
+
+        if(!localStream)
+            return;
+
+        const tracks =
+            localStream
+                .getAudioTracks();
+
+        if(!tracks.length)
+            return;
+
+        const enabled =
+            tracks[0].enabled;
+
+        tracks.forEach(
+            track => {
+
+                track.enabled =
+                    !enabled;
+
+            }
+        );
+
+        muteButton.textContent =
+            enabled
+            ? "🔇"
+            : "🎤";
+
+    };
+
+
+/* =========================================
+   🔊 كتم صوت الطرف الآخر
+========================================= */
+
+speakerButton.onclick =
+    () => {
+
+        speakerMuted =
+            !speakerMuted;
+
+        remoteVideo.muted =
+            speakerMuted;
+
+        speakerButton.textContent =
+            speakerMuted
+            ? "🔇"
+            : "🔊";
+
+        speakerButton.classList.toggle(
+            "active",
+            speakerMuted
+        );
+
+    };
+
+
+/* =========================================
+   📹 الكاميرا
+========================================= */
+
+cameraButton.onclick =
+    () => {
+
+        if(!localStream)
+            return;
+
+        const tracks =
+            localStream
+                .getVideoTracks();
+
+        if(!tracks.length)
+            return;
+
+        const enabled =
+            tracks[0].enabled;
+
+        tracks.forEach(
+            track => {
+
+                track.enabled =
+                    !enabled;
+
+            }
+        );
+
+        cameraButton.textContent =
+            enabled
+            ? "🚫"
+            : "📹";
+
+    };
+
+
+/* =========================================
+   👆 تكبير صورة المستخدم
+========================================= */
+
+callMainAvatar.onclick =
+    () => {
+
+        callMainAvatar.classList.toggle(
+            "large"
+        );
+
+    };
+
+
+/* =========================================
+   👆 تكبير صورتك أثناء الفيديو
+========================================= */
+
+localVideo.onclick =
+    () => {
+
+        localVideo.classList.toggle(
+            "expanded"
+        );
+
+    };
+
+
+/* =========================================
+   الرجوع
+========================================= */
+
+backButton.onclick =
+    async () => {
+
+        await updateTyping(false);
+
+        unsubscribeMessages?.();
+        unsubscribeStatus?.();
+        unsubscribeTyping?.();
+        incomingCallUnsubscribe?.();
+
+        if(activeCallId){
+
+            await finishCall(
+                "ended"
+            );
+
+        }
+
+        updatePresence(false);
+
+        history.back();
+
+    };
+
+
+/* =========================================
+   Visibility
+========================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if(!currentUser)
+            return;
+
+        if(
+            document.visibilityState ===
+            "visible"
+        ){
+
+            updatePresence(true);
+
+        }else{
+
+            updatePresence(false);
+
+            updateTyping(false);
+
+        }
+
+    }
+);
+
+
+window.addEventListener(
+    "pagehide",
+    () => {
+
+        if(currentUser)
+            updatePresence(false);
+
+    }
+);
+
+
+/* =========================================
+   التشغيل
+========================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(!user){
+
+            loading.textContent =
+                "يجب تسجيل الدخول أولاً";
+
+            return;
+
+        }
+
+        currentUser =
+            user;
+
+        window.chatUser =
+            user;
+
+        try{
+
+            startPresence();
+
+            await loadFriend();
+
+            listenMessages();
+
+            listenIncomingCalls();
+
+            showApp();
+
+        }catch(error){
+
+            console.error(error);
+
+            loading.innerHTML =
+                `
+                <div style="text-align:center;padding:20px">
+                ⚠️ تعذر فتح الدردشة
+                <br>
+                <small>
+                ${escapeHtml(
+                    error.message
+                )}
+                </small>
+                </div>
+                `;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
