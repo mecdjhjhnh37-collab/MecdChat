@@ -2388,47 +2388,16 @@ videoButton.addEventListener(
 
         }
 
-        try{
+        try {
 
-            if(!videoCallModule){
+            const url =
+                "./Video-call.html?friend=" +
+                encodeURIComponent(friendUser.uid);
 
-                videoCallModule =
-                    await import(
-                        "./Video-call.js"
-                    );
-
-            }
-
-            if(
-                typeof videoCallModule.startVideoCall !==
-                "function"
-            ){
-
-                throw new Error(
-                    "startVideoCall غير موجودة في Video-call.js"
-                );
-
-            }
-
-            await videoCallModule.startVideoCall({
-
-                friendId:
-                    friendUser.uid,
-
-                friendName:
-                    friendUser.name,
-
-                friendPhoto:
-                    friendUser.photo,
-
-                chatId:
-                    chatID
-
-            });
+            window.location.href = url;
 
         }
-
-        catch(error){
+        catch(error) {
 
             console.error(
                 "Video call error:",
@@ -2436,14 +2405,8 @@ videoButton.addEventListener(
             );
 
             alert(
-
-                "❌ تعذر بدء مكالمة الفيديو\n\n" +
-
-                (
-                    error?.message ||
-                    "حدث خطأ"
-                )
-
+                "❌ تعذر فتح مكالمة الفيديو\n\n" +
+                (error?.message || "حدث خطأ")
             );
 
         }
@@ -2451,7 +2414,6 @@ videoButton.addEventListener(
     }
 
 );
-
 
 
 // ============================================================
