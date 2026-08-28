@@ -82,7 +82,7 @@ cursor:pointer;
 .avatar{
 width:48px;
 height:48px;
-border-radius:16px;
+border-radius:50%;
 background:#12352c;
 display:flex;
 align-items:center;
@@ -96,6 +96,7 @@ flex-shrink:0;
 width:100%;
 height:100%;
 object-fit:cover;
+border-radius:50%;
 }
 
 .user-info{
@@ -312,6 +313,10 @@ audio{
 max-width:100%;
 }
 
+/* =========================================================
+   CALL MESSAGE
+========================================================= */
+
 .call-message{
 min-width:245px;
 max-width:310px;
@@ -327,7 +332,7 @@ gap:11px;
 .call-icon{
 width:46px;
 height:46px;
-border-radius:15px;
+border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -358,6 +363,10 @@ font-size:11px;
 margin-top:4px;
 opacity:.75;
 }
+
+/* =========================================================
+   CALL OVERLAY
+========================================================= */
 
 #callOverlay{
 position:fixed;
@@ -403,6 +412,10 @@ font-size:13px;
 margin-top:6px;
 }
 
+/* =========================================================
+   AUDIO CALL
+========================================================= */
+
 #audioCallView{
 flex:1;
 display:none;
@@ -413,9 +426,9 @@ gap:15px;
 }
 
 #audioCallAvatar{
-width:120px;
-height:120px;
-border-radius:35px;
+width:140px;
+height:140px;
+border-radius:50%;
 background:#12352c;
 display:flex;
 align-items:center;
@@ -429,7 +442,21 @@ box-shadow:0 10px 50px rgba(0,0,0,.5);
 width:100%;
 height:100%;
 object-fit:cover;
+border-radius:50%;
 }
+
+/*
+   عنصر الصوت منفصل عن الفيديو.
+   هذا هو الإصلاح الأساسي للمكالمة الصوتية.
+*/
+
+#remoteAudio{
+display:none;
+}
+
+/* =========================================================
+   VIDEO
+========================================================= */
 
 #videoArea{
 position:absolute;
@@ -463,7 +490,7 @@ z-index:2;
 #remoteAvatar img{
 width:150px;
 height:150px;
-border-radius:40px;
+border-radius:50%;
 object-fit:cover;
 }
 
@@ -519,7 +546,7 @@ left:16px;
 top:105px;
 width:115px;
 height:160px;
-border-radius:18px;
+border-radius:50%;
 background:#12352c;
 z-index:6;
 display:none;
@@ -535,6 +562,7 @@ transition:.3s;
 width:100%;
 height:100%;
 object-fit:cover;
+border-radius:50%;
 }
 
 #videoArea.swapped #localAvatar{
@@ -543,9 +571,13 @@ width:100%;
 height:100%;
 left:0;
 top:0;
-border-radius:0;
+border-radius:50%;
 z-index:3;
 }
+
+/* =========================================================
+   CALL CONTROLS
+========================================================= */
 
 .call-controls{
 position:absolute;
@@ -598,6 +630,10 @@ background:#00e889;
 color:#00150e;
 }
 
+/* =========================================================
+   INCOMING
+========================================================= */
+
 #incomingInfo{
 position:absolute;
 top:50%;
@@ -611,9 +647,9 @@ z-index:15;
 }
 
 #incomingAvatar{
-width:110px;
-height:110px;
-border-radius:32px;
+width:120px;
+height:120px;
+border-radius:50%;
 background:#12352c;
 display:flex;
 align-items:center;
@@ -627,6 +663,7 @@ margin-bottom:18px;
 width:100%;
 height:100%;
 object-fit:cover;
+border-radius:50%;
 }
 
 #incomingText{
@@ -790,6 +827,10 @@ type="button">
 
 </main>
 
+<!-- =====================================================
+     CALL OVERLAY
+====================================================== -->
+
 <div id="callOverlay">
 
 <div class="call-top">
@@ -815,6 +856,13 @@ type="button">
 </div>
 
 </div>
+
+<!-- صوت الطرف الآخر -->
+<audio
+id="remoteAudio"
+autoplay
+playsinline>
+</audio>
 
 <div id="videoArea">
 
@@ -860,6 +908,15 @@ playsinline>
 </div>
 
 <div class="call-controls">
+
+<!-- تحويل الصوت إلى فيديو -->
+<button
+id="switchVideoButton"
+class="call-control hidden"
+type="button"
+title="تحويل إلى فيديو">
+📹
+</button>
 
 <button
 id="muteButton"
@@ -1011,6 +1068,8 @@ const callState = $("callState");
 const audioCallView = $("audioCallView");
 const audioCallAvatar = $("audioCallAvatar");
 
+const remoteAudio = $("remoteAudio");
+
 const videoArea = $("videoArea");
 const remoteVideo = $("remoteVideo");
 const localVideo = $("localVideo");
@@ -1026,9 +1085,17 @@ const muteButton = $("muteButton");
 const speakerButton = $("speakerButton");
 const flipCameraButton = $("flipCameraButton");
 
-const acceptCallButton = $("acceptCallButton");
-const rejectCallButton = $("rejectCallButton");
-const endCallButton = $("endCallButton");
+const switchVideoButton =
+$("switchVideoButton");
+
+const acceptCallButton =
+$("acceptCallButton");
+
+const rejectCallButton =
+$("rejectCallButton");
+
+const endCallButton =
+$("endCallButton");
 
 
 /* =========================================================
@@ -1050,6 +1117,8 @@ let unsubscribeReceiverCandidates = null;
 
 let presenceInterval = null;
 let typingTimer = null;
+let friendActivityTimer = null;
+
 let typingState = false;
 let voiceRecording = false;
 
@@ -1070,13 +1139,16 @@ let cameraFacing = "user";
 
 let callMessageSaved = false;
 
-/*
-   مهم:
-   ICE الذي يصل قبل RemoteDescription
-   يتم وضعه هنا.
-*/
+let friendOnline = false;
 
 let pendingIceCandidates = [];
+
+/*
+   رقم إصدار تحويل الصوت إلى فيديو.
+*/
+
+let upgradeVersion = 0;
+let lastHandledUpgradeVersion = 0;
 
 
 /* =========================================================
@@ -1132,8 +1204,11 @@ c => ({
 
 function showApp(){
 
-loading.style.display = "none";
-app.style.display = "flex";
+loading.style.display =
+"none";
+
+app.style.display =
+"flex";
 
 }
 
@@ -1215,7 +1290,9 @@ String(s).padStart(2,"0")
    PRESENCE
 ========================================================= */
 
-async function updateMyPresence(online=true){
+async function updateMyPresence(
+online=true
+){
 
 if(!currentUser)
 return;
@@ -1232,7 +1309,8 @@ currentUser.uid
 
 {
 online,
-lastSeen:serverTimestamp()
+lastSeen:
+serverTimestamp()
 },
 
 {
@@ -1374,7 +1452,9 @@ members:[
 currentUser.uid,
 friendUser.uid
 ],
-createdAt:serverTimestamp()
+
+createdAt:
+serverTimestamp()
 },
 
 {
@@ -1393,7 +1473,10 @@ listenFriendActivity();
    AVATAR
 ========================================================= */
 
-function setUserAvatar(element,user){
+function setUserAvatar(
+element,
+user
+){
 
 if(user?.photo){
 
@@ -1405,7 +1488,8 @@ alt="">`;
 
 }else{
 
-element.innerHTML = "👤";
+element.innerHTML =
+"👤";
 
 }
 
@@ -1415,6 +1499,38 @@ element.innerHTML = "👤";
 /* =========================================================
    FRIEND STATUS
 ========================================================= */
+
+function renderFriendStatus(){
+
+if(
+friendStatus.classList.contains(
+"typing"
+)
+)
+return;
+
+friendStatus.classList.remove(
+"online"
+);
+
+if(friendOnline){
+
+friendStatus.textContent =
+"● متصل";
+
+friendStatus.classList.add(
+"online"
+);
+
+}else{
+
+friendStatus.textContent =
+"● غير متصل";
+
+}
+
+}
+
 
 function listenFriendStatus(){
 
@@ -1437,8 +1553,9 @@ snap=>{
 
 if(!snap.exists()){
 
-friendStatus.textContent =
-"● غير متصل";
+friendOnline = false;
+
+renderFriendStatus();
 
 return;
 
@@ -1450,27 +1567,12 @@ snap.data();
 const last =
 data.lastSeen?.toMillis?.() || 0;
 
-const online =
+friendOnline =
 data.online === true &&
 last > 0 &&
 Date.now() - last < 30000;
 
-if(
-!friendStatus.classList
-.contains("typing")
-){
-
-friendStatus.textContent =
-online
-? "● متصل"
-: "● غير متصل";
-
-}
-
-friendStatus.classList.toggle(
-"online",
-online
-);
+renderFriendStatus();
 
 }
 
@@ -1482,6 +1584,35 @@ online
 /* =========================================================
    FRIEND ACTIVITY
 ========================================================= */
+
+function clearFriendActivityTimer(){
+
+if(friendActivityTimer){
+
+clearTimeout(
+friendActivityTimer
+);
+
+friendActivityTimer =
+null;
+
+}
+
+}
+
+
+function restoreFriendStatus(){
+
+clearFriendActivityTimer();
+
+friendStatus.classList.remove(
+"typing"
+);
+
+renderFriendStatus();
+
+}
+
 
 function listenFriendActivity(){
 
@@ -1504,8 +1635,15 @@ friendUser.uid
 
 snap=>{
 
-if(!snap.exists())
+clearFriendActivityTimer();
+
+if(!snap.exists()){
+
+restoreFriendStatus();
+
 return;
+
+}
 
 const data =
 snap.data();
@@ -1513,10 +1651,14 @@ snap.data();
 const time =
 data.updatedAt?.toMillis?.() || 0;
 
-if(
-time &&
-Date.now() - time >= 6000
-){
+const age =
+time
+? Date.now() - time
+: Infinity;
+
+if(age >= 6000){
+
+restoreFriendStatus();
 
 return;
 
@@ -1524,17 +1666,17 @@ return;
 
 if(data.recording === true){
 
-setFriendActivity("recording");
+setFriendActivity(
+"recording"
+);
 
-}
+}else if(data.typing === true){
 
-else if(data.typing === true){
+setFriendActivity(
+"typing"
+);
 
-setFriendActivity("typing");
-
-}
-
-else{
+}else{
 
 restoreFriendStatus();
 
@@ -1547,37 +1689,11 @@ restoreFriendStatus();
 }
 
 
-function restoreFriendStatus(){
-
-friendStatus.classList.remove(
-"typing"
-);
-
-friendStatus.classList.remove(
-"online"
-);
-
-const text =
-friendStatus.textContent;
-
-if(
-text === "🎤 يسجل صوت..." ||
-text === "يكتب..."
+function setFriendActivity(
+activity
 ){
 
-friendStatus.textContent =
-"● غير متصل";
-
-}
-
-}
-
-
-/* =========================================================
-   FRIEND ACTIVITY UI
-========================================================= */
-
-function setFriendActivity(activity){
+clearFriendActivityTimer();
 
 friendStatus.classList.remove(
 "typing"
@@ -1592,11 +1708,7 @@ if(activity === "recording"){
 friendStatus.textContent =
 "🎤 يسجل صوت...";
 
-return;
-
-}
-
-if(activity === "typing"){
+}else if(activity === "typing"){
 
 friendStatus.textContent =
 "يكتب...";
@@ -1605,7 +1717,27 @@ friendStatus.classList.add(
 "typing"
 );
 
+}else{
+
+renderFriendStatus();
+
+return;
+
 }
+
+/*
+   لا تبقى الحالة عالقة.
+*/
+
+friendActivityTimer =
+setTimeout(
+()=>{
+
+restoreFriendStatus();
+
+},
+6000
+);
 
 }
 
@@ -1614,7 +1746,9 @@ friendStatus.classList.add(
    MY ACTIVITY
 ========================================================= */
 
-async function updateMyActivity(activity){
+async function updateMyActivity(
+activity
+){
 
 if(!currentUser || !chatID)
 return;
@@ -1640,7 +1774,8 @@ currentUser.uid
 {
 typing,
 recording,
-updatedAt:serverTimestamp()
+updatedAt:
+serverTimestamp()
 },
 
 {
@@ -1675,13 +1810,17 @@ return;
 const hasText =
 messageInput.value.trim().length > 0;
 
-clearTimeout(typingTimer);
+clearTimeout(
+typingTimer
+);
 
 if(!hasText){
 
 typingState = false;
 
-updateMyActivity("none");
+updateMyActivity(
+"none"
+);
 
 return;
 
@@ -1691,7 +1830,9 @@ if(!typingState){
 
 typingState = true;
 
-updateMyActivity("typing");
+updateMyActivity(
+"typing"
+);
 
 }
 
@@ -1701,7 +1842,9 @@ setTimeout(
 
 typingState = false;
 
-updateMyActivity("none");
+updateMyActivity(
+"none"
+);
 
 },
 1500
@@ -1713,6 +1856,7 @@ updateMyActivity("none");
 
 /* =========================================================
    VOICE.JS
+   لا نحذف الربط الموجود.
 ========================================================= */
 
 function connectVoiceJS(){
@@ -1859,7 +2003,10 @@ return span;
 }
 
 
-async function markRead(id,data){
+async function markRead(
+id,
+data
+){
 
 if(
 !currentUser ||
@@ -1882,7 +2029,8 @@ id
 
 {
 read:true,
-readAt:serverTimestamp()
+readAt:
+serverTimestamp()
 }
 
 );
@@ -1903,7 +2051,10 @@ error
    CALL MESSAGE
 ========================================================= */
 
-function createCallMessage(box,data){
+function createCallMessage(
+box,
+data
+){
 
 box.classList.add(
 "call-message"
@@ -1942,7 +2093,9 @@ const incoming =
 data.callerId !==
 currentUser.uid;
 
-if(data.callStatus === "missed"){
+if(
+data.callStatus === "missed"
+){
 
 title.textContent =
 "مكالمة لم يتم الرد عليها";
@@ -2157,6 +2310,7 @@ alert(
 };
 
 menu.appendChild(button);
+
 element.appendChild(menu);
 
 }
@@ -2465,7 +2619,9 @@ clearTimeout(typingTimer);
 
 typingState = false;
 
-await updateMyActivity("none");
+await updateMyActivity(
+"none"
+);
 
 try{
 
@@ -2480,16 +2636,26 @@ chatID,
 
 {
 text,
-senderId:currentUser.uid,
-receiverId:friendUser.uid,
-type:"text",
+
+senderId:
+currentUser.uid,
+
+receiverId:
+friendUser.uid,
+
+type:
+"text",
+
 read:false,
-createdAt:serverTimestamp()
+
+createdAt:
+serverTimestamp()
 }
 
 );
 
 messageInput.value = "";
+
 messageInput.focus();
 
 }catch(error){
@@ -2537,13 +2703,16 @@ function hideAllCallButtons(){
 muteButton,
 speakerButton,
 flipCameraButton,
+switchVideoButton,
 acceptCallButton,
 rejectCallButton,
 endCallButton
 ]
 .forEach(
 button=>
-button.classList.add("hidden")
+button.classList.add(
+"hidden"
+)
 );
 
 }
@@ -2591,9 +2760,19 @@ endCallButton.classList.remove(
 "hidden"
 );
 
-if(
-activeCallType === "video"
-){
+/*
+   زر التحويل يظهر فقط أثناء الصوت.
+*/
+
+if(activeCallType === "audio"){
+
+switchVideoButton.classList.remove(
+"hidden"
+);
+
+}
+
+if(activeCallType === "video"){
 
 flipCameraButton.classList.remove(
 "hidden"
@@ -2654,7 +2833,7 @@ setupCallVisuals();
 
 
 /* =========================================================
-   ICE QUEUE
+   ICE
 ========================================================= */
 
 async function addCandidateSafely(
@@ -2688,7 +2867,9 @@ error
 
 }else{
 
-pendingIceCandidates.push(candidate);
+pendingIceCandidates.push(
+candidate
+);
 
 }
 
@@ -2734,7 +2915,7 @@ error
 
 
 /* =========================================================
-   CREATE PEER
+   PEER
 ========================================================= */
 
 function createPeer(){
@@ -2791,17 +2972,48 @@ pc.ontrack =
 event=>{
 
 if(
-event.streams &&
-event.streams[0]
+!event.streams ||
+!event.streams[0]
+)
+return;
+
+const stream =
+event.streams[0];
+
+/*
+   الصوت دائمًا يذهب إلى عنصر الصوت.
+*/
+
+remoteAudio.srcObject =
+stream;
+
+remoteAudio.play()
+.catch(
+()=>{}
+);
+
+/*
+   إذا كان هناك فيديو نعرضه.
+*/
+
+if(
+activeCallType === "video" ||
+stream.getVideoTracks().length > 0
 ){
 
 remoteVideo.srcObject =
-event.streams[0];
+stream;
 
 remoteVideo.style.display =
 "block";
 
 remoteAvatar.style.display =
+"none";
+
+videoArea.style.display =
+"block";
+
+audioCallView.style.display =
 "none";
 
 remoteVideo
@@ -2811,6 +3023,16 @@ remoteVideo
 );
 
 }
+
+};
+
+
+pc.onnegotiationneeded =
+async()=>{
+
+console.log(
+"RTC negotiation needed"
+);
 
 };
 
@@ -2876,7 +3098,9 @@ return pc;
 
 function startOutgoingTimeout(){
 
-clearTimeout(callTimeout);
+clearTimeout(
+callTimeout
+);
 
 callTimeout =
 setTimeout(
@@ -2893,6 +3117,32 @@ activeCallId;
 
 try{
 
+const snap =
+await getDoc(
+doc(
+db,
+"calls",
+id
+)
+);
+
+if(
+!snap.exists()
+){
+
+cleanupCall();
+
+return;
+
+}
+
+const data =
+snap.data();
+
+if(
+data.status === "ringing"
+){
+
 await updateDoc(
 
 doc(
@@ -2903,12 +3153,21 @@ id
 
 {
 status:"missed",
+
 duration:0,
+
 endedAt:
 serverTimestamp()
 }
 
 );
+
+await saveCallMessage(
+"missed",
+0
+);
+
+}
 
 }catch(error){
 
@@ -2918,11 +3177,6 @@ error
 );
 
 }
-
-await saveCallMessage(
-"missed",
-0
-);
 
 cleanupCall();
 
@@ -2937,7 +3191,9 @@ cleanupCall();
 
 function stopOutgoingTimeout(){
 
-clearTimeout(callTimeout);
+clearTimeout(
+callTimeout
+);
 
 callTimeout = null;
 
@@ -2948,7 +3204,9 @@ callTimeout = null;
    START CALL
 ========================================================= */
 
-async function startCall(type){
+async function startCall(
+type
+){
 
 if(activeCallId)
 return;
@@ -2989,8 +3247,14 @@ friendUser.photo
 };
 
 callMessageSaved = false;
+
 callSeconds = 0;
+
 pendingIceCandidates = [];
+
+upgradeVersion = 0;
+
+lastHandledUpgradeVersion = 0;
 
 showCallOverlay();
 
@@ -3005,7 +3269,7 @@ incomingInfo.style.display =
 try{
 
 /*
-   أولاً نفتح الميكروفون/الكاميرا.
+   فتح الميكروفون أو الكاميرا.
 */
 
 localStream =
@@ -3047,7 +3311,7 @@ videoArea.classList.remove(
 
 
 /*
-   إنشاء Peer.
+   Peer.
 */
 
 peerConnection =
@@ -3069,14 +3333,12 @@ localStream
 
 
 /*
-   الإصلاح المهم:
-   إنشاء Offer أولاً.
+   Offer.
 */
 
 const offer =
 await peerConnection
 .createOffer();
-
 
 await peerConnection
 .setLocalDescription(
@@ -3085,8 +3347,7 @@ offer
 
 
 /*
-   الآن فقط ننشئ مستند المكالمة.
-   المستلم سيجد offer جاهزًا.
+   إنشاء المكالمة بعد تجهيز Offer.
 */
 
 await setDoc(
@@ -3122,7 +3383,9 @@ offer.sdp
 createdAt:
 serverTimestamp(),
 
-receivedAt:null
+receivedAt:null,
+
+upgradeVersion:0
 
 }
 
@@ -3130,7 +3393,7 @@ receivedAt:null
 
 
 /*
-   بعد وجود المكالمة نراقب الرد.
+   مستمع المتصل.
 */
 
 listenActiveCallAsCaller();
@@ -3186,17 +3449,10 @@ return;
 const data =
 snap.data();
 
-if(
-data.receivedAt &&
-data.status ===
-"ringing"
-){
 
-callState.textContent =
-"يرن";
-
-}
-
+/*
+   رد الطرف الآخر.
+*/
 
 if(
 data.answer &&
@@ -3229,6 +3485,21 @@ error
 }
 
 
+/*
+   حالة المكالمة.
+*/
+
+if(
+data.status === "ringing"
+){
+
+callState.textContent =
+data.receivedAt
+? "يرن"
+: "جارٍ الاتصال...";
+
+}
+
 if(data.status === "connected"){
 
 stopOutgoingTimeout();
@@ -3245,6 +3516,68 @@ startCallTimer();
 
 }
 
+
+/*
+   تحويل الصوت إلى فيديو.
+*/
+
+if(
+data.upgradeOffer &&
+data.upgradeVersion &&
+data.upgradeVersion >
+lastHandledUpgradeVersion &&
+activeCallRole === "caller"
+){
+
+await handleUpgradeOffer(
+data
+);
+
+}
+
+
+if(
+data.upgradeAnswer &&
+data.upgradeAnswerVersion &&
+peerConnection
+){
+
+if(
+data.upgradeAnswerVersion >
+lastHandledUpgradeVersion
+){
+
+try{
+
+await peerConnection
+.setRemoteDescription(
+
+new RTCSessionDescription(
+data.upgradeAnswer
+)
+
+);
+
+lastHandledUpgradeVersion =
+data.upgradeAnswerVersion;
+
+}catch(error){
+
+console.error(
+"Upgrade answer:",
+error
+);
+
+}
+
+}
+
+}
+
+
+/*
+   نهاية المكالمة.
+*/
 
 if(
 data.status === "ended" ||
@@ -3272,7 +3605,7 @@ cleanupCall();
 
 
 /*
-   مستمع ICE للمتصل.
+   ICE.
 */
 
 if(unsubscribeCallerCandidates)
@@ -3378,7 +3711,7 @@ continue;
 
 
 /*
-   لا نعيد فتح المكالمة نفسها.
+   المكالمة الحالية.
 */
 
 if(
@@ -3417,15 +3750,7 @@ if(activeCallId)
 continue;
 
 
-/*
-   يجب أن يكون Offer موجودًا.
-*/
-
 if(!data.offer){
-
-console.log(
-"⏳ المكالمة وصلت قبل offer..."
-);
 
 continue;
 
@@ -3455,7 +3780,9 @@ changedId
 
 {
 status:"missed",
+
 duration:0,
+
 endedAt:
 serverTimestamp()
 }
@@ -3472,6 +3799,10 @@ continue;
 
 }
 
+
+/*
+   جلب اسم وصورة المتصل الحقيقيين.
+*/
 
 const callerDoc =
 await getDoc(
@@ -3561,6 +3892,11 @@ callMessageSaved = false;
 
 pendingIceCandidates = [];
 
+upgradeVersion =
+data.upgradeVersion || 0;
+
+lastHandledUpgradeVersion = 0;
+
 showCallOverlay();
 
 callState.textContent =
@@ -3619,7 +3955,7 @@ db,
 activeCallId
 ),
 
-snap=>{
+async snap=>{
 
 if(!snap.exists()){
 
@@ -3632,8 +3968,23 @@ return;
 const data =
 snap.data();
 
+
+/*
+   المتصل أنهى المكالمة قبل القبول.
+   هنا تختفي نافذة الطلب مباشرة.
+*/
+
 if(
-data.status === "cancelled" ||
+data.status === "cancelled"
+){
+
+cleanupCall();
+
+return;
+
+}
+
+if(
 data.status === "missed" ||
 data.status === "rejected"
 ){
@@ -3644,11 +3995,46 @@ return;
 
 }
 
+
+/*
+   الطرف الآخر أنهى مكالمة متصلة.
+*/
+
 if(
 data.status === "ended"
 ){
 
+if(
+typeof data.duration ===
+"number"
+){
+
+callSeconds =
+data.duration;
+
+}
+
 cleanupCall();
+
+return;
+
+}
+
+
+/*
+   تحويل الصوت إلى فيديو من الطرف الآخر.
+*/
+
+if(
+data.upgradeOffer &&
+data.upgradeVersion &&
+data.upgradeVersion >
+lastHandledUpgradeVersion
+){
+
+await handleUpgradeOffer(
+data
+);
 
 }
 
@@ -3728,7 +4114,7 @@ throw new Error(
 
 
 /*
-   فتح الأجهزة.
+   فتح الميكروفون/الكاميرا.
 */
 
 localStream =
@@ -3770,7 +4156,7 @@ videoArea.classList.remove(
 
 
 /*
-   إنشاء Peer.
+   Peer.
 */
 
 peerConnection =
@@ -3792,7 +4178,7 @@ localStream
 
 
 /*
-   استقبال Offer.
+   Offer.
 */
 
 await peerConnection
@@ -3804,22 +4190,16 @@ data.offer
 
 );
 
-
-/*
-   أضف ICE الذي وصل مبكرًا.
-*/
-
 await flushPendingIce();
 
 
 /*
-   إنشاء Answer.
+   Answer.
 */
 
 const answer =
 await peerConnection
 .createAnswer();
-
 
 await peerConnection
 .setLocalDescription(
@@ -3828,7 +4208,7 @@ answer
 
 
 /*
-   تحديث المكالمة.
+   تحديث الحالة.
 */
 
 await updateDoc(
@@ -3851,7 +4231,6 @@ status:
 }
 
 );
-
 
 callState.textContent =
 "متصل • 00:00";
@@ -3936,6 +4315,423 @@ data.candidate
 
 
 /* =========================================================
+   CONVERT AUDIO -> VIDEO
+========================================================= */
+
+async function switchToVideo(){
+
+if(
+!activeCallId ||
+!peerConnection ||
+!localStream ||
+activeCallType !== "audio"
+)
+return;
+
+try{
+
+switchVideoButton.disabled = true;
+
+callState.textContent =
+"جارٍ تشغيل الفيديو...";
+
+
+/*
+   نطلب الكاميرا فقط.
+*/
+
+const cameraStream =
+await navigator.mediaDevices
+.getUserMedia({
+
+audio:false,
+
+video:{
+facingMode:{
+ideal:"user"
+}
+}
+
+});
+
+const videoTrack =
+cameraStream.getVideoTracks()[0];
+
+if(!videoTrack){
+
+throw new Error(
+"لم يتم العثور على الكاميرا"
+);
+
+}
+
+
+/*
+   إضافة الفيديو إلى الاتصال الحالي.
+*/
+
+localStream.addTrack(
+videoTrack
+);
+
+const sender =
+peerConnection
+.getSenders()
+.find(
+s =>
+s.track?.kind ===
+"video"
+);
+
+if(sender){
+
+await sender.replaceTrack(
+videoTrack
+);
+
+}else{
+
+peerConnection.addTrack(
+videoTrack,
+localStream
+);
+
+}
+
+
+cameraFacing =
+"user";
+
+localVideo.srcObject =
+localStream;
+
+localVideo.style.display =
+"block";
+
+localAvatar.style.display =
+"none";
+
+remoteVideo.style.display =
+"block";
+
+remoteAvatar.style.display =
+"flex";
+
+videoArea.classList.remove(
+"swapped"
+);
+
+
+/*
+   نغيّر النوع محليًا.
+*/
+
+activeCallType =
+"video";
+
+setupCallVisuals();
+
+
+/*
+   إنشاء Offer جديد لإضافة الفيديو.
+*/
+
+const version =
+Date.now();
+
+upgradeVersion =
+version;
+
+lastHandledUpgradeVersion =
+version;
+
+const offer =
+await peerConnection
+.createOffer();
+
+await peerConnection
+.setLocalDescription(
+offer
+);
+
+
+/*
+   إرسال طلب الفيديو للطرف الآخر.
+*/
+
+await updateDoc(
+
+doc(
+db,
+"calls",
+activeCallId
+),
+
+{
+
+upgradeOffer:{
+type:
+offer.type,
+
+sdp:
+offer.sdp
+},
+
+upgradeVersion:
+version,
+
+upgradeBy:
+currentUser.uid,
+
+upgradeAnswer:null,
+
+upgradeAnswerVersion:0,
+
+callType:"video"
+
+}
+
+);
+
+callState.textContent =
+"جارٍ تحويل المكالمة إلى فيديو...";
+
+}catch(error){
+
+console.error(
+"Switch video:",
+error
+);
+
+alert(
+"تعذر تشغيل الكاميرا"
+);
+
+}else{
+
+}
+
+switchVideoButton.disabled = false;
+
+}
+
+
+/* =========================================================
+   HANDLE VIDEO UPGRADE OFFER
+========================================================= */
+
+async function handleUpgradeOffer(
+data
+){
+
+if(
+!peerConnection ||
+!activeCallId
+)
+return;
+
+const version =
+Number(
+data.upgradeVersion || 0
+);
+
+if(
+version <=
+lastHandledUpgradeVersion
+)
+return;
+
+try{
+
+lastHandledUpgradeVersion =
+version;
+
+
+/*
+   الطرف الآخر يحتاج إلى الكاميرا.
+*/
+
+if(
+!localStream
+){
+
+localStream =
+await navigator.mediaDevices
+.getUserMedia({
+
+audio:true,
+
+video:{
+facingMode:{
+ideal:"user"
+}
+}
+
+});
+
+}else{
+
+const hasVideo =
+localStream
+.getVideoTracks()
+.length > 0;
+
+if(!hasVideo){
+
+const cameraStream =
+await navigator.mediaDevices
+.getUserMedia({
+
+audio:false,
+
+video:{
+facingMode:{
+ideal:"user"
+}
+}
+
+});
+
+const videoTrack =
+cameraStream.getVideoTracks()[0];
+
+localStream.addTrack(
+videoTrack
+);
+
+const sender =
+peerConnection
+.getSenders()
+.find(
+s =>
+s.track?.kind ===
+"video"
+);
+
+if(sender){
+
+await sender.replaceTrack(
+videoTrack
+);
+
+}else{
+
+peerConnection.addTrack(
+videoTrack,
+localStream
+);
+
+}
+
+}
+
+}
+
+
+activeCallType =
+"video";
+
+setupCallVisuals();
+
+localVideo.srcObject =
+localStream;
+
+localVideo.style.display =
+"block";
+
+localAvatar.style.display =
+"none";
+
+remoteVideo.style.display =
+"block";
+
+remoteAvatar.style.display =
+"flex";
+
+
+/*
+   استقبال Offer الجديد.
+*/
+
+await peerConnection
+.setRemoteDescription(
+
+new RTCSessionDescription(
+data.upgradeOffer
+)
+
+);
+
+await flushPendingIce();
+
+
+/*
+   إنشاء Answer.
+*/
+
+const answer =
+await peerConnection
+.createAnswer();
+
+await peerConnection
+.setLocalDescription(
+answer
+);
+
+
+/*
+   إرسال Answer.
+*/
+
+await updateDoc(
+
+doc(
+db,
+"calls",
+activeCallId
+),
+
+{
+
+upgradeAnswer:{
+type:
+answer.type,
+
+sdp:
+answer.sdp
+},
+
+upgradeAnswerVersion:
+version,
+
+callType:
+"video"
+
+}
+
+);
+
+callState.textContent =
+"متصل • فيديو";
+
+showConnectedButtons();
+
+}catch(error){
+
+console.error(
+"Handle upgrade:",
+error
+);
+
+callState.textContent =
+"تعذر تشغيل الفيديو";
+
+}
+
+}
+
+
+/* =========================================================
    REJECT
 ========================================================= */
 
@@ -3976,6 +4772,10 @@ serverTimestamp()
 
 );
 
+/*
+   الرسالة تُضاف عند انتهاء/رفض المكالمة.
+*/
+
 await saveCallMessage(
 "missed",
 0
@@ -4014,6 +4814,26 @@ return;
 
 try{
 
+const snap =
+await getDoc(
+doc(
+db,
+"calls",
+id
+)
+);
+
+if(
+snap.exists()
+){
+
+const data =
+snap.data();
+
+if(
+data.status === "ringing"
+){
+
 await updateDoc(
 
 doc(
@@ -4040,6 +4860,10 @@ await saveCallMessage(
 "missed",
 0
 );
+
+}
+
+}
 
 }catch(error){
 
@@ -4266,6 +5090,10 @@ error
 
 }
 
+/*
+   نضيف رسالة المكالمة فقط بعد انتهاء المكالمة.
+*/
+
 await saveCallMessage(
 status,
 duration
@@ -4283,6 +5111,7 @@ cleanupCall();
 function cleanupCall(){
 
 stopCallTimer();
+
 stopOutgoingTimeout();
 
 if(unsubscribeActiveCall){
@@ -4321,7 +5150,9 @@ localStream
 track=>{
 
 try{
+
 track.stop();
+
 }catch(e){}
 
 }
@@ -4347,7 +5178,14 @@ peerConnection = null;
 pendingIceCandidates = [];
 
 
+/*
+   تنظيف الصوت والفيديو.
+*/
+
+remoteAudio.srcObject = null;
+
 remoteVideo.srcObject = null;
+
 localVideo.srcObject = null;
 
 remoteVideo.style.display =
@@ -4366,6 +5204,10 @@ videoArea.classList.remove(
 "swapped"
 );
 
+
+/*
+   إخفاء المكالمة.
+*/
 
 hideAllCallButtons();
 
@@ -4387,6 +5229,10 @@ callMessageSaved = false;
 
 remoteAudioMuted = false;
 
+upgradeVersion = 0;
+
+lastHandledUpgradeVersion = 0;
+
 
 muteButton.textContent =
 "🎤";
@@ -4397,6 +5243,9 @@ speakerButton.textContent =
 flipCameraButton.textContent =
 "🔄";
 
+switchVideoButton.textContent =
+"📹";
+
 muteButton.classList.remove(
 "active"
 );
@@ -4404,6 +5253,9 @@ muteButton.classList.remove(
 speakerButton.classList.remove(
 "active"
 );
+
+switchVideoButton.disabled =
+false;
 
 }
 
@@ -4442,7 +5294,7 @@ muteButton.classList.toggle(
 
 
 /* =========================================================
-   REMOTE AUDIO
+   SPEAKER
 ========================================================= */
 
 speakerButton.onclick =
@@ -4450,6 +5302,9 @@ speakerButton.onclick =
 
 remoteAudioMuted =
 !remoteAudioMuted;
+
+remoteAudio.muted =
+remoteAudioMuted;
 
 remoteVideo.muted =
 remoteAudioMuted;
@@ -4517,7 +5372,8 @@ peerConnection
 ?.getSenders()
 .find(
 s=>
-s.track?.kind === "video"
+s.track?.kind ===
+"video"
 );
 
 if(sender){
@@ -4580,6 +5436,7 @@ localVideo.addEventListener(
 e=>{
 
 e.stopPropagation();
+
 toggleVideo();
 
 }
@@ -4590,6 +5447,7 @@ remoteVideo.addEventListener(
 e=>{
 
 e.stopPropagation();
+
 toggleVideo();
 
 }
@@ -4600,6 +5458,7 @@ localAvatar.addEventListener(
 e=>{
 
 e.stopPropagation();
+
 toggleVideo();
 
 }
@@ -4610,6 +5469,7 @@ remoteAvatar.addEventListener(
 e=>{
 
 e.stopPropagation();
+
 toggleVideo();
 
 }
@@ -4644,6 +5504,14 @@ startCall("video");
 };
 
 
+/*
+   زر 📹 داخل المكالمة الصوتية.
+*/
+
+switchVideoButton.onclick =
+switchToVideo;
+
+
 acceptCallButton.onclick =
 acceptIncomingCall;
 
@@ -4652,7 +5520,7 @@ rejectIncomingCall;
 
 
 /* =========================================================
-   END BUTTON
+   END
 ========================================================= */
 
 endCallButton.onclick =
@@ -4888,7 +5756,7 @@ showError(error);
 init();
 
 console.log(
-"🔥 Mecd Chat loaded - Calls FIXED v3"
+"🔥 Mecd Chat loaded - Calls FIXED v4"
 );
 
 </script>
