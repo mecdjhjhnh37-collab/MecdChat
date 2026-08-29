@@ -642,33 +642,75 @@ color:#aaa
 
 
 /* ======================================================
-MESSAGE MENU
+MESSAGE MENU - FIX FOR VOICE MESSAGES
 ====================================================== */
 
+.message{
+    position:relative;
+}
+
+.voice-message{
+    overflow:visible !important;
+}
+
+.voice-message-box{
+    overflow:hidden !important;
+    border-radius:inherit;
+}
+
 .message-menu{
-position:absolute;
-left:50%;
-bottom:calc(100% + 8px);
-transform:translateX(-50%);
-min-width:160px;
-padding:5px;
-background:#0b1512;
-border:1px solid rgba(0,232,137,.18);
-border-radius:15px;
-box-shadow:0 8px 25px rgba(0,0,0,.55);
-z-index:99999
+    position:absolute !important;
+    left:50% !important;
+    bottom:calc(100% + 8px) !important;
+    transform:translateX(-50%) !important;
+
+    width:160px !important;
+    min-width:160px !important;
+    max-width:160px !important;
+
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:5px !important;
+
+    background:#0b1512 !important;
+    border:1px solid rgba(0,232,137,.18) !important;
+    border-radius:15px !important;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
+
+    z-index:999999 !important;
+
+    display:block !important;
+    flex:none !important;
+
+    white-space:normal !important;
 }
 
 .message-menu button{
-width:100%;
-padding:10px 14px;
-border:0;
-border-radius:11px;
-background:#18231f;
-color:#fff;
-font-size:13px;
-font-weight:bold;
-cursor:pointer
+    width:100% !important;
+    min-width:0 !important;
+    height:auto !important;
+    min-height:40px !important;
+
+    padding:10px 14px !important;
+
+    border:0 !important;
+    border-radius:11px !important;
+
+    background:#18231f !important;
+    color:#fff !important;
+
+    font-size:13px !important;
+    font-weight:bold !important;
+
+    cursor:pointer !important;
+
+    display:block !important;
+}
+
+.message-menu button:hover{
+    background:#22332d !important;
 }
 
 
