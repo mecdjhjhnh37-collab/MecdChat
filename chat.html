@@ -208,7 +208,8 @@ padding:10px;
 display:flex;
 gap:8px;
 background:#050807;
-z-index:50
+z-index:50;
+align-items:center
 }
 
 #messageInput{
@@ -261,7 +262,137 @@ opacity:.6
 
 
 /* ======================================================
-VOICE MESSAGE - NEW DESIGN
+WHATSAPP STYLE VOICE RECORDING
+====================================================== */
+
+.voice-recording-bar{
+position:absolute;
+inset:0;
+display:none;
+align-items:center;
+gap:10px;
+padding:7px 9px;
+background:#050807;
+border-radius:17px;
+z-index:20
+}
+
+.input-area.recording-mode #messageInput{
+display:none
+}
+
+.input-area.recording-mode #sendButton{
+display:none
+}
+
+.input-area.recording-mode .voice-recording-bar{
+display:flex
+}
+
+.record-delete{
+width:43px;
+height:43px;
+border:0;
+border-radius:50%;
+background:#18231f;
+color:#ff5555;
+font-size:20px;
+cursor:pointer;
+flex-shrink:0
+}
+
+.record-info{
+flex:1;
+min-width:0;
+display:flex;
+align-items:center;
+gap:9px
+}
+
+.record-dot{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#ff4444;
+flex-shrink:0;
+animation:recordPulse 1s infinite
+}
+
+@keyframes recordPulse{
+0%,100%{
+opacity:1;
+transform:scale(1)
+}
+50%{
+opacity:.35;
+transform:scale(.75)
+}
+}
+
+.record-wave{
+display:flex;
+align-items:center;
+gap:3px;
+height:35px;
+overflow:hidden;
+flex:1
+}
+
+.record-wave span{
+width:3px;
+height:8px;
+border-radius:5px;
+background:#00e889;
+animation:wave 1s ease-in-out infinite
+}
+
+.record-wave span:nth-child(2){animation-delay:.1s}
+.record-wave span:nth-child(3){animation-delay:.2s}
+.record-wave span:nth-child(4){animation-delay:.3s}
+.record-wave span:nth-child(5){animation-delay:.4s}
+.record-wave span:nth-child(6){animation-delay:.5s}
+.record-wave span:nth-child(7){animation-delay:.6s}
+.record-wave span:nth-child(8){animation-delay:.7s}
+.record-wave span:nth-child(9){animation-delay:.8s}
+.record-wave span:nth-child(10){animation-delay:.9s}
+
+@keyframes wave{
+0%,100%{
+height:7px
+}
+50%{
+height:25px
+}
+}
+
+.record-time{
+font-size:13px;
+min-width:40px;
+text-align:center;
+direction:ltr;
+color:#fff
+}
+
+.record-send{
+width:48px;
+height:48px;
+border:0;
+border-radius:50%;
+background:#00e889;
+color:#00150e;
+font-size:20px;
+cursor:pointer;
+flex-shrink:0
+}
+
+.record-send:active,
+.record-delete:active{
+transform:scale(.92)
+}
+
+
+/* ======================================================
+VOICE MESSAGE
 ====================================================== */
 
 .voice-message{
@@ -754,7 +885,26 @@ height:54px
 width:min(290px,84vw)
 }
 
+.input-area{
+padding:8px
 }
+
+.record-wave{
+gap:2px
+}
+
+.record-delete{
+width:40px;
+height:40px
+}
+
+.record-send{
+width:45px;
+height:45px
+}
+
+}
+
 </style>
 </head>
 
@@ -812,7 +962,50 @@ z-index:999999">
 
 </div>
 
-<div class="input-area">
+<div id="inputArea" class="input-area">
+
+<div id="voiceRecordingBar" class="voice-recording-bar">
+
+<button
+id="recordDelete"
+class="record-delete"
+type="button">
+🗑️
+</button>
+
+<div class="record-info">
+
+<div class="record-dot"></div>
+
+<div class="record-wave">
+
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+
+</div>
+
+<div id="recordTime" class="record-time">
+00:00
+</div>
+
+</div>
+
+<button
+id="recordSend"
+class="record-send"
+type="button">
+➤
+</button>
+
+</div>
 
 <input
 id="messageInput"
@@ -1058,6 +1251,12 @@ const backButton = $("backButton");
 const callButton = $("callButton");
 const videoButton = $("videoButton");
 
+const inputArea = $("inputArea");
+const voiceRecordingBar = $("voiceRecordingBar");
+const recordDelete = $("recordDelete");
+const recordSend = $("recordSend");
+const recordTime = $("recordTime");
+
 const incomingCall = $("incomingCall");
 const incomingAvatar = $("incomingAvatar");
 const incomingName = $("incomingName");
@@ -1136,6 +1335,14 @@ let handledIncomingCalls = new Set();
 
 let upgradeVersion = 0;
 let lastHandledUpgradeVersion = 0;
+
+
+/* ======================================================
+VOICE RECORDING UI STATE
+====================================================== */
+
+let recordSeconds = 0;
+let recordTimer = null;
 
 
 /* ======================================================
@@ -1842,7 +2049,11 @@ updateMyActivity(
 "recording"
 );
 
+startRecordClock();
+
 }else{
+
+stopRecordClock();
 
 updateMyActivity(
 messageInput.value.trim()
@@ -1861,6 +2072,162 @@ voiceButton,
 attributes:true
 }
 );
+
+
+/* ======================================================
+WHATSAPP RECORD CLOCK
+====================================================== */
+
+function startRecordClock(){
+
+stopRecordClock();
+
+recordSeconds = 0;
+
+recordTime.textContent =
+"00:00";
+
+inputArea.classList.add(
+"recording-mode"
+);
+
+recordTimer =
+setInterval(
+() => {
+
+recordSeconds++;
+
+recordTime.textContent =
+formatDuration(
+recordSeconds
+);
+
+},
+1000
+);
+
+}
+
+function stopRecordClock(){
+
+if(recordTimer){
+
+clearInterval(
+recordTimer
+);
+
+recordTimer = null;
+
+}
+
+recordSeconds = 0;
+
+recordTime.textContent =
+"00:00";
+
+inputArea.classList.remove(
+"recording-mode"
+);
+
+}
+
+
+/* ======================================================
+CANCEL RECORDING
+====================================================== */
+
+recordDelete.onclick =
+async () => {
+
+try{
+
+/*
+   voice.js هو المسؤول عن إيقاف التسجيل
+   إذا كان يوفر الدالة العامة.
+*/
+
+if(
+typeof window.cancelVoiceRecording ===
+"function"
+){
+
+await window.cancelVoiceRecording();
+
+}else if(
+typeof window.stopVoiceRecording ===
+"function"
+){
+
+await window.stopVoiceRecording(true);
+
+}else{
+
+voiceButton.classList.remove(
+"recording"
+);
+
+}
+
+}catch(e){
+
+console.error(
+"Cancel voice:",
+e
+);
+
+voiceButton.classList.remove(
+"recording"
+);
+
+}
+
+stopRecordClock();
+
+updateMyActivity(
+"none"
+);
+
+};
+
+
+/* ======================================================
+SEND RECORDING
+====================================================== */
+
+recordSend.onclick =
+async () => {
+
+try{
+
+if(
+typeof window.stopVoiceRecording ===
+"function"
+){
+
+await window.stopVoiceRecording(false);
+
+}else{
+
+voiceButton.classList.remove(
+"recording"
+);
+
+}
+
+}catch(e){
+
+console.error(
+"Send voice:",
+e
+);
+
+voiceButton.classList.remove(
+"recording"
+);
+
+}
+
+};
 
 
 /* ======================================================
@@ -2390,16 +2757,6 @@ x => x.remove()
 
 }
 
-
-/*
-   حذف لدي:
-   لا نحذف الرسالة من Firestore.
-   نضيف UID المستخدم داخل deletedFor.
-   لذلك تبقى الرسالة عند الطرف الآخر،
-   وتبقى مخفية عند هذا المستخدم حتى بعد
-   الخروج والعودة للمحادثة.
-*/
-
 async function deleteMessageForMe(id){
 
 if(
@@ -2488,11 +2845,6 @@ alert(
 }
 
 
-/*
-   حذف الرسالة للجميع
-   يبقى كما كان في النسخة الأصلية.
-*/
-
 async function deleteMessageForEveryone(id){
 
 try{
@@ -2539,15 +2891,6 @@ document.createElement(
 menu.className =
 "message-menu";
 
-
-/*
-   إذا كانت رسالتك:
-   إلغاء الإرسال للجميع
-
-   إذا كانت رسالة الطرف الآخر:
-   حذف لدي فقط
-*/
-
 const button =
 document.createElement(
 "button"
@@ -2557,7 +2900,6 @@ button.textContent =
 mine
 ? "🗑️ إلغاء الإرسال"
 : "🗑️ حذف لدي";
-
 
 button.onclick =
 async e => {
@@ -2581,7 +2923,6 @@ id
 removeMenus();
 
 };
-
 
 menu.appendChild(
 button
@@ -2698,7 +3039,6 @@ messages.scrollHeight -
 messages.scrollTop -
 messages.clientHeight < 120;
 
-
 snapshot.docChanges()
 .forEach(
 change => {
@@ -2708,9 +3048,6 @@ change.doc.id;
 
 const data =
 change.doc.data();
-
-
-/* الرسالة حُذفت من Firestore */
 
 if(change.type === "removed"){
 
@@ -2723,14 +3060,6 @@ messageElements.delete(id);
 return;
 
 }
-
-
-/*
-   مهم جدًا:
-   إذا كانت الرسالة موجودة في Firestore
-   لكنها محذوفة لهذا المستخدم،
-   نحذف العنصر القديم أيضًا.
-*/
 
 if(
 Array.isArray(
@@ -2760,7 +3089,6 @@ return;
 
 }
 
-
 if(
 data.senderId !==
 currentUser.uid
@@ -2772,7 +3100,6 @@ data
 );
 
 }
-
 
 const box =
 document.createElement(
@@ -2787,7 +3114,6 @@ currentUser.uid
 ? "mine"
 : "other"
 );
-
 
 if(data.type === "call"){
 
@@ -2815,7 +3141,6 @@ data.text || ""
 
 }
 
-
 const meta =
 document.createElement(
 "div"
@@ -2823,7 +3148,6 @@ document.createElement(
 
 meta.className =
 "message-meta";
-
 
 const time =
 document.createElement(
@@ -2842,7 +3166,6 @@ meta.appendChild(
 time
 );
 
-
 const status =
 createStatus(
 data
@@ -2853,11 +3176,9 @@ meta.appendChild(
 status
 );
 
-
 box.appendChild(
 meta
 );
-
 
 if(
 data.type !== "call"
@@ -2871,7 +3192,6 @@ currentUser.uid
 );
 
 }
-
 
 const old =
 messageElements.get(
@@ -2900,7 +3220,6 @@ box
 }
 );
 
-
 const all =
 messages.querySelectorAll(
 ".message"
@@ -2910,7 +3229,6 @@ const empty =
 messages.querySelector(
 ".empty"
 );
-
 
 if(all.length){
 
@@ -2935,7 +3253,6 @@ e
 
 }
 
-
 if(nearBottom){
 
 requestAnimationFrame(
@@ -2957,7 +3274,6 @@ function listenMessages(){
 if(!chatID)
 return;
 
-
 const q =
 query(
 collection(
@@ -2972,10 +3288,8 @@ orderBy(
 )
 );
 
-
 if(unsubscribeMessages)
 unsubscribeMessages();
-
 
 unsubscribeMessages =
 onSnapshot(
@@ -3034,7 +3348,6 @@ serverTimestamp()
 }
 );
 
-
 await setDoc(
 doc(
 db,
@@ -3053,7 +3366,6 @@ currentUser.uid
 merge:true
 }
 );
-
 
 messageInput.value = "";
 
@@ -3081,10 +3393,8 @@ messageInput.focus();
 
 }
 
-
 sendButton.onclick =
 sendMessage;
-
 
 messageInput.addEventListener(
 "keydown",
@@ -3126,7 +3436,6 @@ x.classList.add(
 
 }
 
-
 function showOutgoingButtons(){
 
 hideAllCallButtons();
@@ -3136,7 +3445,6 @@ endCallButton.classList.remove(
 );
 
 }
-
 
 function showIncomingButtons(){
 
@@ -3151,7 +3459,6 @@ rejectCallButton.classList.remove(
 );
 
 }
-
 
 function showConnectedButtons(){
 
@@ -3169,7 +3476,6 @@ endCallButton.classList.remove(
 "hidden"
 );
 
-
 if(activeCallType === "audio"){
 
 switchVideoButton.classList.remove(
@@ -3177,7 +3483,6 @@ switchVideoButton.classList.remove(
 );
 
 }
-
 
 if(activeCallType === "video"){
 
@@ -3188,7 +3493,6 @@ flipCameraButton.classList.remove(
 }
 
 }
-
 
 function setupCallVisuals(){
 
@@ -3212,7 +3516,6 @@ videoArea.style.display =
 
 }
 
-
 function showCallScreen(){
 
 callScreen.style.display =
@@ -3230,7 +3533,6 @@ activeCallPeer
 setupCallVisuals();
 
 }
-
 
 function showIncoming(){
 
@@ -3301,7 +3603,6 @@ if(
 )
 return;
 
-
 if(
 peerConnection.remoteDescription
 ){
@@ -3333,7 +3634,6 @@ candidate
 
 }
 
-
 async function flushIce(){
 
 if(
@@ -3342,12 +3642,10 @@ if(
 )
 return;
 
-
 const list =
 pendingIceCandidates.splice(
 0
 );
-
 
 for(
 const candidate
@@ -3387,7 +3685,6 @@ new RTCPeerConnection(
 rtcConfig
 );
 
-
 pc.onicecandidate =
 async e => {
 
@@ -3397,7 +3694,6 @@ if(
 !currentUser
 )
 return;
-
 
 try{
 
@@ -3429,7 +3725,6 @@ error
 
 };
 
-
 pc.ontrack = e => {
 
 const stream =
@@ -3438,10 +3733,8 @@ e.streams?.[0];
 if(!stream)
 return;
 
-
 remoteAudio.srcObject =
 stream;
-
 
 const hasVideo =
 stream
@@ -3451,7 +3744,6 @@ t =>
 t.readyState !==
 "ended"
 );
-
 
 if(hasVideo){
 
@@ -3486,13 +3778,11 @@ playRemoteAudio();
 
 };
 
-
 pc.onconnectionstatechange =
 async () => {
 
 const state =
 pc.connectionState;
-
 
 if(state === "connected"){
 
@@ -3509,7 +3799,6 @@ await playRemoteAudio();
 
 }
 
-
 if(state === "connecting"){
 
 callState.textContent =
@@ -3517,14 +3806,12 @@ callState.textContent =
 
 }
 
-
 if(state === "disconnected"){
 
 callState.textContent =
 "انقطع الاتصال";
 
 }
-
 
 if(state === "failed"){
 
@@ -3543,7 +3830,6 @@ finishCall();
 
 }
 
-
 if(state === "closed"){
 
 callState.textContent =
@@ -3552,7 +3838,6 @@ callState.textContent =
 }
 
 };
-
 
 return pc;
 
@@ -3567,7 +3852,6 @@ function startCallTimer(){
 
 if(callTimer)
 return;
-
 
 callTimer =
 setInterval(
@@ -3585,7 +3869,6 @@ callSeconds
 );
 
 }
-
 
 function stopCallTimer(){
 
@@ -3609,7 +3892,6 @@ clearTimeout(
 callTimeout
 );
 
-
 callTimeout =
 setTimeout(
 async () => {
@@ -3621,10 +3903,8 @@ activeCallRole !==
 )
 return;
 
-
 const id =
 activeCallId;
-
 
 try{
 
@@ -3636,7 +3916,6 @@ db,
 id
 )
 );
-
 
 if(
 snap.exists() &&
@@ -3660,7 +3939,6 @@ serverTimestamp()
 }
 );
 
-
 await saveCallMessage(
 "missed",
 0
@@ -3677,7 +3955,6 @@ e
 
 }
 
-
 cleanupCall();
 
 },
@@ -3685,7 +3962,6 @@ cleanupCall();
 );
 
 }
-
 
 function stopOutgoingTimeout(){
 
@@ -3714,7 +3990,6 @@ return;
 
 }
 
-
 if(
 !currentUser ||
 !friendUser
@@ -3728,7 +4003,6 @@ return;
 
 }
 
-
 activeCallId =
 crypto.randomUUID();
 
@@ -3737,7 +4011,6 @@ type;
 
 activeCallRole =
 "caller";
-
 
 activeCallPeer = {
 
@@ -3752,7 +4025,6 @@ friendUser.photo
 
 };
 
-
 callSeconds = 0;
 
 callMessageSaved = false;
@@ -3763,14 +4035,12 @@ upgradeVersion = 0;
 
 lastHandledUpgradeVersion = 0;
 
-
 showCallScreen();
 
 showOutgoingButtons();
 
 callState.textContent =
 "جارٍ الاتصال...";
-
 
 try{
 
@@ -3784,7 +4054,6 @@ type === "video"
 
 });
 
-
 if(type === "video"){
 
 localVideo.srcObject =
@@ -3795,10 +4064,8 @@ localVideo.style.display =
 
 }
 
-
 peerConnection =
 createPeer();
-
 
 localStream
 .getTracks()
@@ -3813,15 +4080,12 @@ localStream
 }
 );
 
-
 const offer =
 await peerConnection.createOffer();
-
 
 await peerConnection.setLocalDescription(
 offer
 );
-
 
 await setDoc(
 doc(
@@ -3853,11 +4117,9 @@ upgradeVersion:
 }
 );
 
-
 listenCallerCall();
 
 startOutgoingTimeout();
-
 
 }catch(e){
 
@@ -3869,7 +4131,6 @@ e
 alert(
 "تعذر بدء المكالمة. تأكد من السماح بالميكروفون والكاميرا."
 );
-
 
 await cancelOutgoingCall(
 false
@@ -3889,7 +4150,6 @@ function listenCallerCall(){
 if(unsubscribeActiveCall)
 unsubscribeActiveCall();
 
-
 unsubscribeActiveCall =
 onSnapshot(
 doc(
@@ -3907,10 +4167,8 @@ return;
 
 }
 
-
 const data =
 snap.data();
-
 
 if(
 [
@@ -3935,7 +4193,6 @@ cleanupCall();
 return;
 
 }
-
 
 if(
 data.answer &&
@@ -3966,7 +4223,6 @@ e
 
 }
 
-
 if(
 data.status ===
 "ringing"
@@ -3978,7 +4234,6 @@ data.receivedAt
 : "جارٍ الاتصال...";
 
 }
-
 
 if(
 data.status ===
@@ -4000,7 +4255,6 @@ await playRemoteAudio();
 
 }
 
-
 if(
 data.callType ===
 "video" &&
@@ -4015,7 +4269,6 @@ setupCallVisuals();
 
 }
 
-
 if(
 data.upgradeOffer &&
 Number(
@@ -4029,7 +4282,6 @@ data
 );
 
 }
-
 
 if(
 data.upgradeAnswer &&
@@ -4069,7 +4321,6 @@ e
 }
 );
 
-
 listenCallCandidates();
 
 }
@@ -4084,10 +4335,8 @@ function listenIncomingCalls(){
 if(!currentUser)
 return;
 
-
 if(unsubscribeIncomingCalls)
 unsubscribeIncomingCalls();
-
 
 const q =
 query(
@@ -4102,12 +4351,10 @@ currentUser.uid
 )
 );
 
-
 unsubscribeIncomingCalls =
 onSnapshot(
 q,
 async snapshot => {
-
 
 for(
 const change
@@ -4122,13 +4369,11 @@ change.type !==
 )
 continue;
 
-
 const id =
 change.doc.id;
 
 const data =
 change.doc.data();
-
 
 if(
 data.receiverId !==
@@ -4139,17 +4384,14 @@ data.status !==
 )
 continue;
 
-
 if(
 activeCallId ===
 id
 )
 continue;
 
-
 if(activeCallId)
 continue;
-
 
 if(
 handledIncomingCalls.has(
@@ -4158,11 +4400,9 @@ id
 )
 continue;
 
-
 const created =
 data.createdAt?.toMillis?.() ||
 0;
-
 
 if(
 created &&
@@ -4199,11 +4439,9 @@ continue;
 
 }
 
-
 handledIncomingCalls.add(
 id
 );
-
 
 const callerSnap =
 await getDoc(
@@ -4214,12 +4452,10 @@ data.callerId
 )
 );
 
-
 const callerData =
 callerSnap.exists()
 ? callerSnap.data()
 : {};
-
 
 activeCallId =
 id;
@@ -4230,7 +4466,6 @@ data.callType ||
 
 activeCallRole =
 "receiver";
-
 
 activeCallPeer = {
 
@@ -4248,7 +4483,6 @@ callerData.photoURL ||
 
 };
 
-
 callSeconds = 0;
 
 callMessageSaved = false;
@@ -4259,15 +4493,12 @@ upgradeVersion = 0;
 
 lastHandledUpgradeVersion = 0;
 
-
 showIncoming();
-
 
 callState.textContent =
 activeCallType === "video"
 ? "📹 مكالمة فيديو واردة"
 : "📞 مكالمة صوتية واردة";
-
 
 startRingtone();
 
@@ -4290,10 +4521,8 @@ function listenReceiverCallStatus(){
 if(!activeCallId)
 return;
 
-
 if(unsubscribeActiveCall)
 unsubscribeActiveCall();
-
 
 unsubscribeActiveCall =
 onSnapshot(
@@ -4314,10 +4543,8 @@ return;
 
 }
 
-
 const data =
 snap.data();
-
 
 if(
 [
@@ -4337,7 +4564,6 @@ return;
 
 }
 
-
 if(
 data.status ===
 "ended"
@@ -4356,7 +4582,6 @@ return;
 
 }
 
-
 if(
 data.callType ===
 "video" &&
@@ -4370,7 +4595,6 @@ activeCallType =
 setupCallVisuals();
 
 }
-
 
 if(
 data.upgradeOffer &&
@@ -4389,7 +4613,6 @@ data
 }
 );
 
-
 listenCallCandidates();
 
 }
@@ -4407,12 +4630,10 @@ if(
 )
 return;
 
-
 try{
 
 const callId =
 activeCallId;
-
 
 const snap =
 await getDoc(
@@ -4422,7 +4643,6 @@ db,
 callId
 )
 );
-
 
 if(!snap.exists()){
 
@@ -4434,10 +4654,8 @@ return;
 
 }
 
-
 const data =
 snap.data();
-
 
 if(
 data.status !==
@@ -4452,7 +4670,6 @@ return;
 
 }
 
-
 stopRingtone();
 
 incomingCall.style.display =
@@ -4462,7 +4679,6 @@ showCallScreen();
 
 callState.textContent =
 "جارٍ الاتصال...";
-
 
 localStream =
 await navigator.mediaDevices.getUserMedia({
@@ -4474,7 +4690,6 @@ activeCallType ===
 "video"
 
 });
-
 
 if(
 activeCallType ===
@@ -4489,10 +4704,8 @@ localVideo.style.display =
 
 }
 
-
 peerConnection =
 createPeer();
-
 
 localStream
 .getTracks()
@@ -4507,25 +4720,20 @@ localStream
 }
 );
 
-
 await peerConnection.setRemoteDescription(
 new RTCSessionDescription(
 data.offer
 )
 );
 
-
 await flushIce();
-
 
 const answer =
 await peerConnection.createAnswer();
 
-
 await peerConnection.setLocalDescription(
 answer
 );
-
 
 await updateDoc(
 doc(
@@ -4549,13 +4757,11 @@ serverTimestamp()
 }
 );
 
-
 showConnectedButtons();
 
 startCallTimer();
 
 await playRemoteAudio();
-
 
 }catch(e){
 
@@ -4567,7 +4773,6 @@ e
 alert(
 "تعذر قبول المكالمة. تأكد من السماح بالميكروفون والكاميرا."
 );
-
 
 try{
 
@@ -4595,7 +4800,6 @@ console.error(err);
 
 }
 
-
 stopRingtone();
 
 cleanupCall();
@@ -4614,14 +4818,11 @@ function listenCallCandidates(){
 if(unsubscribeCandidates)
 unsubscribeCandidates();
 
-
 if(!activeCallId)
 return;
 
-
 const callId =
 activeCallId;
-
 
 unsubscribeCandidates =
 onSnapshot(
@@ -4643,10 +4844,8 @@ change.type !==
 )
 return;
 
-
 const data =
 change.doc.data();
-
 
 if(
 data.senderId ===
@@ -4654,13 +4853,11 @@ currentUser.uid
 )
 return;
 
-
 if(
 activeCallId !==
 callId
 )
 return;
-
 
 addCandidate(
 data.candidate
@@ -4684,9 +4881,7 @@ async function rejectIncomingCall(){
 const id =
 activeCallId;
 
-
 stopRingtone();
-
 
 if(!id){
 
@@ -4695,7 +4890,6 @@ cleanupCall();
 return;
 
 }
-
 
 try{
 
@@ -4707,7 +4901,6 @@ db,
 id
 )
 );
-
 
 if(snap.exists()){
 
@@ -4727,7 +4920,6 @@ serverTimestamp()
 }
 );
 
-
 await saveCallMessage(
 "rejected",
 0
@@ -4743,7 +4935,6 @@ e
 );
 
 }
-
 
 cleanupCall();
 
@@ -4761,9 +4952,7 @@ saveMessage = true
 const id =
 activeCallId;
 
-
 stopRingtone();
-
 
 if(!id){
 
@@ -4772,7 +4961,6 @@ cleanupCall();
 return;
 
 }
-
 
 try{
 
@@ -4785,12 +4973,10 @@ id
 )
 );
 
-
 if(snap.exists()){
 
 const data =
 snap.data();
-
 
 if(
 data.status ===
@@ -4822,7 +5008,6 @@ serverTimestamp()
 }
 );
 
-
 if(saveMessage){
 
 await saveCallMessage(
@@ -4851,7 +5036,6 @@ e
 
 }
 
-
 cleanupCall();
 
 }
@@ -4872,7 +5056,6 @@ activeCallType !==
 )
 return;
 
-
 try{
 
 switchVideoButton.disabled =
@@ -4880,7 +5063,6 @@ true;
 
 callState.textContent =
 "جارٍ تشغيل الفيديو...";
-
 
 const camera =
 await navigator.mediaDevices.getUserMedia({
@@ -4893,21 +5075,17 @@ ideal:"user"
 
 });
 
-
 const track =
 camera.getVideoTracks()[0];
-
 
 if(!track)
 throw new Error(
 "لا توجد كاميرا"
 );
 
-
 localStream.addTrack(
 track
 );
-
 
 const sender =
 peerConnection
@@ -4917,7 +5095,6 @@ s =>
 s.track?.kind ===
 "video"
 );
-
 
 if(sender){
 
@@ -4934,10 +5111,8 @@ localStream
 
 }
 
-
 activeCallType =
 "video";
-
 
 localVideo.srcObject =
 localStream;
@@ -4945,9 +5120,7 @@ localStream;
 localVideo.style.display =
 "block";
 
-
 setupCallVisuals();
-
 
 const version =
 Date.now();
@@ -4955,15 +5128,12 @@ Date.now();
 upgradeVersion =
 version;
 
-
 const offer =
 await peerConnection.createOffer();
-
 
 await peerConnection.setLocalDescription(
 offer
 );
-
 
 await updateDoc(
 doc(
@@ -4990,10 +5160,8 @@ currentUser.uid
 }
 );
 
-
 callState.textContent =
 "جارٍ تحويل المكالمة إلى فيديو...";
-
 
 }catch(e){
 
@@ -5030,19 +5198,16 @@ if(
 )
 return;
 
-
 const version =
 Number(
 data.upgradeVersion || 0
 );
-
 
 if(
 version <=
 lastHandledUpgradeVersion
 )
 return;
-
 
 try{
 
@@ -5052,10 +5217,8 @@ data.upgradeOffer
 )
 );
 
-
 lastHandledUpgradeVersion =
 version;
-
 
 if(!localStream){
 
@@ -5066,7 +5229,6 @@ audio:true,
 video:true
 
 });
-
 
 localStream
 .getTracks()
@@ -5090,15 +5252,12 @@ await navigator.mediaDevices.getUserMedia({
 video:true
 });
 
-
 const track =
 camera.getVideoTracks()[0];
-
 
 localStream.addTrack(
 track
 );
-
 
 const sender =
 peerConnection
@@ -5108,7 +5267,6 @@ s =>
 s.track?.kind ===
 "video"
 );
-
 
 if(sender){
 
@@ -5127,10 +5285,8 @@ localStream
 
 }
 
-
 activeCallType =
 "video";
-
 
 localVideo.srcObject =
 localStream;
@@ -5138,18 +5294,14 @@ localStream;
 localVideo.style.display =
 "block";
 
-
 setupCallVisuals();
-
 
 const answer =
 await peerConnection.createAnswer();
 
-
 await peerConnection.setLocalDescription(
 answer
 );
-
 
 await updateDoc(
 doc(
@@ -5173,12 +5325,10 @@ version
 }
 );
 
-
 callState.textContent =
 "متصل • فيديو";
 
 showConnectedButtons();
-
 
 }catch(e){
 
@@ -5211,10 +5361,8 @@ callMessageSaved
 )
 return;
 
-
 callMessageSaved =
 true;
-
 
 const callerId =
 activeCallRole ===
@@ -5222,20 +5370,17 @@ activeCallRole ===
 ? currentUser.uid
 : activeCallPeer.uid;
 
-
 const receiverId =
 activeCallRole ===
 "caller"
 ? activeCallPeer.uid
 : currentUser.uid;
 
-
 const targetChat =
 createChatID(
 callerId,
 receiverId
 );
-
 
 try{
 
@@ -5308,11 +5453,9 @@ status = null
 const id =
 activeCallId;
 
-
 stopRingtone();
 
 stopOutgoingTimeout();
-
 
 if(!id){
 
@@ -5322,10 +5465,8 @@ return;
 
 }
 
-
 const duration =
 callSeconds;
-
 
 const finalStatus =
 status ||
@@ -5334,7 +5475,6 @@ duration > 0
 ? "completed"
 : "missed"
 );
-
 
 try{
 
@@ -5347,12 +5487,10 @@ id
 )
 );
 
-
 if(snap.exists()){
 
 const data =
 snap.data();
-
 
 if(
 data.status !==
@@ -5403,12 +5541,10 @@ e
 
 }
 
-
 await saveCallMessage(
 finalStatus,
 duration
 );
-
 
 cleanupCall();
 
@@ -5427,7 +5563,6 @@ stopCallTimer();
 
 stopOutgoingTimeout();
 
-
 if(unsubscribeActiveCall){
 
 unsubscribeActiveCall();
@@ -5437,7 +5572,6 @@ null;
 
 }
 
-
 if(unsubscribeCandidates){
 
 unsubscribeCandidates();
@@ -5446,7 +5580,6 @@ unsubscribeCandidates =
 null;
 
 }
-
 
 if(localStream){
 
@@ -5467,7 +5600,6 @@ null;
 
 }
 
-
 if(peerConnection){
 
 try{
@@ -5479,9 +5611,7 @@ null;
 
 }
 
-
 pendingIceCandidates = [];
-
 
 if(remoteAudio){
 
@@ -5495,20 +5625,17 @@ false;
 
 }
 
-
 remoteVideo.srcObject =
 null;
 
 localVideo.srcObject =
 null;
 
-
 incomingCall.style.display =
 "none";
 
 callScreen.style.display =
 "none";
-
 
 audioCallView.style.display =
 "flex";
@@ -5528,9 +5655,7 @@ localVideo.style.display =
 localAvatar.style.display =
 "none";
 
-
 hideAllCallButtons();
-
 
 activeCallId =
 null;
@@ -5556,7 +5681,6 @@ upgradeVersion =
 lastHandledUpgradeVersion =
 0;
 
-
 muteButton.textContent =
 "🎤";
 
@@ -5565,7 +5689,6 @@ speakerButton.textContent =
 
 switchVideoButton.textContent =
 "📹";
-
 
 muteButton.classList.remove(
 "active"
@@ -5590,24 +5713,19 @@ muteButton.onclick = () => {
 if(!localStream)
 return;
 
-
 const track =
 localStream.getAudioTracks()[0];
-
 
 if(!track)
 return;
 
-
 track.enabled =
 !track.enabled;
-
 
 muteButton.textContent =
 track.enabled
 ? "🎤"
 : "🔇";
-
 
 muteButton.classList.toggle(
 "active",
@@ -5627,22 +5745,18 @@ async () => {
 remoteAudioMuted =
 !remoteAudioMuted;
 
-
 remoteAudio.muted =
 remoteAudioMuted;
-
 
 speakerButton.textContent =
 remoteAudioMuted
 ? "🔇"
 : "🔊";
 
-
 speakerButton.classList.toggle(
 "active",
 remoteAudioMuted
 );
-
 
 if(!remoteAudioMuted){
 
@@ -5667,24 +5781,20 @@ activeCallType !==
 )
 return;
 
-
 try{
 
 const oldTrack =
 localStream
 .getVideoTracks()[0];
 
-
 if(!oldTrack)
 return;
-
 
 cameraFacing =
 cameraFacing ===
 "user"
 ? "environment"
 : "user";
-
 
 const stream =
 await navigator.mediaDevices.getUserMedia({
@@ -5698,14 +5808,11 @@ cameraFacing
 
 });
 
-
 const newTrack =
 stream.getVideoTracks()[0];
 
-
 if(!newTrack)
 return;
-
 
 const sender =
 peerConnection
@@ -5716,7 +5823,6 @@ s.track?.kind ===
 "video"
 );
 
-
 if(sender){
 
 await sender.replaceTrack(
@@ -5725,23 +5831,18 @@ newTrack
 
 }
 
-
 oldTrack.stop();
-
 
 localStream.removeTrack(
 oldTrack
 );
 
-
 localStream.addTrack(
 newTrack
 );
 
-
 localVideo.srcObject =
 localStream;
-
 
 }catch(e){
 
@@ -5767,7 +5868,6 @@ startCall(
 
 };
 
-
 videoButton.onclick = () => {
 
 startCall(
@@ -5776,26 +5876,20 @@ startCall(
 
 };
 
-
 switchVideoButton.onclick =
 switchToVideo;
-
 
 acceptIncoming.onclick =
 acceptIncomingCall;
 
-
 rejectIncoming.onclick =
 rejectIncomingCall;
-
 
 acceptCallButton.onclick =
 acceptIncomingCall;
 
-
 rejectCallButton.onclick =
 rejectIncomingCall;
-
 
 endCallButton.onclick =
 async () => {
@@ -5808,14 +5902,11 @@ return;
 
 }
 
-
 const role =
 activeCallRole;
 
-
 const id =
 activeCallId;
-
 
 if(role === "caller"){
 
@@ -5829,7 +5920,6 @@ id
 ).catch(
 () => null
 );
-
 
 if(
 snap?.exists() &&
@@ -5847,7 +5937,6 @@ return;
 
 }
 
-
 await finishCall();
 
 };
@@ -5863,7 +5952,6 @@ async () => {
 await updateMyActivity(
 "none"
 );
-
 
 if(activeCallId){
 
@@ -5882,22 +5970,17 @@ await finishCall();
 
 }
 
-
 if(unsubscribeMessages)
 unsubscribeMessages();
-
 
 if(unsubscribeFriendStatus)
 unsubscribeFriendStatus();
 
-
 if(unsubscribeFriendActivity)
 unsubscribeFriendActivity();
 
-
 if(unsubscribeIncomingCalls)
 unsubscribeIncomingCalls();
-
 
 stopPresence();
 
@@ -5917,14 +6000,12 @@ document.addEventListener(
 if(!currentUser)
 return;
 
-
 if(
 document.visibilityState ===
 "visible"
 ){
 
 updateMyPresence(true);
-
 
 if(activeCallId){
 
@@ -5944,7 +6025,6 @@ updateMyActivity(
 
 }
 );
-
 
 window.addEventListener(
 "pagehide",
@@ -5975,10 +6055,8 @@ return;
 
 }
 
-
 currentUser =
 user;
-
 
 try{
 
@@ -6007,7 +6085,6 @@ e.message ||
 }
 
 });
-
 
 console.log(
 "🔥 Mecd Chat System جاهز"
