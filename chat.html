@@ -4906,182 +4906,190 @@ remote device receives the video through
 the already negotiated video channel.
 */
 
-async function enableVideoForCall(
-updateFirestore = true
-){
+async function enableVideoForCall(updateFirestore = true){
 
-if(
-!activeCallId ||
-!peerConnection ||
-!localStream
-)
-return;
+    if(
+        !activeCallId ||
+        !peerConnection ||
+        !localStream
+    ){
+        return;
+    }
 
+    try{
 
-if(
-localStream
-.getVideoTracks()
-.some(
-track =>
-track.readyState !==
-"ended"
-)
-){
+        callState.textContent =
+            "جارٍ تشغيل الكاميرا...";
 
-activeCallType =
-"video";
+        let videoTrack =
+            localStream
+                .getVideoTracks()
+                .find(
+                    track =>
+                        track.readyState !== "ended"
+                );
 
-setupCallVisuals();
+        /* إنشاء مسار فيديو إذا لم يكن موجودًا */
 
-showConnectedButtons();
+        if(!videoTrack){
 
-return;
+            const videoStream =
+                await navigator.mediaDevices.getUserMedia({
+                    video:{
+                        facingMode:{
+                            ideal:cameraFacing
+                        }
+                    }
+                });
+
+            videoTrack =
+                videoStream.getVideoTracks()[0];
+
+            if(!videoTrack){
+
+                throw new Error(
+                    "لم يتم الحصول على الكاميرا"
+                );
+
+            }
+
+            localStream.addTrack(
+                videoTrack
+            );
+
+        }
+
+        /*
+         * البحث عن قناة الفيديو الموجودة
+         */
+
+        let transceiver =
+            peerConnection
+                .getTransceivers()
+                .find(
+                    t =>
+                        t.receiver?.track?.kind === "video"
+                );
+
+        /*
+         * إذا لم تكن موجودة ننشئها
+         */
+
+        if(!transceiver){
+
+            transceiver =
+                peerConnection.addTransceiver(
+                    "video",
+                    {
+                        direction:"sendrecv"
+                    }
+                );
+
+        }else{
+
+            transceiver.direction =
+                "sendrecv";
+
+        }
+
+        /*
+         * وضع الكاميرا داخل قناة WebRTC
+         */
+
+        await transceiver.sender.replaceTrack(
+            videoTrack
+        );
+
+        /*
+         * عرض الكاميرا محليًا
+         */
+
+        localVideo.srcObject =
+            localStream;
+
+        localVideo.style.display =
+            "block";
+
+        localAvatar.style.display =
+            "none";
+
+        /*
+         * تغيير نوع المكالمة محليًا
+         */
+
+        activeCallType =
+            "video";
+
+        setupCallVisuals();
+
+        showConnectedButtons();
+
+        /*
+         * إعادة التفاوض مع الطرف الآخر
+         */
+
+        const offer =
+            await peerConnection.createOffer();
+
+        await peerConnection.setLocalDescription(
+            offer
+        );
+
+        /*
+         * إرسال Offer الجديد إلى Firestore
+         */
+
+        if(updateFirestore){
+
+            await updateDoc(
+                doc(
+                    db,
+                    "calls",
+                    activeCallId
+                ),
+                {
+                    callType:"video",
+
+                    videoEnabled:true,
+
+                    renegotiationOffer:{
+                        type:
+                            offer.type,
+
+                        sdp:
+                            offer.sdp
+                    },
+
+                    renegotiationAt:
+                        serverTimestamp()
+                }
+            );
+
+        }
+
+        callState.textContent =
+            "متصل";
+
+    }catch(error){
+
+        console.error(
+            "Enable video:",
+            error
+        );
+
+        callState.textContent =
+            "متصل";
+
+        alert(
+            "تعذر تشغيل الكاميرا. تأكد من السماح للكاميرا."
+        );
+
+    }
 
 }
 
 
-try{
 
-callState.textContent =
-"جارٍ تشغيل الكاميرا...";
-
-
-const videoStream =
-await navigator.mediaDevices.getUserMedia(
-{
-video:{
-facingMode:{
-ideal:
-cameraFacing
-}
-}
-}
-);
-
-
-const newTrack =
-videoStream.getVideoTracks()[0];
-
-
-if(!newTrack)
-throw new Error(
-"لم يتم الحصول على الكاميرا"
-);
-
-
-const sender =
-await getVideoSender();
-
-
-if(!sender){
-
-newTrack.stop();
-
-throw new Error(
-"قناة الفيديو غير جاهزة"
-);
-
-}
-
-
-await sender.replaceTrack(
-newTrack
-);
-
-
-localStream.addTrack(
-newTrack
-);
-
-
-localVideo.srcObject =
-localStream;
-
-
-localVideo.style.display =
-"block";
-
-
-activeCallType =
-"video";
-
-
-setupCallVisuals();
-
-showConnectedButtons();
-
-
-if(updateFirestore){
-
-try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-activeCallId
-)
-);
-
-
-if(
-snap.exists()
-){
-
-const data =
-snap.data();
-
-
-await updateDoc(
-doc(
-db,
-"calls",
-activeCallId
-),
-{
-callType:"video",
-videoEnabled:true,
-videoChangedAt:
-serverTimestamp()
-}
-);
-
-}
-
-}catch(e){
-
-console.error(
-"Video sync:",
-e
-);
-
-}
-
-}
-
-
-callState.textContent =
-"متصل";
-
-
-}catch(e){
-
-console.error(
-"Enable video:",
-e
-);
-
-alert(
-"تعذر تشغيل الكاميرا. تأكد من السماح للكاميرا."
-);
-
-callState.textContent =
-"متصل";
-
-}
-
-}
 
 
 /* ======================================================
