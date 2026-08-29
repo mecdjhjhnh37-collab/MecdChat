@@ -8,17 +8,36 @@
 <title>Mecd Chat</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
+}
+
+html,
+body{
+width:100%;
+height:100%
+}
 
 body{
 min-height:100vh;
 font-family:Arial,Tahoma,sans-serif;
 color:#fff;
 background:
-radial-gradient(circle at top,#123d35,transparent 40%),
-linear-gradient(180deg,#07110f,#020504);
+radial-gradient(circle at 50% -10%,rgba(0,232,137,.12),transparent 38%),
+radial-gradient(circle at 0% 45%,rgba(18,61,53,.35),transparent 38%),
+linear-gradient(180deg,#07110f 0%,#020504 72%,#010302 100%);
 overflow:hidden
+}
+
+button,
+input{
+font-family:inherit
+}
+
+button{
+-webkit-tap-highlight-color:transparent
 }
 
 .app{
@@ -27,44 +46,54 @@ max-width:650px;
 margin:auto;
 display:flex;
 flex-direction:column;
-position:relative
+position:relative;
+background:
+linear-gradient(180deg,rgba(4,11,9,.18),rgba(2,5,4,.08));
+overflow:hidden
 }
 
 header{
-height:75px;
+height:78px;
 display:flex;
 align-items:center;
-gap:12px;
-padding:12px 15px;
-background:#050807;
-border-bottom:1px solid rgba(255,255,255,.08);
+gap:11px;
+padding:11px 14px;
+background:rgba(5,8,7,.97);
+border-bottom:1px solid rgba(255,255,255,.07);
+box-shadow:0 5px 20px rgba(0,0,0,.16);
 flex-shrink:0;
 z-index:10
 }
 
 .back{
-width:45px;
-height:45px;
-border:0;
+width:46px;
+height:46px;
+border:1px solid rgba(255,255,255,.05);
 border-radius:15px;
-background:#18231f;
+background:linear-gradient(145deg,#1c2925,#131d1a);
 color:#fff;
 font-size:22px;
-cursor:pointer
+cursor:pointer;
+transition:.18s
+}
+
+.back:active{
+transform:scale(.94)
 }
 
 .avatar,
 .call-avatar{
-width:48px;
-height:48px;
+width:49px;
+height:49px;
 border-radius:50%;
-background:#12352c;
+background:linear-gradient(145deg,#174337,#102d26);
 display:flex;
 align-items:center;
 justify-content:center;
 overflow:hidden;
 font-size:24px;
-flex-shrink:0
+flex-shrink:0;
+border:1px solid rgba(255,255,255,.07)
 }
 
 .avatar img,
@@ -83,27 +112,23 @@ min-width:0
 
 .user-name{
 font-size:17px;
-font-weight:bold;
+font-weight:700;
 white-space:nowrap;
 overflow:hidden;
-text-overflow:ellipsis
+text-overflow:ellipsis;
+letter-spacing:.1px
 }
 
 .user-status{
 font-size:12px;
-color:#777;
+color:#78827f;
 margin-top:5px;
 transition:.2s
 }
 
 .user-status.online,
-.user-status.typing,
-.user-status.recording{
+.user-status.typing{
 color:#00e889
-}
-
-.user-status.recording{
-font-weight:bold
 }
 
 .call-buttons{
@@ -113,76 +138,115 @@ flex-shrink:0
 }
 
 .call-buttons button{
-width:42px;
-height:42px;
-border:0;
-border-radius:14px;
-background:#18231f;
+width:44px;
+height:44px;
+border:1px solid rgba(255,255,255,.045);
+border-radius:15px;
+background:linear-gradient(145deg,#1c2925,#141e1b);
 color:#fff;
 font-size:18px;
-cursor:pointer
+cursor:pointer;
+transition:.18s;
+box-shadow:0 4px 12px rgba(0,0,0,.15)
+}
+
+.call-buttons button:active{
+transform:scale(.93)
 }
 
 .messages{
 flex:1;
 min-height:0;
 overflow-y:auto;
-padding:20px 15px 150px;
+padding:18px 14px 145px;
 display:flex;
 flex-direction:column;
-gap:10px
+gap:9px;
+scroll-behavior:smooth;
+overscroll-behavior:contain
+}
+
+.messages::-webkit-scrollbar{
+width:4px
+}
+
+.messages::-webkit-scrollbar-thumb{
+background:#1c2925;
+border-radius:20px
 }
 
 .empty{
 margin:auto;
 text-align:center;
-color:#72817c;
-line-height:1.8
+color:#66736f;
+line-height:1.9;
+font-size:14px
+}
+
+.empty:first-line{
+font-size:25px
 }
 
 .message{
 max-width:78%;
 padding:10px 13px;
-border-radius:18px;
+border-radius:19px;
 position:relative;
 word-break:break-word;
 overflow-wrap:anywhere;
 user-select:none;
-line-height:1.5
+line-height:1.5;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
+animation:messageIn .16s ease-out
+}
+
+@keyframes messageIn{
+from{
+opacity:0;
+transform:translateY(5px) scale(.985)
+}
+to{
+opacity:1;
+transform:none
+}
 }
 
 .message.mine{
 align-self:flex-start;
-background:#00c96b;
+background:linear-gradient(145deg,#00df79,#00c96b);
 color:#00150e;
-border-bottom-left-radius:5px
+border-bottom-left-radius:6px;
+box-shadow:0 5px 18px rgba(0,201,107,.09)
 }
 
 .message.other{
 align-self:flex-end;
-background:#18231f;
-border:1px solid rgba(255,255,255,.08);
-border-bottom-right-radius:5px
+background:linear-gradient(145deg,#1a2723,#15211d);
+border:1px solid rgba(255,255,255,.07);
+border-bottom-right-radius:6px
 }
 
 .time{
 display:block;
 font-size:9px;
-opacity:.6;
-margin-top:5px
+opacity:.62;
+margin-top:5px;
+direction:rtl
 }
 
 .message-meta{
 display:flex;
 align-items:center;
 gap:5px;
-margin-top:5px
+margin-top:5px;
+justify-content:flex-start
 }
 
 .message-status{
 font-size:12px;
 font-weight:bold;
-direction:ltr
+direction:ltr;
+letter-spacing:-2px
 }
 
 .message-status.read{
@@ -196,75 +260,89 @@ left:50%;
 transform:translateX(-50%);
 width:100%;
 max-width:650px;
-padding:10px;
+padding:10px 12px 12px;
 display:flex;
 gap:8px;
-background:#050807;
+background:
+linear-gradient(180deg,rgba(5,8,7,.88),#050807 28%);
+border-top:1px solid rgba(255,255,255,.045);
 z-index:50
 }
 
 #messageInput{
 flex:1;
 min-width:0;
-padding:14px;
-border-radius:17px;
-border:1px solid #27332f;
-background:#111916;
+height:52px;
+padding:0 16px;
+border-radius:18px;
+border:1px solid #26332f;
+background:linear-gradient(145deg,#121c19,#0d1512);
 color:#fff;
 outline:none;
-font-size:15px
+font-size:15px;
+box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+transition:.2s
+}
+
+#messageInput::placeholder{
+color:#69736f
 }
 
 #messageInput:focus{
-border-color:#00e889
+border-color:rgba(0,232,137,.55);
+box-shadow:0 0 0 3px rgba(0,232,137,.06)
 }
 
 #voiceButton,
 #sendButton{
-width:50px;
-height:50px;
+width:52px;
+height:52px;
 border:0;
-border-radius:16px;
+border-radius:17px;
 font-size:22px;
 cursor:pointer;
-flex-shrink:0
+flex-shrink:0;
+transition:.18s
 }
 
 #voiceButton{
-background:#18231f;
-color:#fff
+background:linear-gradient(145deg,#1d2b26,#14201c);
+color:#fff;
+border:1px solid rgba(255,255,255,.045)
+}
+
+#voiceButton:active,
+#sendButton:active{
+transform:scale(.93)
 }
 
 #voiceButton.recording{
-background:#3a1515;
-color:#ff4444;
-transform:scale(1.05)
+background:linear-gradient(145deg,#521d1d,#321313);
+color:#ff5b5b;
+transform:scale(1.03);
+box-shadow:0 0 0 4px rgba(255,68,68,.08)
 }
 
 #sendButton{
-background:#00e889;
-color:#00150e
+background:linear-gradient(145deg,#00ed8b,#00c96b);
+color:#00150e;
+box-shadow:0 5px 18px rgba(0,232,137,.13)
 }
 
 #sendButton:disabled{
 opacity:.6
 }
 
-/* ======================================================
-VOICE MESSAGE - DARK PLAYER
-====================================================== */
-
 .voice-message{
-min-width:255px;
+min-width:240px;
 max-width:330px;
-padding:10px 12px
+padding:9px 10px
 }
 
 .voice-message-box{
 display:flex;
 align-items:center;
-gap:10px;
-direction:rtl
+gap:10px
 }
 
 .voice-icon{
@@ -275,76 +353,26 @@ display:flex;
 align-items:center;
 justify-content:center;
 background:rgba(0,232,137,.12);
-color:#00e889;
 font-size:19px;
 flex-shrink:0
 }
 
 .voice-player{
 flex:1;
-min-width:0;
-display:flex;
-flex-direction:column;
-gap:6px
+min-width:0
 }
 
-.voice-controls{
-display:flex;
-align-items:center;
-gap:8px;
-width:100%
-}
-
-.voice-play{
-width:38px;
+.voice-player audio{
+width:100%;
 height:38px;
-border:0;
-border-radius:50%;
-background:#00e889;
-color:#00150e;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:16px;
-cursor:pointer;
-flex-shrink:0
-}
-
-.voice-progress{
-flex:1;
-height:5px;
-border-radius:10px;
-background:#34413d;
-overflow:hidden;
-cursor:pointer;
-position:relative
-}
-
-.voice-progress-fill{
-width:0%;
-height:100%;
-background:#00e889;
-border-radius:10px;
-transition:width .05s linear
-}
-
-.voice-time{
-font-size:10px;
-color:#a9b5b1;
-min-width:38px;
-text-align:center;
-direction:ltr
+display:block;
+border-radius:12px
 }
 
 .voice-label{
 font-size:10px;
-color:#9aa7a3;
-opacity:.8;
-margin-right:47px
-}
-
-.voice-audio{
-display:none
+opacity:.58;
+margin-top:3px
 }
 
 .call-message{
@@ -365,7 +393,7 @@ border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,232,137,.14);
+background:rgba(0,232,137,.11);
 color:#00e889;
 font-size:22px;
 flex-shrink:0
@@ -398,13 +426,25 @@ position:absolute;
 left:50%;
 bottom:calc(100% + 8px);
 transform:translateX(-50%);
-min-width:150px;
+min-width:160px;
 padding:5px;
-background:#0b1512;
-border:1px solid rgba(0,232,137,.18);
+background:rgba(9,18,15,.98);
+border:1px solid rgba(0,232,137,.16);
 border-radius:15px;
-box-shadow:0 8px 25px rgba(0,0,0,.55);
-z-index:99999
+box-shadow:0 10px 30px rgba(0,0,0,.6);
+z-index:99999;
+animation:menuIn .13s ease-out
+}
+
+@keyframes menuIn{
+from{
+opacity:0;
+transform:translate(-50%,5px) scale(.96)
+}
+to{
+opacity:1;
+transform:translate(-50%,0) scale(1)
+}
 }
 
 .message-menu button{
@@ -415,7 +455,12 @@ border-radius:11px;
 background:#18231f;
 color:#fff;
 font-size:13px;
-font-weight:bold
+font-weight:bold;
+cursor:pointer
+}
+
+.message-menu button:active{
+background:#21302a
 }
 
 #incomingCall{
@@ -425,8 +470,8 @@ left:50%;
 transform:translateX(-50%);
 width:min(620px,calc(100% - 24px));
 padding:14px;
-background:#101815;
-border:1px solid rgba(255,255,255,.1);
+background:linear-gradient(145deg,#111c18,#0d1512);
+border:1px solid rgba(255,255,255,.09);
 border-radius:20px;
 box-shadow:0 15px 45px rgba(0,0,0,.5);
 z-index:9000;
@@ -528,7 +573,9 @@ flex:1;
 display:flex;
 align-items:center;
 justify-content:center;
-background:#020504
+background:
+radial-gradient(circle,rgba(0,232,137,.08),transparent 35%),
+#020504
 }
 
 #videoArea{
@@ -555,7 +602,9 @@ inset:0;
 display:flex;
 align-items:center;
 justify-content:center;
-background:#07110f;
+background:
+radial-gradient(circle,rgba(0,232,137,.07),transparent 35%),
+#07110f;
 z-index:1
 }
 
@@ -581,7 +630,8 @@ border-radius:18px;
 border:2px solid rgba(255,255,255,.7);
 background:#111;
 z-index:5;
-display:none
+display:none;
+box-shadow:0 8px 25px rgba(0,0,0,.35)
 }
 
 #localAvatar{
@@ -619,7 +669,12 @@ border-radius:50%;
 background:#18231f;
 color:#fff;
 font-size:22px;
-cursor:pointer
+cursor:pointer;
+transition:.18s
+}
+
+.call-control:active{
+transform:scale(.92)
 }
 
 .call-control.accept{
@@ -648,6 +703,7 @@ max-width:84%
 }
 
 header{
+height:75px;
 padding:10px 12px
 }
 
@@ -674,8 +730,18 @@ width:54px;
 height:54px
 }
 
-.voice-message{
-min-width:235px
+.input-area{
+padding:9px 10px 11px
+}
+
+#messageInput{
+height:50px
+}
+
+#voiceButton,
+#sendButton{
+width:50px;
+height:50px
 }
 
 }
@@ -720,6 +786,7 @@ z-index:999999">
 <div class="call-buttons">
 
 <button id="callButton" type="button">📞</button>
+
 <button id="videoButton" type="button">📹</button>
 
 </div>
@@ -785,8 +852,17 @@ type="button">
 
 <div class="incoming-actions">
 
-<button id="rejectIncoming" type="button">✕</button>
-<button id="acceptIncoming" type="button">✓</button>
+<button
+id="rejectIncoming"
+type="button">
+✕
+</button>
+
+<button
+id="acceptIncoming"
+type="button">
+✓
+</button>
 
 </div>
 
@@ -798,7 +874,9 @@ type="button">
 
 <div class="call-top-info">
 
-<div id="callTitle">مكالمة</div>
+<div id="callTitle">
+مكالمة
+</div>
 
 <div id="callState">
 جارٍ الاتصال...
@@ -827,7 +905,9 @@ style="width:150px;height:150px;font-size:55px">
 
 <div id="remoteAvatar">
 
-<div id="remoteAvatarEmoji">👤</div>
+<div id="remoteAvatarEmoji">
+👤
+</div>
 
 </div>
 
@@ -858,33 +938,54 @@ playsinline>
 
 <div class="call-controls">
 
-<button id="switchVideoButton"
+<button
+id="switchVideoButton"
 class="call-control hidden"
-type="button">📹</button>
+type="button">
+📹
+</button>
 
-<button id="muteButton"
+<button
+id="muteButton"
 class="call-control hidden"
-type="button">🎤</button>
+type="button">
+🎤
+</button>
 
-<button id="speakerButton"
+<button
+id="speakerButton"
 class="call-control hidden"
-type="button">🔊</button>
+type="button">
+🔊
+</button>
 
-<button id="flipCameraButton"
+<button
+id="flipCameraButton"
 class="call-control hidden"
-type="button">🔄</button>
+type="button">
+🔄
+</button>
 
-<button id="acceptCallButton"
+<button
+id="acceptCallButton"
 class="call-control accept hidden"
-type="button">✓</button>
+type="button">
+✓
+</button>
 
-<button id="rejectCallButton"
+<button
+id="rejectCallButton"
 class="call-control reject hidden"
-type="button">✕</button>
+type="button">
+✕
+</button>
 
-<button id="endCallButton"
+<button
+id="endCallButton"
 class="call-control end hidden"
-type="button">📞</button>
+type="button">
+📞
+</button>
 
 </div>
 
@@ -918,7 +1019,8 @@ where,
 orderBy,
 onSnapshot,
 deleteDoc,
-serverTimestamp
+serverTimestamp,
+arrayUnion
 }
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -950,6 +1052,7 @@ appId:
 
 };
 
+
 const firebaseApp =
 initializeApp(firebaseConfig);
 
@@ -964,50 +1067,122 @@ getFirestore(firebaseApp);
 ELEMENTS
 ====================================================== */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+document.getElementById(id);
 
-const loading = $("loading");
-const app = $("app");
-const messages = $("messages");
-const messageInput = $("messageInput");
-const sendButton = $("sendButton");
-const voiceButton = $("voiceButton");
-const friendName = $("friendName");
-const friendAvatar = $("friendAvatar");
-const friendStatus = $("friendStatus");
-const backButton = $("backButton");
-const callButton = $("callButton");
-const videoButton = $("videoButton");
+const loading =
+$("loading");
 
-const incomingCall = $("incomingCall");
-const incomingAvatar = $("incomingAvatar");
-const incomingName = $("incomingName");
-const incomingType = $("incomingType");
-const acceptIncoming = $("acceptIncoming");
-const rejectIncoming = $("rejectIncoming");
+const app =
+$("app");
 
-const callScreen = $("callScreen");
-const callTitle = $("callTitle");
-const callState = $("callState");
-const callDuration = $("callDuration");
+const messages =
+$("messages");
 
-const audioCallView = $("audioCallView");
-const audioCallAvatar = $("audioCallAvatar");
-const videoArea = $("videoArea");
-const remoteVideo = $("remoteVideo");
-const remoteAvatar = $("remoteAvatar");
-const remoteAvatarEmoji = $("remoteAvatarEmoji");
-const localVideo = $("localVideo");
-const localAvatar = $("localAvatar");
-const remoteAudio = $("remoteAudio");
+const messageInput =
+$("messageInput");
 
-const switchVideoButton = $("switchVideoButton");
-const muteButton = $("muteButton");
-const speakerButton = $("speakerButton");
-const flipCameraButton = $("flipCameraButton");
-const acceptCallButton = $("acceptCallButton");
-const rejectCallButton = $("rejectCallButton");
-const endCallButton = $("endCallButton");
+const sendButton =
+$("sendButton");
+
+const voiceButton =
+$("voiceButton");
+
+const friendName =
+$("friendName");
+
+const friendAvatar =
+$("friendAvatar");
+
+const friendStatus =
+$("friendStatus");
+
+const backButton =
+$("backButton");
+
+const callButton =
+$("callButton");
+
+const videoButton =
+$("videoButton");
+
+const incomingCall =
+$("incomingCall");
+
+const incomingAvatar =
+$("incomingAvatar");
+
+const incomingName =
+$("incomingName");
+
+const incomingType =
+$("incomingType");
+
+const acceptIncoming =
+$("acceptIncoming");
+
+const rejectIncoming =
+$("rejectIncoming");
+
+const callScreen =
+$("callScreen");
+
+const callTitle =
+$("callTitle");
+
+const callState =
+$("callState");
+
+const callDuration =
+$("callDuration");
+
+const audioCallView =
+$("audioCallView");
+
+const audioCallAvatar =
+$("audioCallAvatar");
+
+const videoArea =
+$("videoArea");
+
+const remoteVideo =
+$("remoteVideo");
+
+const remoteAvatar =
+$("remoteAvatar");
+
+const remoteAvatarEmoji =
+$("remoteAvatarEmoji");
+
+const localVideo =
+$("localVideo");
+
+const localAvatar =
+$("localAvatar");
+
+const remoteAudio =
+$("remoteAudio");
+
+const switchVideoButton =
+$("switchVideoButton");
+
+const muteButton =
+$("muteButton");
+
+const speakerButton =
+$("speakerButton");
+
+const flipCameraButton =
+$("flipCameraButton");
+
+const acceptCallButton =
+$("acceptCallButton");
+
+const rejectCallButton =
+$("rejectCallButton");
+
+const endCallButton =
+$("endCallButton");
 
 
 /* ======================================================
@@ -1020,7 +1195,6 @@ let chatID = null;
 
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
-let unsubscribeFriendActivity = null;
 let unsubscribeIncomingCalls = null;
 let unsubscribeActiveCall = null;
 let unsubscribeCandidates = null;
@@ -1048,12 +1222,11 @@ let cameraFacing = "user";
 
 let callMessageSaved = false;
 let friendOnline = false;
-let friendTyping = false;
-let friendRecording = false;
 
 let pendingIceCandidates = [];
 
-let handledIncomingCalls = new Set();
+let handledIncomingCalls =
+new Set();
 
 let upgradeVersion = 0;
 let lastHandledUpgradeVersion = 0;
@@ -1090,6 +1263,7 @@ let ringtoneContext = null;
 let ringtoneTimer = null;
 let ringtoneGain = null;
 
+
 function startRingtone(){
 
 stopRingtone();
@@ -1120,6 +1294,7 @@ const osc =
 ringtoneContext.createOscillator();
 
 osc.type = "sine";
+
 osc.frequency.value = 880;
 
 osc.connect(ringtoneGain);
@@ -1151,11 +1326,15 @@ e
 
 }
 
+
 function stopRingtone(){
 
 if(ringtoneTimer){
 
-clearInterval(ringtoneTimer);
+clearInterval(
+ringtoneTimer
+);
+
 ringtoneTimer = null;
 
 }
@@ -1190,6 +1369,7 @@ b
 
 }
 
+
 function escapeHtml(value){
 
 return String(value ?? "")
@@ -1207,6 +1387,7 @@ c => ({
 );
 
 }
+
 
 function formatTime(timestamp){
 
@@ -1233,6 +1414,7 @@ return "";
 
 }
 
+
 function formatDuration(seconds){
 
 seconds =
@@ -1244,7 +1426,9 @@ Number(seconds || 0)
 );
 
 const m =
-Math.floor(seconds / 60);
+Math.floor(
+seconds / 60
+);
 
 const s =
 seconds % 60;
@@ -1256,6 +1440,7 @@ String(s).padStart(2,"0")
 );
 
 }
+
 
 function setUserAvatar(element,user){
 
@@ -1272,9 +1457,11 @@ element.innerHTML = "👤";
 
 }
 
+
 function showApp(){
 
 loading.style.display = "none";
+
 app.style.display = "flex";
 
 }
@@ -1318,6 +1505,7 @@ e
 
 }
 
+
 function startPresence(){
 
 updateMyPresence(true);
@@ -1344,6 +1532,7 @@ updateMyPresence(true);
 );
 
 }
+
 
 function stopPresence(){
 
@@ -1445,48 +1634,22 @@ merge:true
 );
 
 listenFriendStatus();
-listenFriendActivity();
 
 }
 
-
-/* ======================================================
-FRIEND STATUS
-====================================================== */
 
 function renderFriendStatus(){
 
-friendStatus.classList.remove(
-"online",
-"typing",
-"recording"
-);
-
-if(friendRecording){
-
-friendStatus.textContent =
-"🎤 يسجل صوت...";
-
-friendStatus.classList.add(
-"recording"
-);
-
-return;
-
-}
-
-if(friendTyping){
-
-friendStatus.textContent =
-"يكتب...";
-
-friendStatus.classList.add(
+if(
+friendStatus.classList.contains(
 "typing"
-);
-
+)
+)
 return;
 
-}
+friendStatus.classList.remove(
+"online"
+);
 
 if(friendOnline){
 
@@ -1506,6 +1669,7 @@ friendStatus.textContent =
 
 }
 
+
 function listenFriendStatus(){
 
 if(unsubscribeFriendStatus)
@@ -1523,7 +1687,9 @@ snap => {
 if(!snap.exists()){
 
 friendOnline = false;
+
 renderFriendStatus();
+
 return;
 
 }
@@ -1548,65 +1714,7 @@ renderFriendStatus();
 
 
 /* ======================================================
-NEW: FRIEND ACTIVITY
-====================================================== */
-
-function listenFriendActivity(){
-
-if(unsubscribeFriendActivity)
-unsubscribeFriendActivity();
-
-unsubscribeFriendActivity =
-onSnapshot(
-doc(
-db,
-"chats",
-chatID,
-"typing",
-friendUser.uid
-),
-snap => {
-
-if(!snap.exists()){
-
-friendTyping = false;
-friendRecording = false;
-
-renderFriendStatus();
-
-return;
-
-}
-
-const data =
-snap.data();
-
-const updated =
-data.updatedAt?.toMillis?.() || 0;
-
-const fresh =
-!updated ||
-Date.now() - updated < 5000;
-
-friendRecording =
-fresh &&
-data.recording === true;
-
-friendTyping =
-fresh &&
-data.typing === true &&
-!friendRecording;
-
-renderFriendStatus();
-
-}
-);
-
-}
-
-
-/* ======================================================
-TYPING + RECORDING ACTIVITY
+TYPING
 ====================================================== */
 
 async function updateMyActivity(type){
@@ -1652,6 +1760,7 @@ e
 }
 
 }
+
 
 messageInput.addEventListener(
 "input",
@@ -1710,8 +1819,11 @@ async function connectVoiceJS(){
 try{
 
 window.chatDB = db;
+
 window.chatID = chatID;
+
 window.chatUser = currentUser;
+
 window.chatFriend = friendUser;
 
 await import(
@@ -1733,10 +1845,6 @@ e
 
 }
 
-
-/* ======================================================
-VOICE RECORDING OBSERVER
-====================================================== */
 
 const voiceObserver =
 new MutationObserver(
@@ -1817,6 +1925,7 @@ data.read === true
 return status;
 
 }
+
 
 async function markRead(id,data){
 
@@ -1986,7 +2095,7 @@ callBox
 
 
 /* ======================================================
-NEW: CUSTOM DARK VOICE PLAYER
+VOICE MESSAGE
 ====================================================== */
 
 function createVoiceMessage(box,data){
@@ -2022,72 +2131,17 @@ document.createElement(
 player.className =
 "voice-player";
 
-const controls =
-document.createElement(
-"div"
-);
-
-controls.className =
-"voice-controls";
-
-const play =
-document.createElement(
-"button"
-);
-
-play.type =
-"button";
-
-play.className =
-"voice-play";
-
-play.textContent =
-"▶";
-
-const progress =
-document.createElement(
-"div"
-);
-
-progress.className =
-"voice-progress";
-
-const fill =
-document.createElement(
-"div"
-);
-
-fill.className =
-"voice-progress-fill";
-
-progress.appendChild(
-fill
-);
-
-const time =
-document.createElement(
-"span"
-);
-
-time.className =
-"voice-time";
-
-time.textContent =
-"00:00";
-
 const audio =
 document.createElement(
 "audio"
 );
 
-audio.className =
-"voice-audio";
+audio.controls = true;
 
 audio.preload =
 "metadata";
 
-audio.playsInline =
-true;
+audio.playsInline = true;
 
 audio.src =
 data.audio || "";
@@ -2103,16 +2157,9 @@ label.className =
 label.textContent =
 "رسالة صوتية";
 
-controls.append(
-play,
-progress,
-time
-);
-
 player.append(
-controls,
-label,
-audio
+audio,
+label
 );
 
 wrapper.append(
@@ -2122,174 +2169,6 @@ player
 
 box.appendChild(
 wrapper
-);
-
-
-/* تشغيل وإيقاف */
-
-play.onclick =
-async e => {
-
-e.stopPropagation();
-
-if(audio.paused){
-
-try{
-
-await audio.play();
-
-}catch(error){
-
-console.error(
-"Voice play:",
-error
-);
-
-}
-
-}else{
-
-audio.pause();
-
-}
-
-};
-
-
-/* عند التشغيل */
-
-audio.addEventListener(
-"play",
-() => {
-
-play.textContent =
-"⏸";
-
-}
-);
-
-
-/* عند الإيقاف */
-
-audio.addEventListener(
-"pause",
-() => {
-
-play.textContent =
-"▶";
-
-}
-);
-
-
-/* عند الانتهاء */
-
-audio.addEventListener(
-"ended",
-() => {
-
-play.textContent =
-"▶";
-
-fill.style.width =
-"0%";
-
-time.textContent =
-"00:00";
-
-}
-);
-
-
-/* مدة الصوت */
-
-audio.addEventListener(
-"loadedmetadata",
-() => {
-
-if(
-Number.isFinite(
-audio.duration
-)
-){
-
-time.textContent =
-formatDuration(
-audio.duration
-);
-
-}
-
-}
-);
-
-
-/* تقدم الصوت */
-
-audio.addEventListener(
-"timeupdate",
-() => {
-
-if(
-Number.isFinite(
-audio.duration
-) &&
-audio.duration > 0
-){
-
-const percent =
-(
-audio.currentTime /
-audio.duration
-) * 100;
-
-fill.style.width =
-percent + "%";
-
-time.textContent =
-formatDuration(
-audio.currentTime
-);
-
-}
-
-}
-);
-
-
-/* الضغط على شريط الصوت */
-
-progress.addEventListener(
-"click",
-e => {
-
-e.stopPropagation();
-
-if(
-!audio.duration ||
-!Number.isFinite(
-audio.duration
-)
-)
-return;
-
-const rect =
-progress.getBoundingClientRect();
-
-const percent =
-Math.min(
-1,
-Math.max(
-0,
-(e.clientX - rect.left) /
-rect.width
-)
-);
-
-audio.currentTime =
-audio.duration * percent;
-
-}
 );
 
 }
@@ -2310,6 +2189,7 @@ x => x.remove()
 );
 
 }
+
 
 async function deleteMessage(id){
 
@@ -2335,6 +2215,71 @@ e
 }
 
 }
+
+
+/*
+الحذف لدي أصبح محفوظًا في Firestore.
+بدل حذف العنصر من الصفحة فقط،
+نضيف UID المستخدم إلى deletedFor.
+لذلك عند الخروج والدخول مرة ثانية
+لن تظهر الرسالة لهذا المستخدم.
+*/
+
+async function deleteMessageForMe(
+id,
+element
+){
+
+if(
+!id ||
+!currentUser
+)
+return;
+
+try{
+
+await updateDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+),
+{
+deletedFor:
+arrayUnion(
+currentUser.uid
+)
+}
+);
+
+/*
+نحذفها من الواجهة فورًا.
+وسيتم الاحتفاظ بالحذف في قاعدة البيانات.
+*/
+
+element?.remove();
+
+messageElements.delete(id);
+
+removeMenus();
+
+}catch(e){
+
+console.error(
+"Delete for me:",
+e
+);
+
+alert(
+"تعذر حذف الرسالة لديك"
+);
+
+}
+
+}
+
 
 function showMessageMenu(
 element,
@@ -2373,7 +2318,12 @@ await deleteMessage(id);
 
 }else{
 
-element.remove();
+await deleteMessageForMe(
+id,
+element
+);
+
+return;
 
 }
 
@@ -2390,6 +2340,7 @@ menu
 );
 
 }
+
 
 function addMessageActions(
 element,
@@ -2462,6 +2413,7 @@ mine
 
 }
 
+
 document.addEventListener(
 "pointerdown",
 e => {
@@ -2487,6 +2439,7 @@ RENDER MESSAGES
 const messageElements =
 new Map();
 
+
 function renderMessages(snapshot){
 
 const nearBottom =
@@ -2504,6 +2457,33 @@ change.doc.id;
 const data =
 change.doc.data();
 
+
+/*
+إذا حُذفت الرسالة لدى المستخدم،
+نزيلها من الواجهة حتى لو كان التغيير
+modified وليس removed.
+*/
+
+if(
+Array.isArray(
+data.deletedFor
+) &&
+data.deletedFor.includes(
+currentUser.uid
+)
+){
+
+messageElements
+.get(id)
+?.remove();
+
+messageElements.delete(id);
+
+return;
+
+}
+
+
 if(change.type === "removed"){
 
 messageElements
@@ -2516,15 +2496,6 @@ return;
 
 }
 
-if(
-Array.isArray(
-data.deletedFor
-) &&
-data.deletedFor.includes(
-currentUser.uid
-)
-)
-return;
 
 if(
 data.senderId !==
@@ -2537,6 +2508,7 @@ data
 );
 
 }
+
 
 const box =
 document.createElement(
@@ -2551,6 +2523,7 @@ currentUser.uid
 ? "mine"
 : "other"
 );
+
 
 if(data.type === "call"){
 
@@ -2577,6 +2550,7 @@ data.text || ""
 );
 
 }
+
 
 const meta =
 document.createElement(
@@ -2617,6 +2591,7 @@ box.appendChild(
 meta
 );
 
+
 if(
 data.type !== "call"
 ){
@@ -2629,6 +2604,7 @@ currentUser.uid
 );
 
 }
+
 
 const old =
 messageElements.get(
@@ -2656,6 +2632,7 @@ box
 
 }
 );
+
 
 const all =
 messages.querySelectorAll(
@@ -2688,6 +2665,7 @@ messages.appendChild(e);
 
 }
 
+
 if(nearBottom){
 
 requestAnimationFrame(
@@ -2702,6 +2680,7 @@ messages.scrollHeight;
 }
 
 }
+
 
 function listenMessages(){
 
@@ -2769,14 +2748,22 @@ chatID,
 ),
 {
 text,
+
 senderId:
 currentUser.uid,
+
 receiverId:
 friendUser.uid,
+
 type:
 "text",
+
 read:
 false,
+
+deletedFor:
+[],
+
 createdAt:
 serverTimestamp()
 }
@@ -2791,8 +2778,10 @@ chatID
 {
 lastMessage:
 text,
+
 lastMessageAt:
 serverTimestamp(),
+
 lastSenderId:
 currentUser.uid
 },
@@ -2821,14 +2810,17 @@ alert(
 }finally{
 
 sendButton.disabled = false;
+
 messageInput.focus();
 
 }
 
 }
 
+
 sendButton.onclick =
 sendMessage;
+
 
 messageInput.addEventListener(
 "keydown",
@@ -2837,6 +2829,7 @@ e => {
 if(e.key === "Enter"){
 
 e.preventDefault();
+
 sendMessage();
 
 }
@@ -2869,6 +2862,7 @@ x.classList.add(
 
 }
 
+
 function showOutgoingButtons(){
 
 hideAllCallButtons();
@@ -2878,6 +2872,7 @@ endCallButton.classList.remove(
 );
 
 }
+
 
 function showIncomingButtons(){
 
@@ -2892,6 +2887,7 @@ rejectCallButton.classList.remove(
 );
 
 }
+
 
 function showConnectedButtons(){
 
@@ -2909,6 +2905,7 @@ endCallButton.classList.remove(
 "hidden"
 );
 
+
 if(activeCallType === "audio"){
 
 switchVideoButton.classList.remove(
@@ -2916,6 +2913,7 @@ switchVideoButton.classList.remove(
 );
 
 }
+
 
 if(activeCallType === "video"){
 
@@ -2926,6 +2924,7 @@ flipCameraButton.classList.remove(
 }
 
 }
+
 
 function setupCallVisuals(){
 
@@ -2949,6 +2948,7 @@ videoArea.style.display =
 
 }
 
+
 function showCallScreen(){
 
 callScreen.style.display =
@@ -2966,6 +2966,7 @@ activeCallPeer
 setupCallVisuals();
 
 }
+
 
 function showIncoming(){
 
@@ -3067,6 +3068,7 @@ candidate
 
 }
 
+
 async function flushIce(){
 
 if(
@@ -3140,8 +3142,10 @@ activeCallId,
 {
 senderId:
 currentUser.uid,
+
 candidate:
 e.candidate.toJSON(),
+
 createdAt:
 serverTimestamp()
 }
@@ -3157,6 +3161,7 @@ error
 }
 
 };
+
 
 pc.ontrack = e => {
 
@@ -3210,6 +3215,7 @@ playRemoteAudio();
 }
 
 };
+
 
 pc.onconnectionstatechange =
 async () => {
@@ -3303,6 +3309,7 @@ callSeconds
 
 }
 
+
 function stopCallTimer(){
 
 if(callTimer)
@@ -3365,8 +3372,10 @@ id
 {
 status:
 "missed",
+
 duration:
 0,
+
 endedAt:
 serverTimestamp()
 }
@@ -3395,6 +3404,7 @@ cleanupCall();
 );
 
 }
+
 
 function stopOutgoingTimeout(){
 
@@ -3459,9 +3469,13 @@ friendUser.photo
 };
 
 callSeconds = 0;
+
 callMessageSaved = false;
+
 pendingIceCandidates = [];
+
 upgradeVersion = 0;
+
 lastHandledUpgradeVersion = 0;
 
 showCallScreen();
@@ -3525,22 +3539,30 @@ activeCallId
 {
 callId:
 activeCallId,
+
 callerId:
 currentUser.uid,
+
 receiverId:
 friendUser.uid,
+
 callType:
 type,
+
 status:
 "ringing",
+
 offer:{
 type:
 offer.type,
+
 sdp:
 offer.sdp
 },
+
 createdAt:
 serverTimestamp(),
+
 upgradeVersion:
 0
 }
@@ -3591,6 +3613,7 @@ async snap => {
 if(!snap.exists()){
 
 cleanupCall();
+
 return;
 
 }
@@ -3604,7 +3627,8 @@ if(
 "rejected",
 "missed",
 "ended"
-].includes(
+]
+.includes(
 data.status
 )
 ){
@@ -3637,6 +3661,7 @@ data.answer
 );
 
 await flushIce();
+
 await playRemoteAudio();
 
 }catch(e){
@@ -3668,6 +3693,7 @@ data.status ===
 ){
 
 stopOutgoingTimeout();
+
 stopRingtone();
 
 callState.textContent =
@@ -3848,8 +3874,10 @@ id
 {
 status:
 "missed",
+
 duration:
 0,
+
 endedAt:
 serverTimestamp()
 }
@@ -3910,9 +3938,13 @@ callerData.photoURL ||
 };
 
 callSeconds = 0;
+
 callMessageSaved = false;
+
 pendingIceCandidates = [];
+
 upgradeVersion = 0;
+
 lastHandledUpgradeVersion = 0;
 
 showIncoming();
@@ -3958,7 +3990,9 @@ async snap => {
 if(!snap.exists()){
 
 stopRingtone();
+
 cleanupCall();
+
 return;
 
 }
@@ -3971,13 +4005,16 @@ if(
 "cancelled",
 "missed",
 "rejected"
-].includes(
+]
+.includes(
 data.status
 )
 ){
 
 stopRingtone();
+
 cleanupCall();
+
 return;
 
 }
@@ -4065,7 +4102,9 @@ callId
 if(!snap.exists()){
 
 stopRingtone();
+
 cleanupCall();
+
 return;
 
 }
@@ -4079,7 +4118,9 @@ data.status !==
 ){
 
 stopRingtone();
+
 cleanupCall();
+
 return;
 
 }
@@ -4159,13 +4200,17 @@ callId
 answer:{
 type:
 answer.type,
+
 sdp:
 answer.sdp
 },
+
 status:
 "connected",
+
 callType:
 activeCallType,
+
 receivedAt:
 serverTimestamp()
 }
@@ -4201,6 +4246,7 @@ activeCallId
 {
 status:
 "rejected",
+
 endedAt:
 serverTimestamp()
 }
@@ -4215,6 +4261,7 @@ console.error(err);
 }
 
 stopRingtone();
+
 cleanupCall();
 
 }
@@ -4299,6 +4346,7 @@ stopRingtone();
 if(!id){
 
 cleanupCall();
+
 return;
 
 }
@@ -4325,8 +4373,10 @@ id
 {
 status:
 "rejected",
+
 duration:
 0,
+
 endedAt:
 serverTimestamp()
 }
@@ -4369,6 +4419,7 @@ stopRingtone();
 if(!id){
 
 cleanupCall();
+
 return;
 
 }
@@ -4405,15 +4456,18 @@ id
 {
 status:
 "cancelled",
+
 duration:
 data.status ===
 "ringing"
 ? 0
 : callSeconds,
+
 callType:
 activeCallType ||
 data.callType ||
 "audio",
+
 endedAt:
 serverTimestamp()
 }
@@ -4426,6 +4480,7 @@ data.status ===
 "ringing"
 ? "cancelled"
 : "completed",
+
 data.status ===
 "ringing"
 ? 0
@@ -4559,6 +4614,7 @@ callType:
 upgradeOffer:{
 type:
 offer.type,
+
 sdp:
 offer.sdp
 },
@@ -4637,6 +4693,7 @@ localStream =
 await navigator.mediaDevices.getUserMedia({
 
 audio:true,
+
 video:true
 
 });
@@ -4727,6 +4784,7 @@ callType:
 upgradeAnswer:{
 type:
 answer.type,
+
 sdp:
 answer.sdp
 },
@@ -4833,6 +4891,9 @@ callerId,
 read:
 false,
 
+deletedFor:
+[],
+
 createdAt:
 serverTimestamp()
 },
@@ -4865,11 +4926,13 @@ const id =
 activeCallId;
 
 stopRingtone();
+
 stopOutgoingTimeout();
 
 if(!id){
 
 cleanupCall();
+
 return;
 
 }
@@ -4967,12 +5030,15 @@ CLEANUP
 function cleanupCall(){
 
 stopRingtone();
+
 stopCallTimer();
+
 stopOutgoingTimeout();
 
 if(unsubscribeActiveCall){
 
 unsubscribeActiveCall();
+
 unsubscribeActiveCall =
 null;
 
@@ -4981,6 +5047,7 @@ null;
 if(unsubscribeCandidates){
 
 unsubscribeCandidates();
+
 unsubscribeCandidates =
 null;
 
@@ -5273,6 +5340,7 @@ startCall(
 
 };
 
+
 videoButton.onclick = () => {
 
 startCall(
@@ -5281,20 +5349,26 @@ startCall(
 
 };
 
+
 switchVideoButton.onclick =
 switchToVideo;
+
 
 acceptIncoming.onclick =
 acceptIncomingCall;
 
+
 rejectIncoming.onclick =
 rejectIncomingCall;
+
 
 acceptCallButton.onclick =
 acceptIncomingCall;
 
+
 rejectCallButton.onclick =
 rejectIncomingCall;
+
 
 endCallButton.onclick =
 async () => {
@@ -5302,6 +5376,7 @@ async () => {
 if(!activeCallId){
 
 cleanupCall();
+
 return;
 
 }
@@ -5380,9 +5455,6 @@ unsubscribeMessages();
 if(unsubscribeFriendStatus)
 unsubscribeFriendStatus();
 
-if(unsubscribeFriendActivity)
-unsubscribeFriendActivity();
-
 if(unsubscribeIncomingCalls)
 unsubscribeIncomingCalls();
 
@@ -5430,6 +5502,7 @@ updateMyActivity(
 }
 );
 
+
 window.addEventListener(
 "pagehide",
 () => {
@@ -5439,7 +5512,8 @@ return;
 
 updateMyPresence(false);
 
-});
+}
+);
 
 
 /* ======================================================
@@ -5489,6 +5563,7 @@ e.message ||
 }
 
 });
+
 
 console.log(
 "🔥 Mecd Chat System جاهز"
