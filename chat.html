@@ -336,52 +336,52 @@ text-align:center
 display:none!important
 }
 
-
 /* ======================================================
 IMAGE & VIDEO MESSAGE - FIXED
 ====================================================== */
 
 .image-message,
 .video-message{
-padding:6px !important;
-width:max-content !important;
-max-width:82vw !important;
-overflow:hidden !important;
-display:flex !important;
-flex-direction:column !important;
-align-items:flex-start !important;
-box-sizing:border-box !important;
-flex:0 0 auto !important;
+    padding:6px !important;
+    width:max-content !important;
+    max-width:82vw !important;
+    overflow:hidden !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    box-sizing:border-box !important;
+    flex:0 0 auto !important;
 }
 
 .message-image,
 .message-video{
-display:block !important;
-width:auto !important;
-height:auto !important;
-max-width:100% !important;
-max-height:360px !important;
-border-radius:14px !important;
-object-fit:contain !important;
-cursor:pointer !important;
-user-select:none !important;
-flex:0 0 auto !important;
+    display:block !important;
+    width:auto !important;
+    height:auto !important;
+    max-width:100% !important;
+    max-height:360px !important;
+    border-radius:14px !important;
+    object-fit:contain !important;
+    cursor:pointer !important;
+    user-select:none !important;
+    flex:0 0 auto !important;
 }
 
 .message-image{
-object-fit:contain !important;
+    object-fit:contain !important;
 }
 
 .message-video{
-background:#000 !important;
+    background:#000 !important;
 }
 
 .image-message .message-meta,
 .video-message .message-meta{
-padding:0 5px 2px !important;
-width:100% !important;
-box-sizing:border-box !important;
+    padding:0 5px 2px !important;
+    width:100% !important;
+    box-sizing:border-box !important;
 }
+
 
 
 /* ======================================================
@@ -1332,15 +1332,6 @@ arrayUnion
 from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-getStorage,
-ref,
-uploadBytes,
-getDownloadURL
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
 
 const firebaseConfig = {
 
@@ -1373,9 +1364,6 @@ getAuth(firebaseApp);
 
 const db =
 getFirestore(firebaseApp);
-
-const storage =
-getStorage(firebaseApp);
 
 
 const $ = id => document.getElementById(id);
@@ -2305,7 +2293,7 @@ cameraInput.click();
 
 
 /* ======================================================
-IMAGE COMPRESS
+IMAGE & VIDEO COMPRESS (WITH CURRENT SIZE & ASPECT RATIO PRESERVATION)
 ====================================================== */
 
 async function compressImage(file){
@@ -2332,161 +2320,27 @@ const img =
 new Image();
 
 
-img.onload =
-async () => {
+img.onload = () => {
+try {
+const canvas = document.createElement("canvas");
+canvas.width = img.width;
+canvas.height = img.height;
+const ctx = canvas.getContext("2d", { alpha: false });
+ctx.drawImage(img, 0, 0);
 
-try{
+let quality = 0.90;
+let result = canvas.toDataURL("image/jpeg", quality);
 
-let maxSide = 1280;
-
-let width =
-img.width;
-
-let height =
-img.height;
-
-
-if(
-width > maxSide ||
-height > maxSide
-){
-
-const ratio =
-Math.min(
-maxSide / width,
-maxSide / height
-);
-
-width =
-Math.round(
-width * ratio
-);
-
-height =
-Math.round(
-height * ratio
-);
-
+// الحفاظ على دقة عالية مع تقليل الحجم المبالغ فيه فقط إذا تجاوز حجماً كبيراً جداً
+while (result.length > 3000000 && quality > 0.5) {
+quality -= 0.1;
+result = canvas.toDataURL("image/jpeg", quality);
 }
-
-
-const canvas =
-document.createElement(
-"canvas"
-);
-
-const ctx =
-canvas.getContext(
-"2d",
-{
-alpha:false
-}
-);
-
-
-canvas.width =
-width;
-
-canvas.height =
-height;
-
-
-ctx.drawImage(
-img,
-0,
-0,
-width,
-height
-);
-
-
-let quality = .82;
-
-let result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-
-while(
-result.length > 760000 &&
-quality > .45
-){
-
-quality -= .07;
-
-result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-}
-
-
-if(result.length > 760000){
-
-const smallerSide =
-900;
-
-const ratio =
-Math.min(
-smallerSide / width,
-smallerSide / height
-);
-
-
-canvas.width =
-Math.round(
-width * ratio
-);
-
-canvas.height =
-Math.round(
-height * ratio
-);
-
-
-ctx.drawImage(
-img,
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-
-result =
-canvas.toDataURL(
-"image/jpeg",
-.65
-);
-
-}
-
-
-if(result.length > 900000){
-
-reject(
-new Error(
-"الصورة كبيرة جدًا"
-)
-);
-
-return;
-
-}
-
 
 resolve(result);
-
-}catch(error){
-
+} catch (error) {
 reject(error);
-
 }
-
 };
 
 
@@ -2525,9 +2379,11 @@ reader.readAsDataURL(file);
 }
 );
 
+}
+
 
 /* ======================================================
-SEND MEDIA (IMAGE OR VIDEO)
+SEND MEDIA (IMAGE OR VIDEO UP TO 60 MINUTES / 500MB)
 ====================================================== */
 
 async function sendMediaFile(file){
@@ -2543,156 +2399,25 @@ return;
 sendButton.disabled = true;
 
 try{
-
 let fileType = "image";
 let mediaData = "";
 
 if(file.type.startsWith("video/")){
-
-/* ==================================================
-CHECK VIDEO DURATION - MAX 60 MINUTES
-================================================== */
-
-const duration =
-await new Promise(
-(resolve,reject) => {
-
-const video =
-document.createElement("video");
-
-video.preload =
-"metadata";
-
-video.onloadedmetadata =
-() => {
-
-const value =
-video.duration;
-
-URL.revokeObjectURL(
-video.src
-);
-
-if(
-!Number.isFinite(value)
-){
-
-reject(
-new Error(
-"تعذر قراءة مدة الفيديو."
-)
-);
-
-return;
-
+// السماح حتى 500 ميغابايت (فيديوهات تصل حتى 60 دقيقة تقريباً)
+if(file.size > 500 * 1024 * 1024){
+throw new Error("حجم الفيديو كبير جداً، الحد الأقصى المسموح به هو 500 ميغابايت.");
 }
-
-resolve(value);
-
-};
-
-video.onerror =
-() => {
-
-URL.revokeObjectURL(
-video.src
-);
-
-reject(
-new Error(
-"تعذر قراءة مدة الفيديو."
-)
-);
-
-};
-
-video.src =
-URL.createObjectURL(file);
-
+mediaData = await new Promise((resolve, reject) => {
+const reader = new FileReader();
+reader.onload = e => resolve(e.target.result);
+reader.onerror = reject;
+reader.readAsDataURL(file);
+});
+fileType = "video";
+} else {
+mediaData = await compressImage(file);
+fileType = "image";
 }
-);
-
-
-/* 3600 ثانية = 60 دقيقة */
-
-if(duration > 3600){
-
-throw new Error(
-"الفيديو طويل جدًا. الحد الأقصى المسموح به هو 60 دقيقة."
-);
-
-}
-
-
-/* ==================================================
-UPLOAD VIDEO TO FIREBASE STORAGE
-================================================== */
-
-const extension =
-(
-file.name
-.split(".")
-.pop() ||
-"mp4"
-)
-.replace(
-/[^a-zA-Z0-9]/g,
-""
-);
-
-const fileName =
-`video_${Date.now()}_${Math.random()
-.toString(36)
-.slice(2)}.${extension}`;
-
-
-const storageRef =
-ref(
-storage,
-`chats/${chatID}/videos/${currentUser.uid}/${fileName}`
-);
-
-
-const uploadResult =
-await uploadBytes(
-storageRef,
-file,
-{
-contentType:
-file.type ||
-"video/mp4"
-}
-);
-
-
-mediaData =
-await getDownloadURL(
-uploadResult.ref
-);
-
-
-fileType =
-"video";
-
-}else{
-
-/* ==================================================
-IMAGE
-KEEP CURRENT SIZE FIX EXACTLY
-================================================== */
-
-mediaData =
-await compressImage(file);
-
-fileType =
-"image";
-
-}
-
-
-/* ==================================================
-SAVE MESSAGE
-================================================== */
 
 await addDoc(
 collection(
@@ -2702,31 +2427,15 @@ chatID,
 "messages"
 ),
 {
-type:
-fileType,
-
-[fileType]:
-mediaData,
-
-senderId:
-currentUser.uid,
-
-receiverId:
-friendUser.uid,
-
-read:false,
-
-deletedFor:[],
-
-createdAt:
-serverTimestamp()
+type: fileType,
+[fileType]: mediaData,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+read: false,
+deletedFor: [],
+createdAt: serverTimestamp()
 }
 );
-
-
-/* ==================================================
-UPDATE CHAT
-================================================== */
 
 await setDoc(
 doc(
@@ -2735,19 +2444,12 @@ db,
 chatID
 ),
 {
-lastMessage:
-fileType === "video"
-? "🎥 فيديو"
-: "📷 صورة",
-
-lastMessageAt:
-serverTimestamp(),
-
-lastSenderId:
-currentUser.uid
+lastMessage: fileType === "video" ? "🎥 فيديو" : "📷 صورة",
+lastMessageAt: serverTimestamp(),
+lastSenderId: currentUser.uid
 },
 {
-merge:true
+merge: true
 }
 );
 
@@ -3412,9 +3114,6 @@ video.controls = true;
 
 video.playsInline = true;
 
-video.preload =
-"metadata";
-
 
 box.appendChild(
 video
@@ -3653,7 +3352,7 @@ callBox
 
 
 /* ======================================================
-MESSAGE MENU
+MESSAGE MENU (SUPPORTING ALL MEDIA TYPES FOR DELETE FOR ME & DELETE FOR EVERYONE)
 ====================================================== */
 
 const messageElements =
@@ -3815,6 +3514,8 @@ document.createElement(
 );
 
 
+// إذا كانت رسالتك (سواء نص، صورة، فيديو، صوت) يظهر "إلغاء الإرسال" للجميع
+// وإذا كانت رسالة واردة من الطرف الآخر يظهر "حذف لدي"
 button.textContent =
 mine
 ? "🗑️ إلغاء الإرسال"
@@ -4251,12 +3952,9 @@ document.createElement(
 e.className =
 "empty";
 
-e.innerHTML =
-"💬<br>ابدأ المحادثة الآن";
-
-messages.appendChild(
-e
-);
+e.className = "empty";
+e.innerHTML = "💬<br>ابدأ المحادثة الآن";
+messages.appendChild(e);
 
 }
 
@@ -4572,8 +4270,6 @@ activeCallPeer
 
 
 setupCallVisuals();
-
-showConnectedButtons();
 
 }
 
@@ -7113,6 +6809,7 @@ unsubscribeIncomingCalls();
 
 
 stopPresence();
+
 
 history.back();
 
