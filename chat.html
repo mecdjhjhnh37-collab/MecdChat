@@ -656,6 +656,11 @@ font-size:13px !important;
 font-weight:bold !important;
 cursor:pointer !important;
 display:block !important;
+margin-bottom:4px;
+}
+
+.message-menu button:last-child{
+margin-bottom:0;
 }
 
 .message-menu button:hover{
@@ -1672,130 +1677,6 @@ cameraInput.click();
 };
 
 /* ======================================================
-IMAGE COMPRESS
-======================================================
-
-هذه الدالة بقيت موجودة بدون استخدامها
-للحفاظ على باقي الكود كما هو.
-====================================================== */
-
-async function compressImage(file){
-
-return new Promise((resolve, reject) => {
-
-if(!file)
-return reject(
-new Error("لم يتم اختيار صورة")
-);
-
-const reader =
-new FileReader();
-
-reader.onload = event => {
-
-const img =
-new Image();
-
-img.onload = () => {
-
-try{
-
-const canvas =
-document.createElement("canvas");
-
-let maxWidth = 800;
-
-let scale =
-Math.min(
-maxWidth / img.width,
-1
-);
-
-canvas.width =
-img.width * scale;
-
-canvas.height =
-img.height * scale;
-
-const ctx =
-canvas.getContext(
-"2d",
-{ alpha:false }
-);
-
-ctx.drawImage(
-img,
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-let quality = 0.85;
-
-let result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-while(
-result.length > 900000 &&
-quality > 0.3
-){
-
-quality -= 0.1;
-
-result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-}
-
-if(result.length > 950000){
-
-return reject(
-new Error(
-"حجم الصورة كبير جداً، اختر صورة أصغر."
-)
-);
-
-}
-
-resolve(result);
-
-}catch(error){
-
-reject(error);
-
-}
-
-};
-
-img.onerror = () =>
-reject(
-new Error("تعذر قراءة الصورة")
-);
-
-img.src =
-event.target.result;
-
-};
-
-reader.onerror = () =>
-reject(
-new Error("تعذر قراءة الملف")
-);
-
-reader.readAsDataURL(file);
-
-});
-
-}
-
-/* ======================================================
 SUPABASE MEDIA UPLOAD
 ====================================================== */
 
@@ -1814,11 +1695,6 @@ throw new Error(
 );
 
 }
-
-/*
-اسم الملف يكون فريدًا حتى لا يحدث تعارض
-بين الملفات.
-*/
 
 const extension =
 file.name.includes(".")
@@ -1839,10 +1715,6 @@ file.type.startsWith("video/")
 const filePath =
 `${currentUser.uid}/` +
 `${Date.now()}_${crypto.randomUUID()}.${extension}`;
-
-/*
-رفع الملف إلى Supabase Storage
-*/
 
 const { error: uploadError } =
 await supabase.storage
@@ -1873,10 +1745,6 @@ uploadError.message ||
 );
 
 }
-
-/*
-الحصول على الرابط العام للملف
-*/
 
 const {
 data: publicData
@@ -1941,13 +1809,6 @@ throw new Error(
 
 }
 
-/*
-لا يتم ضغط أو تحويل الفيديو.
-ولا يتم تخزين الملف داخل Firestore.
-
-الملف نفسه يذهب إلى Supabase.
-*/
-
 const media =
 await uploadMediaToSupabase(file);
 
@@ -1957,10 +1818,6 @@ isVideo
 "video"
 :
 "image";
-
-/*
-Firestore يحفظ الرابط فقط.
-*/
 
 await addDoc(
 collection(
@@ -2775,7 +2632,7 @@ callBox
 }
 
 /* ======================================================
-MESSAGE ELEMENTS
+MESSAGE ACTIONS & EDIT MENU
 ====================================================== */
 
 const messageElements =
@@ -2892,7 +2749,9 @@ alert(
 function showMessageMenu(
 element,
 id,
-mine
+mine,
+messageType,
+currentText
 ){
 
 removeMenus();
@@ -2902,6 +2761,29 @@ document.createElement("div");
 
 menu.className =
 "message-menu";
+
+// زر التعديل (يظهر لرسائلك النصية فقط)
+if (mine && messageType === "text") {
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️ تعديل";
+    editBtn.onclick = async e => {
+        e.stopPropagation();
+        removeMenus();
+        const newText = prompt("تعديل الرسالة:", currentText);
+        if (newText !== null && newText.trim() !== "" && newText.trim() !== currentText) {
+            try {
+                await updateDoc(doc(db, "chats", chatID, "messages", id), {
+                    text: newText.trim(),
+                    isEdited: true
+                });
+            } catch (err) {
+                console.error("Edit error:", err);
+                alert("تعذر تعديل الرسالة");
+            }
+        }
+    };
+    menu.appendChild(editBtn);
+}
 
 const button =
 document.createElement("button");
@@ -2945,7 +2827,9 @@ element.appendChild(menu);
 function addMessageActions(
 element,
 id,
-mine
+mine,
+messageType,
+text
 ){
 
 let timer = null;
@@ -2973,7 +2857,9 @@ setTimeout(
 showMessageMenu(
 element,
 id,
-mine
+mine,
+messageType,
+text
 );
 
 },
@@ -3002,7 +2888,9 @@ e.preventDefault();
 showMessageMenu(
 element,
 id,
-mine
+mine,
+messageType,
+text
 );
 
 }
@@ -3105,11 +2993,14 @@ data.senderId === currentUser.uid
 
 if(data.type === "text"){
 
-box.appendChild(
-document.createTextNode(
-data.text || ""
-)
-);
+let textContent = data.text || "";
+if(data.isEdited){
+    textContent += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
+}
+box.innerHTML = escapeHtml(data.text || "");
+if(data.isEdited){
+    box.innerHTML += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
+}
 
 }else if(
 data.type === "voice"
@@ -3193,7 +3084,9 @@ meta
 addMessageActions(
 box,
 id,
-data.senderId === currentUser.uid
+data.senderId === currentUser.uid,
+data.type,
+data.text
 );
 
 const old =
