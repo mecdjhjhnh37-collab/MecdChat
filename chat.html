@@ -2634,80 +2634,77 @@ callBox
 /* ======================================================
 MESSAGE ACTIONS & EDIT MENU
 ====================================================== */
-
 function addMessageActions(
-    element,
-    id,
-    mine,
-    messageType,
-    text,
-    data
+element,
+id,
+mine,
+messageType,
+text
 ){
 
-    let timer = null;
+let timer = null;
 
-    const cancel = () => {
-        clearTimeout(timer);
-    };
+const cancel = () => {
+clearTimeout(timer);
+};
 
-    element.addEventListener(
-        "pointerdown",
-        e => {
+element.addEventListener(
+"pointerdown",
+e => {
 
-            if(
-                e.target.closest(".message-menu")
-            ){
-                return;
-            }
+if(
+e.target.closest(".message-menu")
+)
+return;
 
-            timer = setTimeout(
-                () => {
+timer =
+setTimeout(
+() => {
 
-                    showMessageMenu(
-                        element,
-                        id,
-                        mine,
-                        messageType,
-                        text,
-                        data
-                    );
+showMessageMenu(
+element,
+id,
+mine,
+messageType,
+text
+);
 
-                },
-                500
-            );
-
-        }
-    );
-
-    element.addEventListener(
-        "pointerup",
-        cancel
-    );
-
-    element.addEventListener(
-        "pointercancel",
-        cancel
-    );
-
-    element.addEventListener(
-        "contextmenu",
-        e => {
-
-            e.preventDefault();
-
-            showMessageMenu(
-                element,
-                id,
-                mine,
-                messageType,
-                text,
-                data
-            );
-
-        }
-    );
+},
+500
+);
 
 }
+);
+
+element.addEventListener(
+"pointerup",
+cancel
+);
+
+element.addEventListener(
+"pointercancel",
+cancel
+);
+
+element.addEventListener(
+"contextmenu",
+e => {
+
+e.preventDefault();
+
+showMessageMenu(
+element,
+id,
+mine,
+messageType,
+text
+);
+
+}
+);
+
+}
+
 
 /* ======================================================
 RENDER MESSAGES
