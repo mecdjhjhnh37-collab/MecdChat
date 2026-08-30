@@ -338,16 +338,18 @@ display:none!important
 
 
 /* ======================================================
-IMAGE MESSAGE
+IMAGE & VIDEO MESSAGE
 ====================================================== */
 
-.image-message{
+.image-message,
+.video-message{
 padding:6px !important;
 max-width:82% !important;
 overflow:hidden !important
 }
 
-.message-image{
+.message-image,
+.message-video{
 display:block;
 width:auto;
 max-width:100%;
@@ -358,7 +360,8 @@ cursor:pointer;
 user-select:none
 }
 
-.image-message .message-meta{
+.image-message .message-meta,
+.video-message .message-meta{
 padding:0 5px 2px
 }
 
@@ -1058,7 +1061,7 @@ class="attach-option"
 type="button">
 
 <span class="attach-icon">🖼️</span>
-<span>صورة</span>
+<span>صورة أو فيديو</span>
 
 </button>
 
@@ -1068,7 +1071,7 @@ class="attach-option"
 type="button">
 
 <span class="attach-icon">📷</span>
-<span>كاميرا</span>
+<span>كاميرا / تسجيل</span>
 
 </button>
 
@@ -1079,13 +1082,13 @@ type="button">
 id="galleryInput"
 class="hidden-file"
 type="file"
-accept="image/*">
+accept="image/*,video/*">
 
 <input
 id="cameraInput"
 class="hidden-file"
 type="file"
-accept="image/*"
+accept="image/*,video/*"
 capture="environment">
 
 
@@ -2376,11 +2379,6 @@ quality
 );
 
 
-/*
-Firestore document limit is close to 1 MB.
-Keep image data comfortably below that.
-*/
-
 while(
 result.length > 760000 &&
 quality > .45
@@ -2501,10 +2499,10 @@ reader.readAsDataURL(file);
 
 
 /* ======================================================
-SEND IMAGE
+SEND MEDIA (IMAGE OR VIDEO)
 ====================================================== */
 
-async function sendImage(file){
+async function sendMediaFile(file){
 
 if(
 !file ||
@@ -2514,15 +2512,27 @@ if(
 )
 return;
 
-
 sendButton.disabled = true;
 
-
 try{
+let fileType = "image";
+let mediaData = "";
 
-const image =
-await compressImage(file);
-
+if(file.type.startsWith("video/")){
+if(file.size > 900000){
+throw new Error("حجم الفيديو كبير جداً، يرجى اختيار فيديو أصغر حجماً.");
+}
+mediaData = await new Promise((resolve, reject) => {
+const reader = new FileReader();
+reader.onload = e => resolve(e.target.result);
+reader.onerror = reject;
+reader.readAsDataURL(file);
+});
+fileType = "video";
+} else {
+mediaData = await compressImage(file);
+fileType = "image";
+}
 
 await addDoc(
 collection(
@@ -2532,25 +2542,15 @@ chatID,
 "messages"
 ),
 {
-type:"image",
-
-image,
-
-senderId:
-currentUser.uid,
-
-receiverId:
-friendUser.uid,
-
-read:false,
-
-deletedFor:[],
-
-createdAt:
-serverTimestamp()
+type: fileType,
+[fileType]: mediaData,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+read: false,
+deletedFor: [],
+createdAt: serverTimestamp()
 }
 );
-
 
 await setDoc(
 doc(
@@ -2559,31 +2559,25 @@ db,
 chatID
 ),
 {
-lastMessage:
-"📷 صورة",
-
-lastMessageAt:
-serverTimestamp(),
-
-lastSenderId:
-currentUser.uid
+lastMessage: fileType === "video" ? "🎥 فيديو" : "📷 صورة",
+lastMessageAt: serverTimestamp(),
+lastSenderId: currentUser.uid
 },
 {
 merge:true
 }
 );
 
-
 }catch(e){
 
 console.error(
-"Send image:",
+"Send media:",
 e
 );
 
 alert(
 e.message ||
-"تعذر إرسال الصورة"
+"تعذر إرسال الملف"
 );
 
 }finally{
@@ -2604,7 +2598,7 @@ galleryInput.files?.[0];
 
 if(file){
 
-await sendImage(file);
+await sendMediaFile(file);
 
 }
 
@@ -2623,7 +2617,7 @@ cameraInput.files?.[0];
 
 if(file){
 
-await sendImage(file);
+await sendMediaFile(file);
 
 }
 
@@ -2753,11 +2747,6 @@ if(
 )
 return;
 
-
-/*
-Only the next message is checked.
-If it is text/image/call, playback stops.
-*/
 
 const nextAudio =
 next.querySelector(
@@ -3008,12 +2997,6 @@ time.textContent =
 "00:00";
 
 
-/*
-If the message immediately below
-is another voice message, play it.
-If it is text/image/call, stop.
-*/
-
 setTimeout(
 () => {
 
@@ -3212,6 +3195,43 @@ win.document.close();
 
 box.appendChild(
 img
+);
+
+}
+
+
+/* ======================================================
+VIDEO MESSAGE
+====================================================== */
+
+function createVideoMessage(
+box,
+data
+){
+
+box.classList.add(
+"video-message"
+);
+
+
+const video =
+document.createElement(
+"video"
+);
+
+video.className =
+"message-video";
+
+video.src =
+data.video || "";
+
+video.controls = true;
+
+video.playsInline = true;
+
+
+box.appendChild(
+video
 );
 
 }
@@ -3795,10 +3815,6 @@ return;
 }
 
 
-/*
-Delete for me
-*/
-
 if(
 Array.isArray(
 data.deletedFor
@@ -3890,6 +3906,20 @@ data.type === "image"
 ){
 
 createImageMessage(
+box,
+data
+);
+
+}
+
+
+/* VIDEO */
+
+else if(
+data.type === "video"
+){
+
+createVideoMessage(
 box,
 data
 );
@@ -4815,15 +4845,6 @@ return pc;
 AUDIO -> VIDEO
 ====================================================== */
 
-/*
-For audio calls we create a video transceiver
-before the original offer.
-
-This allows both phones to turn the same
-audio call into video later without creating
-a second call or breaking the connection.
-*/
-
 async function prepareAudioVideoChannel(){
 
 if(!peerConnection)
@@ -4899,12 +4920,6 @@ return sender || null;
 
 }
 
-
-/*
-Enable camera on this device.
-remote device receives the video through
-the already negotiated video channel.
-*/
 
 async function enableVideoForCall(
 updateFirestore = true
@@ -5028,10 +5043,6 @@ activeCallId
 if(
 snap.exists()
 ){
-
-const data =
-snap.data();
-
 
 await updateDoc(
 doc(
@@ -5326,11 +5337,6 @@ peerConnection =
 createPeer();
 
 
-/*
-Prepare video channel for audio calls.
-No camera permission is requested here.
-*/
-
 if(type === "audio"){
 
 await prepareAudioVideoChannel();
@@ -5482,13 +5488,6 @@ return;
 
 }
 
-
-/*
-Audio -> video synchronization.
-
-The other device changes callType to video.
-This device sees it and opens its camera.
-*/
 
 if(
 data.callType === "video" &&
@@ -5772,11 +5771,6 @@ return;
 
 }
 
-
-/*
-If caller converts an audio call to video,
-receiver automatically enables camera too.
-*/
 
 if(
 data.callType === "video" &&
