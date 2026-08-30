@@ -2762,27 +2762,27 @@ document.createElement("div");
 menu.className =
 "message-menu";
 
-// زر التعديل (يظهر لرسائلك النصية فقط)
-if (mine && messageType === "text") {
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "✏️ تعديل";
-    editBtn.onclick = async e => {
+// زر تعديل الرسالة النصية (الخاص بك)
+if(mine && messageType === "text"){
+    const editButton = document.createElement("button");
+    editButton.textContent = "✏️ تعديل";
+    editButton.onclick = async e => {
         e.stopPropagation();
         removeMenus();
         const newText = prompt("تعديل الرسالة:", currentText);
-        if (newText !== null && newText.trim() !== "" && newText.trim() !== currentText) {
-            try {
+        if(newText !== null && newText.trim() !== "" && newText.trim() !== currentText){
+            try{
                 await updateDoc(doc(db, "chats", chatID, "messages", id), {
                     text: newText.trim(),
                     isEdited: true
                 });
-            } catch (err) {
+            }catch(err){
                 console.error("Edit error:", err);
                 alert("تعذر تعديل الرسالة");
             }
         }
     };
-    menu.appendChild(editBtn);
+    menu.appendChild(editButton);
 }
 
 const button =
