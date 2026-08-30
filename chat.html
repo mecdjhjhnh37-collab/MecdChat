@@ -338,31 +338,35 @@ display:none!important
 
 
 /* ======================================================
-IMAGE & VIDEO MESSAGE
+IMAGE & VIDEO MESSAGE (تم إصلاح العرط والتمدد هنا)
 ====================================================== */
 
 .image-message,
 .video-message{
 padding:6px !important;
 max-width:82% !important;
-overflow:hidden !important
+overflow:hidden !important;
+display:flex !important;
+flex-direction:column !important;
+box-sizing:border-box !important;
 }
 
 .message-image,
 .message-video{
-display:block;
-width:auto;
-max-width:100%;
-max-height:360px;
-border-radius:14px;
-object-fit:contain;
-cursor:pointer;
-user-select:none
+display:block !important;
+width:100% !important;
+max-width:100% !important;
+height:auto !important;
+max-height:360px !important;
+border-radius:14px !important;
+object-fit:cover !important;
+cursor:pointer !important;
+user-select:none !important;
 }
 
 .image-message .message-meta,
 .video-message .message-meta{
-padding:0 5px 2px
+padding:0 5px 2px !important;
 }
 
 
@@ -2519,7 +2523,6 @@ let fileType = "image";
 let mediaData = "";
 
 if(file.type.startsWith("video/")){
-// تم رفع الحد الأقصى لحجم الفيديو إلى 100 ميغابايت لدعم الفيديوهات الطويلة حتى 10 دقائق
 if(file.size > 100 * 1024 * 1024){
 throw new Error("حجم الفيديو كبير جداً، الحد الأقصى المسموح به هو 100 ميغابايت.");
 }
