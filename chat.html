@@ -120,7 +120,7 @@ gap:8px;
 flex-shrink:0
 }
 
-.call-buttons button{
+.call-buttons button, .menu-toggle-btn{
 width:42px;
 height:42px;
 border:0;
@@ -129,6 +129,90 @@ background:#18231f;
 color:#fff;
 font-size:18px;
 cursor:pointer
+}
+
+/* Chat Options Dropdown */
+.chat-dropdown{
+position:absolute;
+top:75px;
+left:15px;
+background:#0b1512;
+border:1px solid rgba(0,232,137,.18);
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
+display:none;
+z-index:100;
+padding:6px;
+width:180px;
+}
+.chat-dropdown.show{
+display:block;
+}
+.chat-dropdown button{
+width:100%;
+padding:10px;
+background:none;
+border:0;
+color:#fff;
+text-align:right;
+font-size:14px;
+border-radius:8px;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.chat-dropdown button:hover{
+background:#18231f;
+}
+
+/* Pinned Message Banner */
+#pinnedBanner{
+background:#101d18;
+border-bottom:1px solid rgba(0,232,137,.2);
+padding:8px 15px;
+display:none;
+align-items:center;
+justify-content:space-between;
+font-size:13px;
+cursor:pointer;
+z-index:9;
+}
+#pinnedBanner .pin-text{
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+color:#00e889;
+flex:1;
+margin-left:10px;
+}
+
+/* Reply Preview Bar */
+#replyPreview{
+background:#101b17;
+padding:8px 12px;
+display:none;
+align-items:center;
+justify-content:space-between;
+border-top:1px solid rgba(255,255,255,.08);
+font-size:13px;
+}
+#replyPreview .reply-content{
+border-right:3px solid #00e889;
+padding-right:8px;
+flex:1;
+color:#b1c2bc;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+#cancelReply{
+background:none;
+border:0;
+color:#ff5555;
+font-size:16px;
+cursor:pointer;
+padding:0 5px;
 }
 
 .messages{
@@ -176,6 +260,44 @@ border:1px solid rgba(255,255,255,.08);
 border-bottom-right-radius:5px
 }
 
+/* Quoted Reply inside Message */
+.message-quote{
+background:rgba(0,0,0,0.15);
+border-right:3px solid #00150e;
+padding:4px 8px;
+margin-bottom:6px;
+border-radius:6px;
+font-size:12px;
+opacity:0.9;
+}
+.message.other .message-quote{
+background:rgba(255,255,255,0.06);
+border-right-color:#00e889;
+color:#a7b8b2;
+}
+
+/* Reactions Badge */
+.message-reactions{
+position:absolute;
+bottom:-10px;
+left:10px;
+background:#0e1815;
+border:1px solid rgba(0,232,137,0.3);
+border-radius:12px;
+padding:2px 6px;
+font-size:12px;
+display:flex;
+gap:3px;
+box-shadow:0 2px 6px rgba(0,0,0,0.4);
+z-index:2;
+}
+
+.edited-tag{
+font-size:9px;
+opacity:0.6;
+margin-right:4px;
+}
+
 .time{
 display:block;
 font-size:9px;
@@ -200,18 +322,24 @@ direction:ltr
 color:#006dff
 }
 
-.input-area{
+.input-area-wrapper{
 position:fixed;
 bottom:0;
 left:50%;
 transform:translateX(-50%);
 width:100%;
 max-width:650px;
+background:#050807;
+z-index:50;
+display:flex;
+flex-direction:column;
+}
+
+.input-area{
 padding:10px;
 display:flex;
 gap:8px;
 background:#050807;
-z-index:50
 }
 
 #messageInput{
@@ -247,10 +375,6 @@ background:#18231f;
 color:#fff;
 font-size:28px;
 transition:.15s
-}
-
-#attachButton:active{
-transform:scale(.92)
 }
 
 #voiceButton{
@@ -309,117 +433,44 @@ cursor:pointer;
 margin-bottom:5px
 }
 
-.attach-option:last-child{
-margin-bottom:0
-}
-
-.attach-option:active{
-transform:scale(.98)
-}
-
-.attach-icon{
-font-size:20px;
-width:28px;
-text-align:center
-}
-
 .hidden-file{
 display:none!important
 }
 
-.image-message,
-.video-message{
+/* Media & Voice styles */
+.image-message, .video-message{
 padding:6px !important;
 width:max-content !important;
 max-width:82vw !important;
-overflow:visible !important;
-display:flex !important;
-flex-direction:column !important;
-align-items:flex-start !important;
-box-sizing:border-box !important;
-flex:0 0 auto !important;
 }
-
-.message-image,
-.message-video{
+.message-image, .message-video{
 display:block !important;
-width:auto !important;
-height:auto !important;
 max-width:100% !important;
 max-height:360px !important;
 border-radius:14px !important;
 object-fit:contain !important;
-cursor:pointer !important;
-user-select:none !important;
-flex:0 0 auto !important;
 }
-
-.message-image{
-object-fit:contain !important;
-}
-
-.message-video{
-background:#000 !important;
-}
-
-.image-message .message-meta,
-.video-message .message-meta{
-padding:0 5px 2px !important;
-width:100% !important;
-box-sizing:border-box !important;
-}
-
 .voice-message{
-align-self:flex-start !important;
-display:block !important;
 width:330px !important;
 max-width:calc(100% - 20px) !important;
 min-width:250px !important;
-height:auto !important;
-min-height:76px !important;
 padding:8px 10px 7px !important;
 border-radius:18px !important;
-position:relative !important;
-overflow:visible !important;
-flex:none !important;
-box-sizing:border-box !important;
 background:linear-gradient(135deg,#162923,#0d1714) !important;
 border:1px solid rgba(0,232,137,.16) !important;
-box-shadow:0 5px 18px rgba(0,0,0,.16);
-line-height:normal !important;
-white-space:normal !important
 }
-
 .message.mine.voice-message{
-align-self:flex-start !important;
 background:linear-gradient(135deg,#087e50,#00a866) !important;
-color:#fff;
-border:1px solid rgba(255,255,255,.08) !important
 }
-
-.message.other.voice-message{
-align-self:flex-end !important;
-background:linear-gradient(135deg,#162923,#0d1714) !important
-}
-
 .voice-message-box{
 display:flex !important;
 align-items:center !important;
 gap:9px !important;
 direction:rtl !important;
-width:100% !important;
-height:auto !important;
-min-height:48px !important;
-flex:none !important;
-overflow:hidden !important;
-border-radius:inherit;
 }
-
 .voice-icon{
 width:43px !important;
 height:43px !important;
-min-width:43px !important;
-max-width:43px !important;
 border-radius:50% !important;
 display:flex !important;
 align-items:center !important;
@@ -427,241 +478,98 @@ justify-content:center !important;
 background:rgba(0,232,137,.13) !important;
 color:#00e889 !important;
 font-size:18px !important;
-flex:none !important;
-box-shadow:0 0 0 1px rgba(0,232,137,.08),0 4px 14px rgba(0,0,0,.18)
 }
-
-.voice-message.mine .voice-icon{
-background:rgba(255,255,255,.16) !important;
-color:#fff !important;
-box-shadow:none
-}
-
-.voice-player{
-display:block !important;
-flex:1 1 auto !important;
-width:auto !important;
-min-width:0 !important;
-height:auto !important
-}
-
 .voice-controls{
 display:flex !important;
 align-items:center !important;
 gap:8px !important;
 width:100% !important;
 height:38px !important;
-min-height:38px !important
 }
-
 .voice-play{
 width:38px !important;
 height:38px !important;
-min-width:38px !important;
-max-width:38px !important;
 border:0 !important;
 border-radius:50% !important;
 background:#00e889 !important;
 color:#00150e !important;
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
 font-size:14px !important;
 cursor:pointer !important;
-flex:none !important;
-box-shadow:0 4px 12px rgba(0,232,137,.18);
-transition:transform .15s,background .15s
 }
-
-.voice-play:active{
-transform:scale(.90)
-}
-
-.voice-message.mine .voice-play{
-background:#fff !important;
-color:#087e50 !important
-}
-
 .voice-progress{
-flex:1 1 auto !important;
-width:auto !important;
-min-width:30px !important;
+flex:1 !important;
 height:7px !important;
-min-height:7px !important;
-max-height:7px !important;
 border-radius:20px !important;
 background:rgba(255,255,255,.13) !important;
-overflow:hidden !important;
 cursor:pointer !important;
 position:relative !important;
-box-shadow:inset 0 1px 2px rgba(0,0,0,.15)
 }
-
 .voice-progress-fill{
 width:0%;
 height:100% !important;
-background:linear-gradient(90deg,#00c96b,#00e889) !important;
+background:#00e889 !important;
 border-radius:20px;
-transition:width .05s linear
 }
-
-.voice-message.mine .voice-progress{
-background:rgba(0,0,0,.18) !important
-}
-
-.voice-message.mine .voice-progress-fill{
-background:#fff !important
-}
-
 .voice-time{
 font-size:10px !important;
 font-weight:bold !important;
 color:#b9c7c2 !important;
-width:39px !important;
-min-width:39px !important;
-max-width:39px !important;
-text-align:center !important;
 direction:ltr !important;
-flex:none !important
 }
 
-.voice-message.mine .voice-time{
-color:rgba(255,255,255,.85) !important
-}
-
-.voice-label{
-font-size:9px !important;
-color:#84938e !important;
-margin-top:4px !important;
-margin-right:52px !important;
-height:11px !important;
-display:flex !important;
-align-items:center !important;
-gap:4px !important
-}
-
-.voice-label::before{
-content:"";
-width:5px;
-height:5px;
-min-width:5px;
-border-radius:50%;
-background:#00e889;
-display:inline-block
-}
-
-.voice-message.mine .voice-label{
-color:rgba(255,255,255,.7) !important
-}
-
-.voice-message.mine .voice-label::before{
-background:#fff
-}
-
-.voice-audio{
-display:none !important;
-width:0 !important;
-height:0 !important
-}
-
-.call-message{
-min-width:245px;
-max-width:310px
-}
-
-.call-box{
-display:flex;
-align-items:center;
-gap:11px
-}
-
-.call-icon{
-width:46px;
-height:46px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:rgba(0,232,137,.14);
-color:#00e889;
-font-size:22px;
-flex-shrink:0
-}
-
-.call-info{
-flex:1;
-min-width:0
-}
-
-.call-title{
-font-size:14px;
-font-weight:bold
-}
-
-.call-subtitle{
-font-size:11px;
-opacity:.65;
-margin-top:4px
-}
-
-.call-duration{
-font-size:11px;
-opacity:.7;
-margin-top:4px
-}
-
-.call-message.missed .call-icon{
-background:rgba(216,59,59,.15);
-color:#ff5555
-}
-
-.call-message.rejected .call-icon,
-.call-message.cancelled .call-icon{
-background:rgba(255,255,255,.08);
-color:#aaa
-}
-
+/* Message Context Menu & Reaction Picker */
 .message-menu{
 position:absolute !important;
 left:50% !important;
 bottom:calc(100% + 8px) !important;
 transform:translateX(-50%) !important;
-width:160px !important;
-min-width:160px !important;
-max-width:160px !important;
-height:auto !important;
-min-height:0 !important;
-padding:5px !important;
+width:170px !important;
+padding:6px !important;
 background:#0b1512 !important;
 border:1px solid rgba(0,232,137,.18) !important;
-border-radius:15px !important;
+border-radius:14px !important;
 box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
 z-index:999999 !important;
-display:block !important;
-flex:none !important;
-white-space:normal !important;
+display:flex !important;
+flex-direction:column !important;
+gap:4px !important;
 }
-
 .message-menu button{
 width:100% !important;
-min-width:0 !important;
-height:auto !important;
-min-height:40px !important;
-padding:10px 14px !important;
+padding:8px 12px !important;
 border:0 !important;
-border-radius:11px !important;
+border-radius:8px !important;
 background:#18231f !important;
 color:#fff !important;
 font-size:13px !important;
 font-weight:bold !important;
 cursor:pointer !important;
-display:block !important;
+text-align:right !important;
 }
-
 .message-menu button:hover{
 background:#22332d !important;
 }
 
+/* Reaction Picker Popup */
+.reaction-picker{
+display:flex;
+gap:6px;
+background:#0b1512;
+border:1px solid rgba(0,232,137,0.2);
+padding:6px 10px;
+border-radius:20px;
+margin-bottom:6px;
+}
+.reaction-picker span{
+cursor:pointer;
+font-size:18px;
+transition:transform 0.15s;
+}
+.reaction-picker span:hover{
+transform:scale(1.3);
+}
+
+/* Call Screens */
 #incomingCall{
 position:fixed;
 top:85px;
@@ -679,35 +587,25 @@ align-items:center;
 justify-content:space-between;
 gap:12px
 }
-
 .incoming-call-info{
 display:flex;
 align-items:center;
 gap:11px;
 min-width:0
 }
-
 .incoming-name{
 font-size:15px;
 font-weight:bold
 }
-
 .incoming-type{
 font-size:12px;
 color:#9aa7a3;
 margin-top:4px
 }
-
-.call-avatar{
-width:52px;
-height:52px
-}
-
 .incoming-actions{
 display:flex;
 gap:9px
 }
-
 .incoming-actions button{
 width:46px;
 height:46px;
@@ -717,15 +615,8 @@ font-size:20px;
 color:#fff;
 cursor:pointer
 }
-
-#rejectIncoming{
-background:#d83b3b
-}
-
-#acceptIncoming{
-background:#00e889;
-color:#00150e
-}
+#rejectIncoming{background:#d83b3b}
+#acceptIncoming{background:#00e889;color:#00150e}
 
 #callScreen{
 position:fixed;
@@ -736,7 +627,6 @@ display:none;
 flex-direction:column;
 overflow:hidden
 }
-
 .call-top{
 height:85px;
 padding:15px;
@@ -745,28 +635,10 @@ align-items:center;
 justify-content:center;
 background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)
 }
-
-.call-top-info{
-text-align:center
-}
-
-#callTitle{
-font-size:20px;
-font-weight:bold
-}
-
-#callState{
-font-size:13px;
-color:#00e889;
-margin-top:6px
-}
-
-#callDuration{
-font-size:12px;
-color:#9aa7a3;
-margin-top:4px
-}
-
+.call-top-info{text-align:center}
+#callTitle{font-size:20px;font-weight:bold}
+#callState{font-size:13px;color:#00e889;margin-top:6px}
+#callDuration{font-size:12px;color:#9aa7a3;margin-top:4px}
 #audioCallView{
 flex:1;
 display:flex;
@@ -774,7 +646,6 @@ align-items:center;
 justify-content:center;
 background:#020504
 }
-
 #videoArea{
 position:relative;
 flex:1;
@@ -782,7 +653,6 @@ background:#000;
 overflow:hidden;
 display:none
 }
-
 #remoteVideo{
 position:absolute;
 inset:0;
@@ -792,7 +662,6 @@ object-fit:cover;
 background:#000;
 display:none
 }
-
 #remoteAvatar{
 position:absolute;
 inset:0;
@@ -802,18 +671,12 @@ justify-content:center;
 background:#07110f;
 z-index:1
 }
-
 #remoteAvatar img{
 width:150px;
 height:150px;
 border-radius:50%;
 object-fit:cover
 }
-
-#remoteAvatarEmoji{
-font-size:70px
-}
-
 #localVideo{
 position:absolute;
 width:110px;
@@ -827,7 +690,6 @@ background:#111;
 z-index:5;
 display:none
 }
-
 #localAvatar{
 position:absolute;
 width:110px;
@@ -843,7 +705,6 @@ justify-content:center;
 overflow:hidden;
 font-size:40px
 }
-
 .call-controls{
 min-height:100px;
 padding:15px;
@@ -854,7 +715,6 @@ gap:12px;
 background:rgba(5,8,7,.98);
 z-index:20
 }
-
 .call-control{
 width:58px;
 height:58px;
@@ -865,35 +725,10 @@ color:#fff;
 font-size:22px;
 cursor:pointer
 }
-
-.call-control.accept{
-background:#00e889;
-color:#00150e
-}
-
-.call-control.reject,
-.call-control.end{
-background:#d83b3b
-}
-
-.call-control.active{
-background:#00e889;
-color:#00150e
-}
-
-.hidden{
-display:none!important
-}
-
-@media(max-width:500px){
-.message{max-width:84%}
-.voice-message{width:300px !important;max-width:calc(100vw - 70px) !important;min-width:245px !important}
-header{padding:10px 12px}
-#incomingCall{top:75px}
-#localVideo{width:100px;height:135px;left:12px;top:90px}
-#localAvatar{width:100px;height:100px;left:12px;top:105px}
-.call-control{width:54px;height:54px}
-}
+.call-control.accept{background:#00e889;color:#00150e}
+.call-control.reject,.call-control.end{background:#d83b3b}
+.call-control.active{background:#00e889;color:#00150e}
+.hidden{display:none!important}
 </style>
 </head>
 
@@ -916,7 +751,17 @@ header{padding:10px 12px}
 <button id="callButton" type="button">📞</button>
 <button id="videoButton" type="button">📹</button>
 </div>
+<button id="menuToggleBtn" class="menu-toggle-btn" type="button">⋮</button>
+<div id="chatDropdown" class="chat-dropdown">
+<button id="clearChatBtn" type="button">🧹 مسح من جهازي</button>
+</div>
 </header>
+
+<!-- Pinned Message Banner -->
+<div id="pinnedBanner">
+<span>📌</span>
+<div id="pinnedText" class="pin-text">لا توجد رسائل مثبتة</div>
+</div>
 
 <div id="messages" class="messages">
 <div class="empty">💬<br>ابدأ المحادثة الآن</div>
@@ -936,11 +781,17 @@ header{padding:10px 12px}
 <input id="galleryInput" class="hidden-file" type="file" accept="image/*,video/*">
 <input id="cameraInput" class="hidden-file" type="file" accept="image/*,video/*" capture="environment">
 
+<div class="input-area-wrapper">
+<div id="replyPreview">
+<div id="replyTextPreview" class="reply-content"></div>
+<button id="cancelReply" type="button">✕</button>
+</div>
 <div class="input-area">
 <button id="attachButton" type="button">＋</button>
 <input id="messageInput" type="text" placeholder="اكتب رسالة..." autocomplete="off" maxlength="2000">
 <button id="voiceButton" type="button">🎤</button>
 <button id="sendButton" type="button">➤</button>
+</div>
 </div>
 
 </main>
@@ -997,32 +848,9 @@ header{padding:10px 12px}
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getAuth,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-getFirestore,
-doc,
-getDoc,
-setDoc,
-updateDoc,
-addDoc,
-collection,
-query,
-where,
-orderBy,
-onSnapshot,
-deleteDoc,
-serverTimestamp,
-arrayUnion
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* ======================================================
-FIREBASE
-====================================================== */
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, onSnapshot, deleteDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const firebaseConfig = {
 apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
@@ -1037,27 +865,10 @@ const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
-/* ======================================================
-SUPABASE - MEDIA ONLY
-====================================================== */
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
 const SUPABASE_URL = "https://aqukohedqmtjuspjbkmn.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
-
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
 const SUPABASE_BUCKET = "mecd-media";
-
-const supabase = createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
-);
-
-/* ======================================================
-ELEMENTS
-====================================================== */
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const $ = id => document.getElementById(id);
 
@@ -1079,36 +890,14 @@ const friendStatus = $("friendStatus");
 const backButton = $("backButton");
 const callButton = $("callButton");
 const videoButton = $("videoButton");
-const incomingCall = $("incomingCall");
-const incomingAvatar = $("incomingAvatar");
-const incomingName = $("incomingName");
-const incomingType = $("incomingType");
-const acceptIncoming = $("acceptIncoming");
-const rejectIncoming = $("rejectIncoming");
-const callScreen = $("callScreen");
-const callTitle = $("callTitle");
-const callState = $("callState");
-const callDuration = $("callDuration");
-const audioCallView = $("audioCallView");
-const audioCallAvatar = $("audioCallAvatar");
-const videoArea = $("videoArea");
-const remoteVideo = $("remoteVideo");
-const remoteAvatar = $("remoteAvatar");
-const remoteAvatarEmoji = $("remoteAvatarEmoji");
-const localVideo = $("localVideo");
-const localAvatar = $("localAvatar");
-const remoteAudio = $("remoteAudio");
-const switchVideoButton = $("switchVideoButton");
-const muteButton = $("muteButton");
-const speakerButton = $("speakerButton");
-const flipCameraButton = $("flipCameraButton");
-const acceptCallButton = $("acceptCallButton");
-const rejectCallButton = $("rejectCallButton");
-const endCallButton = $("endCallButton");
-
-/* ======================================================
-VARIABLES
-====================================================== */
+const menuToggleBtn = $("menuToggleBtn");
+const chatDropdown = $("chatDropdown");
+const clearChatBtn = $("clearChatBtn");
+const pinnedBanner = $("pinnedBanner");
+const pinnedText = $("pinnedText");
+const replyPreview = $("replyPreview");
+const replyTextPreview = $("replyTextPreview");
+const cancelReply = $("cancelReply");
 
 let currentUser = null;
 let friendUser = null;
@@ -1117,6 +906,7 @@ let chatID = null;
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
 let unsubscribeFriendActivity = null;
+let unsubscribeChatMeta = null;
 let unsubscribeIncomingCalls = null;
 let unsubscribeActiveCall = null;
 let unsubscribeCandidates = null;
@@ -1125,6 +915,8 @@ let presenceInterval = null;
 let typingTimer = null;
 let typingState = false;
 let voiceRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
 
 let localStream = null;
 let peerConnection = null;
@@ -1136,28 +928,22 @@ let activeCallPeer = null;
 
 let callSeconds = 0;
 let callTimer = null;
-let callTimeout = null;
-
 let remoteAudioMuted = false;
 let cameraFacing = "user";
-
-let callMessageSaved = false;
 let friendOnline = false;
 let friendTyping = false;
 let friendRecording = false;
+let friendLastSeen = null;
 
 let pendingIceCandidates = [];
 let handledIncomingCalls = new Set();
 
-/* ======================================================
-WEBRTC
-====================================================== */
+let replyingTo = null;
+let editingMessageId = null;
+let pinnedMessageData = null;
 
 const rtcConfig = {
-iceServers: [
-{ urls: "stun:stun.l.google.com:19302" },
-{ urls: "stun:stun1.l.google.com:19302" }
-]
+iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
 };
 
 function createChatID(a, b){
@@ -1166,146 +952,104 @@ return [a, b].sort().join("_");
 
 function escapeHtml(value){
 return String(value ?? "").replace(/[&<>'"]/g, c => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-"'":"&#39;",
-'"':"&quot;"
+"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
 }[c]));
 }
 
 function formatTime(timestamp){
 if(!timestamp?.toDate) return "";
-
 try{
-return timestamp.toDate().toLocaleTimeString(
-"ar",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-);
-}catch{
-return "";
-}
+return timestamp.toDate().toLocaleTimeString("ar", { hour:"2-digit", minute:"2-digit" });
+}catch{ return ""; }
 }
 
 function formatDuration(seconds){
-seconds = Math.max(
-0,
-Math.floor(Number(seconds || 0))
-);
-
+seconds = Math.max(0, Math.floor(Number(seconds || 0)));
 const m = Math.floor(seconds / 60);
 const s = seconds % 60;
-
-return String(m).padStart(2,"0") +
-":" +
-String(s).padStart(2,"0");
+return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
 }
 
 function setUserAvatar(element, user){
-
 if(user?.photo){
-
-element.innerHTML =
-`<img src="${escapeHtml(user.photo)}" alt="">`;
-
+element.innerHTML = `<img src="${escapeHtml(user.photo)}" alt="">`;
 }else{
-
 element.innerHTML = "👤";
-
 }
-
 }
 
 function showApp(){
-
 loading.style.display = "none";
 app.style.display = "flex";
-
+requestNotificationPermission();
 }
 
-/* ======================================================
-PRESENCE
-====================================================== */
+/* ================= NOTIFICATIONS ================= */
+function requestNotificationPermission(){
+if("Notification" in window && Notification.permission !== "granted"){
+Notification.requestPermission();
+}
+}
 
-async function updateMyPresence(online = true){
-
-if(!currentUser) return;
-
+function playNotificationSound(){
 try{
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+osc.type = "sine";
+osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+gain.gain.setValueAtTime(0.1, ctx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+osc.connect(gain);
+gain.connect(ctx.destination);
+osc.start();
+osc.stop(ctx.currentTime + 0.3);
+}catch(e){}
+}
 
-await setDoc(
-doc(db, "users", currentUser.uid),
-{
+function showBrowserNotification(title, body){
+if("Notification" in window && Notification.permission === "granted" && document.hidden){
+new Notification(title, { body, icon: friendUser?.photo || "" });
+}
+}
+
+/* ================= PRESENCE ================= */
+async function updateMyPresence(online = true){
+if(!currentUser) return;
+try{
+await setDoc(doc(db, "users", currentUser.uid), {
 online,
 lastSeen: serverTimestamp()
-},
-{ merge:true }
-);
-
-}catch(e){
-
-console.error("Presence:", e);
-
-}
-
+}, { merge:true });
+}catch(e){}
 }
 
 function startPresence(){
-
 updateMyPresence(true);
-
 clearInterval(presenceInterval);
-
 presenceInterval = setInterval(() => {
-
 if(document.visibilityState === "visible"){
-
 updateMyPresence(true);
-
 }
-
 }, 10000);
-
 }
 
 function stopPresence(){
-
 clearInterval(presenceInterval);
-
 presenceInterval = null;
-
 updateMyPresence(false);
-
 }
 
-/* ======================================================
-LOAD FRIEND
-====================================================== */
-
+/* ================= LOAD FRIEND ================= */
 async function loadFriend(){
+const friendId = new URLSearchParams(location.search).get("friend");
+if(!friendId) throw new Error("لا يوجد صديق في الرابط");
+if(friendId === currentUser.uid) throw new Error("لا يمكنك فتح محادثة مع نفسك");
 
-const friendId =
-new URLSearchParams(location.search).get("friend");
-
-if(!friendId)
-throw new Error("لا يوجد صديق في الرابط");
-
-if(friendId === currentUser.uid)
-throw new Error("لا يمكنك فتح محادثة مع نفسك");
-
-const snap =
-await getDoc(
-doc(db, "users", friendId)
-);
-
-if(!snap.exists())
-throw new Error("المستخدم غير موجود");
+const snap = await getDoc(doc(db, "users", friendId));
+if(!snap.exists()) throw new Error("المستخدم غير موجود");
 
 const data = snap.data();
-
 friendUser = {
 uid: friendId,
 name: data.name || "مستخدم Mecd",
@@ -1313,4628 +1057,1023 @@ photo: data.photo || data.photoURL || ""
 };
 
 friendName.textContent = friendUser.name;
+setUserAvatar(friendAvatar, friendUser);
 
-setUserAvatar(
-friendAvatar,
-friendUser
-);
+chatID = createChatID(currentUser.uid, friendUser.uid);
 
-chatID =
-createChatID(
-currentUser.uid,
-friendUser.uid
-);
-
-await setDoc(
-doc(db, "chats", chatID),
-{
-members: [
-currentUser.uid,
-friendUser.uid
-],
+await setDoc(doc(db, "chats", chatID), {
+members: [currentUser.uid, friendUser.uid],
 createdAt: serverTimestamp()
-},
-{ merge:true }
-);
+}, { merge:true });
 
 listenFriendStatus();
 listenFriendActivity();
-
+listenChatMeta();
 }
-
-/* ======================================================
-FRIEND STATUS
-====================================================== */
 
 function renderFriendStatus(){
-
-friendStatus.classList.remove(
-"online",
-"typing",
-"recording"
-);
-
+friendStatus.classList.remove("online", "typing", "recording");
 if(friendRecording){
-
-friendStatus.textContent =
-"🎤 يسجل صوت...";
-
-friendStatus.classList.add(
-"recording"
-);
-
+friendStatus.textContent = "🎤 يسجل صوت...";
+friendStatus.classList.add("recording");
 return;
-
 }
-
 if(friendTyping){
-
-friendStatus.textContent =
-"يكتب...";
-
-friendStatus.classList.add(
-"typing"
-);
-
+friendStatus.textContent = "يكتب...";
+friendStatus.classList.add("typing");
 return;
-
 }
-
 if(friendOnline){
-
-friendStatus.textContent =
-"● متصل";
-
-friendStatus.classList.add(
-"online"
-);
-
+friendStatus.textContent = "● متصل";
+friendStatus.classList.add("online");
 }else{
-
-friendStatus.textContent =
-"● غير متصل";
-
+if(friendLastSeen){
+const mins = Math.floor((Date.now() - friendLastSeen) / 60000);
+if(mins < 1) friendStatus.textContent = "آخر ظهور منذ لحظات";
+else if(mins < 60) friendStatus.textContent = `آخر ظهور منذ ${mins} دقيقة`;
+else friendStatus.textContent = "● غير متصل";
+}else{
+friendStatus.textContent = "● غير متصل";
 }
-
+}
 }
 
 function listenFriendStatus(){
-
-if(unsubscribeFriendStatus)
-unsubscribeFriendStatus();
-
-unsubscribeFriendStatus =
-onSnapshot(
-doc(db, "users", friendUser.uid),
-snap => {
-
+if(unsubscribeFriendStatus) unsubscribeFriendStatus();
+unsubscribeFriendStatus = onSnapshot(doc(db, "users", friendUser.uid), snap => {
 if(!snap.exists()){
-
 friendOnline = false;
 renderFriendStatus();
-
 return;
-
 }
-
 const data = snap.data();
-
-const last =
-data.lastSeen?.toMillis?.() || 0;
-
-friendOnline =
-data.online === true &&
-last > 0 &&
-Date.now() - last < 30000;
-
+const last = data.lastSeen?.toMillis?.() || 0;
+friendLastSeen = last;
+friendOnline = (data.online === true && last > 0 && Date.now() - last < 30000);
 renderFriendStatus();
-
-}
-);
-
+});
 }
 
 function listenFriendActivity(){
-
-if(unsubscribeFriendActivity)
-unsubscribeFriendActivity();
-
-unsubscribeFriendActivity =
-onSnapshot(
-doc(
-db,
-"chats",
-chatID,
-"typing",
-friendUser.uid
-),
-snap => {
-
+if(unsubscribeFriendActivity) unsubscribeFriendActivity();
+unsubscribeFriendActivity = onSnapshot(doc(db, "chats", chatID, "typing", friendUser.uid), snap => {
 if(!snap.exists()){
-
 friendTyping = false;
 friendRecording = false;
-
 renderFriendStatus();
-
 return;
-
 }
-
 const data = snap.data();
-
-const updated =
-data.updatedAt?.toMillis?.() || 0;
-
-const fresh =
-!updated ||
-Date.now() - updated < 5000;
-
-friendRecording =
-fresh &&
-data.recording === true;
-
-friendTyping =
-fresh &&
-data.typing === true &&
-!friendRecording;
-
+const updated = data.updatedAt?.toMillis?.() || 0;
+const fresh = (!updated || Date.now() - updated < 5000);
+friendRecording = (fresh && data.recording === true);
+friendTyping = (fresh && data.typing === true && !friendRecording);
 renderFriendStatus();
-
-}
-);
-
+});
 }
 
-/* ======================================================
-TYPING
-====================================================== */
+function listenChatMeta(){
+if(unsubscribeChatMeta) unsubscribeChatMeta();
+unsubscribeChatMeta = onSnapshot(doc(db, "chats", chatID), snap => {
+if(!snap.exists()) return;
+const data = snap.data();
+pinnedMessageData = data.pinnedMessage || null;
+if(pinnedMessageData && pinnedMessageData.text){
+pinnedText.textContent = pinnedMessageData.text;
+pinnedBanner.style.display = "flex";
+}else{
+pinnedBanner.style.display = "none";
+}
+});
+}
 
-async function updateMyActivity(type){
+menuToggleBtn.onclick = e => {
+e.stopPropagation();
+chatDropdown.classList.toggle("show");
+};
+document.addEventListener("pointerdown", e => {
+if(!e.target.closest("#chatDropdown") && !e.target.closest("#menuToggleBtn")){
+chatDropdown.classList.remove("show");
+}
+});
 
-if(!currentUser || !chatID)
-return;
-
+clearChatBtn.onclick = async () => {
+chatDropdown.classList.remove("show");
+if(!confirm("هل تريد مسح المحادثة من جهازك فقط؟")) return;
 try{
+await getDoc(doc(db, "chats", chatID));
+}catch(e){
+alert("تعذر مسح المحادثة");
+}
+};
 
-await setDoc(
-doc(
-db,
-"chats",
-chatID,
-"typing",
-currentUser.uid
-),
-{
+/* ================= TYPING ================= */
+async function updateMyActivity(type){
+if(!currentUser || !chatID) return;
+try{
+await setDoc(doc(db, "chats", chatID, "typing", currentUser.uid), {
 typing: type === "typing",
 recording: type === "recording",
 updatedAt: serverTimestamp()
-},
-{ merge:true }
-);
-
-}catch(e){
-
-console.error("Activity:", e);
-
+}, { merge:true });
+}catch(e){}
 }
 
-}
-
-messageInput.addEventListener(
-"input",
-() => {
-
+messageInput.addEventListener("input", () => {
 clearTimeout(typingTimer);
-
 if(!messageInput.value.trim()){
-
 typingState = false;
-
 updateMyActivity("none");
-
 return;
-
 }
-
 if(!typingState){
-
 typingState = true;
-
 updateMyActivity("typing");
-
 }
-
-typingTimer =
-setTimeout(() => {
-
+typingTimer = setTimeout(() => {
 typingState = false;
-
 updateMyActivity("none");
-
 }, 1200);
-
-}
-);
-
-/* ======================================================
-VOICE JS
-====================================================== */
-
-async function connectVoiceJS(){
-
-try{
-
-window.chatDB = db;
-window.chatID = chatID;
-window.chatUser = currentUser;
-window.chatFriend = friendUser;
-
-await import("./voice.js");
-
-console.log("🎤 voice.js connected");
-
-}catch(e){
-
-console.error(
-"❌ voice.js:",
-e
-);
-
-}
-
-}
-
-const voiceObserver =
-new MutationObserver(() => {
-
-const recording =
-voiceButton.classList.contains("recording");
-
-if(recording === voiceRecording)
-return;
-
-voiceRecording = recording;
-
-if(recording){
-
-typingState = false;
-
-updateMyActivity(
-"recording"
-);
-
-}else{
-
-updateMyActivity(
-messageInput.value.trim()
-? "typing"
-: "none"
-);
-
-}
-
 });
 
-voiceObserver.observe(
-voiceButton,
-{
-attributes:true
-}
-);
+cancelReply.onclick = () => {
+replyingTo = null;
+replyPreview.style.display = "none";
+};
 
-/* ======================================================
-ATTACH MENU
-====================================================== */
-
+/* ================= ATTACH & MEDIA ================= */
 attachButton.onclick = e => {
-
 e.stopPropagation();
-
 attachMenu.classList.toggle("show");
-
 };
-
-document.addEventListener(
-"pointerdown",
-e => {
-
-if(
-!e.target.closest("#attachMenu") &&
-!e.target.closest("#attachButton")
-){
-
+document.addEventListener("pointerdown", e => {
+if(!e.target.closest("#attachMenu") && !e.target.closest("#attachButton")){
 attachMenu.classList.remove("show");
-
 }
-
-}
-);
-
-galleryButton.onclick = () => {
-
-attachMenu.classList.remove("show");
-
-galleryInput.value = "";
-
-galleryInput.click();
-
-};
-
-cameraButton.onclick = () => {
-
-attachMenu.classList.remove("show");
-
-cameraInput.value = "";
-
-cameraInput.click();
-
-};
-
-/* ======================================================
-IMAGE COMPRESS
-======================================================
-
-هذه الدالة بقيت موجودة بدون استخدامها
-للحفاظ على باقي الكود كما هو.
-====================================================== */
-
-async function compressImage(file){
-
-return new Promise((resolve, reject) => {
-
-if(!file)
-return reject(
-new Error("لم يتم اختيار صورة")
-);
-
-const reader =
-new FileReader();
-
-reader.onload = event => {
-
-const img =
-new Image();
-
-img.onload = () => {
-
-try{
-
-const canvas =
-document.createElement("canvas");
-
-let maxWidth = 800;
-
-let scale =
-Math.min(
-maxWidth / img.width,
-1
-);
-
-canvas.width =
-img.width * scale;
-
-canvas.height =
-img.height * scale;
-
-const ctx =
-canvas.getContext(
-"2d",
-{ alpha:false }
-);
-
-ctx.drawImage(
-img,
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-let quality = 0.85;
-
-let result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-while(
-result.length > 900000 &&
-quality > 0.3
-){
-
-quality -= 0.1;
-
-result =
-canvas.toDataURL(
-"image/jpeg",
-quality
-);
-
-}
-
-if(result.length > 950000){
-
-return reject(
-new Error(
-"حجم الصورة كبير جداً، اختر صورة أصغر."
-)
-);
-
-}
-
-resolve(result);
-
-}catch(error){
-
-reject(error);
-
-}
-
-};
-
-img.onerror = () =>
-reject(
-new Error("تعذر قراءة الصورة")
-);
-
-img.src =
-event.target.result;
-
-};
-
-reader.onerror = () =>
-reject(
-new Error("تعذر قراءة الملف")
-);
-
-reader.readAsDataURL(file);
-
 });
-
-}
-
-/* ======================================================
-SUPABASE MEDIA UPLOAD
-====================================================== */
+galleryButton.onclick = () => { attachMenu.classList.remove("show"); galleryInput.value = ""; galleryInput.click(); };
+cameraButton.onclick = () => { attachMenu.classList.remove("show"); cameraInput.value = ""; cameraInput.click(); };
 
 async function uploadMediaToSupabase(file){
-
-if(!file)
-throw new Error("لم يتم اختيار ملف.");
-
-if(
-!file.type.startsWith("image/") &&
-!file.type.startsWith("video/")
-){
-
-throw new Error(
-"الملف يجب أن يكون صورة أو فيديو."
-);
-
+if(!file) throw new Error("لم يتم اختيار ملف.");
+const extension = file.name.includes(".") ? file.name.split(".").pop().toLowerCase() : (file.type.startsWith("video/") ? "mp4" : "jpg");
+const filePath = `${currentUser.uid}/${Date.now()}_${crypto.randomUUID()}.${extension}`;
+const { error: uploadError } = await supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { cacheControl:"3600", contentType:file.type, upsert:false });
+if(uploadError) throw new Error("تعذر رفع الملف");
+const { data: publicData } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(filePath);
+return { url: publicData?.publicUrl, path: filePath, type: file.type, size: file.size, name: file.name || "" };
 }
-
-/*
-اسم الملف يكون فريدًا حتى لا يحدث تعارض
-بين الملفات.
-*/
-
-const extension =
-file.name.includes(".")
-?
-file.name
-.split(".")
-.pop()
-.toLowerCase()
-:
-(
-file.type.startsWith("video/")
-?
-"mp4"
-:
-"jpg"
-);
-
-const filePath =
-`${currentUser.uid}/` +
-`${Date.now()}_${crypto.randomUUID()}.${extension}`;
-
-/*
-رفع الملف إلى Supabase Storage
-*/
-
-const { error: uploadError } =
-await supabase.storage
-.from(SUPABASE_BUCKET)
-.upload(
-filePath,
-file,
-{
-cacheControl:"3600",
-contentType:file.type,
-upsert:false
-}
-);
-
-if(uploadError){
-
-console.error(
-"Supabase upload error:",
-uploadError
-);
-
-throw new Error(
-"تعذر رفع الملف: " +
-(
-uploadError.message ||
-"خطأ في Supabase Storage"
-)
-);
-
-}
-
-/*
-الحصول على الرابط العام للملف
-*/
-
-const {
-data: publicData
-} =
-supabase.storage
-.from(SUPABASE_BUCKET)
-.getPublicUrl(filePath);
-
-const publicUrl =
-publicData?.publicUrl;
-
-if(!publicUrl){
-
-throw new Error(
-"تم رفع الملف ولكن تعذر الحصول على رابطه."
-);
-
-}
-
-return {
-url:publicUrl,
-path:filePath,
-type:file.type,
-size:file.size,
-name:file.name || ""
-};
-
-}
-
-/* ======================================================
-SEND IMAGE / VIDEO
-====================================================== */
 
 async function sendMediaFile(file){
-
-if(
-!file ||
-!currentUser ||
-!friendUser ||
-!chatID
-){
-
-return;
-
-}
-
+if(!file || !currentUser || !friendUser || !chatID) return;
 sendButton.disabled = true;
-
 try{
+const isVideo = file.type.startsWith("video/");
+const media = await uploadMediaToSupabase(file);
+const fileType = isVideo ? "video" : "image";
 
-const isVideo =
-file.type.startsWith("video/");
+await addDoc(collection(db, "chats", chatID, "messages"), {
+type: fileType,
+[fileType]: media.url,
+storagePath: media.path,
+storageBucket: SUPABASE_BUCKET,
+fileName: media.name,
+mimeType: media.type,
+fileSize: Number(media.size || 0),
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+read: false,
+deletedFor: [],
+replyTo: replyingTo || null,
+reactions: {},
+createdAt: serverTimestamp()
+});
 
-const isImage =
-file.type.startsWith("image/");
+await setDoc(doc(db, "chats", chatID), {
+lastMessage: isVideo ? "🎥 فيديو" : "📷 صورة",
+lastMessageAt: serverTimestamp(),
+lastSenderId: currentUser.uid
+}, { merge:true });
 
-if(!isImage && !isVideo){
-
-throw new Error(
-"اختر صورة أو فيديو فقط."
-);
-
-}
-
-/*
-لا يتم ضغط أو تحويل الفيديو.
-ولا يتم تخزين الملف داخل Firestore.
-
-الملف نفسه يذهب إلى Supabase.
-*/
-
-const media =
-await uploadMediaToSupabase(file);
-
-const fileType =
-isVideo
-?
-"video"
-:
-"image";
-
-/*
-Firestore يحفظ الرابط فقط.
-*/
-
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
-type:fileType,
-
-[fileType]:media.url,
-
-storagePath:media.path,
-
-storageBucket:SUPABASE_BUCKET,
-
-fileName:media.name,
-
-mimeType:media.type,
-
-fileSize:Number(
-media.size || 0
-),
-
-senderId:currentUser.uid,
-
-receiverId:friendUser.uid,
-
-read:false,
-
-deletedFor:[],
-
-createdAt:serverTimestamp()
-}
-);
-
-await setDoc(
-doc(
-db,
-"chats",
-chatID
-),
-{
-lastMessage:
-fileType === "video"
-?
-"🎥 فيديو"
-:
-"📷 صورة",
-
-lastMessageAt:
-serverTimestamp(),
-
-lastSenderId:
-currentUser.uid
-},
-{
-merge:true
-}
-);
-
+cancelReply();
 }catch(e){
-
-console.error(
-"Send media:",
-e
-);
-
-alert(
-e.message ||
-"تعذر إرسال الصورة أو الفيديو."
-);
-
+alert(e.message || "تعذر إرسال الملف");
 }finally{
-
 sendButton.disabled = false;
-
+}
 }
 
-}
-
-/* ======================================================
-FILE INPUTS
-====================================================== */
-
-galleryInput.addEventListener(
-"change",
-async () => {
-
-const file =
-galleryInput.files?.[0];
-
-if(file){
-
-await sendMediaFile(file);
-
-}
-
+galleryInput.addEventListener("change", async () => {
+const file = galleryInput.files?.[0];
+if(file) await sendMediaFile(file);
 galleryInput.value = "";
-
-}
-);
-
-cameraInput.addEventListener(
-"change",
-async () => {
-
-const file =
-cameraInput.files?.[0];
-
-if(file){
-
-await sendMediaFile(file);
-
-}
-
+});
+cameraInput.addEventListener("change", async () => {
+const file = cameraInput.files?.[0];
+if(file) await sendMediaFile(file);
 cameraInput.value = "";
+});
 
+/* ================= VOICE RECORDING (FIXED & FULL) ================= */
+async function toggleVoiceRecording(){
+if(!voiceRecording){
+try{
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+audioChunks = [];
+mediaRecorder = new MediaRecorder(stream);
+mediaRecorder.ondataavailable = e => { if(e.data.size > 0) audioChunks.push(e.data); };
+mediaRecorder.onstop = async () => {
+stream.getTracks().forEach(t => t.stop());
+const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+if(audioBlob.size > 1000){
+await sendVoiceMessage(audioBlob);
 }
-);
+};
+mediaRecorder.start();
+voiceRecording = true;
+voiceButton.classList.add("recording");
+voiceButton.textContent = "⏹";
+updateMyActivity("recording");
+}catch(e){
+alert("تعذر الوصول إلى الميكروفون.");
+}
+}else{
+if(mediaRecorder && mediaRecorder.state !== "inactive"){
+mediaRecorder.stop();
+}
+voiceRecording = false;
+voiceButton.classList.remove("recording");
+voiceButton.textContent = "🎤";
+updateMyActivity("none");
+}
+}
 
-/* ======================================================
-MESSAGE STATUS
-====================================================== */
+async function sendVoiceMessage(blob){
+if(!currentUser || !friendUser || !chatID) return;
+try{
+const file = new File([blob], `voice_${Date.now()}.webm`, { type: "audio/webm" });
+const media = await uploadMediaToSupabase(file);
 
+await addDoc(collection(db, "chats", chatID, "messages"), {
+type: "voice",
+audio: media.url,
+storagePath: media.path,
+storageBucket: SUPABASE_BUCKET,
+fileSize: Number(media.size || 0),
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+read: false,
+deletedFor: [],
+replyTo: replyingTo || null,
+reactions: {},
+createdAt: serverTimestamp()
+});
+
+await setDoc(doc(db, "chats", chatID), {
+lastMessage: "🎤 رسالة صوتية",
+lastMessageAt: serverTimestamp(),
+lastSenderId: currentUser.uid
+}, { merge:true });
+
+cancelReply();
+}catch(e){
+alert("تعذر إرسال التسجيل الصوتي");
+}
+}
+
+voiceButton.onclick = toggleVoiceRecording;
+
+/* ================= MESSAGES RENDERING ================= */
 function createStatus(data){
-
-if(data.senderId !== currentUser.uid)
-return null;
-
-const status =
-document.createElement("span");
-
-status.className =
-"message-status " +
-(
-data.read === true
-?
-"read"
-:
-"sent"
-);
-
-status.textContent =
-data.read === true
-?
-"✓✓"
-:
-"✓";
-
+if(data.senderId !== currentUser.uid) return null;
+const status = document.createElement("span");
+status.className = "message-status " + (data.read === true ? "read" : "sent");
+status.textContent = data.read === true ? "✓✓" : "✓";
 return status;
-
 }
 
 async function markRead(id, data){
-
-if(
-data.senderId === currentUser.uid ||
-data.read === true
-)
-return;
-
+if(data.senderId === currentUser.uid || data.read === true) return;
 try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-),
-{
-read:true,
-readAt:serverTimestamp()
-}
-);
-
-}catch(e){
-
-console.error(
-"Read:",
-e
-);
-
-}
-
-}
-
-/* ======================================================
-VOICE MESSAGE
-====================================================== */
-
-function pauseAllVoiceExcept(currentAudio){
-
-document
-.querySelectorAll(".voice-audio")
-.forEach(audio => {
-
-if(
-audio !== currentAudio &&
-!audio.paused
-){
-
-audio.pause();
-
-}
-
+await updateDoc(doc(db, "chats", chatID, "messages", id), {
+read: true,
+readAt: serverTimestamp()
 });
-
-}
-
-function playNextVoice(box){
-
-const next =
-box.nextElementSibling;
-
-if(
-!next ||
-!next.classList.contains("message")
-)
-return;
-
-const nextAudio =
-next.querySelector(".voice-audio");
-
-if(!nextAudio)
-return;
-
-nextAudio
-.play()
-.catch(
-error =>
-console.warn(
-"Next voice:",
-error
-)
-);
-
+}catch(e){}
 }
 
 function createVoiceMessage(box, data){
-
-box.classList.add(
-"voice-message"
-);
-
-const wrapper =
-document.createElement("div");
-
-wrapper.className =
-"voice-message-box";
-
-const icon =
-document.createElement("div");
-
-icon.className =
-"voice-icon";
-
+box.classList.add("voice-message");
+const wrapper = document.createElement("div");
+wrapper.className = "voice-message-box";
+const icon = document.createElement("div");
+icon.className = "voice-icon";
 icon.textContent = "🎤";
 
-const player =
-document.createElement("div");
-
-player.className =
-"voice-player";
-
-const controls =
-document.createElement("div");
-
-controls.className =
-"voice-controls";
-
-const play =
-document.createElement("button");
-
+const player = document.createElement("div");
+player.className = "voice-player";
+const controls = document.createElement("div");
+controls.className = "voice-controls";
+const play = document.createElement("button");
 play.type = "button";
 play.className = "voice-play";
 play.textContent = "▶";
 
-const progress =
-document.createElement("div");
-
-progress.className =
-"voice-progress";
-
-const fill =
-document.createElement("div");
-
-fill.className =
-"voice-progress-fill";
-
+const progress = document.createElement("div");
+progress.className = "voice-progress";
+const fill = document.createElement("div");
+fill.className = "voice-progress-fill";
 progress.appendChild(fill);
 
-const time =
-document.createElement("span");
+const time = document.createElement("span");
+time.className = "voice-time";
+time.textContent = "00:00";
 
-time.className =
-"voice-time";
+const audio = document.createElement("audio");
+audio.preload = "metadata";
+audio.playsInline = true;
+audio.src = data.audio || "";
 
-time.textContent =
-"00:00";
-
-const audio =
-document.createElement("audio");
-
-audio.className =
-"voice-audio";
-
-audio.preload =
-"metadata";
-
-audio.playsInline =
-true;
-
-audio.src =
-data.audio || "";
-
-const label =
-document.createElement("div");
-
-label.className =
-"voice-label";
-
-label.textContent =
-"رسالة صوتية";
-
-controls.append(
-play,
-progress,
-time
-);
-
-player.append(
-controls,
-label,
-audio
-);
-
-wrapper.append(
-icon,
-player
-);
-
+controls.append(play, progress, time);
+player.append(controls, audio);
+wrapper.append(icon, player);
 box.appendChild(wrapper);
 
-play.onclick =
-async e => {
-
+play.onclick = async e => {
 e.stopPropagation();
-
 if(audio.paused){
-
-pauseAllVoiceExcept(
-audio
-);
-
-try{
-
-await audio.play();
-
-}catch(error){
-
-console.error(
-"Voice play:",
-error
-);
-
-}
-
+try{ await audio.play(); }catch(err){}
 }else{
-
 audio.pause();
-
 }
-
 };
-
-audio.addEventListener(
-"play",
-() => {
-
-pauseAllVoiceExcept(
-audio
-);
-
-play.textContent = "⏸";
-
+audio.onplay = () => play.textContent = "⏸";
+audio.onpause = () => play.textContent = "▶";
+audio.onended = () => { play.textContent = "▶"; fill.style.width = "0%"; };
+audio.onloadedmetadata = () => { if(Number.isFinite(audio.duration)) time.textContent = formatDuration(audio.duration); };
+audio.ontimeupdate = () => {
+if(Number.isFinite(audio.duration) && audio.duration > 0){
+fill.style.width = ((audio.currentTime / audio.duration) * 100) + "%";
+time.textContent = formatDuration(audio.currentTime);
 }
-);
-
-audio.addEventListener(
-"pause",
-() => {
-
-play.textContent = "▶";
-
+};
 }
-);
-
-audio.addEventListener(
-"ended",
-() => {
-
-play.textContent = "▶";
-
-fill.style.width =
-"0%";
-
-time.textContent =
-"00:00";
-
-setTimeout(
-() => {
-playNextVoice(box);
-},
-50
-);
-
-}
-);
-
-audio.addEventListener(
-"loadedmetadata",
-() => {
-
-if(
-Number.isFinite(
-audio.duration
-)
-){
-
-time.textContent =
-formatDuration(
-audio.duration
-);
-
-}
-
-}
-);
-
-audio.addEventListener(
-"timeupdate",
-() => {
-
-if(
-Number.isFinite(audio.duration) &&
-audio.duration > 0
-){
-
-const percent =
-(
-audio.currentTime /
-audio.duration
-) * 100;
-
-fill.style.width =
-percent + "%";
-
-time.textContent =
-formatDuration(
-audio.currentTime
-);
-
-}
-
-}
-);
-
-progress.addEventListener(
-"click",
-e => {
-
-e.stopPropagation();
-
-if(
-!audio.duration ||
-!Number.isFinite(
-audio.duration
-)
-)
-return;
-
-const rect =
-progress.getBoundingClientRect();
-
-const percent =
-Math.min(
-1,
-Math.max(
-0,
-(e.clientX - rect.left) /
-rect.width
-)
-);
-
-audio.currentTime =
-audio.duration * percent;
-
-}
-);
-
-}
-
-/* ======================================================
-IMAGE MESSAGE
-====================================================== */
 
 function createImageMessage(box, data){
-
-box.classList.add(
-"image-message"
-);
-
-const img =
-document.createElement("img");
-
-img.className =
-"message-image";
-
-img.src =
-data.image || "";
-
-img.alt =
-"صورة";
-
-img.loading =
-"lazy";
-
-img.onclick =
-e => {
-
-e.stopPropagation();
-
-if(!data.image)
-return;
-
-const win =
-window.open(
-"",
-"_blank"
-);
-
-if(win){
-
-win.document.write(`
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>صورة</title>
-<style>
-body{
-margin:0;
-background:#020504;
-display:flex;
-align-items:center;
-justify-content:center;
-min-height:100vh;
-}
-img{
-max-width:100%;
-max-height:100vh;
-object-fit:contain;
-}
-</style>
-</head>
-<body>
-<img src="${escapeHtml(data.image)}">
-</body>
-</html>
-`);
-
-win.document.close();
-
-}
-
-};
-
+box.classList.add("image-message");
+const img = document.createElement("img");
+img.className = "message-image";
+img.src = data.image || "";
+img.loading = "lazy";
 box.appendChild(img);
-
 }
-
-/* ======================================================
-VIDEO MESSAGE
-====================================================== */
 
 function createVideoMessage(box, data){
-
-box.classList.add(
-"video-message"
-);
-
-const video =
-document.createElement("video");
-
-video.className =
-"message-video";
-
-video.src =
-data.video || "";
-
-video.controls =
-true;
-
-video.playsInline =
-true;
-
+box.classList.add("video-message");
+const video = document.createElement("video");
+video.className = "message-video";
+video.src = data.video || "";
+video.controls = true;
+video.playsInline = true;
 box.appendChild(video);
-
 }
-
-/* ======================================================
-CALL MESSAGE
-====================================================== */
 
 function createCallMessage(box, data){
-
-box.classList.add(
-"call-message"
-);
-
-if(data.callStatus === "missed"){
-
-box.classList.add(
-"missed"
-);
-
-}else if(
-data.callStatus === "rejected"
-){
-
-box.classList.add(
-"rejected"
-);
-
-}else if(
-data.callStatus === "cancelled"
-){
-
-box.classList.add(
-"cancelled"
-);
-
+box.classList.add("call-message");
+box.textContent = data.callType === "video" ? "📹 مكالمة فيديو" : "📞 مكالمة صوتية";
 }
 
-const callBox =
-document.createElement("div");
-
-callBox.className =
-"call-box";
-
-const icon =
-document.createElement("div");
-
-icon.className =
-"call-icon";
-
-let iconText =
-data.callType === "video"
-?
-"📹"
-:
-"📞";
-
-let title =
-"مكالمة صوتية";
-
-if(
-data.callType === "video"
-){
-
-title =
-"مكالمة فيديو";
-
-}
-
-if(
-data.callStatus === "missed"
-){
-
-title =
-"مكالمة فائتة";
-
-iconText =
-"📵";
-
-}else if(
-data.callStatus === "rejected"
-){
-
-title =
-"مكالمة مرفوضة";
-
-iconText =
-"✕";
-
-}else if(
-data.callStatus === "cancelled"
-){
-
-title =
-"مكالمة ملغاة";
-
-iconText =
-"📞";
-
-}
-
-icon.textContent =
-iconText;
-
-const info =
-document.createElement("div");
-
-info.className =
-"call-info";
-
-const titleElement =
-document.createElement("div");
-
-titleElement.className =
-"call-title";
-
-titleElement.textContent =
-title;
-
-const subtitle =
-document.createElement("div");
-
-subtitle.className =
-"call-subtitle";
-
-if(
-data.callStatus === "completed"
-){
-
-subtitle.textContent =
-"تمت المكالمة";
-
-}else if(
-data.callStatus === "missed"
-){
-
-subtitle.textContent =
-"لم يتم الرد";
-
-}else if(
-data.callStatus === "rejected"
-){
-
-subtitle.textContent =
-"تم رفض المكالمة";
-
-}else if(
-data.callStatus === "cancelled"
-){
-
-subtitle.textContent =
-"تم إلغاء المكالمة";
-
-}else{
-
-subtitle.textContent =
-"مكالمة";
-
-}
-
-info.appendChild(
-titleElement
-);
-
-info.appendChild(
-subtitle
-);
-
-const duration =
-Number(
-data.duration || 0
-);
-
-if(duration > 0){
-
-const durationElement =
-document.createElement("div");
-
-durationElement.className =
-"call-duration";
-
-durationElement.textContent =
-formatDuration(
-duration
-);
-
-info.appendChild(
-durationElement
-);
-
-}
-
-callBox.append(
-icon,
-info
-);
-
-box.appendChild(
-callBox
-);
-
-}
-
-/* ======================================================
-MESSAGE ELEMENTS
-====================================================== */
-
-const messageElements =
-new Map();
-
+const messageElements = new Map();
 function removeMenus(){
-
-document
-.querySelectorAll(".message-menu")
-.forEach(
-x => x.remove()
-);
-
+document.querySelectorAll(".message-menu, .reaction-picker").forEach(x => x.remove());
 }
 
-async function deleteMessageForMe(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
+async function togglePinMessage(id, text, type){
 try{
-
-const messageRef =
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-);
-
-const snap =
-await getDoc(messageRef);
-
-if(!snap.exists())
-return;
-
-await updateDoc(
-messageRef,
-{
-deletedFor:
-arrayUnion(
-currentUser.uid
-)
-}
-);
-
-const element =
-messageElements.get(id);
-
-if(element){
-
-element.remove();
-
-messageElements.delete(id);
-
+const isPinned = pinnedMessageData?.id === id;
+await updateDoc(doc(db, "chats", chatID), {
+pinnedMessage: isPinned ? null : { id, text: type === 'text' ? text : 'ملف وسائط', type }
+});
+}catch(e){ alert("تعذر تثبيت الرسالة"); }
 }
 
-}catch(e){
-
-console.error(
-"Delete for me:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-}
-
-async function deleteMessageForEveryone(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
+async function addReaction(id, emoji, currentReactions){
 try{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-}catch(e){
-
-console.error(
-"Delete:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
+const reactions = currentReactions || {};
+reactions[currentUser.uid] = emoji;
+await updateDoc(doc(db, "chats", chatID, "messages", id), { reactions });
+}catch(e){}
 }
 
-}
-
-function showMessageMenu(
-element,
-id,
-mine
-){
-
+function showMessageMenu(element, id, data, mine){
 removeMenus();
+const menu = document.createElement("div");
+menu.className = "message-menu";
 
-const menu =
-document.createElement("div");
-
-menu.className =
-"message-menu";
-
-const button =
-document.createElement("button");
-
-button.textContent =
-mine
-?
-"🗑️ إلغاء الإرسال"
-:
-"🗑️ حذف لدي";
-
-button.onclick =
-async e => {
-
+const picker = document.createElement("div");
+picker.className = "reaction-picker";
+["❤️", "👍", "😂", "🔥", "😮"].forEach(emoji => {
+const span = document.createElement("span");
+span.textContent = emoji;
+span.onclick = e => {
 e.stopPropagation();
+addReaction(id, emoji, data.reactions);
+removeMenus();
+};
+picker.appendChild(span);
+});
+menu.appendChild(picker);
 
-if(mine){
+const replyBtn = document.createElement("button");
+replyBtn.textContent = "↩️ رد";
+replyBtn.onclick = e => {
+e.stopPropagation();
+replyingTo = { id, text: data.text || "ملف وسائط", senderName: mine ? "أنت" : friendUser.name };
+replyTextPreview.textContent = replyingTo.text;
+replyPreview.style.display = "flex";
+messageInput.focus();
+removeMenus();
+};
+menu.appendChild(replyBtn);
 
-await deleteMessageForEveryone(
-id
-);
+const pinBtn = document.createElement("button");
+pinBtn.textContent = pinnedMessageData?.id === id ? "📌 إلغاء التثبيت" : "📌 تثبيت الرسالة";
+pinBtn.onclick = e => {
+e.stopPropagation();
+togglePinMessage(id, data.text, data.type);
+removeMenus();
+};
+menu.appendChild(pinBtn);
 
-}else{
-
-await deleteMessageForMe(
-id
-);
-
+if(mine && data.type === "text"){
+const editBtn = document.createElement("button");
+editBtn.textContent = "✏️ تعديل";
+editBtn.onclick = e => {
+e.stopPropagation();
+editingMessageId = id;
+messageInput.value = data.text || "";
+messageInput.focus();
+removeMenus();
+};
+menu.appendChild(editBtn);
 }
 
+const delBtn = document.createElement("button");
+delBtn.textContent = mine ? "🗑️ إلغاء الإرسال" : "🗑️ حذف لدي";
+delBtn.onclick = async e => {
+e.stopPropagation();
+if(mine){
+await deleteDoc(doc(db, "chats", chatID, "messages", id));
+}else{
+await updateDoc(doc(db, "chats", chatID, "messages", id), {
+deletedFor: arrayUnion(currentUser.uid)
+});
+}
 removeMenus();
-
 };
-
-menu.appendChild(button);
+menu.appendChild(delBtn);
 
 element.appendChild(menu);
-
 }
 
-function addMessageActions(
-element,
-id,
-mine
-){
-
-let timer = null;
-
-const cancel =
-() => {
-
-clearTimeout(timer);
-
-};
-
-element.addEventListener(
-"pointerdown",
-e => {
-
-if(
-e.target.closest(".message-menu")
-)
-return;
-
-timer =
-setTimeout(
-() => {
-
-showMessageMenu(
-element,
-id,
-mine
-);
-
-},
-500
-);
-
-}
-);
-
-element.addEventListener(
-"pointerup",
-cancel
-);
-
-element.addEventListener(
-"pointercancel",
-cancel
-);
-
-element.addEventListener(
-"contextmenu",
-e => {
-
+function addMessageActions(element, id, data, mine){
+element.addEventListener("contextmenu", e => {
 e.preventDefault();
-
-showMessageMenu(
-element,
-id,
-mine
-);
-
-}
-);
-
+showMessageMenu(element, id, data, mine);
+});
+let timer = null;
+element.addEventListener("pointerdown", () => {
+timer = setTimeout(() => showMessageMenu(element, id, data, mine), 500);
+});
+element.addEventListener("pointerup", () => clearTimeout(timer));
+element.addEventListener("pointercancel", () => clearTimeout(timer));
 }
 
-document.addEventListener(
-"pointerdown",
-e => {
-
-if(
-!e.target.closest(".message-menu")
-){
-
+document.addEventListener("pointerdown", e => {
+if(!e.target.closest(".message-menu") && !e.target.closest(".reaction-picker")){
 removeMenus();
-
 }
-
-}
-);
-
-/* ======================================================
-RENDER MESSAGES
-====================================================== */
-
-function renderMessages(snapshot){
-
-const nearBottom =
-messages.scrollHeight -
-messages.scrollTop -
-messages.clientHeight <
-120;
-
-snapshot.docChanges()
-.forEach(change => {
-
-const id =
-change.doc.id;
-
-const data =
-change.doc.data();
-
-if(change.type === "removed"){
-
-const old =
-messageElements.get(id);
-
-if(old)
-old.remove();
-
-messageElements.delete(id);
-
-return;
-
-}
-
-if(
-Array.isArray(data.deletedFor) &&
-data.deletedFor.includes(
-currentUser.uid
-)
-){
-
-const old =
-messageElements.get(id);
-
-if(old)
-old.remove();
-
-messageElements.delete(id);
-
-return;
-
-}
-
-if(
-data.senderId !== currentUser.uid
-){
-
-markRead(
-id,
-data
-);
-
-}
-
-const box =
-document.createElement("div");
-
-box.className =
-"message " +
-(
-data.senderId === currentUser.uid
-?
-"mine"
-:
-"other"
-);
-
-if(data.type === "text"){
-
-box.appendChild(
-document.createTextNode(
-data.text || ""
-)
-);
-
-}else if(
-data.type === "voice"
-){
-
-createVoiceMessage(
-box,
-data
-);
-
-}else if(
-data.type === "image"
-){
-
-createImageMessage(
-box,
-data
-);
-
-}else if(
-data.type === "video"
-){
-
-createVideoMessage(
-box,
-data
-);
-
-}else if(
-data.type === "call"
-){
-
-createCallMessage(
-box,
-data
-);
-
-}else{
-
-box.appendChild(
-document.createTextNode(
-data.text || ""
-)
-);
-
-}
-
-const meta =
-document.createElement("div");
-
-meta.className =
-"message-meta";
-
-const time =
-document.createElement("span");
-
-time.className =
-"time";
-
-time.textContent =
-formatTime(
-data.createdAt
-);
-
-meta.appendChild(
-time
-);
-
-const status =
-createStatus(data);
-
-if(status)
-meta.appendChild(
-status
-);
-
-box.appendChild(
-meta
-);
-
-addMessageActions(
-box,
-id,
-data.senderId === currentUser.uid
-);
-
-const old =
-messageElements.get(id);
-
-if(old){
-
-old.replaceWith(box);
-
-}else{
-
-messages.appendChild(
-box
-);
-
-}
-
-messageElements.set(
-id,
-box
-);
-
 });
 
-const all =
-messages.querySelectorAll(
-".message"
-);
+function renderMessages(snapshot){
+const nearBottom = messages.scrollHeight - messages.scrollTop - messages.clientHeight < 120;
 
-const empty =
-messages.querySelector(
-".empty"
-);
+snapshot.docChanges().forEach(change => {
+const id = change.doc.id;
+const data = change.doc.data();
 
-if(all.length){
+if(change.type === "removed"){
+const old = messageElements.get(id);
+if(old) old.remove();
+messageElements.delete(id);
+return;
+}
 
-empty?.remove();
+if(Array.isArray(data.deletedFor) && data.deletedFor.includes(currentUser.uid)){
+const old = messageElements.get(id);
+if(old) old.remove();
+messageElements.delete(id);
+return;
+}
 
-}else if(!empty){
+if(data.senderId !== currentUser.uid){
+markRead(id, data);
+if(change.type === "added" && document.hidden){
+playNotificationSound();
+showBrowserNotification(friendUser.name, data.text || "رسالة جديدة");
+}
+}
 
-const e =
-document.createElement("div");
+const box = document.createElement("div");
+box.className = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
 
-e.className =
-"empty";
+if(data.replyTo && data.replyTo.text){
+const quote = document.createElement("div");
+quote.className = "message-quote";
+quote.textContent = data.replyTo.text;
+box.appendChild(quote);
+}
 
-e.innerHTML =
-"💬<br>ابدأ المحادثة الآن";
+if(data.type === "text"){
+const textNode = document.createElement("span");
+textNode.textContent = data.text || "";
+box.appendChild(textNode);
+if(data.edited){
+const tag = document.createElement("span");
+tag.className = "edited-tag";
+tag.textContent = "(معدلة)";
+box.appendChild(tag);
+}
+}else if(data.type === "voice"){
+createVoiceMessage(box, data);
+}else if(data.type === "image"){
+createImageMessage(box, data);
+}else if(data.type === "video"){
+createVideoMessage(box, data);
+}else if(data.type === "call"){
+createCallMessage(box, data);
+}
 
+if(data.reactions && Object.keys(data.reactions).length > 0){
+const reactionsBadge = document.createElement("div");
+reactionsBadge.className = "message-reactions";
+const uniqueEmojis = [...new Set(Object.values(data.reactions))];
+reactionsBadge.textContent = uniqueEmojis.join(" ");
+box.appendChild(reactionsBadge);
+}
+
+const meta = document.createElement("div");
+meta.className = "message-meta";
+const time = document.createElement("span");
+time.className = "time";
+time.textContent = formatTime(data.createdAt);
+meta.appendChild(time);
+
+const status = createStatus(data);
+if(status) meta.appendChild(status);
+box.appendChild(meta);
+
+addMessageActions(box, id, data, data.senderId === currentUser.uid);
+
+const old = messageElements.get(id);
+if(old){
+old.replaceWith(box);
+}else{
+messages.appendChild(box);
+}
+messageElements.set(id, box);
+});
+
+const all = messages.querySelectorAll(".message");
+const empty = messages.querySelector(".empty");
+if(all.length){ empty?.remove(); }
+else if(!empty){
+const e = document.createElement("div");
+e.className = "empty";
+e.innerHTML = "💬<br>ابدأ المحادثة الآن";
 messages.appendChild(e);
-
 }
 
 if(nearBottom){
-
-requestAnimationFrame(
-() => {
-
-messages.scrollTop =
-messages.scrollHeight;
-
+requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
 }
-);
-
 }
-
-}
-
-/* ======================================================
-LISTEN MESSAGES
-====================================================== */
 
 function listenMessages(){
-
-if(!chatID)
-return;
-
-const q =
-query(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-orderBy(
-"createdAt",
-"asc"
-)
-);
-
-if(unsubscribeMessages)
-unsubscribeMessages();
-
-unsubscribeMessages =
-onSnapshot(
-q,
-renderMessages,
-e =>
-console.error(
-"Messages:",
-e
-)
-);
-
+if(!chatID) return;
+const q = query(collection(db, "chats", chatID, "messages"), orderBy("createdAt", "asc"));
+if(unsubscribeMessages) unsubscribeMessages();
+unsubscribeMessages = onSnapshot(q, renderMessages, e => {});
 }
 
-/* ======================================================
-SEND TEXT
-====================================================== */
-
+/* ================= SEND TEXT / EDIT ================= */
 async function sendMessage(){
-
-const text =
-messageInput.value.trim();
-
-if(
-!text ||
-!currentUser ||
-!friendUser ||
-!chatID
-)
-return;
-
-sendButton.disabled =
-true;
+const text = messageInput.value.trim();
+if(!text || !currentUser || !friendUser || !chatID) return;
+sendButton.disabled = true;
 
 try{
-
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
+if(editingMessageId){
+await updateDoc(doc(db, "chats", chatID, "messages", editingMessageId), {
 text,
-senderId:
-currentUser.uid,
-receiverId:
-friendUser.uid,
-type:"text",
-read:false,
-deletedFor:[],
-createdAt:
-serverTimestamp()
-}
-);
+edited: true,
+editedAt: serverTimestamp()
+});
+editingMessageId = null;
+}else{
+await addDoc(collection(db, "chats", chatID, "messages"), {
+text,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+type: "text",
+read: false,
+deletedFor: [],
+replyTo: replyingTo || null,
+reactions: {},
+createdAt: serverTimestamp()
+});
 
-await setDoc(
-doc(
-db,
-"chats",
-chatID
-),
-{
-lastMessage:text,
-lastMessageAt:
-serverTimestamp(),
-lastSenderId:
-currentUser.uid
-},
-{
-merge:true
+await setDoc(doc(db, "chats", chatID), {
+lastMessage: text,
+lastMessageAt: serverTimestamp(),
+lastSenderId: currentUser.uid
+}, { merge:true });
 }
-);
 
 messageInput.value = "";
-
-updateMyActivity(
-"none"
-);
-
+cancelReply();
+updateMyActivity("none");
 }catch(e){
-
-console.error(
-"Send:",
-e
-);
-
-alert(
-"حدث خطأ أثناء إرسال الرسالة"
-);
-
+alert("حدث خطأ أثناء إرسال الرسالة");
 }finally{
-
-sendButton.disabled =
-false;
-
+sendButton.disabled = false;
 messageInput.focus();
-
+}
 }
 
-}
-
-sendButton.onclick =
-sendMessage;
-
-messageInput.addEventListener(
-"keydown",
-e => {
-
+sendButton.onclick = sendMessage;
+messageInput.addEventListener("keydown", e => {
 if(e.key === "Enter"){
-
 e.preventDefault();
-
 sendMessage();
-
 }
+});
 
-}
-);
-
-/* ======================================================
-CALL BUTTONS
-====================================================== */
-
+/* ================= CALLS & WEBRTC ================= */
 function hideAllCallButtons(){
-
-[
-muteButton,
-speakerButton,
-flipCameraButton,
-switchVideoButton,
-acceptCallButton,
-rejectCallButton,
-endCallButton
-]
-.forEach(
-x =>
-x.classList.add("hidden")
-);
-
+[muteButton, speakerButton, flipCameraButton, switchVideoButton, acceptCallButton, rejectCallButton, endCallButton].forEach(x => x.classList.add("hidden"));
 }
-
-function showOutgoingButtons(){
-
-hideAllCallButtons();
-
-endCallButton.classList.remove(
-"hidden"
-);
-
-}
-
-function showIncomingButtons(){
-
-hideAllCallButtons();
-
-acceptCallButton.classList.remove(
-"hidden"
-);
-
-rejectCallButton.classList.remove(
-"hidden"
-);
-
-}
-
+function showOutgoingButtons(){ hideAllCallButtons(); endCallButton.classList.remove("hidden"); }
+function showIncomingButtons(){ hideAllCallButtons(); acceptCallButton.classList.remove("hidden"); rejectCallButton.classList.remove("hidden"); }
 function showConnectedButtons(){
-
 hideAllCallButtons();
-
-muteButton.classList.remove(
-"hidden"
-);
-
-speakerButton.classList.remove(
-"hidden"
-);
-
-endCallButton.classList.remove(
-"hidden"
-);
-
-if(activeCallType === "audio"){
-
-switchVideoButton.classList.remove(
-"hidden"
-);
-
+muteButton.classList.remove("hidden");
+speakerButton.classList.remove("hidden");
+endCallButton.classList.remove("hidden");
+if(activeCallType === "audio") switchVideoButton.classList.remove("hidden");
+if(activeCallType === "video") flipCameraButton.classList.remove("hidden");
 }
-
-if(activeCallType === "video"){
-
-flipCameraButton.classList.remove(
-"hidden"
-);
-
-}
-
-}
-
 function setupCallVisuals(){
-
 if(activeCallType === "video"){
-
-audioCallView.style.display =
-"none";
-
-videoArea.style.display =
-"block";
-
+audioCallView.style.display = "none";
+videoArea.style.display = "block";
 }else{
-
-audioCallView.style.display =
-"flex";
-
-videoArea.style.display =
-"none";
-
+audioCallView.style.display = "flex";
+videoArea.style.display = "none";
 }
-
 }
-
 function showCallScreen(){
-
-callScreen.style.display =
-"flex";
-
-callTitle.textContent =
-activeCallPeer?.name ||
-"مكالمة";
-
-setUserAvatar(
-audioCallAvatar,
-activeCallPeer
-);
-
+callScreen.style.display = "flex";
+callTitle.textContent = activeCallPeer?.name || "مكالمة";
+setUserAvatar(audioCallAvatar, activeCallPeer);
 setupCallVisuals();
-
 }
-
 function showIncoming(){
-
-incomingCall.style.display =
-"flex";
-
-incomingName.textContent =
-activeCallPeer?.name ||
-"مكالمة واردة";
-
-incomingType.textContent =
-activeCallType === "video"
-?
-"📹 مكالمة فيديو"
-:
-"📞 مكالمة صوتية";
-
-setUserAvatar(
-incomingAvatar,
-activeCallPeer
-);
-
+incomingCall.style.display = "flex";
+incomingName.textContent = activeCallPeer?.name || "مكالمة واردة";
+incomingType.textContent = activeCallType === "video" ? "📹 مكالمة فيديو" : "📞 مكالمة صوتية";
+setUserAvatar(incomingAvatar, activeCallPeer);
 }
 
-/* ======================================================
-RINGTONE
-====================================================== */
-
-let ringtoneContext = null;
-let ringtoneTimer = null;
-let ringtoneGain = null;
-
+let ringtoneContext = null, ringtoneTimer = null, ringtoneGain = null;
 function startRingtone(){
-
 stopRingtone();
-
 try{
-
-ringtoneContext =
-new (
-window.AudioContext ||
-window.webkitAudioContext
-)();
-
-ringtoneGain =
-ringtoneContext.createGain();
-
-ringtoneGain.gain.value =
-.06;
-
-ringtoneGain.connect(
-ringtoneContext.destination
-);
-
+ringtoneContext = new (window.AudioContext || window.webkitAudioContext)();
+ringtoneGain = ringtoneContext.createGain();
+ringtoneGain.gain.value = 0.06;
+ringtoneGain.connect(ringtoneContext.destination);
 const playTone = () => {
-
-if(!ringtoneContext)
-return;
-
-const osc =
-ringtoneContext.createOscillator();
-
-osc.type =
-"sine";
-
-osc.frequency.value =
-880;
-
-osc.connect(
-ringtoneGain
-);
-
+if(!ringtoneContext) return;
+const osc = ringtoneContext.createOscillator();
+osc.frequency.value = 880;
+osc.connect(ringtoneGain);
 osc.start();
-
-osc.stop(
-ringtoneContext.currentTime +
-.35
-);
-
+osc.stop(ringtoneContext.currentTime + 0.35);
 };
-
 playTone();
-
-ringtoneTimer =
-setInterval(
-playTone,
-1200
-);
-
-}catch(e){
-
-console.warn(
-"Ringtone:",
-e
-);
-
+ringtoneTimer = setInterval(playTone, 1200);
+}catch(e){}
 }
-
-}
-
 function stopRingtone(){
-
-if(ringtoneTimer){
-
-clearInterval(
-ringtoneTimer
-);
-
-ringtoneTimer =
-null;
-
+if(ringtoneTimer) clearInterval(ringtoneTimer);
+ringtoneTimer = null;
+if(ringtoneContext) try{ ringtoneContext.close(); }catch{}
+ringtoneContext = null;
 }
-
-if(ringtoneContext){
-
-try{
-
-ringtoneContext.close();
-
-}catch{}
-
-ringtoneContext =
-null;
-
-}
-
-ringtoneGain =
-null;
-
-}
-
-/* ======================================================
-REMOTE AUDIO
-====================================================== */
 
 async function playRemoteAudio(){
-
-if(
-!remoteAudio ||
-!remoteAudio.srcObject
-)
-return;
-
-remoteAudio.muted =
-remoteAudioMuted;
-
-remoteAudio.volume =
-1;
-
-try{
-
-await remoteAudio.play();
-
-}catch(e){
-
-console.warn(
-"Remote audio:",
-e
-);
-
+if(!remoteAudio || !remoteAudio.srcObject) return;
+remoteAudio.muted = remoteAudioMuted;
+try{ await remoteAudio.play(); }catch(e){}
 }
-
-}
-
-/* ======================================================
-ICE
-====================================================== */
 
 async function addCandidate(candidate){
-
-if(
-!peerConnection ||
-!candidate
-)
-return;
-
-if(
-peerConnection.remoteDescription
-){
-
-try{
-
-await peerConnection.addIceCandidate(
-new RTCIceCandidate(candidate)
-);
-
-}catch(e){
-
-console.error(
-"ICE:",
-e
-);
-
-}
-
+if(!peerConnection || !candidate) return;
+if(peerConnection.remoteDescription){
+try{ await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)); }catch(e){}
 }else{
-
-pendingIceCandidates.push(
-candidate
-);
-
+pendingIceCandidates.push(candidate);
 }
-
 }
 
 async function flushIce(){
-
-if(
-!peerConnection ||
-!peerConnection.remoteDescription
-)
-return;
-
-const list =
-pendingIceCandidates.splice(0);
-
-for(
-const candidate of list
-){
-
-try{
-
-await peerConnection.addIceCandidate(
-new RTCIceCandidate(candidate)
-);
-
-}catch(e){
-
-console.error(
-"ICE queue:",
-e
-);
-
+if(!peerConnection || !peerConnection.remoteDescription) return;
+const list = pendingIceCandidates.splice(0);
+for(const c of list){
+try{ await peerConnection.addIceCandidate(new RTCIceCandidate(c)); }catch(e){}
 }
-
 }
-
-}
-
-/* ======================================================
-PEER
-====================================================== */
 
 function createPeer(){
-
-const pc =
-new RTCPeerConnection(
-rtcConfig
-);
-
-pc.onnegotiationneeded =
-async () => {
-
+const pc = new RTCPeerConnection(rtcConfig);
+pc.onnegotiationneeded = async () => {
 try{
-
-const offer =
-await pc.createOffer();
-
-await pc.setLocalDescription(
-offer
-);
-
-if(
-activeCallId &&
-activeCallRole === "caller"
-){
-
-await updateDoc(
-doc(
-db,
-"calls",
-activeCallId
-),
-{
-offer:{
-type:offer.type,
-sdp:offer.sdp
+const offer = await pc.createOffer();
+await pc.setLocalDescription(offer);
+if(activeCallId && activeCallRole === "caller"){
+await updateDoc(doc(db, "calls", activeCallId), { offer:{ type: offer.type, sdp: offer.sdp } });
 }
-}
-);
-
-}
-
-}catch(e){
-
-console.error(
-"Negotiation error:",
-e
-);
-
-}
-
+}catch(e){}
 };
-
-pc.onicecandidate =
-async e => {
-
-if(
-!e.candidate ||
-!activeCallId ||
-!currentUser
-)
-return;
-
+pc.onicecandidate = async e => {
+if(!e.candidate || !activeCallId || !currentUser) return;
 try{
-
-await addDoc(
-collection(
-db,
-"calls",
-activeCallId,
-"candidates"
-),
-{
-senderId:
-currentUser.uid,
-candidate:
-e.candidate.toJSON(),
-createdAt:
-serverTimestamp()
-}
-);
-
-}catch(error){
-
-console.error(
-"ICE save:",
-error
-);
-
-}
-
+await addDoc(collection(db, "calls", activeCallId, "candidates"), {
+senderId: currentUser.uid, candidate: e.candidate.toJSON(), createdAt: serverTimestamp()
+});
+}catch(err){}
 };
-
-pc.ontrack =
-e => {
-
-const stream =
-e.streams?.[0];
-
-if(!stream)
-return;
-
-remoteAudio.srcObject =
-stream;
-
-const hasVideo =
-stream
-.getVideoTracks()
-.some(
-t =>
-t.readyState !== "ended"
-);
-
+pc.ontrack = e => {
+const stream = e.streams?.[0];
+if(!stream) return;
+remoteAudio.srcObject = stream;
+const hasVideo = stream.getVideoTracks().some(t => t.readyState !== "ended");
 if(hasVideo){
-
-remoteVideo.srcObject =
-stream;
-
-remoteVideo.muted =
-true;
-
-remoteVideo.style.display =
-"block";
-
-remoteAvatar.style.display =
-"none";
-
-videoArea.style.display =
-"block";
-
-audioCallView.style.display =
-"none";
-
-remoteVideo
-.play()
-.catch(() => {});
-
+remoteVideo.srcObject = stream;
+remoteVideo.style.display = "block";
+remoteAvatar.style.display = "none";
+videoArea.style.display = "block";
+audioCallView.style.display = "none";
+remoteVideo.play().catch(() => {});
 }else{
-
 playRemoteAudio();
-
 }
-
 };
-
-pc.onconnectionstatechange =
-async () => {
-
-const state =
-pc.connectionState;
-
+pc.onconnectionstatechange = async () => {
+const state = pc.connectionState;
 if(state === "connected"){
-
-stopOutgoingTimeout();
-
-callState.textContent =
-"متصل";
-
+callState.textContent = "متصل";
 showConnectedButtons();
-
 startCallTimer();
-
 await playRemoteAudio();
-
 }
-
-if(state === "connecting"){
-
-callState.textContent =
-"جارٍ الاتصال...";
-
-}
-
-if(state === "disconnected"){
-
-callState.textContent =
-"انقطع الاتصال";
-
-}
-
+if(state === "disconnected") callState.textContent = "انقطع الاتصال";
 if(state === "failed"){
-
-callState.textContent =
-"تعذر الاتصال";
-
-setTimeout(
-() => {
-
-if(activeCallId)
-finishCall();
-
-},
-1500
-);
-
+callState.textContent = "تعذر الاتصال";
+setTimeout(() => { if(activeCallId) finishCall(); }, 1500);
 }
-
 };
-
 return pc;
-
 }
-
-/* ======================================================
-VIDEO CHANNEL
-====================================================== */
-
-async function prepareAudioVideoChannel(){
-
-if(!peerConnection)
-return;
-
-const exists =
-peerConnection
-.getTransceivers()
-.some(
-t =>
-t.receiver?.track?.kind ===
-"video"
-);
-
-if(exists)
-return;
-
-try{
-
-peerConnection.addTransceiver(
-"video",
-{
-direction:"sendrecv"
-}
-);
-
-}catch(e){
-
-console.error(
-"Video transceiver:",
-e
-);
-
-}
-
-}
-
-async function getVideoSender(){
-
-if(!peerConnection)
-return null;
-
-const transceiver =
-peerConnection
-.getTransceivers()
-.find(
-t =>
-t.receiver?.track?.kind ===
-"video"
-);
-
-if(transceiver)
-return transceiver.sender;
-
-const sender =
-peerConnection
-.getSenders()
-.find(
-s =>
-s.track?.kind ===
-"video"
-);
-
-return sender || null;
-
-}
-
-/* ======================================================
-ENABLE VIDEO
-====================================================== */
-
-async function enableVideoForCall(
-updateFirestore = true
-){
-
-if(
-!activeCallId ||
-!peerConnection ||
-!localStream
-)
-return;
-
-if(
-localStream
-.getVideoTracks()
-.some(
-track =>
-track.readyState !== "ended"
-)
-){
-
-activeCallType =
-"video";
-
-setupCallVisuals();
-
-showConnectedButtons();
-
-return;
-
-}
-
-try{
-
-callState.textContent =
-"جارٍ تشغيل الكاميرا...";
-
-const videoStream =
-await navigator.mediaDevices.getUserMedia(
-{
-video:{
-facingMode:{
-ideal:cameraFacing
-}
-}
-}
-);
-
-const newTrack =
-videoStream.getVideoTracks()[0];
-
-if(!newTrack)
-throw new Error(
-"لم يتم الحصول على الكاميرا"
-);
-
-const sender =
-await getVideoSender();
-
-if(!sender){
-
-newTrack.stop();
-
-throw new Error(
-"قناة الفيديو غير جاهزة"
-);
-
-}
-
-await sender.replaceTrack(
-newTrack
-);
-
-localStream.addTrack(
-newTrack
-);
-
-localVideo.srcObject =
-localStream;
-
-localVideo.style.display =
-"block";
-
-activeCallType =
-"video";
-
-setupCallVisuals();
-
-showConnectedButtons();
-
-if(updateFirestore){
-
-try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-activeCallId
-)
-);
-
-if(snap.exists()){
-
-await updateDoc(
-doc(
-db,
-"calls",
-activeCallId
-),
-{
-callType:"video",
-videoEnabled:true,
-videoChangedAt:
-serverTimestamp()
-}
-);
-
-}
-
-}catch(e){
-
-console.error(
-"Video sync:",
-e
-);
-
-}
-
-}
-
-callState.textContent =
-"متصل";
-
-}catch(e){
-
-console.error(
-"Enable video:",
-e
-);
-
-alert(
-"تعذر تشغيل الكاميرا. تأكد من السماح للكاميرا."
-);
-
-callState.textContent =
-"متصل";
-
-}
-
-}
-
-/* ======================================================
-CALL TIMER
-====================================================== */
 
 function startCallTimer(){
-
-if(callTimer)
-return;
-
-callTimer =
-setInterval(
-() => {
-
+if(callTimer) return;
+callTimer = setInterval(() => {
 callSeconds++;
-
-callDuration.textContent =
-formatDuration(
-callSeconds
-);
-
-},
-1000
-);
-
+callDuration.textContent = formatDuration(callSeconds);
+}, 1000);
 }
-
 function stopCallTimer(){
-
-if(callTimer)
-clearInterval(
-callTimer
-);
-
-callTimer =
-null;
-
+if(callTimer) clearInterval(callTimer);
+callTimer = null;
 }
-
-/* ======================================================
-OUTGOING TIMEOUT
-====================================================== */
-
-function startOutgoingTimeout(){
-
-clearTimeout(
-callTimeout
-);
-
-callTimeout =
-setTimeout(
-async () => {
-
-if(
-!activeCallId ||
-activeCallRole !== "caller"
-)
-return;
-
-const id =
-activeCallId;
-
-try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-id
-)
-);
-
-if(
-snap.exists() &&
-snap.data().status ===
-"ringing"
-){
-
-await updateDoc(
-doc(
-db,
-"calls",
-id
-),
-{
-status:"missed",
-duration:0,
-endedAt:
-serverTimestamp()
-}
-);
-
-await saveCallMessage(
-"missed",
-0
-);
-
-}
-
-}catch(e){
-
-console.error(
-"Timeout:",
-e
-);
-
-}
-
-cleanupCall();
-
-},
-30000
-);
-
-}
-
-function stopOutgoingTimeout(){
-
-clearTimeout(
-callTimeout
-);
-
-callTimeout =
-null;
-
-}
-
-/* ======================================================
-START CALL
-====================================================== */
 
 async function startCall(type){
-
-if(activeCallId){
-
-alert(
-"هناك مكالمة نشطة"
-);
-
-return;
-
-}
-
-if(
-!currentUser ||
-!friendUser
-){
-
-alert(
-"تعذر بدء المكالمة"
-);
-
-return;
-
-}
-
-activeCallId =
-crypto.randomUUID();
-
-activeCallType =
-type;
-
-activeCallRole =
-"caller";
-
-activeCallPeer = {
-uid:friendUser.uid,
-name:friendUser.name,
-photo:friendUser.photo
-};
-
+if(activeCallId) return alert("هناك مكالمة نشطة");
+activeCallId = crypto.randomUUID();
+activeCallType = type;
+activeCallRole = "caller";
+activeCallPeer = { uid: friendUser.uid, name: friendUser.name, photo: friendUser.photo };
 callSeconds = 0;
-
-callMessageSaved =
-false;
-
-pendingIceCandidates =
-[];
-
+pendingIceCandidates = [];
 showCallScreen();
-
 showOutgoingButtons();
-
-callState.textContent =
-"جارٍ الاتصال...";
+callState.textContent = "جارٍ الاتصال...";
 
 try{
-
-localStream =
-await navigator.mediaDevices.getUserMedia(
-{
-audio:true,
-video:type === "video"
-}
-);
-
-if(type === "video"){
-
-localVideo.srcObject =
-localStream;
-
-localVideo.style.display =
-"block";
-
-}
-
-peerConnection =
-createPeer();
-
-if(type === "audio"){
-
-await prepareAudioVideoChannel();
-
-}
-
-localStream
-.getTracks()
-.forEach(
-track => {
-
-peerConnection.addTrack(
-track,
-localStream
-);
-
-}
-);
-
-const offer =
-await peerConnection.createOffer();
-
-await peerConnection.setLocalDescription(
-offer
-);
-
-await setDoc(
-doc(
-db,
-"calls",
-activeCallId
-),
-{
-callId:
-activeCallId,
-callerId:
-currentUser.uid,
-receiverId:
-friendUser.uid,
-callType:
-type,
-status:
-"ringing",
-offer:{
-type:
-offer.type,
-sdp:
-offer.sdp
-},
-createdAt:
-serverTimestamp(),
-videoEnabled:
-type === "video"
-}
-);
-
+localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video: type === "video" });
+if(type === "video"){ localVideo.srcObject = localStream; localVideo.style.display = "block"; }
+peerConnection = createPeer();
+localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
+const offer = await peerConnection.createOffer();
+await pcSetLocalDesc(offer);
+await setDoc(doc(db, "calls", activeCallId), {
+callId: activeCallId, callerId: currentUser.uid, receiverId: friendUser.uid,
+callType: type, status: "ringing", offer:{ type: offer.type, sdp: offer.sdp },
+createdAt: serverTimestamp(), videoEnabled: type === "video"
+});
 listenCallerCall();
-
-startOutgoingTimeout();
-
 }catch(e){
-
-console.error(
-"Start call:",
-e
-);
-
-alert(
-"تعذر بدء المكالمة. تأكد من السماح بالميكروفون والكاميرا."
-);
-
-await cancelOutgoingCall(false);
-
+alert("تعذر بدء المكالمة. تأكد من السماح بالميكروفون والكاميرا.");
+cleanupCall();
+}
 }
 
+async function pcSetLocalDesc(offer){
+await peerConnection.setLocalDescription(offer);
 }
-
-/* ======================================================
-CALLER LISTENER
-====================================================== */
 
 function listenCallerCall(){
-
-if(unsubscribeActiveCall)
-unsubscribeActiveCall();
-
-unsubscribeActiveCall =
-onSnapshot(
-doc(
-db,
-"calls",
-activeCallId
-),
-async snap => {
-
-if(!snap.exists()){
-
-cleanupCall();
-
-return;
-
-}
-
-const data =
-snap.data();
-
-if(
-[
-"cancelled",
-"rejected",
-"missed",
-"ended"
-]
-.includes(
-data.status
-)
-){
-
+if(unsubscribeActiveCall) unsubscribeActiveCall();
+unsubscribeActiveCall = onSnapshot(doc(db, "calls", activeCallId), async snap => {
+if(!snap.exists()){ cleanupCall(); return; }
+const data = snap.data();
+if(["cancelled", "rejected", "missed", "ended"].includes(data.status)){
 stopRingtone();
-
-callSeconds =
-Number(
-data.duration || 0
-);
-
+callSeconds = Number(data.duration || 0);
 cleanupCall();
-
 return;
-
 }
-
-if(
-data.callType === "video" &&
-activeCallType === "audio" &&
-peerConnection &&
-localStream
-){
-
-await enableVideoForCall(
-false
-);
-
-}
-
-if(
-data.answer &&
-peerConnection &&
-!peerConnection.currentRemoteDescription
-){
-
+if(data.answer && peerConnection && !peerConnection.currentRemoteDescription){
 try{
-
-await peerConnection.setRemoteDescription(
-new RTCSessionDescription(
-data.answer
-)
-);
-
+await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
 await flushIce();
-
 await playRemoteAudio();
-
-}catch(e){
-
-console.error(
-"Answer:",
-e
-);
-
+}catch(e){}
 }
-
-}
-
-if(
-data.status === "ringing"
-){
-
-callState.textContent =
-data.receivedAt
-?
-"يرن"
-:
-"جارٍ الاتصال...";
-
-}
-
-if(
-data.status === "connected"
-){
-
-stopOutgoingTimeout();
-
+if(data.status === "connected"){
 stopRingtone();
-
-callState.textContent =
-"متصل";
-
+callState.textContent = "متصل";
 showConnectedButtons();
-
 startCallTimer();
-
 await playRemoteAudio();
-
 }
-
-}
-);
-
+});
 listenCallCandidates();
-
 }
-
-/* ======================================================
-INCOMING CALLS
-====================================================== */
 
 function listenIncomingCalls(){
-
-if(!currentUser)
-return;
-
-if(unsubscribeIncomingCalls)
-unsubscribeIncomingCalls();
-
-const q =
-query(
-collection(
-db,
-"calls"
-),
-where(
-"receiverId",
-"==",
-currentUser.uid
-)
-);
-
-unsubscribeIncomingCalls =
-onSnapshot(
-q,
-async snapshot => {
-
-for(
-const change of snapshot.docChanges()
-){
-
-if(
-change.type !== "added" &&
-change.type !== "modified"
-)
-continue;
-
-const id =
-change.doc.id;
-
-const data =
-change.doc.data();
-
-if(
-data.receiverId !==
-currentUser.uid ||
-data.status !==
-"ringing" ||
-!data.offer
-)
-continue;
-
-if(activeCallId)
-continue;
-
-if(
-handledIncomingCalls.has(id)
-)
-continue;
-
+if(!currentUser) return;
+if(unsubscribeIncomingCalls) unsubscribeIncomingCalls();
+const q = query(collection(db, "calls"), where("receiverId", "==", currentUser.uid));
+unsubscribeIncomingCalls = onSnapshot(q, async snapshot => {
+for(const change of snapshot.docChanges()){
+if(change.type !== "added" && change.type !== "modified") continue;
+const id = change.doc.id;
+const data = change.doc.data();
+if(data.receiverId !== currentUser.uid || data.status !== "ringing" || !data.offer) continue;
+if(activeCallId || handledIncomingCalls.has(id)) continue;
 handledIncomingCalls.add(id);
 
-const callerSnap =
-await getDoc(
-doc(
-db,
-"users",
-data.callerId
-)
-);
-
-const callerData =
-callerSnap.exists()
-?
-callerSnap.data()
-:
-{};
-
-activeCallId =
-id;
-
-activeCallType =
-data.callType ||
-"audio";
-
-activeCallRole =
-"receiver";
-
-activeCallPeer = {
-uid:
-data.callerId,
-name:
-callerData.name ||
-"مستخدم Mecd",
-photo:
-callerData.photo ||
-callerData.photoURL ||
-""
-};
-
-callSeconds = 0;
-
-callMessageSaved =
-false;
-
-pendingIceCandidates =
-[];
-
+const callerSnap = await getDoc(doc(db, "users", data.callerId));
+const callerData = callerSnap.exists() ? callerSnap.data() : {};
+activeCallId = id;
+activeCallType = data.callType || "audio";
+activeCallRole = "receiver";
+activeCallPeer = { uid: data.callerId, name: callerData.name || "مستخدم Mecd", photo: callerData.photo || "" };
 showIncoming();
-
 startRingtone();
-
-listenReceiverCallStatus();
-
 }
-
+});
 }
-);
-
-}
-
-/* ======================================================
-RECEIVER CALL STATUS
-====================================================== */
-
-function listenReceiverCallStatus(){
-
-if(!activeCallId)
-return;
-
-if(unsubscribeActiveCall)
-unsubscribeActiveCall();
-
-unsubscribeActiveCall =
-onSnapshot(
-doc(
-db,
-"calls",
-activeCallId
-),
-async snap => {
-
-if(!snap.exists()){
-
-stopRingtone();
-
-cleanupCall();
-
-return;
-
-}
-
-const data =
-snap.data();
-
-if(
-[
-"cancelled",
-"missed",
-"rejected",
-"ended"
-].includes(
-data.status
-)
-){
-
-stopRingtone();
-
-cleanupCall();
-
-return;
-
-}
-
-if(
-data.callType === "video" &&
-activeCallType === "audio" &&
-peerConnection &&
-localStream
-){
-
-await enableVideoForCall(
-false
-);
-
-}
-
-}
-);
-
-listenCallCandidates();
-
-}
-
-/* ======================================================
-ACCEPT CALL
-====================================================== */
 
 async function acceptIncomingCall(){
-
-if(
-!activeCallId ||
-!activeCallPeer
-)
-return;
-
+if(!activeCallId || !activeCallPeer) return;
 try{
-
-const callId =
-activeCallId;
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-callId
-)
-);
-
-if(!snap.exists()){
-
+const callId = activeCallId;
+const snap = await getDoc(doc(db, "calls", callId));
+if(!snap.exists()){ stopRingtone(); cleanupCall(); return; }
+const data = snap.data();
 stopRingtone();
-
-cleanupCall();
-
-return;
-
-}
-
-const data =
-snap.data();
-
-if(
-data.status !==
-"ringing"
-){
-
-stopRingtone();
-
-cleanupCall();
-
-return;
-
-}
-
-stopRingtone();
-
-incomingCall.style.display =
-"none";
-
+incomingCall.style.display = "none";
 showCallScreen();
 
-callState.textContent =
-"جارٍ الاتصال...";
-
-localStream =
-await navigator.mediaDevices.getUserMedia(
-{
-audio:true,
-video:
-activeCallType ===
-"video"
-}
-);
-
-if(
-activeCallType ===
-"video"
-){
-
-localVideo.srcObject =
-localStream;
-
-localVideo.style.display =
-"block";
-
-}
-
-peerConnection =
-createPeer();
-
-localStream
-.getTracks()
-.forEach(
-track => {
-
-peerConnection.addTrack(
-track,
-localStream
-);
-
-}
-);
-
-await peerConnection.setRemoteDescription(
-new RTCSessionDescription(
-data.offer
-)
-);
-
+localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video: activeCallType === "video" });
+if(activeCallType === "video"){ localVideo.srcObject = localStream; localVideo.style.display = "block"; }
+peerConnection = createPeer();
+localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
+await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
 await flushIce();
-
-const answer =
-await peerConnection.createAnswer();
-
-await peerConnection.setLocalDescription(
-answer
-);
-
-await updateDoc(
-doc(
-db,
-"calls",
-callId
-),
-{
-answer:{
-type:
-answer.type,
-sdp:
-answer.sdp
-},
-status:
-"connected",
-callType:
-activeCallType,
-receivedAt:
-serverTimestamp(),
-videoEnabled:
-activeCallType ===
-"video"
-}
-);
-
+const answer = await peerConnection.createAnswer();
+await peerConnection.setLocalDescription(answer);
+await updateDoc(doc(db, "calls", callId), {
+answer:{ type: answer.type, sdp: answer.sdp }, status: "connected", receivedAt: serverTimestamp()
+});
 showConnectedButtons();
-
 startCallTimer();
-
 await playRemoteAudio();
-
 }catch(e){
-
-console.error(
-"Accept:",
-e
-);
-
-alert(
-"تعذر قبول المكالمة. تأكد من السماح بالميكروفون والكاميرا."
-);
-
 stopRingtone();
-
 cleanupCall();
-
 }
-
 }
-
-/* ======================================================
-CALL CANDIDATES
-====================================================== */
 
 function listenCallCandidates(){
-
-if(unsubscribeCandidates)
-unsubscribeCandidates();
-
-if(!activeCallId)
-return;
-
-const callId =
-activeCallId;
-
-unsubscribeCandidates =
-onSnapshot(
-collection(
-db,
-"calls",
-callId,
-"candidates"
-),
-snapshot => {
-
-snapshot.docChanges()
-.forEach(
-change => {
-
-if(
-change.type !== "added"
-)
-return;
-
-const data =
-change.doc.data();
-
-if(
-data.senderId ===
-currentUser.uid
-)
-return;
-
-if(
-activeCallId !==
-callId
-)
-return;
-
-addCandidate(
-data.candidate
-);
-
+if(unsubscribeCandidates) unsubscribeCandidates();
+if(!activeCallId) return;
+const callId = activeCallId;
+unsubscribeCandidates = onSnapshot(collection(db, "calls", callId, "candidates"), snapshot => {
+snapshot.docChanges().forEach(change => {
+if(change.type !== "added") return;
+const data = change.doc.data();
+if(data.senderId === currentUser.uid || activeCallId !== callId) return;
+addCandidate(data.candidate);
+});
+});
 }
-);
-
-}
-);
-
-}
-
-/* ======================================================
-REJECT
-====================================================== */
 
 async function rejectIncomingCall(){
-
-const id =
-activeCallId;
-
 stopRingtone();
-
-if(!id){
-
+if(activeCallId){
+try{ await updateDoc(doc(db, "calls", activeCallId), { status: "rejected", duration: 0, endedAt: serverTimestamp() }); }catch(e){}
+}
 cleanupCall();
-
-return;
-
 }
 
-try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-id
-)
-);
-
-if(snap.exists()){
-
-await updateDoc(
-doc(
-db,
-"calls",
-id
-),
-{
-status:
-"rejected",
-duration:
-0,
-endedAt:
-serverTimestamp()
-}
-);
-
-await saveCallMessage(
-"rejected",
-0
-);
-
-}
-
-}catch(e){
-
-console.error(
-"Reject:",
-e
-);
-
-}
-
-cleanupCall();
-
-}
-
-/* ======================================================
-CANCEL OUTGOING
-====================================================== */
-
-async function cancelOutgoingCall(
-saveMessage = true
-){
-
-const id =
-activeCallId;
-
+async function finishCall(status = null){
 stopRingtone();
-
-if(!id){
-
-cleanupCall();
-
-return;
-
-}
-
+stopCallTimer();
+if(!activeCallId){ cleanupCall(); return; }
+const duration = callSeconds;
 try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-id
-)
-);
-
-if(snap.exists()){
-
-const data =
-snap.data();
-
-if(
-data.status === "ringing" ||
-data.status === "connected"
-){
-
-await updateDoc(
-doc(
-db,
-"calls",
-id
-),
-{
-status:
-"cancelled",
-duration:
-data.status === "ringing"
-?
-0
-:
-callSeconds,
-callType:
-activeCallType ||
-data.callType ||
-"audio",
-endedAt:
-serverTimestamp()
-}
-);
-
-if(saveMessage){
-
-await saveCallMessage(
-data.status === "ringing"
-?
-"cancelled"
-:
-"completed",
-data.status === "ringing"
-?
-0
-:
-callSeconds
-);
-
-}
-
-}
-
-}
-
-}catch(e){
-
-console.error(
-"Cancel:",
-e
-);
-
-}
-
-cleanupCall();
-
-}
-
-/* ======================================================
-CALL MESSAGE
-====================================================== */
-
-async function saveCallMessage(
-status,
-duration
-){
-
-if(
-!activeCallId ||
-!activeCallPeer ||
-callMessageSaved
-)
-return;
-
-callMessageSaved =
-true;
-
-const callerId =
-activeCallRole === "caller"
-?
-currentUser.uid
-:
-activeCallPeer.uid;
-
-const receiverId =
-activeCallRole === "caller"
-?
-activeCallPeer.uid
-:
-currentUser.uid;
-
-const targetChat =
-createChatID(
-callerId,
-receiverId
-);
-
-try{
-
-await setDoc(
-doc(
-db,
-"chats",
-targetChat,
-"messages",
-"call_" +
-activeCallId
-),
-{
-type:"call",
-callId:
-activeCallId,
-callType:
-activeCallType ||
-"audio",
-callerId,
-receiverId,
-callStatus:
-status,
-duration:
-Number(duration || 0),
-senderId:
-callerId,
-read:false,
-deletedFor:[],
-createdAt:
-serverTimestamp()
-},
-{
-merge:true
-}
-);
-
-}catch(e){
-
-console.error(
-"Call message:",
-e
-);
-
-}
-
-}
-
-/* ======================================================
-FINISH CALL
-====================================================== */
-
-async function finishCall(
-status = null
-){
-
-const id =
-activeCallId;
-
-stopRingtone();
-
-stopOutgoingTimeout();
-
-if(!id){
-
-cleanupCall();
-
-return;
-
-}
-
-const duration =
-callSeconds;
-
-const finalStatus =
-status ||
-(
-duration > 0
-?
-"completed"
-:
-"missed"
-);
-
-try{
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-id
-)
-);
-
-if(snap.exists()){
-
-const data =
-snap.data();
-
-if(
-![
-"ended",
-"cancelled",
-"rejected",
-"missed"
-].includes(
-data.status
-)
-){
-
-await updateDoc(
-doc(
-db,
-"calls",
-id
-),
-{
-status:
-finalStatus ===
-"completed"
-?
-"ended"
-:
-finalStatus,
+await updateDoc(doc(db, "calls", activeCallId), {
+status: status || (duration > 0 ? "ended" : "missed"),
 duration,
-callType:
-activeCallType ||
-data.callType ||
-"audio",
-endedAt:
-serverTimestamp()
-}
-);
-
-}
-
-}
-
-}catch(e){
-
-console.error(
-"Finish:",
-e
-);
-
-}
-
-await saveCallMessage(
-finalStatus,
-duration
-);
-
+endedAt: serverTimestamp()
+});
+}catch(e){}
 cleanupCall();
-
 }
-
-/* ======================================================
-CLEANUP CALL
-====================================================== */
 
 function cleanupCall(){
-
 stopRingtone();
-
 stopCallTimer();
-
-stopOutgoingTimeout();
-
-if(unsubscribeActiveCall){
-
-unsubscribeActiveCall();
-
-unsubscribeActiveCall =
-null;
-
+if(unsubscribeActiveCall){ unsubscribeActiveCall(); unsubscribeActiveCall = null; }
+if(unsubscribeCandidates){ unsubscribeCandidates(); unsubscribeCandidates = null; }
+if(localStream){ localStream.getTracks().forEach(t => { try{ t.stop(); }catch{} }); localStream = null; }
+if(peerConnection){ try{ peerConnection.close(); }catch{} peerConnection = null; }
+pendingIceCandidates = [];
+if(remoteAudio){ remoteAudio.pause(); remoteAudio.srcObject = null; }
+incomingCall.style.display = "none";
+callScreen.style.display = "none";
+activeCallId = null; activeCallType = null; activeCallRole = null; activeCallPeer = null; callSeconds = 0;
 }
 
-if(unsubscribeCandidates){
-
-unsubscribeCandidates();
-
-unsubscribeCandidates =
-null;
-
-}
-
-if(localStream){
-
-localStream
-.getTracks()
-.forEach(
-track => {
-
-try{
-
-track.stop();
-
-}catch{}
-
-}
-);
-
-localStream =
-null;
-
-}
-
-if(peerConnection){
-
-try{
-
-peerConnection.close();
-
-}catch{}
-
-peerConnection =
-null;
-
-}
-
-pendingIceCandidates =
-[];
-
-if(remoteAudio){
-
-remoteAudio.pause();
-
-remoteAudio.srcObject =
-null;
-
-remoteAudio.muted =
-false;
-
-}
-
-remoteVideo.srcObject =
-null;
-
-localVideo.srcObject =
-null;
-
-incomingCall.style.display =
-"none";
-
-callScreen.style.display =
-"none";
-
-audioCallView.style.display =
-"flex";
-
-videoArea.style.display =
-"none";
-
-remoteVideo.style.display =
-"none";
-
-remoteAvatar.style.display =
-"flex";
-
-localVideo.style.display =
-"none";
-
-localAvatar.style.display =
-"none";
-
-hideAllCallButtons();
-
-activeCallId =
-null;
-
-activeCallType =
-null;
-
-activeCallRole =
-null;
-
-activeCallPeer =
-null;
-
-callSeconds =
-0;
-
-callMessageSaved =
-false;
-
-muteButton.textContent =
-"🎤";
-
-speakerButton.textContent =
-"🔊";
-
-switchVideoButton.textContent =
-"📹";
-
-muteButton.classList.remove(
-"active"
-);
-
-speakerButton.classList.remove(
-"active"
-);
-
-switchVideoButton.disabled =
-false;
-
-}
-
-/* ======================================================
-CALL CONTROLS
-====================================================== */
-
-muteButton.onclick = () => {
-
-if(!localStream)
-return;
-
-const track =
-localStream.getAudioTracks()[0];
-
-if(!track)
-return;
-
-track.enabled =
-!track.enabled;
-
-muteButton.textContent =
-track.enabled
-?
-"🎤"
-:
-"🔇";
-
-muteButton.classList.toggle(
-"active",
-!track.enabled
-);
-
-};
-
-speakerButton.onclick =
-async () => {
-
-remoteAudioMuted =
-!remoteAudioMuted;
-
-remoteAudio.muted =
-remoteAudioMuted;
-
-speakerButton.textContent =
-remoteAudioMuted
-?
-"🔇"
-:
-"🔊";
-
-speakerButton.classList.toggle(
-"active",
-remoteAudioMuted
-);
-
-if(!remoteAudioMuted){
-
-await playRemoteAudio();
-
-}
-
-};
-
-flipCameraButton.onclick =
-async () => {
-
-if(
-!localStream ||
-activeCallType !==
-"video"
-)
-return;
-
-try{
-
-const oldTrack =
-localStream.getVideoTracks()[0];
-
-if(!oldTrack)
-return;
-
-cameraFacing =
-cameraFacing === "user"
-?
-"environment"
-:
-"user";
-
-const stream =
-await navigator.mediaDevices.getUserMedia(
-{
-video:{
-facingMode:{
-ideal:
-cameraFacing
-}
-}
-}
-);
-
-const newTrack =
-stream.getVideoTracks()[0];
-
-if(!newTrack)
-return;
-
-const sender =
-await getVideoSender();
-
-if(sender){
-
-await sender.replaceTrack(
-newTrack
-);
-
-}
-
-oldTrack.stop();
-
-localStream.removeTrack(
-oldTrack
-);
-
-localStream.addTrack(
-newTrack
-);
-
-localVideo.srcObject =
-localStream;
-
-}catch(e){
-
-console.error(
-"Flip:",
-e
-);
-
-}
-
-};
-
-switchVideoButton.onclick =
-async () => {
-
-if(
-!activeCallId ||
-!peerConnection ||
-activeCallType !==
-"audio"
-)
-return;
-
-switchVideoButton.disabled =
-true;
-
-await enableVideoForCall(
-true
-);
-
-switchVideoButton.disabled =
-false;
-
-};
-
-/* ======================================================
-CALL EVENTS
-====================================================== */
-
-callButton.onclick =
-() =>
-startCall("audio");
-
-videoButton.onclick =
-() =>
-startCall("video");
-
-acceptIncoming.onclick =
-acceptIncomingCall;
-
-rejectIncoming.onclick =
-rejectIncomingCall;
-
-acceptCallButton.onclick =
-acceptIncomingCall;
-
-rejectCallButton.onclick =
-rejectIncomingCall;
-
-endCallButton.onclick =
-async () => {
-
-if(!activeCallId){
-
-cleanupCall();
-
-return;
-
-}
-
-if(
-activeCallRole ===
-"caller"
-){
-
-const snap =
-await getDoc(
-doc(
-db,
-"calls",
-activeCallId
-)
-).catch(
-() => null
-);
-
-if(
-snap?.exists() &&
-snap.data().status ===
-"ringing"
-){
-
-await cancelOutgoingCall(
-true
-);
-
-return;
-
-}
-
-}
-
-await finishCall();
-
-};
-
-/* ======================================================
-BACK
-====================================================== */
-
-backButton.onclick =
-async () => {
-
-await updateMyActivity(
-"none"
-);
-
-if(activeCallId){
-
-if(
-activeCallRole ===
-"caller"
-){
-
-await cancelOutgoingCall();
-
-}else{
-
-await finishCall();
-
-}
-
-}
-
-if(unsubscribeMessages)
-unsubscribeMessages();
-
-if(unsubscribeFriendStatus)
-unsubscribeFriendStatus();
-
-if(unsubscribeFriendActivity)
-unsubscribeFriendActivity();
-
-if(unsubscribeIncomingCalls)
-unsubscribeIncomingCalls();
-
+callButton.onclick = () => startCall("audio");
+videoButton.onclick = () => startCall("video");
+acceptIncoming.onclick = acceptIncomingCall;
+rejectIncoming.onclick = rejectIncomingCall;
+acceptCallButton.onclick = acceptIncomingCall;
+rejectCallButton.onclick = rejectIncomingCall;
+endCallButton.onclick = async () => { if(activeCallId) await finishCall(); else cleanupCall(); };
+
+backButton.onclick = async () => {
+await updateMyActivity("none");
+if(activeCallId) await finishCall();
+if(unsubscribeMessages) unsubscribeMessages();
+if(unsubscribeFriendStatus) unsubscribeFriendStatus();
+if(unsubscribeFriendActivity) unsubscribeFriendActivity();
+if(unsubscribeChatMeta) unsubscribeChatMeta();
+if(unsubscribeIncomingCalls) unsubscribeIncomingCalls();
 stopPresence();
-
 history.back();
-
 };
 
-/* ======================================================
-VISIBILITY
-====================================================== */
-
-document.addEventListener(
-"visibilitychange",
-() => {
-
-if(!currentUser)
-return;
-
-if(
-document.visibilityState ===
-"visible"
-){
-
-updateMyPresence(true);
-
-if(activeCallId){
-
-playRemoteAudio();
-
-}
-
-}else if(
-!activeCallId
-){
-
-updateMyPresence(false);
-
-updateMyActivity(
-"none"
-);
-
-}
-
-}
-);
-
-window.addEventListener(
-"pagehide",
-() => {
-
-if(!currentUser)
-return;
-
-updateMyPresence(false);
-
-}
-);
-
-/* ======================================================
-AUTH
-====================================================== */
-
-onAuthStateChanged(
-auth,
-async user => {
-
-if(!user){
-
-loading.textContent =
-"يجب تسجيل الدخول أولاً";
-
-return;
-
-}
-
-currentUser =
-user;
-
+onAuthStateChanged(auth, async user => {
+if(!user){ loading.textContent = "يجب تسجيل الدخول أولاً"; return; }
+currentUser = user;
 try{
-
 startPresence();
-
 await loadFriend();
-
 listenMessages();
-
 listenIncomingCalls();
-
-await connectVoiceJS();
-
 showApp();
-
 }catch(e){
-
-console.error(e);
-
-loading.textContent =
-e.message ||
-"حدث خطأ";
-
+loading.textContent = e.message || "حدث خطأ";
 }
-
-}
-);
+});
 
 </script>
-
 </body>
 </html>
