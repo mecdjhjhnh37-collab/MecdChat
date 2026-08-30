@@ -3,209 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mecd Chat</title>
+    <title>Mecd Chat Pro</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        body {
-            background-color: #0b141a;
-            color: #e9edef;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        /* الهيدر العلوي */
-        .chat-header {
-            background-color: #202c33;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #2a3942;
-        }
-        .chat-header h3 {
-            font-size: 16px;
-            color: #f3f3f3;
-        }
-        /* منطقة الرسائل */
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .message {
-            max-width: 70%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            position: relative;
-            word-wrap: break-word;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .message.sent {
-            background-color: #005c4b;
-            align-self: flex-end;
-        }
-        .message.received {
-            background-color: #202c33;
-            align-self: flex-start;
-        }
-        .message .time {
-            font-size: 10px;
-            color: #8696a0;
-            float: left;
-            margin-top: 5px;
-            margin-left: 10px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #0b141a; color: #e9edef; display: flex; flex-direction: column; height: 100vh; }
         
-        /* شريط التعديل العلوي فوق خانة الكتابة */
-        #edit-banner {
-            background-color: #202c33;
-            padding: 8px 15px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #2a3942;
-            font-size: 13px;
-        }
-        #edit-banner span {
-            color: #00a884;
-            font-weight: bold;
-        }
-        #edit-banner button {
-            background: none;
-            border: none;
-            color: #8696a0;
-            cursor: pointer;
-            font-size: 14px;
-        }
+        /* الهيدر العلوي */
+        .chat-header { background-color: #202c33; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3942; }
+        .user-info h3 { font-size: 16px; color: #f3f3f3; }
+        .user-info span { font-size: 11px; color: #00a884; display: block; }
+        .header-actions button { background: none; border: none; color: #8696a0; cursor: pointer; font-size: 18px; margin-left: 10px; }
 
-        /* خانة الإدخال السفلية */
-        .chat-input-area {
-            background-color: #202c33;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .chat-input-area input {
-            flex: 1;
-            background-color: #2a3942;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 15px;
-            color: #e9edef;
-            font-size: 14px;
-            outline: none;
-        }
-        .chat-input-area button {
-            background-color: #00a884;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
-        }
+        /* منطقة الرسالة المثبتة */
+        #pinned-banner { background-color: #1f2c34; padding: 6px 15px; font-size: 12px; color: #ffd279; display: none; justify-content: space-between; border-bottom: 1px solid #2a3942; }
+
+        /* منطقة الرسائل */
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 75%; padding: 8px 12px; border-radius: 8px; position: relative; word-wrap: break-word; font-size: 14px; background-color: #202c33; }
+        .message.sent { background-color: #005c4b; align-self: flex-end; }
+        .message.received { background-color: #202c33; align-self: flex-start; }
+        
+        /* اقتباس الرد داخل الرسالة */
+        .reply-quote { background: rgba(0,0,0,0.2); border-right: 3px solid #00a884; padding: 4px 8px; font-size: 12px; margin-bottom: 5px; border-radius: 4px; color: #d1d7db; }
+        
+        .message .time { font-size: 10px; color: #8696a0; float: left; margin-top: 5px; margin-left: 10px; }
+        
+        /* أزرار تفاعل الرسالة والخيارات (تظهر عند النقر) */
+        .msg-actions { margin-top: 5px; display: flex; gap: 8px; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px; }
+        .msg-actions span { cursor: pointer; color: #aebac1; }
+        .msg-actions span:hover { color: #00a884; }
+
+        /* تفاعلات الإيموجي تحت الرسالة */
+        .reactions { position: absolute; bottom: -10px; left: 10px; background: #2a3942; border-radius: 10px; padding: 2px 6px; font-size: 12px; display: flex; gap: 3px; }
+
+        /* البانر الموحد للرد أو التعديل */
+        #action-banner { background-color: #202c33; padding: 8px 15px; display: none; justify-content: space-between; align-items: center; border-top: 1px solid #2a3942; font-size: 13px; }
+        #action-banner span { color: #00a884; font-weight: bold; }
+        #action-banner button { background: none; border: none; color: #8696a0; cursor: pointer; font-size: 14px; }
+
+        /* خانة الإدخال */
+        .chat-input-area { background-color: #202c33; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .chat-input-area input { flex: 1; background-color: #2a3942; border: none; border-radius: 8px; padding: 10px 15px; color: #e9edef; font-size: 14px; outline: none; }
+        .chat-input-area button { background-color: #00a884; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر -->
+    <!-- الهيدر العلوي -->
     <div class="chat-header">
-        <h3>Diana Mostafa</h3>
+        <div class="user-info">
+            <h3>Diana Mostafa</h3>
+            <span id="status-text">متصل الآن</span>
+        </div>
+        <div class="header-actions">
+            <button onclick="clearChat()" title="حذف المحادثة من جهازك">🧹</button>
+        </div>
     </div>
 
-    <!-- رسائل المحادثة (كمثال تجريبي) -->
+    <!-- بانر الرسالة المثبتة -->
+    <div id="pinned-banner">
+        <div>📌 <span id="pinned-text-display"></span></div>
+        <button onclick="unpinMessage()" style="background:none;border:none;color:#8696a0;cursor:pointer;">✕</button>
+    </div>
+
+    <!-- رسائل المحادثة -->
     <div class="chat-messages" id="messages-container">
-        <div class="message sent" onclick="startEdit(1, 'مرحباً، كيف حالك؟')">
-            مرحباً، كيف حالك؟
+        <div class="message sent" id="msg-1">
+            <div class="text-content">مرحباً، كيف حالك؟</div>
             <span class="time">08:10</span>
-        </div>
-        <div class="message sent" onclick="startEdit(2, 'تجربة تعديل الرسالة هنا')">
-            تجربة تعديل الرسالة هنا
-            <span class="time">08:42</span>
+            <div class="msg-actions">
+                <span onclick="startReply(1, 'مرحباً، كيف حالك؟')">↩️ رد</span>
+                <span onclick="startEdit(1, 'مرحباً، كيف حالك؟')">✏️ تعديل</span>
+                <span onclick="pinMessage('مرحباً، كيف حالك؟')">📌 تثبيت</span>
+                <span onclick="addReaction(1, '❤️')">❤️</span>
+                <span onclick="deleteMessage(1)">🗑️ حذف</span>
+            </div>
         </div>
     </div>
 
-    <!-- بانر يظهر فقط عند تفعيل وضع التعديل -->
-    <div id="edit-banner">
-        <div>✏️ تعديل الرسالة: <span id="editing-text-preview"></span></div>
-        <button onclick="cancelEdit()">إلغاء ✕</button>
+    <!-- بانر التعديل أو الرد (يظهر ديناميكياً) -->
+    <div id="action-banner">
+        <div><span id="banner-title">تعديل</span>: <span id="banner-preview"></span></div>
+        <button onclick="cancelAction()">إلغاء ✕</button>
     </div>
 
-    <!-- خانة الكتابة وزر الإرسال -->
+    <!-- خانة الكتابة -->
     <div class="chat-input-area">
         <input type="text" id="message-input" placeholder="اكتب رسالة...">
-        <button id="send-btn" onclick="handleSendMessage()">➤</button>
+        <button onclick="handleSendMessage()">➤</button>
     </div>
 
     <script>
-        let editingMessageId = null; // تخزين معرف الرسالة قيد التعديل
+        let currentMode = null; // 'edit' أو 'reply'
+        let activeId = null;    // معرف الرسالة المستهدفة
+        let messageCounter = 2; // عداد للرسائل الجديدة
 
-        // 1. عندما يضغط المستخدم على أي رسالة لإرسالها لوضع التعديل
-        function startEdit(id, currentText) {
-            editingMessageId = id;
-            const inputField = document.getElementById('message-input');
-            const editBanner = document.getElementById('edit-banner');
-            const editPreview = document.getElementById('editing-text-preview');
-
-            // وضع النص القديم في خانة الإدخال
-            inputField.value = currentText;
-            inputField.focus();
-
-            // إظهار بانر التعديل
-            editBanner.style.display = 'flex';
-            editPreview.innerText = currentText;
+        // 1. تفعيل وضع الرد
+        function startReply(id, text) {
+            currentMode = 'reply';
+            activeId = id;
+            document.getElementById('banner-title').innerText = 'الرد على';
+            document.getElementById('banner-preview').innerText = text;
+            document.getElementById('action-banner').style.display = 'flex';
+            document.getElementById('message-input').focus();
         }
 
-        // 2. إلغاء وضع التعديل
-        function cancelEdit() {
-            editingMessageId = null;
+        // 2. تفعيل وضع التعديل
+        function startEdit(id, text) {
+            currentMode = 'edit';
+            activeId = id;
+            document.getElementById('banner-title').innerText = 'تعديل رسالة';
+            document.getElementById('banner-preview').innerText = text;
+            document.getElementById('action-banner').style.display = 'flex';
+            document.getElementById('message-input').value = text;
+            document.getElementById('message-input').focus();
+        }
+
+        // 3. إلغاء التعديل أو الرد
+        function cancelAction() {
+            currentMode = null;
+            activeId = null;
             document.getElementById('message-input').value = '';
-            document.getElementById('edit-banner').style.display = 'none';
+            document.getElementById('action-banner').style.display = 'none';
         }
 
-        // 3. التعامل مع الإرسال أو التحديث
+        // 4. إرسال أو تحديث أو الرد على رسالة
         function handleSendMessage() {
-            const inputField = document.getElementById('message-input');
-            const text = inputField.value.trim();
-
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
             if (text === "") return;
 
-            if (editingMessageId !== null) {
-                // --- حالة التعديل ---
-                console.log("تم تعديل الرسالة رقم " + editingMessageId + " إلى: " + text);
-                // هنا يمكنك وضع كود تحديث الرسالة في قاعدة البيانات لديك (مثل Firebase)
-                
-                // إعادة الوضع الطبيعي
-                cancelEdit();
+            const container = document.getElementById('messages-container');
+
+            if (currentMode === 'edit' && activeId !== null) {
+                // تعديل رسالة قائمة
+                const msgElement = document.getElementById(`msg-${activeId}`);
+                if (msgElement) {
+                    const textDiv = msgElement.querySelector('.text-content');
+                    if (textDiv) textDiv.innerText = text;
+                }
+                cancelAction();
+
             } else {
-                // --- حالة إرسال رسالة جديدة ---
-                console.log("إرسال رسالة جديدة: " + text);
-                
-                // إضافة الرسالة واجهةً (كمثال)
-                const container = document.getElementById('messages-container');
-                container.innerHTML += `
-                    <div class="message sent">
-                        ${text}
+                // إرسال رسالة جديدة (مع احتمال أن تكون رداً)
+                const newId = messageCounter++;
+                let replyHtml = '';
+
+                if (currentMode === 'reply' && activeId !== null) {
+                    replyHtml = `<div class="reply-quote">رد على رسالة سابقة</div>`;
+                }
+
+                const newMsgHTML = `
+                    <div class="message sent" id="msg-${newId}">
+                        ${replyHtml}
+                        <div class="text-content">${text}</div>
                         <span class="time">الآن</span>
+                        <div class="msg-actions">
+                            <span onclick="startReply(${newId}, '${text}')">↩️ رد</span>
+                            <span onclick="startEdit(${newId}, '${text}')">✏️ تعديل</span>
+                            <span onclick="pinMessage('${text}')">📌 تثبيت</span>
+                            <span onclick="addReaction(${newId}, '❤️')">❤️</span>
+                            <span onclick="deleteMessage(${newId})">🗑️ حذف</span>
+                        </div>
                     </div>
                 `;
 
-                // تفريغ المربع
-                inputField.value = '';
+                container.innerHTML += newMsgHTML;
+                input.value = '';
+                cancelAction();
                 container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        // 5. تثبيت رسالة
+        function pinMessage(text) {
+            document.getElementById('pinned-text-display').innerText = text;
+            document.getElementById('pinned-banner').style.display = 'flex';
+        }
+
+        function unpinMessage() {
+            document.getElementById('pinned-banner').style.display = 'none';
+        }
+
+        // 6. تفاعلات الإيموجي
+        function addReaction(id, emoji) {
+            const msg = document.getElementById(`msg-${id}`);
+            if (!msg) return;
+            let reactionBox = msg.querySelector('.reactions');
+            if (!reactionBox) {
+                reactionBox = document.createElement('div');
+                reactionBox.className = 'reactions';
+                msg.appendChild(reactionBox);
+            }
+            reactionBox.innerHTML = emoji;
+        }
+
+        // 7. حذف رسالة من الجهاز فقط
+        function deleteMessage(id) {
+            const msg = document.getElementById(`msg-${id}`);
+            if (msg) msg.remove();
+        }
+
+        // 8. مسح المحادثة بالكامل محلياً
+        function clearChat() {
+            if (confirm("هل تريد حذف المحادثة من جهازك؟")) {
+                document.getElementById('messages-container').innerHTML = '';
+                unpinMessage();
             }
         }
     </script>
