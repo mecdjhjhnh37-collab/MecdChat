@@ -2751,7 +2751,8 @@ element,
 id,
 mine,
 messageType,
-currentText
+currentText,
+fullMessageData
 ){
 
 removeMenus();
@@ -2761,6 +2762,102 @@ document.createElement("div");
 
 menu.className =
 "message-menu";
+
+    const picker = document.createElement("div");
+picker.className = "reactions-picker";
+
+["❤️","👍","🔥","😂","😮"].forEach(emoji => {
+
+    const btn = document.createElement("span");
+    btn.textContent = emoji;
+    btn.style.cursor = "pointer";
+
+    btn.onclick = async e => {
+        e.stopPropagation();
+        removeMenus();
+
+        const reactions = {
+            ...(fullMessageData?.reactions || {})
+        };
+
+        reactions[currentUser.uid] = emoji;
+
+        try {
+            await updateDoc(
+                doc(db, "chats", chatID, "messages", id),
+                { reactions }
+            );
+        } catch(err) {
+            console.error("Reaction error:", err);
+        }
+    };
+
+    picker.appendChild(btn);
+});
+
+menu.appendChild(picker);
+
+
+// ↩️ رد
+const replyBtn = document.createElement("button");
+replyBtn.textContent = "↩️ رد";
+
+replyBtn.onclick = e => {
+
+    e.stopPropagation();
+    removeMenus();
+
+    replyingToMessage = {
+        id,
+        text: currentText,
+        type: messageType,
+        senderId: fullMessageData?.senderId
+    };
+
+    replyingToName.textContent =
+        fullMessageData?.senderId === currentUser.uid
+        ? "أنت"
+        : friendUser.name;
+
+    replyingToText.textContent =
+        currentText ||
+        (
+            messageType === "image"
+            ? "📷 صورة"
+            : messageType === "video"
+            ? "🎥 فيديو"
+            : "ملف"
+        );
+
+    replyPreviewBar.style.display = "flex";
+    messageInput.focus();
+};
+
+menu.appendChild(replyBtn);
+
+
+// 📌 تثبيت
+const pinBtn = document.createElement("button");
+pinBtn.textContent = "📌 تثبيت الرسالة";
+
+pinBtn.onclick = async e => {
+
+    e.stopPropagation();
+    removeMenus();
+
+    try {
+        await updateDoc(doc(db, "chats", chatID), {
+            pinnedMessage: {
+                id,
+                text: currentText || "مرفق"
+            }
+        });
+    } catch(err) {
+        console.error("Pin error:", err);
+    }
+};
+
+menu.appendChild(pinBtn);
 
 // زر التعديل (يظهر لرسائلك النصية فقط)
 if (mine && messageType === "text") {
@@ -2829,7 +2926,8 @@ element,
 id,
 mine,
 messageType,
-text
+text,
+data
 ){
 
 let timer = null;
@@ -2859,7 +2957,8 @@ element,
 id,
 mine,
 messageType,
-text
+text,
+window.__messageData?.[id]
 );
 
 },
