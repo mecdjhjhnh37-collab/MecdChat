@@ -2635,382 +2635,79 @@ callBox
 MESSAGE ACTIONS & EDIT MENU
 ====================================================== */
 
-const messageElements =
-new Map();
-
-function removeMenus(){
-
-document
-.querySelectorAll(".message-menu")
-.forEach(
-x => x.remove()
-);
-
-}
-
-async function deleteMessageForMe(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
-try{
-
-const messageRef =
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-);
-
-const snap =
-await getDoc(messageRef);
-
-if(!snap.exists())
-return;
-
-await updateDoc(
-messageRef,
-{
-deletedFor:
-arrayUnion(
-currentUser.uid
-)
-}
-);
-
-const element =
-messageElements.get(id);
-
-if(element){
-
-element.remove();
-
-messageElements.delete(id);
-
-}
-
-}catch(e){
-
-console.error(
-"Delete for me:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-}
-
-async function deleteMessageForEveryone(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
-try{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-}catch(e){
-
-console.error(
-"Delete:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-}
-
-function showMessageMenu(
-element,
-id,
-mine,
-messageType,
-currentText,
-fullMessageData
-){
-
-removeMenus();
-
-const menu =
-document.createElement("div");
-
-menu.className =
-"message-menu";
-
-    const picker = document.createElement("div");
-picker.className = "reactions-picker";
-
-["❤️","👍","🔥","😂","😮"].forEach(emoji => {
-
-    const btn = document.createElement("span");
-    btn.textContent = emoji;
-    btn.style.cursor = "pointer";
-
-    btn.onclick = async e => {
-        e.stopPropagation();
-        removeMenus();
-
-        const reactions = {
-            ...(fullMessageData?.reactions || {})
-        };
-
-        reactions[currentUser.uid] = emoji;
-
-        try {
-            await updateDoc(
-                doc(db, "chats", chatID, "messages", id),
-                { reactions }
-            );
-        } catch(err) {
-            console.error("Reaction error:", err);
-        }
-    };
-
-    picker.appendChild(btn);
-});
-
-menu.appendChild(picker);
-
-
-// ↩️ رد
-const replyBtn = document.createElement("button");
-replyBtn.textContent = "↩️ رد";
-
-replyBtn.onclick = e => {
-
-    e.stopPropagation();
-    removeMenus();
-
-    replyingToMessage = {
-        id,
-        text: currentText,
-        type: messageType,
-        senderId: fullMessageData?.senderId
-    };
-
-    replyingToName.textContent =
-        fullMessageData?.senderId === currentUser.uid
-        ? "أنت"
-        : friendUser.name;
-
-    replyingToText.textContent =
-        currentText ||
-        (
-            messageType === "image"
-            ? "📷 صورة"
-            : messageType === "video"
-            ? "🎥 فيديو"
-            : "ملف"
-        );
-
-    replyPreviewBar.style.display = "flex";
-    messageInput.focus();
-};
-
-menu.appendChild(replyBtn);
-
-
-// 📌 تثبيت
-const pinBtn = document.createElement("button");
-pinBtn.textContent = "📌 تثبيت الرسالة";
-
-pinBtn.onclick = async e => {
-
-    e.stopPropagation();
-    removeMenus();
-
-    try {
-        await updateDoc(doc(db, "chats", chatID), {
-            pinnedMessage: {
-                id,
-                text: currentText || "مرفق"
-            }
-        });
-    } catch(err) {
-        console.error("Pin error:", err);
-    }
-};
-
-menu.appendChild(pinBtn);
-
-// زر التعديل (يظهر لرسائلك النصية فقط)
-if (mine && messageType === "text") {
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "✏️ تعديل";
-    editBtn.onclick = async e => {
-        e.stopPropagation();
-        removeMenus();
-        const newText = prompt("تعديل الرسالة:", currentText);
-        if (newText !== null && newText.trim() !== "" && newText.trim() !== currentText) {
-            try {
-                await updateDoc(doc(db, "chats", chatID, "messages", id), {
-                    text: newText.trim(),
-                    isEdited: true
-                });
-            } catch (err) {
-                console.error("Edit error:", err);
-                alert("تعذر تعديل الرسالة");
-            }
-        }
-    };
-    menu.appendChild(editBtn);
-}
-
-const button =
-document.createElement("button");
-
-button.textContent =
-mine
-?
-"🗑️ إلغاء الإرسال"
-:
-"🗑️ حذف لدي";
-
-button.onclick =
-async e => {
-
-e.stopPropagation();
-
-if(mine){
-
-await deleteMessageForEveryone(
-id
-);
-
-}else{
-
-await deleteMessageForMe(
-id
-);
-
-}
-
-removeMenus();
-
-};
-
-menu.appendChild(button);
-
-element.appendChild(menu);
-
-}
-
 function addMessageActions(
-element,
-id,
-mine,
-messageType,
-text,
-data
+    element,
+    id,
+    mine,
+    messageType,
+    text,
+    data
 ){
 
-let timer = null;
+    let timer = null;
 
-const cancel =
-() => {
+    const cancel = () => {
+        clearTimeout(timer);
+    };
 
-clearTimeout(timer);
+    element.addEventListener(
+        "pointerdown",
+        e => {
 
-};
+            if(
+                e.target.closest(".message-menu")
+            ){
+                return;
+            }
 
-element.addEventListener(
-"pointerdown",
-e => {
+            timer = setTimeout(
+                () => {
 
-if(
-e.target.closest(".message-menu")
-)
-return;
+                    showMessageMenu(
+                        element,
+                        id,
+                        mine,
+                        messageType,
+                        text,
+                        data
+                    );
 
-timer =
-setTimeout(
-() => {
+                },
+                500
+            );
 
-showMessageMenu(
-element,
-id,
-mine,
-messageType,
-text,
-window.__messageData?.[id]
-);
+        }
+    );
 
-},
-500
-);
+    element.addEventListener(
+        "pointerup",
+        cancel
+    );
 
-}
-);
+    element.addEventListener(
+        "pointercancel",
+        cancel
+    );
 
-element.addEventListener(
-"pointerup",
-cancel
-);
+    element.addEventListener(
+        "contextmenu",
+        e => {
 
-element.addEventListener(
-"pointercancel",
-cancel
-);
+            e.preventDefault();
 
-element.addEventListener(
-"contextmenu",
-e => {
+            showMessageMenu(
+                element,
+                id,
+                mine,
+                messageType,
+                text,
+                data
+            );
 
-e.preventDefault();
-
-showMessageMenu(
-element,
-id,
-mine,
-messageType,
-text
-);
-
-}
-);
+        }
+    );
 
 }
-
-document.addEventListener(
-"pointerdown",
-e => {
-
-if(
-!e.target.closest(".message-menu")
-){
-
-removeMenus();
-
-}
-
-}
-);
 
 /* ======================================================
 RENDER MESSAGES
