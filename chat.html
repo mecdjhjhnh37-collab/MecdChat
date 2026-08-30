@@ -2993,14 +2993,11 @@ data.senderId === currentUser.uid
 
 if(data.type === "text"){
 
-let textContent = data.text || "";
+let textContent = escapeHtml(data.text || "");
 if(data.isEdited){
     textContent += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
 }
-box.innerHTML = escapeHtml(data.text || "");
-if(data.isEdited){
-    box.innerHTML += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
-}
+box.innerHTML = textContent;
 
 }else if(
 data.type === "voice"
