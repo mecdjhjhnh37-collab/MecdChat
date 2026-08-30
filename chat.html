@@ -401,12 +401,10 @@ text-align:center
 display:none!important
 }
 
-/* قائمة خيارات الرسالة والتفاعلات */
+/* قائمة خيارات الرسالة والتفاعلات المعدلة لتبقى داخل الشاشة */
 .message-menu{
 position:absolute !important;
-left:50% !important;
 bottom:calc(100% + 8px) !important;
-transform:translateX(-50%) !important;
 width:180px !important;
 padding:5px !important;
 background:#0b1512 !important;
@@ -473,7 +471,7 @@ object-fit:contain !important;
 cursor:pointer !important;
 }
 
-/* تخصيص الرسائل الصوتية القادمة من voice.js */
+/* تخصيص الرسائل الصوتية */
 .voice-message{
 align-self:flex-start !important;
 display:block !important;
@@ -1184,13 +1182,14 @@ updateMyActivity("none");
 }, 1200);
 });
 
-// **إعادة ربط voice.js بدقة وتمرير المتغيرات المطلوبة**
 async function connectVoiceJS(){
 try{
 window.chatDB = db;
 window.chatID = chatID;
 window.chatUser = currentUser;
 window.chatFriend = friendUser;
+window.supabaseClient = supabase;
+window.supabaseBucket = SUPABASE_BUCKET;
 await import("./voice.js");
 }catch(e){console.warn("voice.js not loaded:", e);}
 }
@@ -1357,6 +1356,14 @@ removeMenus();
 const menu = document.createElement("div");
 menu.className = "message-menu";
 
+// تحديد مكان القائمة بذكاء داخل الشاشة بناءً على إحداثيات الرسالة
+const rect = element.getBoundingClientRect();
+if(rect.left > window.innerWidth / 2){
+menu.style.right = "0";
+}else{
+menu.style.left = "0";
+}
+
 const picker = document.createElement("div");
 picker.className = "reactions-picker";
 ["❤️", "👍", "🔥", "😂", "😮"].forEach(emoji => {
@@ -1509,6 +1516,13 @@ vid.className = "message-video";
 vid.src = data.video || "";
 vid.controls = true;
 box.appendChild(vid);
+}else if(data.type === "voice" || data.type === "audio"){
+box.classList.add("voice-message");
+const audio = document.createElement("audio");
+audio.src = data.audio || data.url || "";
+audio.controls = true;
+audio.style.width = "100%";
+box.appendChild(audio);
 }
 
 if(data.reactions && Object.keys(data.reactions).length > 0){
@@ -1645,7 +1659,7 @@ try{
 startPresence();
 await loadFriend();
 listenMessages();
-await connectVoiceJS(); // تشغيل واستدعاء ملف voice.js المعالج للملفات الصوتية
+await connectVoiceJS();
 showApp();
 }catch(e){
 loading.textContent = e.message || "حدث خطأ";
