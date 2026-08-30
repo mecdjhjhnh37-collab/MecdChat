@@ -158,7 +158,8 @@ overflow-wrap:anywhere;
 user-select:none;
 line-height:1.5;
 align-self:flex-start;
-min-width:0
+min-width:0;
+overflow:visible !important;
 }
 
 .message.mine{
@@ -345,7 +346,7 @@ IMAGE & VIDEO MESSAGE - FIXED
     padding:6px !important;
     width:max-content !important;
     max-width:82vw !important;
-    overflow:hidden !important;
+    overflow:visible !important;
     display:flex !important;
     flex-direction:column !important;
     align-items:flex-start !important;
@@ -383,7 +384,6 @@ IMAGE & VIDEO MESSAGE - FIXED
 }
 
 
-
 /* ======================================================
 VOICE MESSAGE
 ====================================================== */
@@ -399,7 +399,7 @@ min-height:76px !important;
 padding:8px 10px 7px !important;
 border-radius:18px !important;
 position:relative !important;
-overflow:hidden !important;
+overflow:visible !important;
 flex:none !important;
 box-sizing:border-box !important;
 background:linear-gradient(
@@ -441,7 +441,9 @@ direction:rtl !important;
 width:100% !important;
 height:auto !important;
 min-height:48px !important;
-flex:none !important
+flex:none !important;
+overflow:hidden !important;
+border-radius:inherit;
 }
 
 .voice-icon{
@@ -663,21 +665,8 @@ color:#aaa
 
 
 /* ======================================================
-MESSAGE MENU - FIX FOR VOICE MESSAGES
+MESSAGE MENU
 ====================================================== */
-
-.message{
-position:relative;
-}
-
-.voice-message{
-overflow:visible !important;
-}
-
-.voice-message-box{
-overflow:hidden !important;
-border-radius:inherit;
-}
 
 .message-menu{
 position:absolute !important;
@@ -2293,7 +2282,7 @@ cameraInput.click();
 
 
 /* ======================================================
-IMAGE & VIDEO COMPRESS (WITH CURRENT SIZE & ASPECT RATIO PRESERVATION)
+IMAGE & VIDEO COMPRESS
 ====================================================== */
 
 async function compressImage(file){
@@ -2331,7 +2320,6 @@ ctx.drawImage(img, 0, 0);
 let quality = 0.90;
 let result = canvas.toDataURL("image/jpeg", quality);
 
-// الحفاظ على دقة عالية مع تقليل الحجم المبالغ فيه فقط إذا تجاوز حجماً كبيراً جداً
 while (result.length > 3000000 && quality > 0.5) {
 quality -= 0.1;
 result = canvas.toDataURL("image/jpeg", quality);
@@ -2383,7 +2371,7 @@ reader.readAsDataURL(file);
 
 
 /* ======================================================
-SEND MEDIA (IMAGE OR VIDEO UP TO 60 MINUTES / 500MB)
+SEND MEDIA
 ====================================================== */
 
 async function sendMediaFile(file){
@@ -2403,7 +2391,6 @@ let fileType = "image";
 let mediaData = "";
 
 if(file.type.startsWith("video/")){
-// السماح حتى 500 ميغابايت (فيديوهات تصل حتى 60 دقيقة تقريباً)
 if(file.size > 500 * 1024 * 1024){
 throw new Error("حجم الفيديو كبير جداً، الحد الأقصى المسموح به هو 500 ميغابايت.");
 }
@@ -3352,7 +3339,7 @@ callBox
 
 
 /* ======================================================
-MESSAGE MENU (SUPPORTING ALL MEDIA TYPES FOR DELETE FOR ME & DELETE FOR EVERYONE)
+MESSAGE MENU
 ====================================================== */
 
 const messageElements =
@@ -3514,8 +3501,6 @@ document.createElement(
 );
 
 
-// إذا كانت رسالتك (سواء نص، صورة، فيديو، صوت) يظهر "إلغاء الإرسال" للجميع
-// وإذا كانت رسالة واردة من الطرف الآخر يظهر "حذف لدي"
 button.textContent =
 mine
 ? "🗑️ إلغاء الإرسال"
@@ -3952,7 +3937,6 @@ document.createElement(
 e.className =
 "empty";
 
-e.className = "empty";
 e.innerHTML = "💬<br>ابدأ المحادثة الآن";
 messages.appendChild(e);
 
