@@ -1394,100 +1394,36 @@ friendStatus.classList.add(
 "online"
 );
 
+return;
+
+}
+
+// آخر ظهور
+if(friendUser?.lastSeen){
+
+const lastSeen =
+friendUser.lastSeen.toDate
+? friendUser.lastSeen.toDate()
+: new Date(friendUser.lastSeen);
+
+friendStatus.textContent =
+"آخر ظهور " +
+lastSeen.toLocaleString(
+"ar",
+{
+day:"2-digit",
+month:"2-digit",
+hour:"2-digit",
+minute:"2-digit"
+}
+);
+
 }else{
 
 friendStatus.textContent =
-"● غير متصل";
+"آخر ظهور غير معروف";
 
 }
-
-}
-
-function listenFriendStatus(){
-
-if(unsubscribeFriendStatus)
-unsubscribeFriendStatus();
-
-unsubscribeFriendStatus =
-onSnapshot(
-doc(db, "users", friendUser.uid),
-snap => {
-
-if(!snap.exists()){
-
-friendOnline = false;
-renderFriendStatus();
-
-return;
-
-}
-
-const data = snap.data();
-
-const last =
-data.lastSeen?.toMillis?.() || 0;
-
-friendOnline =
-data.online === true &&
-last > 0 &&
-Date.now() - last < 30000;
-
-renderFriendStatus();
-
-}
-);
-
-}
-
-function listenFriendActivity(){
-
-if(unsubscribeFriendActivity)
-unsubscribeFriendActivity();
-
-unsubscribeFriendActivity =
-onSnapshot(
-doc(
-db,
-"chats",
-chatID,
-"typing",
-friendUser.uid
-),
-snap => {
-
-if(!snap.exists()){
-
-friendTyping = false;
-friendRecording = false;
-
-renderFriendStatus();
-
-return;
-
-}
-
-const data = snap.data();
-
-const updated =
-data.updatedAt?.toMillis?.() || 0;
-
-const fresh =
-!updated ||
-Date.now() - updated < 5000;
-
-friendRecording =
-fresh &&
-data.recording === true;
-
-friendTyping =
-fresh &&
-data.typing === true &&
-!friendRecording;
-
-renderFriendStatus();
-
-}
-);
 
 }
 
