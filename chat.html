@@ -89,6 +89,18 @@
     </div>
 
     <script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://aqukohedqmtjuspjbkmn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
+
+const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
         const videoInput = document.getElementById('videoInput');
         const statusText = document.getElementById('status-text');
         const chatBox = document.getElementById('chatBox');
