@@ -2762,27 +2762,27 @@ document.createElement("div");
 menu.className =
 "message-menu";
 
-// زر تعديل الرسالة النصية (الخاص بك)
-if(mine && messageType === "text"){
-    const editButton = document.createElement("button");
-    editButton.textContent = "✏️ تعديل";
-    editButton.onclick = async e => {
+// زر التعديل (يظهر لرسائلك النصية فقط)
+if (mine && messageType === "text") {
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "✏️ تعديل";
+    editBtn.onclick = async e => {
         e.stopPropagation();
         removeMenus();
         const newText = prompt("تعديل الرسالة:", currentText);
-        if(newText !== null && newText.trim() !== "" && newText.trim() !== currentText){
-            try{
+        if (newText !== null && newText.trim() !== "" && newText.trim() !== currentText) {
+            try {
                 await updateDoc(doc(db, "chats", chatID, "messages", id), {
                     text: newText.trim(),
                     isEdited: true
                 });
-            }catch(err){
+            } catch (err) {
                 console.error("Edit error:", err);
                 alert("تعذر تعديل الرسالة");
             }
         }
     };
-    menu.appendChild(editButton);
+    menu.appendChild(editBtn);
 }
 
 const button =
@@ -2993,11 +2993,14 @@ data.senderId === currentUser.uid
 
 if(data.type === "text"){
 
-let textContent = escapeHtml(data.text || "");
+let textContent = data.text || "";
 if(data.isEdited){
     textContent += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
 }
-box.innerHTML = textContent;
+box.innerHTML = escapeHtml(data.text || "");
+if(data.isEdited){
+    box.innerHTML += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
+}
 
 }else if(
 data.type === "voice"
