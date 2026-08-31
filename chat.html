@@ -327,6 +327,68 @@ text-align:center
 display:none!important
 }
 
+/* تنسيق القائمة الخاصة بالرسائل */
+.message-menu{
+position:fixed;
+background:#0b1512;
+border:1px solid rgba(0,232,137,.2);
+border-radius:16px;
+padding:8px;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+z-index:9999;
+display:flex;
+flex-direction:column;
+gap:6px;
+min-width:160px;
+}
+
+.message-reactions{
+display:flex;
+gap:5px;
+justify-content:space-around;
+padding-bottom:6px;
+border-bottom:1px solid rgba(255,255,255,0.08);
+margin-bottom:4px;
+}
+
+.reaction-button{
+background:none;
+border:none;
+font-size:18px;
+cursor:pointer;
+padding:4px;
+border-radius:8px;
+transition:0.15s;
+}
+
+.reaction-button:hover{
+background:rgba(255,255,255,0.1);
+}
+
+.message-menu-button{
+background:#18231f;
+border:none;
+color:#fff;
+padding:8px 12px;
+border-radius:10px;
+font-size:13px;
+text-align:right;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:8px;
+transition:0.15s;
+font-weight:bold;
+}
+
+.message-menu-button:hover{
+background:#22322c;
+}
+
+.message-menu-button.danger{
+color:#ff5555;
+}
+
 .image-message,
 .video-message{
 padding:6px !important;
@@ -1072,7 +1134,7 @@ VARIABLES
 let currentUser = null;
 let friendUser = null;
 let chatID = null;
-let messageElements = new Map(); // تمت إضافة هذا المتغير لحل المشكلة
+let messageElements = new Map();
 
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
@@ -2587,651 +2649,267 @@ callBox
 }
 
 /* ======================================================
-MESSAGE ACTIONS & EDIT MENU
+MESSAGE ACTIONS & EDIT MENU (Fixed Version)
 ====================================================== */
 
 let activeMessageMenu = null;
 let replyToMessage = null;
 
 function closeMessageMenu(){
-
-if(activeMessageMenu){
-
-activeMessageMenu.remove();
-
-activeMessageMenu = null;
-
+    if(activeMessageMenu){
+        activeMessageMenu.remove();
+        activeMessageMenu = null;
+    }
 }
 
-}
-
-
-function showMessageMenu(
+function addMessageActions(
 element,
 id,
 mine,
 messageType,
 text
 ){
-
-closeMessageMenu();
-
-
-const menu =
-document.createElement("div");
-
-menu.className =
-"message-menu";
-
-
-/* =========================
-REACTIONS
-========================= */
-
-const reactions =
-document.createElement("div");
-
-reactions.className =
-"message-reactions";
-
-
-[
-"❤️",
-"👍",
-"🔥",
-"😂",
-"😮"
-]
-.forEach(
-emoji => {
-
-const button =
-document.createElement("button");
-
-button.type =
-"button";
-
-button.className =
-"reaction-button";
-
-button.textContent =
-emoji;
-
-
-button.onclick =
-async e => {
-
-e.stopPropagation();
-
-try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-),
-{
-[`reactions.${currentUser.uid}`]:
-emoji
-}
-);
-
-}catch(error){
-
-console.error(
-"Reaction:",
-error
-);
-
+    element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        showMessageMenu(element, id, mine, messageType, text);
+    });
 }
 
-closeMessageMenu();
-
-};
-
-reactions.appendChild(
-button
-);
-
-}
-);
-
-
-menu.appendChild(
-reactions
-);
-
-
-/* =========================
-REPLY
-========================= */
-
-const replyButton =
-document.createElement("button");
-
-replyButton.type =
-"button";
-
-replyButton.className =
-"message-menu-button";
-
-replyButton.textContent =
-"↩️ رد";
-
-
-replyButton.onclick =
-e => {
-
-e.stopPropagation();
-
-
-replyToMessage = {
-
-id:id,
-
-text:
-text ||
-(
-messageType === "image"
-?
-"📷 صورة"
-:
-messageType === "video"
-?
-"🎥 فيديو"
-:
-messageType === "voice"
-?
-"🎤 رسالة صوتية"
-:
-"رسالة"
-),
-
-type:
-messageType
-
-};
-
-
-messageInput.placeholder =
-"الرد على: " +
-replyToMessage.text;
-
-
-messageInput.focus();
-
-closeMessageMenu();
-
-};
-
-
-menu.appendChild(
-replyButton
-);
-
-
-/* =========================
-PIN
-========================= */
-
-const pinButton =
-document.createElement("button");
-
-pinButton.type =
-"button";
-
-pinButton.className =
-"message-menu-button";
-
-pinButton.textContent =
-"📌 تثبيت الرسالة";
-
-
-pinButton.onclick =
-async e => {
-
-e.stopPropagation();
-
-try{
-
-await setDoc(
-doc(
-db,
-"chats",
-chatID
-),
-{
-pinnedMessage:{
-id:id,
-text:
-text ||
-"رسالة",
-type:
-messageType,
-pinnedAt:
-serverTimestamp(),
-pinnedBy:
-currentUser.uid
-}
-},
-{
-merge:true
-}
-);
-
-}catch(error){
-
-console.error(
-"Pin:",
-error
-);
-
-alert(
-"تعذر تثبيت الرسالة"
-);
-
-}
-
-closeMessageMenu();
-
-};
-
-
-menu.appendChild(
-pinButton
-);
-
-
-/* =========================
-EDIT
-========================= */
-
-if(
-mine &&
-messageType === "text"
+function showMessageMenu(
+    element,
+    id,
+    mine,
+    messageType,
+    text
 ){
-
-const editButton =
-document.createElement("button");
-
-editButton.type =
-"button";
-
-editButton.className =
-"message-menu-button";
-
-editButton.textContent =
-"✏️ تعديل";
-
-
-editButton.onclick =
-async e => {
-
-e.stopPropagation();
-
-
-const newText =
-prompt(
-"تعديل الرسالة:",
-text || ""
-);
-
-
-if(
-newText === null
-){
-
-closeMessageMenu();
-
-return;
-
-}
-
-
-const finalText =
-newText.trim();
-
-
-if(!finalText){
-
-alert(
-"لا يمكن أن تكون الرسالة فارغة"
-);
-
-return;
-
-}
-
-
-try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-),
-{
-text:
-finalText,
-
-isEdited:
-true,
-
-editedAt:
-serverTimestamp()
-}
-);
-
-}catch(error){
-
-console.error(
-"Edit:",
-error
-);
-
-alert(
-"تعذر تعديل الرسالة"
-);
-
-}
-
-
-closeMessageMenu();
-
-};
-
-
-menu.appendChild(
-editButton
-);
-
-}
-
-
-/* =========================
-DELETE FOR EVERYONE
-========================= */
-
-if(mine){
-
-const deleteEveryoneButton =
-document.createElement("button");
-
-deleteEveryoneButton.type =
-"button";
-
-deleteEveryoneButton.className =
-"message-menu-button danger";
-
-deleteEveryoneButton.textContent =
-"🗑️ حذف للجميع";
-
-
-deleteEveryoneButton.onclick =
-async e => {
-
-e.stopPropagation();
-
-
-const confirmDelete =
-confirm(
-"هل تريد حذف الرسالة للجميع؟"
-);
-
-
-if(!confirmDelete)
-return;
-
-
-try{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-}catch(error){
-
-console.error(
-"Delete everyone:",
-error
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-
-closeMessageMenu();
-
-};
-
-
-menu.appendChild(
-deleteEveryoneButton
-);
-
-}
-
-
-/* =========================
-DELETE FOR ME
-========================= */
-
-const deleteForMeButton =
-document.createElement("button");
-
-deleteForMeButton.type =
-"button";
-
-deleteForMeButton.className =
-"message-menu-button danger";
-
-deleteForMeButton.textContent =
-"🗑️ حذف لدي";
-
-
-deleteForMeButton.onclick =
-async e => {
-
-e.stopPropagation();
-
-
-try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-),
-{
-deletedFor:
-arrayUnion(
-currentUser.uid
-)
-}
-);
-
-}catch(error){
-
-console.error(
-"Delete for me:",
-error
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-
-closeMessageMenu();
-
-};
-
-
-menu.appendChild(
-deleteForMeButton
-);
-
-
-/* =========================
-ADD TO BODY
-========================= */
-
-document.body.appendChild(
-menu
-);
-
-
-activeMessageMenu =
-menu;
-
-
-/* =========================
-POSITION
-========================= */
-
-requestAnimationFrame(
-() => {
-
-const rect =
-element.getBoundingClientRect();
-
-const menuRect =
-menu.getBoundingClientRect();
-
-
-let left =
-rect.left;
-
-
-let top =
-rect.top -
-menuRect.height -
-10;
-
-
-/* إذا ما في مساحة فوق */
-
-if(top < 10){
-
-top =
-rect.bottom +
-10;
-
-}
-
-
-/* منع الخروج من اليمين */
-
-if(
-left +
-menuRect.width >
-window.innerWidth -
-10
-){
-
-left =
-window.innerWidth -
-menuRect.width -
-10;
-
-}
-
-
-/* منع الخروج من اليسار */
-
-if(left < 10){
-
-left = 10;
-
-}
-
-
-/* منع الخروج من الأسفل */
-
-if(
-top +
-menuRect.height >
-window.innerHeight -
-10
-){
-
-top =
-window.innerHeight -
-menuRect.height -
-10;
-
-}
-
-
-/* منع الخروج من الأعلى */
-
-if(top < 10){
-
-top = 10;
-
-}
-
-
-menu.style.left =
-left + "px";
-
-
-menu.style.top =
-top + "px";
-
-}
-);
-
-
-/* إغلاق عند الضغط خارج القائمة */
-
-setTimeout(
-() => {
-
-document.addEventListener(
-"pointerdown",
-function closeOutside(e){
-
-if(
-!menu.contains(e.target)
-){
-
-closeMessageMenu();
-
-document.removeEventListener(
-"pointerdown",
-closeOutside
-);
-
-}
-
-}
-);
-
-},
-0
-);
-
+    closeMessageMenu();
+
+    const menu = document.createElement("div");
+    menu.className = "message-menu";
+
+    /* =========================
+    REACTIONS
+    ========================= */
+    const reactions = document.createElement("div");
+    reactions.className = "message-reactions";
+
+    ["❤️", "👍", "🔥", "😂", "😮"].forEach(emoji => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "reaction-button";
+        button.textContent = emoji;
+
+        button.onclick = async e => {
+            e.stopPropagation();
+            try {
+                await updateDoc(
+                    doc(db, "chats", chatID, "messages", id),
+                    { [`reactions.${currentUser.uid}`]: emoji }
+                );
+            } catch(error) {
+                console.error("Reaction:", error);
+            }
+            closeMessageMenu();
+        };
+        reactions.appendChild(button);
+    });
+
+    menu.appendChild(reactions);
+
+    /* =========================
+    REPLY
+    ========================= */
+    const replyButton = document.createElement("button");
+    replyButton.type = "button";
+    replyButton.className = "message-menu-button";
+    replyButton.textContent = "↩️ رد";
+
+    replyButton.onclick = e => {
+        e.stopPropagation();
+        replyToMessage = {
+            id: id,
+            text: text || (
+                messageType === "image" ? "📷 صورة" :
+                messageType === "video" ? "🎥 فيديو" :
+                messageType === "voice" ? "🎤 رسالة صوتية" : "رسالة"
+            ),
+            type: messageType
+        };
+
+        if(typeof messageInput !== 'undefined' && messageInput) {
+            messageInput.placeholder = "الرد على: " + replyToMessage.text;
+            messageInput.focus();
+        }
+        closeMessageMenu();
+    };
+
+    menu.appendChild(replyButton);
+
+    /* =========================
+    PIN
+    ========================= */
+    const pinButton = document.createElement("button");
+    pinButton.type = "button";
+    pinButton.className = "message-menu-button";
+    pinButton.textContent = "📌 تثبيت الرسالة";
+
+    pinButton.onclick = async e => {
+        e.stopPropagation();
+        try {
+            await setDoc(
+                doc(db, "chats", chatID),
+                {
+                    pinnedMessage: {
+                        id: id,
+                        text: text || "رسالة",
+                        type: messageType,
+                        pinnedAt: serverTimestamp(),
+                        pinnedBy: currentUser.uid
+                    }
+                },
+                { merge: true }
+            );
+        } catch(error) {
+            console.error("Pin:", error);
+            alert("تعذر تثبيت الرسالة");
+        }
+        closeMessageMenu();
+    };
+
+    menu.appendChild(pinButton);
+
+    /* =========================
+    EDIT
+    ========================= */
+    if(mine && messageType === "text"){
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "message-menu-button";
+        editButton.textContent = "✏️ تعديل";
+
+        editButton.onclick = async e => {
+            e.stopPropagation();
+            const newText = prompt("تعديل الرسالة:", text || "");
+            if(newText === null){
+                closeMessageMenu();
+                return;
+            }
+
+            const finalText = newText.trim();
+            if(!finalText){
+                alert("لا يمكن أن تكون الرسالة فارغة");
+                return;
+            }
+
+            try {
+                await updateDoc(
+                    doc(db, "chats", chatID, "messages", id),
+                    {
+                        text: finalText,
+                        isEdited: true,
+                        editedAt: serverTimestamp()
+                    }
+                );
+            } catch(error) {
+                console.error("Edit:", error);
+                alert("تعذر تعديل الرسالة");
+            }
+            closeMessageMenu();
+        };
+
+        menu.appendChild(editButton);
+    }
+
+    /* =========================
+    DELETE FOR EVERYONE
+    ========================= */
+    if(mine){
+        const deleteEveryoneButton = document.createElement("button");
+        deleteEveryoneButton.type = "button";
+        deleteEveryoneButton.className = "message-menu-button danger";
+        deleteEveryoneButton.textContent = "🗑️ حذف للجميع";
+
+        deleteEveryoneButton.onclick = async e => {
+            e.stopPropagation();
+            const confirmDelete = confirm("هل تريد حذف الرسالة للجميع؟");
+            if(!confirmDelete) return;
+
+            try {
+                await deleteDoc(
+                    doc(db, "chats", chatID, "messages", id)
+                );
+            } catch(error) {
+                console.error("Delete everyone:", error);
+                alert("تعذر حذف الرسالة");
+            }
+            closeMessageMenu();
+        };
+
+        menu.appendChild(deleteEveryoneButton);
+    }
+
+    /* =========================
+    DELETE FOR ME
+    ========================= */
+    const deleteForMeButton = document.createElement("button");
+    deleteForMeButton.type = "button";
+    deleteForMeButton.className = "message-menu-button danger";
+    deleteForMeButton.textContent = "🗑️ حذف لدي";
+
+    deleteForMeButton.onclick = async e => {
+        e.stopPropagation();
+        try {
+            await updateDoc(
+                doc(db, "chats", chatID, "messages", id),
+                {
+                    deletedFor: arrayUnion(currentUser.uid)
+                }
+            );
+        } catch(error) {
+            console.error("Delete for me:", error);
+            alert("تعذر حذف الرسالة");
+        }
+        closeMessageMenu();
+    };
+
+    menu.appendChild(deleteForMeButton);
+
+    /* =========================
+    ADD TO BODY
+    ========================= */
+    document.body.appendChild(menu);
+    activeMessageMenu = menu;
+
+    /* =========================
+    POSITION
+    ========================= */
+    requestAnimationFrame(() => {
+        const rect = element.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+
+        let left = rect.left;
+        let top = rect.top - menuRect.height - 10;
+
+        if(top < 10) top = rect.bottom + 10;
+        if(left + menuRect.width > window.innerWidth - 10) left = window.innerWidth - menuRect.width - 10;
+        if(left < 10) left = 10;
+        if(top + menuRect.height > window.innerHeight - 10) top = window.innerHeight - menuRect.height - 10;
+        if(top < 10) top = 10;
+
+        menu.style.left = left + "px";
+        menu.style.top = top + "px";
+    });
+
+    /* إغلاق عند الضغط خارج القائمة (مع تأجيل بسيط لتجنب التعارض) */
+    setTimeout(() => {
+        function closeOutside(e){
+            if(!menu.contains(e.target)){
+                closeMessageMenu();
+                document.removeEventListener("pointerdown", closeOutside);
+            }
+        }
+        document.addEventListener("pointerdown", closeOutside);
+    }, 100);
 }
 
 /* ======================================================
