@@ -138,7 +138,7 @@ overflow-y:auto;
 padding:20px 15px 150px;
 display:flex;
 flex-direction:column;
-gap:10px
+gap:14px
 }
 
 .empty{
@@ -177,22 +177,26 @@ border:1px solid rgba(255,255,255,.08);
 border-bottom-right-radius:5px
 }
 
-/* تأثير القلب السريع عند الدبل كليك */
+/* تأثير القلب السريع عند الدبل كليك - متمركز في الحد السفلي للرسالة (نصف داخل ونصف خارج) */
 .heart-pop {
 position: absolute;
-top: 50%;
+bottom: -16px;
 left: 50%;
-transform: translate(-50%, -50%) scale(0);
-font-size: 38px;
+transform: translateX(-50%) scale(0);
+font-size: 28px;
 animation: popEffect 0.4s ease forwards;
 pointer-events: none;
-z-index: 20;
+z-index: 30;
+background: #0b1512;
+border-radius: 50%;
+padding: 2px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 @keyframes popEffect {
-0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
-100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+0% { transform: translateX(-50%) scale(0); opacity: 0; }
+50% { transform: translateX(-50%) scale(1.3); opacity: 1; }
+100% { transform: translateX(-50%) scale(1); opacity: 1; }
 }
 
 .time{
@@ -697,7 +701,7 @@ display:flex;
 align-items:center;
 flex-wrap:wrap;
 gap:4px;
-margin-top:6px
+margin-top:8px
 }
 
 .reaction-chip{
@@ -837,31 +841,6 @@ margin-bottom:0;
 
 .message-menu button:hover{
 background:#22332d !important;
-}
-
-.message-menu .menu-reactions{
-display:flex !important;
-gap:3px !important;
-padding:5px !important;
-background:#18231f !important;
-align-items:center !important;
-justify-content:center !important;
-}
-
-.message-menu .menu-reactions button{
-width:27px !important;
-min-width:27px !important;
-height:32px !important;
-min-height:32px !important;
-padding:0 !important;
-margin:0 !important;
-background:#0f1915 !important;
-font-size:16px !important;
-border-radius:8px !important;
-}
-
-.message-menu .menu-reactions button:hover{
-background:#263a33 !important
 }
 
 #incomingCall{
@@ -2025,32 +2004,6 @@ const currentText = data.text || "";
 const menu = document.createElement("div");
 menu.className = "message-menu";
 
-const reactionRow = document.createElement("div");
-reactionRow.className = "menu-reactions";
-
-reactionList.forEach(emoji => {
-const reactionButton = document.createElement("button");
-reactionButton.type = "button";
-reactionButton.textContent = emoji;
-reactionButton.onclick = async e => {
-e.stopPropagation();
-await toggleReaction(id, emoji);
-removeMenus();
-};
-reactionRow.appendChild(reactionButton);
-});
-menu.appendChild(reactionRow);
-
-const replyButton = document.createElement("button");
-replyButton.type = "button";
-replyButton.textContent = "↩️ الرد";
-replyButton.onclick = e => {
-e.stopPropagation();
-removeMenus();
-startReply({ ...data, id });
-};
-menu.appendChild(replyButton);
-
 const pinButton = document.createElement("button");
 pinButton.type = "button";
 pinButton.textContent = data.pinned ? "📌 إلغاء التثبيت" : "📌 تثبيت الرسالة";
@@ -2124,7 +2077,7 @@ console.error("Delete for everyone:", e);
 }
 
 // ==========================================
-// ميزات التفاعل بضغطتين + السحب للرد (Swipe & Double Tap)
+// ميزات التفاعل بضغطتين + السحب لليسار للرد (Swipe to Left to Reply)
 // ==========================================
 function addMessageActions(element, data){
 let timer = null;
@@ -2156,7 +2109,7 @@ e.preventDefault();
 lastClickTime = currentTime;
 });
 
-// 3. السحب للرد (Swipe to Reply)
+// 3. السحب لليسار للرد (Swipe Left to Reply) - يشمل الرسائل كلها (بما فيها رسائلك الشخصية)
 let startX = 0;
 let currentX = 0;
 let isSwiping = false;
@@ -2170,8 +2123,8 @@ element.addEventListener("touchmove", e => {
 if (!isSwiping) return;
 currentX = e.touches[0].clientX;
 let diffX = currentX - startX;
-// السحب لليمين بحدود معينة
-if (diffX > 0 && diffX < 120) {
+// السحب لليسار (قيم سالبة)
+if (diffX < 0 && diffX > -120) {
 element.style.transform = `translateX(${diffX}px)`;
 }
 });
@@ -2180,7 +2133,7 @@ element.addEventListener("touchend", () => {
 if (!isSwiping) return;
 isSwiping = false;
 let diffX = currentX - startX;
-if (diffX > 60) {
+if (diffX < -60) {
 startReply(data);
 }
 element.style.transform = "translateX(0px)";
