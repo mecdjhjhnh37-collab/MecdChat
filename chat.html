@@ -110,10 +110,6 @@ transition:.2s
 color:#00e889
 }
 
-.user-status.recording{
-font-weight:bold
-}
-
 .call-buttons{
 display:flex;
 gap:8px;
@@ -131,7 +127,6 @@ font-size:18px;
 cursor:pointer
 }
 
-/* شريط الرسالة المثبتة بالأعلى */
 .pinned-banner{
 background:#0b1613;
 border-bottom:1px solid rgba(0,232,137,.15);
@@ -176,7 +171,7 @@ overflow-y:auto;
 padding:20px 15px 150px;
 display:flex;
 flex-direction:column;
-gap:18px;
+gap:16px;
 scroll-behavior: smooth;
 }
 
@@ -187,19 +182,17 @@ color:#72817c;
 line-height:1.8
 }
 
+/* تصميم الرسائل العام */
 .message{
 max-width:78%;
-padding:10px 13px 25px 13px; /* مساحة بالأسفل للتفاعلات لجعلها جوا الفقاعة */
+padding:10px 13px 26px 13px;
 border-radius:18px;
 position:relative;
 word-break:break-word;
 overflow-wrap:anywhere;
-user-select:none;
 line-height:1.5;
-min-width:0;
-overflow:visible !important;
-transition: transform 0.15s ease-out, background-color 0.5s ease;
 margin-bottom: 6px;
+transition: transform 0.1s ease-out, background-color 0.4s ease;
 }
 
 .message.mine{
@@ -219,12 +212,11 @@ border-bottom-right-radius:5px
 .message.highlight {
 background-color: #00e889 !important;
 color: #000 !important;
-transition: background-color 0.2s ease;
 }
 
 .heart-pop {
 position: absolute;
-bottom: 5px;
+bottom: 8px;
 right: 15px;
 transform: scale(0);
 font-size: 22px;
@@ -234,7 +226,6 @@ z-index: 30;
 background: #0b1512;
 border-radius: 50%;
 padding: 2px 4px;
-box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .message.mine .heart-pop {
@@ -253,31 +244,162 @@ display:inline-block;
 font-size:9px;
 opacity:.6;
 margin-top:5px;
-margin-left: 5px;
 }
 
 .message-meta{
 display:inline-flex;
 align-items:center;
-gap:5px;
-margin-top:5px;
+gap:4px;
 position: absolute;
-bottom: 5px;
-left: 13px;
+bottom: 6px;
+left: 12px;
 }
 .message.other .message-meta {
 left: auto;
-right: 13px;
+right: 12px;
 }
 
 .message-status{
-font-size:12px;
+font-size:11px;
 font-weight:bold;
 direction:ltr
 }
 
 .message-status.read{
 color:#006dff
+}
+
+/* إصلاح عرض الصور والفيديوهات بشكل منظم تماماً */
+.message.image-message, .message.video-message {
+padding: 8px 8px 28px 8px !important;
+width: max-content !important;
+max-width: 80% !important;
+background: #18231f !important;
+border: 1px solid rgba(255,255,255,.08);
+}
+.message.mine.image-message, .message.mine.video-message {
+background: #00c96b !important;
+}
+
+.message-image,
+.message-video{
+display: block;
+width: 100%;
+max-width: 260px;
+max-height: 280px;
+border-radius: 12px;
+object-fit: cover;
+cursor: pointer;
+}
+
+/* تنسيق قائمة الخيارات (المينو) لتظهر بشكل سليم بجانب الرسالة ومتركزة */
+.message-menu{
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 190px;
+padding: 6px;
+background: #0b1512;
+border: 1px solid rgba(0,232,137,.25);
+border-radius: 16px;
+box-shadow: 0 10px 30px rgba(0,0,0,.7);
+z-index: 1000;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+
+.message-menu button{
+width: 100%;
+padding: 10px 12px;
+border: 0;
+border-radius: 10px;
+background: #18231f;
+color: #fff;
+font-size: 13px;
+font-weight: bold;
+cursor: pointer;
+text-align: right;
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.message-menu button:hover{
+background: #22332d;
+}
+
+/* التفاعلات داخل الفقاعة بالأسفل */
+.message-reactions{
+display:flex;
+align-items:center;
+flex-wrap:wrap;
+gap:3px;
+position: absolute;
+bottom: -11px;
+right: 10px;
+z-index: 5;
+}
+.message.mine .message-reactions {
+right: auto;
+left: 10px;
+}
+
+.reaction-chip{
+border:1px solid rgba(255,255,255,.12);
+background:#0b1613;
+border-radius:12px;
+padding:1px 5px;
+font-size:11px;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:2px;
+color:#fff;
+}
+.reaction-chip.mine{
+border-color:rgba(0,232,137,.55);
+background:rgba(0,232,137,.25)
+}
+.reaction-count{
+font-size:9px;
+opacity:.9
+}
+
+/* الرد على رسالة داخل الفقاعة */
+.message-reply{
+display:flex;
+align-items:stretch;
+gap:6px;
+margin-bottom:6px;
+padding:5px 7px;
+border-radius:8px;
+background:rgba(0,0,0,.15);
+border-right:3px solid #00e889;
+font-size:11px;
+cursor:pointer;
+}
+.message.other .message-reply{
+background:rgba(255,255,255,.06)
+}
+.reply-content{
+min-width:0;
+overflow:hidden
+}
+.reply-name{
+font-weight:bold;
+font-size:10px;
+color:#00e889;
+margin-bottom:2px
+}
+.message.mine .reply-name{
+color:#00150e
+}
+.reply-text{
+opacity:.8;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
 }
 
 .input-area{
@@ -305,7 +427,6 @@ color:#fff;
 outline:none;
 font-size:15px
 }
-
 #messageInput:focus{
 border-color:#00e889
 }
@@ -321,38 +442,9 @@ font-size:22px;
 cursor:pointer;
 flex-shrink:0
 }
-
-#attachButton{
-background:#18231f;
-color:#fff;
-font-size:28px;
-transition:.15s
-}
-
-#attachButton:active{
-transform:scale(.92)
-}
-
-#voiceButton{
-background:#18231f;
-color:#fff;
-transition:.18s
-}
-
-#voiceButton.recording{
-background:#321817;
-color:#ff5555;
-transform:scale(1.05)
-}
-
-#sendButton{
-background:#00e889;
-color:#00150e
-}
-
-#sendButton:disabled{
-opacity:.6
-}
+#attachButton{ background:#18231f; color:#fff; font-size:26px; }
+#voiceButton{ background:#18231f; color:#fff; }
+#sendButton{ background:#00e889; color:#00150e; }
 
 #attachMenu{
 position:fixed;
@@ -367,11 +459,7 @@ box-shadow:0 10px 35px rgba(0,0,0,.55);
 display:none;
 z-index:1000
 }
-
-#attachMenu.show{
-display:block
-}
-
+#attachMenu.show{ display:block; }
 .attach-option{
 width:100%;
 height:45px;
@@ -389,401 +477,6 @@ cursor:pointer;
 margin-bottom:5px
 }
 
-.attach-option:last-child{
-margin-bottom:0
-}
-
-.attach-option:active{
-transform:scale(.98)
-}
-
-.attach-icon{
-font-size:20px;
-width:28px;
-text-align:center
-}
-
-.hidden-file{
-display:none!important
-}
-
-.image-message,
-.video-message{
-padding:6px 6px 25px 6px !important;
-width:max-content !important;
-max-width:82vw !important;
-overflow:visible !important;
-display:flex !important;
-flex-direction:column !important;
-align-items:flex-start !important;
-box-sizing:border-box !important;
-flex:0 0 auto !important;
-}
-
-.message-image,
-.message-video{
-display:block !important;
-width:auto !important;
-height:auto !important;
-max-width:100% !important;
-max-height:360px !important;
-border-radius:14px !important;
-object-fit:contain !important;
-cursor:pointer !important;
-user-select:none !important;
-flex:0 0 auto !important;
-}
-
-.voice-message{
-display:block !important;
-width:330px !important;
-max-width:calc(100% - 20px) !important;
-min-width:250px !important;
-height:auto !important;
-min-height:76px !important;
-padding:8px 10px 28px 10px !important;
-border-radius:18px !important;
-position:relative !important;
-overflow:visible !important;
-flex:none !important;
-box-sizing:border-box !important;
-background:linear-gradient(135deg,#162923,#0d1714) !important;
-border:1px solid rgba(0,232,137,.16) !important;
-box-shadow:0 5px 18px rgba(0,0,0,.16);
-line-height:normal !important;
-white-space:normal !important
-}
-
-.message.mine.voice-message{
-align-self:flex-start !important;
-background:linear-gradient(135deg,#087e50,#00a866) !important;
-color:#fff;
-border:1px solid rgba(255,255,255,.08) !important
-}
-
-.message.other.voice-message{
-align-self:flex-end !important;
-background:linear-gradient(135deg,#162923,#0d1714) !important
-}
-
-.voice-message-box{
-display:flex !important;
-align-items:center !important;
-gap:9px !important;
-direction:rtl !important;
-width:100% !important;
-height:auto !important;
-min-height:48px !important;
-flex:none !important;
-overflow:hidden !important;
-border-radius:inherit;
-}
-
-.voice-icon{
-width:43px !important;
-height:43px !important;
-min-width:43px !important;
-max-width:43px !important;
-border-radius:50% !important;
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
-background:rgba(0,232,137,.13) !important;
-color:#00e889 !important;
-font-size:18px !important;
-flex:none !important;
-box-shadow:0 0 0 1px rgba(0,232,137,.08),0 4px 14px rgba(0,0,0,.18)
-}
-
-.voice-message.mine .voice-icon{
-background:rgba(255,255,255,.16) !important;
-color:#fff !important;
-box-shadow:none
-}
-
-.voice-player{
-display:block !important;
-flex:1 1 auto !important;
-width:auto !important;
-min-width:0 !important;
-height:auto !important
-}
-
-.voice-controls{
-display:flex !important;
-align-items:center !important;
-gap:8px !important;
-width:100% !important;
-height:38px !important;
-min-height:38px !important
-}
-
-.voice-play{
-width:38px !important;
-height:38px !important;
-min-width:38px !important;
-max-width:38px !important;
-border:0 !important;
-border-radius:50% !important;
-background:#00e889 !important;
-color:#00150e !important;
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
-font-size:14px !important;
-cursor:pointer !important;
-flex:none !important;
-box-shadow:0 4px 12px rgba(0,232,137,.18);
-transition:transform .15s,background .15s
-}
-
-.voice-play:active{
-transform:scale(.90)
-}
-
-.voice-message.mine .voice-play{
-background:#fff !important;
-color:#087e50 !important
-}
-
-.voice-progress{
-flex:1 1 auto !important;
-width:auto !important;
-min-width:30px !important;
-height:7px !important;
-min-height:7px !important;
-max-height:7px !important;
-border-radius:20px !important;
-background:rgba(255,255,255,.13) !important;
-overflow:hidden !important;
-cursor:pointer !important;
-position:relative !important;
-box-shadow:inset 0 1px 2px rgba(0,0,0,.15)
-}
-
-.voice-progress-fill{
-width:0%;
-height:100% !important;
-background:linear-gradient(90deg,#00c96b,#00e889) !important;
-border-radius:20px;
-transition:width .05s linear
-}
-
-.voice-message.mine .voice-progress{
-background:rgba(0,0,0,.18) !important
-}
-
-.voice-message.mine .voice-progress-fill{
-background:#fff !important
-}
-
-.voice-time{
-font-size:10px !important;
-font-weight:bold !important;
-color:#b9c7c2 !important;
-width:39px !important;
-min-width:39px !important;
-max-width:39px !important;
-text-align:center !important;
-direction:ltr !important;
-flex:none !important
-}
-
-.voice-message.mine .voice-time{
-color:rgba(255,255,255,.85) !important
-}
-
-.voice-label{
-font-size:9px !important;
-color:#84938e !important;
-margin-top:4px !important;
-margin-right:52px !important;
-height:11px !important;
-display:flex !important;
-align-items:center !important;
-gap:4px !important
-}
-
-.voice-label::before{
-content:"";
-width:5px;
-height:5px;
-min-width:5px;
-border-radius:50%;
-background:#00e889;
-display:inline-block
-}
-
-.voice-message.mine .voice-label{
-color:rgba(255,255,255,.7) !important
-}
-
-.voice-message.mine .voice-label::before{
-background:#fff
-}
-
-.voice-audio{
-display:none !important;
-width:0 !important;
-height:0 !important
-}
-
-.call-message{
-min-width:245px;
-max-width:310px
-}
-
-.call-box{
-display:flex;
-align-items:center;
-gap:11px
-}
-
-.call-icon{
-width:46px;
-height:46px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:rgba(0,232,137,.14);
-color:#00e889;
-font-size:22px;
-flex-shrink:0
-}
-
-.call-info{
-flex:1;
-min-width:0
-}
-
-.call-title{
-font-size:14px;
-font-weight:bold
-}
-
-.call-subtitle{
-font-size:11px;
-opacity:.65;
-margin-top:4px
-}
-
-.call-duration{
-font-size:11px;
-opacity:.7;
-margin-top:4px
-}
-
-.call-message.missed .call-icon{
-background:rgba(216,59,59,.15);
-color:#ff5555
-}
-
-.call-message.rejected .call-icon,
-.call-message.cancelled .call-icon{
-background:rgba(255,255,255,.08);
-color:#aaa
-}
-
-.message-reply{
-display:flex;
-align-items:stretch;
-gap:7px;
-margin-bottom:8px;
-padding:7px 8px;
-border-radius:10px;
-background:rgba(0,0,0,.13);
-border-right:3px solid #00e889;
-font-size:11px;
-max-width:100%;
-overflow:hidden;
-cursor:pointer;
-transition: background 0.2s;
-}
-
-.message-reply:hover{
-background:rgba(0,0,0,.25);
-}
-
-.message.other .message-reply{
-background:rgba(255,255,255,.05)
-}
-
-.message.other .message-reply:hover{
-background:rgba(255,255,255,.1);
-}
-
-.reply-line{
-width:3px;
-min-width:3px;
-border-radius:5px;
-background:#00e889
-}
-
-.reply-content{
-min-width:0;
-overflow:hidden
-}
-
-.reply-name{
-font-weight:bold;
-font-size:10px;
-margin-bottom:2px;
-color:#00e889
-}
-
-.message.mine .reply-name{
-color:#fff
-}
-
-.reply-text{
-opacity:.75;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-/* التفاعلات داخل فقاعة الرسالة في الأسفل */
-.message-reactions{
-display:flex;
-align-items:center;
-flex-wrap:wrap;
-gap:4px;
-position: absolute;
-bottom: -10px;
-right: 12px;
-z-index: 5;
-}
-.message.mine .message-reactions {
-right: auto;
-left: 12px;
-}
-
-.reaction-chip{
-border:1px solid rgba(255,255,255,.12);
-background:#0b1613;
-border-radius:12px;
-padding:2px 6px;
-font-size:11px;
-line-height:16px;
-cursor:pointer;
-display:flex;
-align-items:center;
-gap:3px;
-color:#fff;
-box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-.reaction-chip.mine{
-border-color:rgba(0,232,137,.55);
-background:rgba(0,232,137,.25)
-}
-
-.reaction-count{
-font-size:9px;
-opacity:.9
-}
-
 .reply-compose{
 position:fixed;
 bottom:70px;
@@ -799,11 +492,7 @@ display:none;
 align-items:center;
 gap:8px
 }
-
-.reply-compose.show{
-display:flex
-}
-
+.reply-compose.show{ display:flex; }
 .reply-compose-content{
 flex:1;
 min-width:0;
@@ -813,301 +502,11 @@ border-radius:10px;
 border-right:3px solid #00e889;
 overflow:hidden
 }
+.reply-compose-name{ font-size:10px; font-weight:bold; color:#00e889; margin-bottom:2px; }
+.reply-compose-text{ font-size:11px; opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.reply-cancel{ width:32px; height:32px; border:0; border-radius:10px; background:#18231f; color:#fff; cursor:pointer; }
 
-.reply-compose-name{
-font-size:10px;
-font-weight:bold;
-color:#00e889;
-margin-bottom:2px
-}
-
-.reply-compose-text{
-font-size:11px;
-opacity:.75;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.reply-cancel{
-width:32px;
-height:32px;
-border:0;
-border-radius:10px;
-background:#18231f;
-color:#fff;
-font-size:16px;
-cursor:pointer
-}
-
-.message-menu{
-position:absolute !important;
-left:50% !important;
-bottom:calc(100% + 8px) !important;
-transform:translateX(-50%) !important;
-width:190px !important;
-min-width:190px !important;
-max-width:190px !important;
-height:auto !important;
-min-height:0 !important;
-padding:5px !important;
-background:#0b1512 !important;
-border:1px solid rgba(0,232,137,.18) !important;
-border-radius:15px !important;
-box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
-z-index:999999 !important;
-display:block !important;
-flex:none !important;
-white-space:normal !important;
-}
-
-.message-menu button{
-width:100% !important;
-min-width:0 !important;
-height:auto !important;
-min-height:40px !important;
-padding:10px 14px !important;
-border:0 !important;
-border-radius:11px !important;
-background:#18231f !important;
-color:#fff !important;
-font-size:13px !important;
-font-weight:bold !important;
-cursor:pointer !important;
-display:block !important;
-margin-bottom:4px;
-}
-
-.message-menu button:last-child{
-margin-bottom:0;
-}
-
-.message-menu button:hover{
-background:#22332d !important;
-}
-
-#incomingCall{
-position:fixed;
-top:85px;
-left:50%;
-transform:translateX(-50%);
-width:min(620px,calc(100% - 24px));
-padding:14px;
-background:#101815;
-border:1px solid rgba(255,255,255,.1);
-border-radius:20px;
-box-shadow:0 15px 45px rgba(0,0,0,.5);
-z-index:9000;
-display:none;
-align-items:center;
-justify-content:space-between;
-gap:12px
-}
-
-.incoming-call-info{
-display:flex;
-align-items:center;
-gap:11px;
-min-width:0
-}
-
-.incoming-name{
-font-size:15px;
-font-weight:bold
-}
-
-.incoming-type{
-font-size:12px;
-color:#9aa7a3;
-margin-top:4px
-}
-
-.call-avatar{
-width:52px;
-height:52px
-}
-
-.incoming-actions{
-display:flex;
-gap:9px
-}
-
-.incoming-actions button{
-width:46px;
-height:46px;
-border:0;
-border-radius:50%;
-font-size:20px;
-color:#fff;
-cursor:pointer
-}
-
-#rejectIncoming{
-background:#d83b3b
-}
-
-#acceptIncoming{
-background:#00e889;
-color:#00150e
-}
-
-#callScreen{
-position:fixed;
-inset:0;
-background:#020504;
-z-index:10000;
-display:none;
-flex-direction:column;
-overflow:hidden
-}
-
-.call-top{
-height:85px;
-padding:15px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)
-}
-
-.call-top-info{
-text-align:center
-}
-
-#callTitle{
-font-size:20px;
-font-weight:bold
-}
-
-#callState{
-font-size:13px;
-color:#00e889;
-margin-top:6px
-}
-
-#callDuration{
-font-size:12px;
-color:#9aa7a3;
-margin-top:4px
-}
-
-#audioCallView{
-flex:1;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#020504
-}
-
-#videoArea{
-position:relative;
-flex:1;
-background:#000;
-overflow:hidden;
-display:none
-}
-
-#remoteVideo{
-position:absolute;
-inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-background:#000;
-display:none
-}
-
-#remoteAvatar{
-position:absolute;
-inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#07110f;
-z-index:1
-}
-
-#remoteAvatar img{
-width:150px;
-height:150px;
-border-radius:50%;
-object-fit:cover
-}
-
-#remoteAvatarEmoji{
-font-size:70px
-}
-
-#localVideo{
-position:absolute;
-width:110px;
-height:145px;
-left:16px;
-top:95px;
-object-fit:cover;
-border-radius:18px;
-border:2px solid rgba(255,255,255,.7);
-background:#111;
-z-index:5;
-display:none
-}
-
-#localAvatar{
-position:absolute;
-width:110px;
-height:110px;
-left:16px;
-top:110px;
-border-radius:50%;
-background:#12352c;
-z-index:6;
-display:none;
-align-items:center;
-justify-content:center;
-overflow:hidden;
-font-size:40px
-}
-
-.call-controls{
-min-height:100px;
-padding:15px;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:12px;
-background:rgba(5,8,7,.98);
-z-index:20
-}
-
-.call-control{
-width:58px;
-height:58px;
-border:0;
-border-radius:50%;
-background:#18231f;
-color:#fff;
-font-size:22px;
-cursor:pointer
-}
-
-.call-control.accept{
-background:#00e889;
-color:#00150e
-}
-
-.call-control.reject,
-.call-control.end{
-background:#d83b3b
-}
-
-.call-control.active{
-background:#00e889;
-color:#00150e
-}
-
-.hidden{
-display:none!important
-}
+.hidden-file{ display:none!important; }
 </style>
 </head>
 
@@ -1132,7 +531,6 @@ display:none!important
 </div>
 </header>
 
-<!-- شريط الرسالة المثبتة -->
 <div id="pinnedBanner" class="pinned-banner">
 <div class="pinned-banner-content" id="pinnedBannerClick">
 <span>📌</span>
@@ -1146,14 +544,8 @@ display:none!important
 </div>
 
 <div id="attachMenu">
-<button id="galleryButton" class="attach-option" type="button">
-<span class="attach-icon">🖼️</span>
-<span>صورة أو فيديو</span>
-</button>
-<button id="cameraButton" class="attach-option" type="button">
-<span class="attach-icon">📷</span>
-<span>كاميرا / تسجيل</span>
-</button>
+<button id="galleryButton" class="attach-option" type="button"><span>🖼️</span>صورة أو فيديو</button>
+<button id="cameraButton" class="attach-option" type="button"><span>📷</span>كاميرا</button>
 </div>
 
 <input id="galleryInput" class="hidden-file" type="file" accept="image/*,video/*">
@@ -1176,10 +568,6 @@ display:none!important
 
 </main>
 
-<!-- شاشات المكالمات تبقى كما هي -->
-<div id="incomingCall">...</div>
-<div id="callScreen">...</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -1201,7 +589,6 @@ const db = getFirestore(firebaseApp);
 
 const SUPABASE_URL = "https://aqukohedqmtjuspjbkmn.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
-const SUPABASE_BUCKET = "mecd-media";
 const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 const $ = id => document.getElementById(id);
@@ -1211,7 +598,6 @@ const app = $("app");
 const messages = $("messages");
 const messageInput = $("messageInput");
 const sendButton = $("sendButton");
-const voiceButton = $("voiceButton");
 const attachButton = $("attachButton");
 const attachMenu = $("attachMenu");
 const galleryButton = $("galleryButton");
@@ -1222,8 +608,6 @@ const friendName = $("friendName");
 const friendAvatar = $("friendAvatar");
 const friendStatus = $("friendStatus");
 const backButton = $("backButton");
-const callButton = $("callButton");
-const videoButton = $("videoButton");
 
 const pinnedBanner = $("pinnedBanner");
 const pinnedBannerText = $("pinnedBannerText");
@@ -1239,27 +623,22 @@ let currentUser = null;
 let friendUser = null;
 let chatID = null;
 let unsubscribeMessages = null;
-let unsubscribeFriendStatus = null;
-let unsubscribeFriendActivity = null;
 let presenceInterval = null;
-let typingTimer = null;
-let typingState = false;
-let voiceRecording = false;
 let replyTarget = null;
-let editingMessageId = null; // متغير لحفظ الرسالة قيد التعديل حالياً
+let editingMessageId = null;
 let currentPinnedMessageId = null;
+const messageElements = new Map();
 
 function getMessagePreview(data){
 if(data.type === "text") return data.text || "رسالة";
 if(data.type === "image") return "📷 صورة";
 if(data.type === "video") return "🎥 فيديو";
 if(data.type === "voice") return "🎤 رسالة صوتية";
-if(data.type === "call") return "📞 مكالمة";
 return "رسالة";
 }
 
 function startReply(data){
-editingMessageId = null; // إلغاء وضع التعديل إن كان مفعلاً
+editingMessageId = null;
 sendButton.textContent = "➤";
 replyTarget = {
 id: data.id,
@@ -1278,10 +657,7 @@ replyTarget = null;
 replyCompose.classList.remove("show");
 }
 
-replyCancel.onclick = e => {
-e.stopPropagation();
-cancelReply();
-};
+replyCancel.onclick = e => { e.stopPropagation(); cancelReply(); };
 
 const reactionList = ["❤️", "👍", "🔥", "😂", "😮"];
 
@@ -1299,14 +675,10 @@ if(mine){
 await updateDoc(messageRef, { reactions: arrayRemove({ userId: currentUser.uid, emoji }) });
 }else{
 const oldMine = reactions.find(r => r && r.userId === currentUser.uid);
-if(oldMine){
-await updateDoc(messageRef, { reactions: arrayRemove(oldMine) });
-}
+if(oldMine){ await updateDoc(messageRef, { reactions: arrayRemove(oldMine) }); }
 await updateDoc(messageRef, { reactions: arrayUnion({ userId: currentUser.uid, emoji }) });
 }
-}catch(e){
-console.error("Reaction:", e);
-}
+}catch(e){}
 }
 
 function renderReactions(box, data){
@@ -1317,13 +689,9 @@ const counts = {};
 
 data.reactions.forEach(reaction => {
 if(!reaction || !reaction.emoji) return;
-if(!counts[reaction.emoji]){
-counts[reaction.emoji] = { count: 0, mine: false };
-}
+if(!counts[reaction.emoji]){ counts[reaction.emoji] = { count: 0, mine: false }; }
 counts[reaction.emoji].count++;
-if(reaction.userId === currentUser.uid){
-counts[reaction.emoji].mine = true;
-}
+if(reaction.userId === currentUser.uid){ counts[reaction.emoji].mine = true; }
 });
 
 reactionList.forEach(emoji => {
@@ -1333,68 +701,23 @@ const chip = document.createElement("button");
 chip.type = "button";
 chip.className = "reaction-chip" + (info.mine ? " mine" : "");
 chip.innerHTML = escapeHtml(emoji) + (info.count > 1 ? ` <span class="reaction-count">${info.count}</span>` : "");
-chip.onclick = e => {
-e.stopPropagation();
-toggleReaction(data.id, emoji);
-};
+chip.onclick = e => { e.stopPropagation(); toggleReaction(data.id, emoji); };
 wrapper.appendChild(chip);
 });
 
 if(wrapper.children.length) box.appendChild(wrapper);
 }
 
-function createChatID(a, b){
-return [a, b].sort().join("_");
-}
-
-function escapeHtml(value){
-return String(value ?? "").replace(/[&<>'"]/g, c => ({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-"'":"&#39;",
-'"':"&quot;"
-}[c]));
-}
-
+function createChatID(a, b){ return [a, b].sort().join("_"); }
+function escapeHtml(value){ return String(value ?? "").replace(/[&<>'"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[c])); }
 function formatTime(timestamp){
 if(!timestamp?.toDate) return "";
-try{
-return timestamp.toDate().toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" });
-}catch{
-return "";
-}
+try{ return timestamp.toDate().toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" }); }catch{ return ""; }
 }
 
 function setUserAvatar(element, user){
-if(user?.photo){
-element.innerHTML = `<img src="${escapeHtml(user.photo)}" alt="">`;
-}else{
-element.innerHTML = "👤";
-}
-}
-
-function showApp(){
-loading.style.display = "none";
-app.style.display = "flex";
-}
-
-async function updateMyPresence(online = true){
-if(!currentUser) return;
-try{
-await setDoc(doc(db, "users", currentUser.uid), {
-online,
-lastSeen: serverTimestamp()
-}, { merge: true });
-}catch(e){}
-}
-
-function startPresence(){
-updateMyPresence(true);
-clearInterval(presenceInterval);
-presenceInterval = setInterval(() => {
-if(document.visibilityState === "visible") updateMyPresence(true);
-}, 10000);
+if(user?.photo){ element.innerHTML = `<img src="${escapeHtml(user.photo)}" alt="">`; }
+else{ element.innerHTML = "👤"; }
 }
 
 async function loadFriend(){
@@ -1403,118 +726,72 @@ if(!friendId) throw new Error("لا يوجد صديق في الرابط");
 const snap = await getDoc(doc(db, "users", friendId));
 if(!snap.exists()) throw new Error("المستخدم غير موجود");
 const data = snap.data();
-friendUser = {
-uid: friendId,
-name: data.name || "مستخدم Mecd",
-photo: data.photo || data.photoURL || ""
-};
+friendUser = { uid: friendId, name: data.name || "مستخدم", photo: data.photo || data.photoURL || "" };
 friendName.textContent = friendUser.name;
 setUserAvatar(friendAvatar, friendUser);
 chatID = createChatID(currentUser.uid, friendUser.uid);
 }
 
-attachButton.onclick = e => {
-e.stopPropagation();
-attachMenu.classList.toggle("show");
-};
-
+attachButton.onclick = e => { e.stopPropagation(); attachMenu.classList.toggle("show"); };
 document.addEventListener("pointerdown", e => {
-if(!e.target.closest("#attachMenu") && !e.target.closest("#attachButton")){
-attachMenu.classList.remove("show");
-}
-if(!e.target.closest(".message-menu") && !e.target.closest(".message")){
-removeMenus();
-}
+if(!e.target.closest("#attachMenu") && !e.target.closest("#attachButton")) attachMenu.classList.remove("show");
+if(!e.target.closest(".message-menu") && !e.target.closest(".message")) removeMenus();
 });
 
-galleryButton.onclick = () => {
-attachMenu.classList.remove("show");
-galleryInput.click();
-};
+galleryButton.onclick = () => { attachMenu.classList.remove("show"); galleryInput.click(); };
+cameraButton.onclick = () => { attachMenu.classList.remove("show"); cameraInput.click(); };
 
-cameraButton.onclick = () => {
-attachMenu.classList.remove("show");
-cameraInput.click();
-};
-
-const messageElements = new Map();
-
-function removeMenus(){
-document.querySelectorAll(".message-menu").forEach(x => x.remove());
-}
+function removeMenus(){ document.querySelectorAll(".message-menu").forEach(x => x.remove()); }
 
 function showMessageMenu(element, data){
 removeMenus();
 const id = data.id;
 const mine = data.senderId === currentUser.uid;
-const messageType = data.type;
-const currentText = data.text || "";
 
 const menu = document.createElement("div");
 menu.className = "message-menu";
 
 const pinButton = document.createElement("button");
 pinButton.type = "button";
-pinButton.textContent = data.pinned ? "📌 إلغاء التثبيت" : "📌 تثبيت الرسالة";
+pinButton.innerHTML = data.pinned ? "<span>📌</span> إلغاء التثبيت" : "<span>📌</span> تثبيت الرسالة";
 pinButton.onclick = async e => {
 e.stopPropagation();
-await togglePinMessage(id, data.pinned === true);
+await updateDoc(doc(db, "chats", chatID, "messages", id), { pinned: !data.pinned });
 removeMenus();
 };
 menu.appendChild(pinButton);
 
-if(mine && messageType === "text"){
+if(mine && data.type === "text"){
 const editBtn = document.createElement("button");
 editBtn.type = "button";
-editBtn.textContent = "✏️ تعديل";
+editBtn.innerHTML = "<span>✏️</span> تعديل";
 editBtn.onclick = e => {
 e.stopPropagation();
 removeMenus();
-// تفعيل وضع التعديل ونقل النص لخانة الكتابة
 editingMessageId = id;
-messageInput.value = currentText;
+messageInput.value = data.text || "";
 sendButton.textContent = "✓";
-cancelReply(); // إلغاء الرد إن كان مفعلاً
+cancelReply();
 messageInput.focus();
 };
 menu.appendChild(editBtn);
 }
 
-const button = document.createElement("button");
-button.type = "button";
-button.textContent = mine ? "🗑️ إلغاء الإرسال" : "🗑️ حذف لدي";
-button.onclick = async e => {
+const delBtn = document.createElement("button");
+delBtn.type = "button";
+delBtn.innerHTML = "<span>🗑️</span> " + (mine ? "إلغاء الإرسال" : "حذف لدي");
+delBtn.onclick = async e => {
 e.stopPropagation();
 if(mine) await deleteDoc(doc(db, "chats", chatID, "messages", id));
 else await updateDoc(doc(db, "chats", chatID, "messages", id), { deletedFor: arrayUnion(currentUser.uid) });
 removeMenus();
 };
-menu.appendChild(button);
+menu.appendChild(delBtn);
+
 element.appendChild(menu);
 }
 
-async function togglePinMessage(id, currentlyPinned){
-if(!currentUser || !chatID || !id) return;
-try{
-const messageRef = doc(db, "chats", chatID, "messages", id);
-if(currentlyPinned){
-await updateDoc(messageRef, { pinned: false });
-}else{
-await updateDoc(messageRef, { pinned: true });
-}
-}catch(e){}
-}
-
-function scrollToMessage(targetMessageId){
-const targetEl = messageElements.get(targetMessageId);
-if(targetEl){
-targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
-targetEl.classList.add("highlight");
-setTimeout(() => targetEl.classList.remove("highlight"), 1500);
-}
-}
-
-// 1. منطق السحب للرد (Swipe to Reply)
+// زيادة مسافة وحجم السحب للرد لتكون سحبة قوية ومقصودة (وليس لمس بالخطأ)
 function setupSwipeToReply(element, data){
 let startX = 0;
 let currentX = 0;
@@ -1529,10 +806,10 @@ element.addEventListener("touchmove", e => {
 if(!isSwiping) return;
 currentX = e.touches[0].clientX;
 let diffX = currentX - startX;
-// السحب لليمين للرسائل الأخرى، ولليسار لرسائلك
-if(data.senderId !== currentUser.uid && diffX > 0 && diffX < 100){
+// سحب قوي ومحسوب (أكثر من 85 بكسل)
+if(data.senderId !== currentUser.uid && diffX > 0 && diffX < 130){
 element.style.transform = `translateX(${diffX}px)`;
-}else if(data.senderId === currentUser.uid && diffX < 0 && diffX > -100){
+}else if(data.senderId === currentUser.uid && diffX < 0 && diffX > -130){
 element.style.transform = `translateX(${diffX}px)`;
 }
 });
@@ -1541,7 +818,8 @@ element.addEventListener("touchend", () => {
 if(!isSwiping) return;
 isSwiping = false;
 let diffX = currentX - startX;
-if(Math.abs(diffX) > 50){
+// تم زيادة الحد الأدنى للسحب إلى 85 بكسل لضمان عدم حدوثه بالخطأ
+if(Math.abs(diffX) > 85){
 startReply(data);
 }
 element.style.transform = "translateX(0px)";
@@ -1550,14 +828,9 @@ element.style.transform = "translateX(0px)";
 
 function addMessageActions(element, data){
 let timer = null;
-element.addEventListener("pointerdown", () => {
-timer = setTimeout(() => showMessageMenu(element, data), 500);
-});
+element.addEventListener("pointerdown", () => { timer = setTimeout(() => showMessageMenu(element, data), 500); });
 element.addEventListener("pointerup", () => clearTimeout(timer));
-element.addEventListener("contextmenu", e => {
-e.preventDefault();
-showMessageMenu(element, data);
-});
+element.addEventListener("contextmenu", e => { e.preventDefault(); showMessageMenu(element, data); });
 
 let lastClickTime = 0;
 element.addEventListener("click", e => {
@@ -1604,7 +877,6 @@ messageElements.delete(id);
 return;
 }
 
-// 3. تحديث شريط الرسائل المثبتة بالأعلى
 if(data.pinned === true){
 currentPinnedMessageId = id;
 pinnedBannerText.textContent = (data.senderId === currentUser.uid ? "أنت: " : "") + getMessagePreview(data);
@@ -1615,17 +887,24 @@ pinnedBanner.classList.remove("show");
 }
 
 const box = document.createElement("div");
-box.className = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
+let boxClass = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
+
+if(data.type === "image") boxClass += " image-message";
+if(data.type === "video") boxClass += " video-message";
+box.className = boxClass;
 
 if(data.replyTo){
 const replyBox = document.createElement("div");
 replyBox.className = "message-reply";
 replyBox.onclick = e => {
 e.stopPropagation();
-scrollToMessage(data.replyTo.messageId);
+const targetEl = messageElements.get(data.replyTo.messageId);
+if(targetEl){
+targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+targetEl.classList.add("highlight");
+setTimeout(() => targetEl.classList.remove("highlight"), 1500);
+}
 };
-const replyLine = document.createElement("div");
-replyLine.className = "reply-line";
 const replyContent = document.createElement("div");
 replyContent.className = "reply-content";
 const replyName = document.createElement("div");
@@ -1635,7 +914,7 @@ const replyText = document.createElement("div");
 replyText.className = "reply-text";
 replyText.textContent = data.replyTo.text || "رسالة";
 replyContent.append(replyName, replyText);
-replyBox.append(replyLine, replyContent);
+replyBox.appendChild(replyContent);
 box.appendChild(replyBox);
 }
 
@@ -1648,6 +927,17 @@ edited.style.opacity = "0.6";
 edited.textContent = " (معدلة)";
 box.appendChild(edited);
 }
+}else if(data.type === "image" && data.url){
+const img = document.createElement("img");
+img.className = "message-image";
+img.src = data.url;
+box.appendChild(img);
+}else if(data.type === "video" && data.url){
+const vid = document.createElement("video");
+vid.className = "message-video";
+vid.src = data.url;
+vid.controls = true;
+box.appendChild(vid);
 }
 
 const meta = document.createElement("div");
@@ -1679,16 +969,6 @@ requestAnimationFrame(() => messages.scrollTop = messages.scrollHeight);
 }
 }
 
-pinnedBannerClick.onclick = () => {
-if(currentPinnedMessageId) scrollToMessage(currentPinnedMessageId);
-};
-
-pinnedBannerClose.onclick = async () => {
-if(currentPinnedMessageId){
-await togglePinMessage(currentPinnedMessageId, true);
-}
-};
-
 function listenMessages(){
 if(!chatID) return;
 const q = query(collection(db, "chats", chatID, "messages"), orderBy("createdAt", "asc"));
@@ -1696,7 +976,6 @@ if(unsubscribeMessages) unsubscribeMessages();
 unsubscribeMessages = onSnapshot(q, renderMessages);
 }
 
-// 4. إرسال أو تعديل الرسالة مباشرة عبر خانة الكتابة الأساسية
 async function handleSendMessage(){
 const text = messageInput.value.trim();
 if(!text || !currentUser || !friendUser || !chatID) return;
@@ -1704,15 +983,10 @@ sendButton.disabled = true;
 
 try{
 if(editingMessageId){
-// وضع التعديل نشط
-await updateDoc(doc(db, "chats", chatID, "messages", editingMessageId), {
-text: text,
-isEdited: true
-});
+await updateDoc(doc(db, "chats", chatID, "messages", editingMessageId), { text: text, isEdited: true });
 editingMessageId = null;
 sendButton.textContent = "➤";
 }else{
-// إرسال رسالة جديدة
 const messageData = {
 text,
 senderId: currentUser.uid,
@@ -1733,17 +1007,11 @@ text: replyTarget.text
 }
 
 await addDoc(collection(db, "chats", chatID, "messages"), messageData);
-await setDoc(doc(db, "chats", chatID), {
-lastMessage: text,
-lastMessageAt: serverTimestamp(),
-lastSenderId: currentUser.uid
-}, { merge: true });
 }
 
 messageInput.value = "";
 cancelReply();
 }catch(e){
-console.error(e);
 }finally{
 sendButton.disabled = false;
 messageInput.focus();
@@ -1752,26 +1020,61 @@ messageInput.focus();
 
 sendButton.onclick = handleSendMessage;
 messageInput.addEventListener("keydown", e => {
-if(e.key === "Enter"){
-e.preventDefault();
-handleSendMessage();
-}
+if(e.key === "Enter"){ e.preventDefault(); handleSendMessage(); }
 });
 
 backButton.onclick = async () => {
 if(unsubscribeMessages) unsubscribeMessages();
-if(unsubscribeFriendStatus) unsubscribeFriendStatus();
 history.back();
+};
+
+async function uploadMediaAndSend(file, type){
+if(!currentUser || !friendUser || !chatID) return;
+try{
+const fileName = `${Date.now()}_${file.name}`;
+const { data, error } = await supabase.storage.from("mecd-media").upload(fileName, file);
+if(error) throw error;
+const { data: publicURLData } = supabase.storage.from("mecd-media").getPublicUrl(fileName);
+const mediaUrl = publicURLData.publicUrl;
+
+await addDoc(collection(db, "chats", chatID, "messages"), {
+url: mediaUrl,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+type: type,
+read: false,
+deletedFor: [],
+createdAt: serverTimestamp()
+});
+}catch(e){
+alert("فشل رفع الملف");
+}
+}
+
+galleryInput.onchange = e => {
+const file = e.target.files[0];
+if(!file) return;
+const type = file.type.startsWith("video") ? "video" : "image";
+uploadMediaAndSend(file, type);
+galleryInput.value = "";
+};
+
+cameraInput.onchange = e => {
+const file = e.target.files[0];
+if(!file) return;
+const type = file.type.startsWith("video") ? "video" : "image";
+uploadMediaAndSend(file, type);
+cameraInput.value = "";
 };
 
 onAuthStateChanged(auth, async user => {
 if(!user) return;
 currentUser = user;
 try{
-startPresence();
 await loadFriend();
 listenMessages();
-showApp();
+loading.style.display = "none";
+app.style.display = "flex";
 }catch(e){
 loading.textContent = e.message;
 }
