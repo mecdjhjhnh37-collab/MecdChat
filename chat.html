@@ -149,7 +149,6 @@ color:#72817c;
 line-height:1.8
 }
 
-/* تنسيق الرسائل: الطرف الآخر يمين، وأنت يسار */
 .message{
 max-width:78%;
 padding:10px 13px;
@@ -166,27 +165,25 @@ margin-bottom: 6px;
 }
 
 .message.mine{
-align-self:flex-start; /* رسائلك على اليسار */
+align-self:flex-start;
 background:#00c96b;
 color:#00150e;
 border-bottom-left-radius:5px
 }
 
 .message.other{
-align-self:flex-end; /* رسائل الطرف الآخر على اليمين */
+align-self:flex-end;
 background:#18231f;
 border:1px solid rgba(255,255,255,.08);
 border-bottom-right-radius:5px
 }
 
-/* تأثير التمييز عند النقر على الرد الانتقالي */
 .message.highlight {
 background-color: #00e889 !important;
 color: #000 !important;
 transition: background-color 0.2s ease;
 }
 
-/* تأثير القلب السريع عند النقر المزدوج - تحت الرسالة تماماً وخارجها */
 .heart-pop {
 position: absolute;
 bottom: -22px;
@@ -657,10 +654,6 @@ background:rgba(255,255,255,.08);
 color:#aaa
 }
 
-/* ======================================================
-REACTIONS / REPLY / PIN
-====================================================== */
-
 .message-reply{
 display:flex;
 align-items:stretch;
@@ -719,7 +712,6 @@ overflow:hidden;
 text-overflow:ellipsis
 }
 
-/* التفاعلات تحت الرسالة وخارجها */
 .message-reactions{
 display:flex;
 align-items:center;
@@ -1668,7 +1660,6 @@ e.stopPropagation();
 attachMenu.classList.toggle("show");
 };
 
-// إغلاق القوائم عند النقر في أي مكان خارجها
 document.addEventListener("pointerdown", e => {
 if(!e.target.closest("#attachMenu") && !e.target.closest("#attachButton")){
 attachMenu.classList.remove("show");
@@ -2106,7 +2097,6 @@ console.error("Delete for everyone:", e);
 }
 }
 
-// دالة للانتقال إلى الرسالة الأصلية عند الضغط على معاينة الرد
 function scrollToMessage(targetMessageId){
 const targetEl = messageElements.get(targetMessageId);
 if(targetEl){
@@ -2118,7 +2108,6 @@ targetEl.classList.remove("highlight");
 }
 }
 
-// إيماءة السحب للرد: للطرف الآخر السحب لليمين، ورسائلك السحب لليسار
 function setupSwipeToReply(element, data){
 let startX = 0;
 let currentX = 0;
@@ -2133,12 +2122,9 @@ element.addEventListener("touchmove", e => {
 if (!isSwiping) return;
 currentX = e.touches[0].clientX;
 let diffX = currentX - startX;
-// السماح بالسحب بالاتجاه المناسب
 if (data.senderId !== currentUser.uid && diffX > 0 && diffX < 120) {
-// رسالة الطرف الآخر (يمين) تُسحب يميناً
 element.style.transform = `translateX(${diffX}px)`;
 } else if (data.senderId === currentUser.uid && diffX < 0 && diffX > -120) {
-// رسائلك (يسار) تُسحب يساراً
 element.style.transform = `translateX(${diffX}px)`;
 }
 });
