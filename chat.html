@@ -327,68 +327,6 @@ text-align:center
 display:none!important
 }
 
-/* تنسيق القائمة الخاصة بالرسائل */
-.message-menu{
-position:fixed;
-background:#0b1512;
-border:1px solid rgba(0,232,137,.2);
-border-radius:16px;
-padding:8px;
-box-shadow:0 10px 30px rgba(0,0,0,0.6);
-z-index:9999;
-display:flex;
-flex-direction:column;
-gap:6px;
-min-width:160px;
-}
-
-.message-reactions{
-display:flex;
-gap:5px;
-justify-content:space-around;
-padding-bottom:6px;
-border-bottom:1px solid rgba(255,255,255,0.08);
-margin-bottom:4px;
-}
-
-.reaction-button{
-background:none;
-border:none;
-font-size:18px;
-cursor:pointer;
-padding:4px;
-border-radius:8px;
-transition:0.15s;
-}
-
-.reaction-button:hover{
-background:rgba(255,255,255,0.1);
-}
-
-.message-menu-button{
-background:#18231f;
-border:none;
-color:#fff;
-padding:8px 12px;
-border-radius:10px;
-font-size:13px;
-text-align:right;
-cursor:pointer;
-display:flex;
-align-items:center;
-gap:8px;
-transition:0.15s;
-font-weight:bold;
-}
-
-.message-menu-button:hover{
-background:#22322c;
-}
-
-.message-menu-button.danger{
-color:#ff5555;
-}
-
 .image-message,
 .video-message{
 padding:6px !important;
@@ -683,6 +621,265 @@ background:rgba(255,255,255,.08);
 color:#aaa
 }
 
+/* ======================================================
+REACTIONS / REPLY / PIN
+====================================================== */
+
+.message-reply{
+display:flex;
+align-items:stretch;
+gap:7px;
+margin-bottom:8px;
+padding:7px 8px;
+border-radius:10px;
+background:rgba(0,0,0,.13);
+border-right:3px solid #00e889;
+font-size:11px;
+max-width:100%;
+overflow:hidden
+}
+
+.message.other .message-reply{
+background:rgba(255,255,255,.05)
+}
+
+.reply-line{
+width:3px;
+min-width:3px;
+border-radius:5px;
+background:#00e889
+}
+
+.reply-content{
+min-width:0;
+overflow:hidden
+}
+
+.reply-name{
+font-weight:bold;
+font-size:10px;
+margin-bottom:2px;
+color:#00e889
+}
+
+.message.mine .reply-name{
+color:#fff
+}
+
+.reply-text{
+opacity:.75;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.message-reactions{
+display:flex;
+align-items:center;
+flex-wrap:wrap;
+gap:4px;
+margin-top:6px
+}
+
+.reaction-chip{
+border:1px solid rgba(255,255,255,.12);
+background:rgba(0,0,0,.14);
+border-radius:12px;
+padding:2px 6px;
+font-size:12px;
+line-height:18px;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:3px
+}
+
+.reaction-chip.mine{
+border-color:rgba(0,232,137,.55);
+background:rgba(0,232,137,.15)
+}
+
+.reaction-count{
+font-size:9px;
+opacity:.8
+}
+
+.pinned-label{
+display:flex;
+align-items:center;
+gap:4px;
+font-size:9px;
+opacity:.75;
+margin-bottom:5px;
+color:#00e889
+}
+
+.message.mine .pinned-label{
+color:#fff
+}
+
+.reaction-picker{
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+gap:3px !important;
+width:auto !important;
+min-width:0 !important;
+padding:5px !important;
+background:#0b1512 !important;
+border:1px solid rgba(0,232,137,.18) !important;
+border-radius:14px !important;
+margin-bottom:5px !important;
+}
+
+.reaction-picker button{
+width:28px !important;
+height:30px !important;
+min-height:30px !important;
+padding:0 !important;
+border:0 !important;
+border-radius:9px !important;
+background:#18231f !important;
+color:#fff !important;
+font-size:16px !important;
+cursor:pointer !important;
+display:flex !important;
+align-items:center !important;
+justify-content:center !important;
+margin:0 !important;
+}
+
+.reaction-picker button:hover{
+background:#263a33 !important
+}
+
+.reply-compose{
+position:fixed;
+bottom:70px;
+left:50%;
+transform:translateX(-50%);
+width:100%;
+max-width:650px;
+padding:7px 10px;
+background:#07100d;
+border-top:1px solid rgba(0,232,137,.14);
+z-index:45;
+display:none;
+align-items:center;
+gap:8px
+}
+
+.reply-compose.show{
+display:flex
+}
+
+.reply-compose-content{
+flex:1;
+min-width:0;
+padding:7px 10px;
+background:#111916;
+border-radius:10px;
+border-right:3px solid #00e889;
+overflow:hidden
+}
+
+.reply-compose-name{
+font-size:10px;
+font-weight:bold;
+color:#00e889;
+margin-bottom:2px
+}
+
+.reply-compose-text{
+font-size:11px;
+opacity:.75;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.reply-cancel{
+width:32px;
+height:32px;
+border:0;
+border-radius:10px;
+background:#18231f;
+color:#fff;
+font-size:16px;
+cursor:pointer
+}
+
+.message-menu{
+position:absolute !important;
+left:50% !important;
+bottom:calc(100% + 8px) !important;
+transform:translateX(-50%) !important;
+width:190px !important;
+min-width:190px !important;
+max-width:190px !important;
+height:auto !important;
+min-height:0 !important;
+padding:5px !important;
+background:#0b1512 !important;
+border:1px solid rgba(0,232,137,.18) !important;
+border-radius:15px !important;
+box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
+z-index:999999 !important;
+display:block !important;
+flex:none !important;
+white-space:normal !important;
+}
+
+.message-menu button{
+width:100% !important;
+min-width:0 !important;
+height:auto !important;
+min-height:40px !important;
+padding:10px 14px !important;
+border:0 !important;
+border-radius:11px !important;
+background:#18231f !important;
+color:#fff !important;
+font-size:13px !important;
+font-weight:bold !important;
+cursor:pointer !important;
+display:block !important;
+margin-bottom:4px;
+}
+
+.message-menu button:last-child{
+margin-bottom:0;
+}
+
+.message-menu button:hover{
+background:#22332d !important;
+}
+
+.message-menu .menu-reactions{
+display:flex !important;
+gap:3px !important;
+padding:5px !important;
+background:#18231f !important;
+align-items:center !important;
+justify-content:center !important;
+}
+
+.message-menu .menu-reactions button{
+width:27px !important;
+min-width:27px !important;
+height:32px !important;
+min-height:32px !important;
+padding:0 !important;
+margin:0 !important;
+background:#0f1915 !important;
+font-size:16px !important;
+border-radius:8px !important;
+}
+
+.message-menu .menu-reactions button:hover{
+background:#263a33 !important
+}
+
 #incomingCall{
 position:fixed;
 top:85px;
@@ -914,6 +1111,11 @@ header{padding:10px 12px}
 #localVideo{width:100px;height:135px;left:12px;top:90px}
 #localAvatar{width:100px;height:100px;left:12px;top:105px}
 .call-control{width:54px;height:54px}
+.message-menu{
+width:185px !important;
+min-width:185px !important;
+max-width:185px !important
+}
 }
 </style>
 </head>
@@ -956,6 +1158,14 @@ header{padding:10px 12px}
 
 <input id="galleryInput" class="hidden-file" type="file" accept="image/*,video/*">
 <input id="cameraInput" class="hidden-file" type="file" accept="image/*,video/*" capture="environment">
+
+<div id="replyCompose" class="reply-compose">
+<div class="reply-compose-content">
+<div id="replyComposeName" class="reply-compose-name">رد على الرسالة</div>
+<div id="replyComposeText" class="reply-compose-text"></div>
+</div>
+<button id="replyCancel" class="reply-cancel" type="button">✕</button>
+</div>
 
 <div class="input-area">
 <button id="attachButton" type="button">＋</button>
@@ -1038,7 +1248,8 @@ orderBy,
 onSnapshot,
 deleteDoc,
 serverTimestamp,
-arrayUnion
+arrayUnion,
+arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ======================================================
@@ -1127,6 +1338,11 @@ const acceptCallButton = $("acceptCallButton");
 const rejectCallButton = $("rejectCallButton");
 const endCallButton = $("endCallButton");
 
+const replyCompose = $("replyCompose");
+const replyComposeName = $("replyComposeName");
+const replyComposeText = $("replyComposeText");
+const replyCancel = $("replyCancel");
+
 /* ======================================================
 VARIABLES
 ====================================================== */
@@ -1134,7 +1350,6 @@ VARIABLES
 let currentUser = null;
 let friendUser = null;
 let chatID = null;
-let messageElements = new Map();
 
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
@@ -1170,6 +1385,319 @@ let friendRecording = false;
 
 let pendingIceCandidates = [];
 let handledIncomingCalls = new Set();
+
+/* ======================================================
+REPLY
+====================================================== */
+
+let replyTarget = null;
+
+function getMessagePreview(data){
+
+if(data.type === "text")
+return data.text || "رسالة";
+
+if(data.type === "image")
+return "📷 صورة";
+
+if(data.type === "video")
+return "🎥 فيديو";
+
+if(data.type === "voice")
+return "🎤 رسالة صوتية";
+
+if(data.type === "call")
+return "📞 مكالمة";
+
+return "رسالة";
+
+}
+
+function startReply(data){
+
+replyTarget = {
+id:data.id,
+senderId:data.senderId,
+senderName:
+data.senderId === currentUser.uid
+?
+"أنت"
+:
+friendUser?.name || "المستخدم",
+text:getMessagePreview(data)
+};
+
+replyComposeName.textContent =
+"الرد على " +
+replyTarget.senderName;
+
+replyComposeText.textContent =
+replyTarget.text;
+
+replyCompose.classList.add("show");
+
+messageInput.focus();
+
+}
+
+function cancelReply(){
+
+replyTarget = null;
+
+replyCompose.classList.remove(
+"show"
+);
+
+replyComposeName.textContent =
+"رد على الرسالة";
+
+replyComposeText.textContent =
+"";
+
+}
+
+replyCancel.onclick =
+e => {
+
+e.stopPropagation();
+
+cancelReply();
+
+};
+
+/* ======================================================
+REACTIONS
+====================================================== */
+
+const reactionList = [
+"❤️",
+"👍",
+"🔥",
+"😂",
+"😮"
+];
+
+async function toggleReaction(
+messageId,
+emoji
+){
+
+if(
+!currentUser ||
+!chatID ||
+!messageId ||
+!emoji
+)
+return;
+
+try{
+
+const messageRef =
+doc(
+db,
+"chats",
+chatID,
+"messages",
+messageId
+);
+
+const snap =
+await getDoc(messageRef);
+
+if(!snap.exists())
+return;
+
+const data =
+snap.data();
+
+const reactions =
+Array.isArray(data.reactions)
+?
+data.reactions
+:
+[];
+
+const mine =
+reactions.some(
+r =>
+r &&
+r.userId === currentUser.uid &&
+r.emoji === emoji
+);
+
+if(mine){
+
+await updateDoc(
+messageRef,
+{
+reactions:
+arrayRemove({
+userId:
+currentUser.uid,
+emoji
+})
+}
+);
+
+}else{
+
+const oldMine =
+reactions.find(
+r =>
+r &&
+r.userId === currentUser.uid
+);
+
+if(oldMine){
+
+await updateDoc(
+messageRef,
+{
+reactions:
+arrayRemove(oldMine)
+}
+);
+
+}
+
+await updateDoc(
+messageRef,
+{
+reactions:
+arrayUnion({
+userId:
+currentUser.uid,
+emoji
+})
+}
+);
+
+}
+
+}catch(e){
+
+console.error(
+"Reaction:",
+e
+);
+
+alert(
+"تعذر إضافة التفاعل"
+);
+
+}
+
+}
+
+function renderReactions(
+box,
+data
+){
+
+if(
+!Array.isArray(data.reactions) ||
+!data.reactions.length
+)
+return;
+
+const wrapper =
+document.createElement("div");
+
+wrapper.className =
+"message-reactions";
+
+const counts = {};
+
+data.reactions.forEach(
+reaction => {
+
+if(
+!reaction ||
+!reaction.emoji
+)
+return;
+
+if(!counts[reaction.emoji]){
+
+counts[reaction.emoji] = {
+count:0,
+mine:false
+};
+
+}
+
+counts[reaction.emoji].count++;
+
+if(
+reaction.userId ===
+currentUser.uid
+){
+
+counts[reaction.emoji].mine =
+true;
+
+}
+
+}
+);
+
+reactionList.forEach(
+emoji => {
+
+const info =
+counts[emoji];
+
+if(!info)
+return;
+
+const chip =
+document.createElement("button");
+
+chip.type = "button";
+
+chip.className =
+"reaction-chip" +
+(
+info.mine
+?
+" mine"
+:
+""
+);
+
+chip.innerHTML =
+escapeHtml(emoji) +
+(
+info.count > 1
+?
+` <span class="reaction-count">${info.count}</span>`
+:
+""
+);
+
+chip.onclick =
+e => {
+
+e.stopPropagation();
+
+toggleReaction(
+data.id,
+emoji
+);
+
+};
+
+wrapper.appendChild(
+chip
+);
+
+}
+);
+
+if(wrapper.children.length)
+box.appendChild(wrapper);
+
+}
 
 /* ======================================================
 WEBRTC
@@ -1210,6 +1738,7 @@ minute:"2-digit"
 }catch{
 return "";
 }
+
 }
 
 function formatDuration(seconds){
@@ -1836,14 +2365,7 @@ isVideo
 :
 "image";
 
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
+const mediaData = {
 type:fileType,
 
 [fileType]:media.url,
@@ -1869,7 +2391,27 @@ read:false,
 deletedFor:[],
 
 createdAt:serverTimestamp()
+};
+
+if(replyTarget){
+
+mediaData.replyTo = {
+messageId:replyTarget.id,
+senderId:replyTarget.senderId,
+senderName:replyTarget.senderName,
+text:replyTarget.text
+};
+
 }
+
+await addDoc(
+collection(
+db,
+"chats",
+chatID,
+"messages"
+),
+mediaData
 );
 
 await setDoc(
@@ -1896,6 +2438,8 @@ currentUser.uid
 merge:true
 }
 );
+
+cancelReply();
 
 }catch(e){
 
@@ -2649,267 +3193,517 @@ callBox
 }
 
 /* ======================================================
-MESSAGE ACTIONS & EDIT MENU (Fixed Version)
+PIN
 ====================================================== */
 
-let activeMessageMenu = null;
-let replyToMessage = null;
+async function togglePinMessage(
+id,
+currentlyPinned
+){
 
-function closeMessageMenu(){
-    if(activeMessageMenu){
-        activeMessageMenu.remove();
-        activeMessageMenu = null;
-    }
+if(
+!currentUser ||
+!chatID ||
+!id
+)
+return;
+
+try{
+
+const messageRef =
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+);
+
+if(currentlyPinned){
+
+await updateDoc(
+messageRef,
+{
+pinned:false,
+pinnedBy:"",
+pinnedAt:null
+}
+);
+
+}else{
+
+await updateDoc(
+messageRef,
+{
+pinned:true,
+pinnedBy:currentUser.uid,
+pinnedAt:serverTimestamp()
+}
+);
+
+}
+
+}catch(e){
+
+console.error(
+"Pin:",
+e
+);
+
+alert(
+currentlyPinned
+?
+"تعذر إلغاء تثبيت الرسالة"
+:
+"تعذر تثبيت الرسالة"
+);
+
+}
+
+}
+
+/* ======================================================
+MESSAGE ACTIONS & EDIT MENU
+====================================================== */
+
+const messageElements =
+new Map();
+
+function removeMenus(){
+
+document
+.querySelectorAll(".message-menu")
+.forEach(
+x => x.remove()
+);
+
+}
+
+function showMessageMenu(
+element,
+data
+){
+
+removeMenus();
+
+const id = data.id;
+const mine =
+data.senderId === currentUser.uid;
+const messageType =
+data.type;
+const currentText =
+data.text || "";
+
+const menu =
+document.createElement("div");
+
+menu.className =
+"message-menu";
+
+/* ==============================
+REACTIONS
+============================== */
+
+const reactionRow =
+document.createElement("div");
+
+reactionRow.className =
+"menu-reactions";
+
+reactionList.forEach(
+emoji => {
+
+const reactionButton =
+document.createElement("button");
+
+reactionButton.type =
+"button";
+
+reactionButton.textContent =
+emoji;
+
+reactionButton.title =
+emoji;
+
+reactionButton.onclick =
+async e => {
+
+e.stopPropagation();
+
+await toggleReaction(
+id,
+emoji
+);
+
+removeMenus();
+
+};
+
+reactionRow.appendChild(
+reactionButton
+);
+
+}
+);
+
+menu.appendChild(
+reactionRow
+);
+
+/* ==============================
+REPLY
+============================== */
+
+const replyButton =
+document.createElement("button");
+
+replyButton.type =
+"button";
+
+replyButton.textContent =
+"↩️ الرد";
+
+replyButton.onclick =
+e => {
+
+e.stopPropagation();
+
+removeMenus();
+
+startReply({
+...data,
+id
+});
+
+};
+
+menu.appendChild(
+replyButton
+);
+
+/* ==============================
+PIN
+============================== */
+
+const pinButton =
+document.createElement("button");
+
+pinButton.type =
+"button";
+
+pinButton.textContent =
+data.pinned
+?
+"📌 إلغاء التثبيت"
+:
+"📌 تثبيت الرسالة";
+
+pinButton.onclick =
+async e => {
+
+e.stopPropagation();
+
+await togglePinMessage(
+id,
+data.pinned === true
+);
+
+removeMenus();
+
+};
+
+menu.appendChild(
+pinButton
+);
+
+/* ==============================
+EDIT
+============================== */
+
+if(
+mine &&
+messageType === "text"
+){
+
+const editBtn =
+document.createElement("button");
+
+editBtn.type =
+"button";
+
+editBtn.textContent =
+"✏️ تعديل";
+
+editBtn.onclick =
+async e => {
+
+e.stopPropagation();
+
+removeMenus();
+
+const newText =
+prompt(
+"تعديل الرسالة:",
+currentText
+);
+
+if(
+newText !== null &&
+newText.trim() !== "" &&
+newText.trim() !== currentText
+){
+
+try{
+
+await updateDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+),
+{
+text:
+newText.trim(),
+isEdited:true
+}
+);
+
+}catch(err){
+
+console.error(
+"Edit error:",
+err
+);
+
+alert(
+"تعذر تعديل الرسالة"
+);
+
+}
+
+}
+
+};
+
+menu.appendChild(
+editBtn
+);
+
+}
+
+/* ==============================
+DELETE
+============================== */
+
+const button =
+document.createElement("button");
+
+button.type =
+"button";
+
+button.textContent =
+mine
+?
+"🗑️ إلغاء الإرسال"
+:
+"🗑️ حذف لدي";
+
+button.onclick =
+async e => {
+
+e.stopPropagation();
+
+if(mine){
+
+await deleteMessageForEveryone(
+id
+);
+
+}else{
+
+await deleteMessageForMe(
+id
+);
+
+}
+
+removeMenus();
+
+};
+
+menu.appendChild(
+button
+);
+
+element.appendChild(menu);
+
+}
+
+async function deleteMessageForMe(id){
+
+if(
+!currentUser ||
+!chatID ||
+!id
+)
+return;
+
+try{
+
+const messageRef =
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+);
+
+const snap =
+await getDoc(messageRef);
+
+if(!snap.exists())
+return;
+
+await updateDoc(
+messageRef,
+{
+deletedFor:
+arrayUnion(
+currentUser.uid
+)
+}
+);
+
+const element =
+messageElements.get(id);
+
+if(element){
+
+element.remove();
+
+messageElements.delete(id);
+
+}
+
+}catch(e){
+
+console.error(
+"Delete for me:",
+e
+);
+
+alert(
+"تعذر حذف الرسالة"
+);
+
+}
+
+}
+
+async function deleteMessageForEveryone(id){
+
+if(
+!currentUser ||
+!chatID ||
+!id
+)
+return;
+
+try{
+
+await deleteDoc(
+doc(
+db,
+"chats",
+chatID,
+"messages",
+id
+)
+);
+
+}catch(e){
+
+console.error(
+"Delete:",
+e
+);
+
+alert(
+"تعذر حذف الرسالة"
+);
+
+}
+
 }
 
 function addMessageActions(
 element,
-id,
-mine,
-messageType,
-text
+data
 ){
-    element.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showMessageMenu(element, id, mine, messageType, text);
-    });
+
+let timer = null;
+
+const cancel =
+() => {
+
+clearTimeout(timer);
+
+};
+
+element.addEventListener(
+"pointerdown",
+e => {
+
+if(
+e.target.closest(".message-menu") ||
+e.target.closest("button") ||
+e.target.closest("video")
+)
+return;
+
+timer =
+setTimeout(
+() => {
+
+showMessageMenu(
+element,
+data
+);
+
+},
+500
+);
+
 }
+);
 
-function showMessageMenu(
-    element,
-    id,
-    mine,
-    messageType,
-    text
-){
-    closeMessageMenu();
+element.addEventListener(
+"pointerup",
+cancel
+);
 
-    const menu = document.createElement("div");
-    menu.className = "message-menu";
+element.addEventListener(
+"pointercancel",
+cancel
+);
 
-    /* =========================
-    REACTIONS
-    ========================= */
-    const reactions = document.createElement("div");
-    reactions.className = "message-reactions";
+element.addEventListener(
+"contextmenu",
+e => {
 
-    ["❤️", "👍", "🔥", "😂", "😮"].forEach(emoji => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "reaction-button";
-        button.textContent = emoji;
+e.preventDefault();
 
-        button.onclick = async e => {
-            e.stopPropagation();
-            try {
-                await updateDoc(
-                    doc(db, "chats", chatID, "messages", id),
-                    { [`reactions.${currentUser.uid}`]: emoji }
-                );
-            } catch(error) {
-                console.error("Reaction:", error);
-            }
-            closeMessageMenu();
-        };
-        reactions.appendChild(button);
-    });
+showMessageMenu(
+element,
+data
+);
 
-    menu.appendChild(reactions);
+}
+);
 
-    /* =========================
-    REPLY
-    ========================= */
-    const replyButton = document.createElement("button");
-    replyButton.type = "button";
-    replyButton.className = "message-menu-button";
-    replyButton.textContent = "↩️ رد";
-
-    replyButton.onclick = e => {
-        e.stopPropagation();
-        replyToMessage = {
-            id: id,
-            text: text || (
-                messageType === "image" ? "📷 صورة" :
-                messageType === "video" ? "🎥 فيديو" :
-                messageType === "voice" ? "🎤 رسالة صوتية" : "رسالة"
-            ),
-            type: messageType
-        };
-
-        if(typeof messageInput !== 'undefined' && messageInput) {
-            messageInput.placeholder = "الرد على: " + replyToMessage.text;
-            messageInput.focus();
-        }
-        closeMessageMenu();
-    };
-
-    menu.appendChild(replyButton);
-
-    /* =========================
-    PIN
-    ========================= */
-    const pinButton = document.createElement("button");
-    pinButton.type = "button";
-    pinButton.className = "message-menu-button";
-    pinButton.textContent = "📌 تثبيت الرسالة";
-
-    pinButton.onclick = async e => {
-        e.stopPropagation();
-        try {
-            await setDoc(
-                doc(db, "chats", chatID),
-                {
-                    pinnedMessage: {
-                        id: id,
-                        text: text || "رسالة",
-                        type: messageType,
-                        pinnedAt: serverTimestamp(),
-                        pinnedBy: currentUser.uid
-                    }
-                },
-                { merge: true }
-            );
-        } catch(error) {
-            console.error("Pin:", error);
-            alert("تعذر تثبيت الرسالة");
-        }
-        closeMessageMenu();
-    };
-
-    menu.appendChild(pinButton);
-
-    /* =========================
-    EDIT
-    ========================= */
-    if(mine && messageType === "text"){
-        const editButton = document.createElement("button");
-        editButton.type = "button";
-        editButton.className = "message-menu-button";
-        editButton.textContent = "✏️ تعديل";
-
-        editButton.onclick = async e => {
-            e.stopPropagation();
-            const newText = prompt("تعديل الرسالة:", text || "");
-            if(newText === null){
-                closeMessageMenu();
-                return;
-            }
-
-            const finalText = newText.trim();
-            if(!finalText){
-                alert("لا يمكن أن تكون الرسالة فارغة");
-                return;
-            }
-
-            try {
-                await updateDoc(
-                    doc(db, "chats", chatID, "messages", id),
-                    {
-                        text: finalText,
-                        isEdited: true,
-                        editedAt: serverTimestamp()
-                    }
-                );
-            } catch(error) {
-                console.error("Edit:", error);
-                alert("تعذر تعديل الرسالة");
-            }
-            closeMessageMenu();
-        };
-
-        menu.appendChild(editButton);
-    }
-
-    /* =========================
-    DELETE FOR EVERYONE
-    ========================= */
-    if(mine){
-        const deleteEveryoneButton = document.createElement("button");
-        deleteEveryoneButton.type = "button";
-        deleteEveryoneButton.className = "message-menu-button danger";
-        deleteEveryoneButton.textContent = "🗑️ حذف للجميع";
-
-        deleteEveryoneButton.onclick = async e => {
-            e.stopPropagation();
-            const confirmDelete = confirm("هل تريد حذف الرسالة للجميع؟");
-            if(!confirmDelete) return;
-
-            try {
-                await deleteDoc(
-                    doc(db, "chats", chatID, "messages", id)
-                );
-            } catch(error) {
-                console.error("Delete everyone:", error);
-                alert("تعذر حذف الرسالة");
-            }
-            closeMessageMenu();
-        };
-
-        menu.appendChild(deleteEveryoneButton);
-    }
-
-    /* =========================
-    DELETE FOR ME
-    ========================= */
-    const deleteForMeButton = document.createElement("button");
-    deleteForMeButton.type = "button";
-    deleteForMeButton.className = "message-menu-button danger";
-    deleteForMeButton.textContent = "🗑️ حذف لدي";
-
-    deleteForMeButton.onclick = async e => {
-        e.stopPropagation();
-        try {
-            await updateDoc(
-                doc(db, "chats", chatID, "messages", id),
-                {
-                    deletedFor: arrayUnion(currentUser.uid)
-                }
-            );
-        } catch(error) {
-            console.error("Delete for me:", error);
-            alert("تعذر حذف الرسالة");
-        }
-        closeMessageMenu();
-    };
-
-    menu.appendChild(deleteForMeButton);
-
-    /* =========================
-    ADD TO BODY
-    ========================= */
-    document.body.appendChild(menu);
-    activeMessageMenu = menu;
-
-    /* =========================
-    POSITION
-    ========================= */
-    requestAnimationFrame(() => {
-        const rect = element.getBoundingClientRect();
-        const menuRect = menu.getBoundingClientRect();
-
-        let left = rect.left;
-        let top = rect.top - menuRect.height - 10;
-
-        if(top < 10) top = rect.bottom + 10;
-        if(left + menuRect.width > window.innerWidth - 10) left = window.innerWidth - menuRect.width - 10;
-        if(left < 10) left = 10;
-        if(top + menuRect.height > window.innerHeight - 10) top = window.innerHeight - menuRect.height - 10;
-        if(top < 10) top = 10;
-
-        menu.style.left = left + "px";
-        menu.style.top = top + "px";
-    });
-
-    /* إغلاق عند الضغط خارج القائمة (مع تأجيل بسيط لتجنب التعارض) */
-    setTimeout(() => {
-        function closeOutside(e){
-            if(!menu.contains(e.target)){
-                closeMessageMenu();
-                document.removeEventListener("pointerdown", closeOutside);
-            }
-        }
-        document.addEventListener("pointerdown", closeOutside);
-    }, 100);
 }
 
 /* ======================================================
@@ -2931,7 +3725,10 @@ const id =
 change.doc.id;
 
 const data =
-change.doc.data();
+{
+...change.doc.data(),
+id
+};
 
 if(change.type === "removed"){
 
@@ -2990,12 +3787,122 @@ data.senderId === currentUser.uid
 "other"
 );
 
+/* ==============================
+PINNED
+============================== */
+
+if(data.pinned === true){
+
+const pinnedLabel =
+document.createElement("div");
+
+pinnedLabel.className =
+"pinned-label";
+
+pinnedLabel.textContent =
+"📌 رسالة مثبتة";
+
+box.appendChild(
+pinnedLabel
+);
+
+}
+
+/* ==============================
+REPLY PREVIEW
+============================== */
+
+if(data.replyTo){
+
+const replyBox =
+document.createElement("div");
+
+replyBox.className =
+"message-reply";
+
+const replyLine =
+document.createElement("div");
+
+replyLine.className =
+"reply-line";
+
+const replyContent =
+document.createElement("div");
+
+replyContent.className =
+"reply-content";
+
+const replyName =
+document.createElement("div");
+
+replyName.className =
+"reply-name";
+
+replyName.textContent =
+data.replyTo.senderId ===
+currentUser.uid
+?
+"أنت"
+:
+(
+data.replyTo.senderName ||
+friendUser?.name ||
+"المستخدم"
+);
+
+const replyText =
+document.createElement("div");
+
+replyText.className =
+"reply-text";
+
+replyText.textContent =
+data.replyTo.text ||
+"رسالة";
+
+replyContent.append(
+replyName,
+replyText
+);
+
+replyBox.append(
+replyLine,
+replyContent
+);
+
+box.appendChild(
+replyBox
+);
+
+}
+
+/* ==============================
+CONTENT
+============================== */
+
 if(data.type === "text"){
 
-let textContent = data.text || "";
-box.innerHTML = escapeHtml(textContent);
+box.innerHTML +=
+escapeHtml(data.text || "");
+
 if(data.isEdited){
-    box.innerHTML += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
+
+const edited =
+document.createElement("span");
+
+edited.style.fontSize =
+"9px";
+
+edited.style.opacity =
+"0.6";
+
+edited.textContent =
+" (معدلة)";
+
+box.appendChild(
+edited
+);
+
 }
 
 }else if(
@@ -3044,6 +3951,19 @@ data.text || ""
 
 }
 
+/* ==============================
+REACTIONS
+============================== */
+
+renderReactions(
+box,
+data
+);
+
+/* ==============================
+META
+============================== */
+
 const meta =
 document.createElement("div");
 
@@ -3079,10 +3999,7 @@ meta
 
 addMessageActions(
 box,
-id,
-data.senderId === currentUser.uid,
-data.type,
-data.text
+data
 );
 
 const old =
@@ -3171,7 +4088,6 @@ chatID,
 orderBy(
 "createdAt",
 "asc"
-)
 );
 
 if(unsubscribeMessages)
@@ -3212,14 +4128,7 @@ true;
 
 try{
 
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
+const messageData = {
 text,
 senderId:
 currentUser.uid,
@@ -3230,7 +4139,31 @@ read:false,
 deletedFor:[],
 createdAt:
 serverTimestamp()
+};
+
+if(replyTarget){
+
+messageData.replyTo = {
+messageId:
+replyTarget.id,
+senderId:
+replyTarget.senderId,
+senderName:
+replyTarget.senderName,
+text:
+replyTarget.text
+};
+
 }
+
+await addDoc(
+collection(
+db,
+"chats",
+chatID,
+"messages"
+),
+messageData
 );
 
 await setDoc(
@@ -3252,6 +4185,8 @@ merge:true
 );
 
 messageInput.value = "";
+
+cancelReply();
 
 updateMyActivity(
 "none"
@@ -5690,6 +6625,8 @@ await updateMyActivity(
 "none"
 );
 
+cancelReply();
+
 if(activeCallId){
 
 if(
@@ -5761,8 +6698,7 @@ updateMyActivity(
 
 }
 
-}
-);
+});
 
 window.addEventListener(
 "pagehide",
@@ -5773,8 +6709,7 @@ return;
 
 updateMyPresence(false);
 
-}
-);
+});
 
 /* ======================================================
 AUTH
@@ -5820,8 +6755,7 @@ e.message ||
 
 }
 
-}
-);
+});
 
 </script>
 
