@@ -182,7 +182,6 @@ color:#72817c;
 line-height:1.8
 }
 
-/* تصميم الرسائل العام */
 .message{
 max-width:78%;
 padding:10px 13px 26px 13px;
@@ -269,7 +268,6 @@ direction:ltr
 color:#006dff
 }
 
-/* إصلاح عرض الصور والفيديوهات بشكل منظم تماماً */
 .message.image-message, .message.video-message {
 padding: 8px 8px 28px 8px !important;
 width: max-content !important;
@@ -292,44 +290,89 @@ object-fit: cover;
 cursor: pointer;
 }
 
-/* تنسيق قائمة الخيارات (المينو) لتظهر بشكل سليم بجانب الرسالة ومتركزة */
-.message-menu{
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 190px;
-padding: 6px;
-background: #0b1512;
-border: 1px solid rgba(0,232,137,.25);
-border-radius: 16px;
-box-shadow: 0 10px 30px rgba(0,0,0,.7);
+/* لوحة الخيارات السفلية (Bottom Sheet Menu مثل الفيديو) */
+.bottom-sheet-backdrop {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.65);
 z-index: 1000;
 display: flex;
-flex-direction: column;
-gap: 4px;
+align-items: flex-end;
+animation: fadeIn 0.2s ease;
 }
 
-.message-menu button{
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+.bottom-sheet {
 width: 100%;
-padding: 10px 12px;
-border: 0;
-border-radius: 10px;
-background: #18231f;
-color: #fff;
-font-size: 13px;
-font-weight: bold;
+max-width: 650px;
+margin: 0 auto;
+background: #111b18;
+border-top-left-radius: 24px;
+border-top-right-radius: 24px;
+padding: 16px 20px 30px;
+box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+animation: slideUp 0.25s ease;
+display: flex;
+flex-direction: column;
+gap: 16px;
+border-top: 1px solid rgba(0,232,137,0.2);
+}
+
+@keyframes slideUp {
+from { transform: translateY(100%); }
+to { transform: translateY(0); }
+}
+
+.sheet-reactions-bar {
+display: flex;
+justify-content: space-around;
+background: #182521;
+padding: 10px 14px;
+border-radius: 30px;
+font-size: 24px;
+border: 1px solid rgba(255,255,255,0.06);
+}
+
+.sheet-reaction-btn {
+background: none;
+border: none;
 cursor: pointer;
+font-size: 24px;
+transition: transform 0.2s;
+}
+.sheet-reaction-btn:hover {
+transform: scale(1.2);
+}
+
+.sheet-actions-list {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.sheet-action-item {
+width: 100%;
+padding: 12px 16px;
+background: #182521;
+border: none;
+border-radius: 12px;
+color: #fff;
+font-size: 14px;
+font-weight: bold;
 text-align: right;
 display: flex;
 align-items: center;
-gap: 8px;
+gap: 12px;
+cursor: pointer;
 }
-.message-menu button:hover{
-background: #22332d;
+.sheet-action-item:hover {
+background: #20312b;
 }
 
-/* التفاعلات داخل الفقاعة بالأسفل */
 .message-reactions{
 display:flex;
 align-items:center;
@@ -366,7 +409,6 @@ font-size:9px;
 opacity:.9
 }
 
-/* الرد على رسالة داخل الفقاعة */
 .message-reply{
 display:flex;
 align-items:stretch;
@@ -623,10 +665,8 @@ let currentUser = null;
 let friendUser = null;
 let chatID = null;
 let unsubscribeMessages = null;
-let presenceInterval = null;
 let replyTarget = null;
 let editingMessageId = null;
-let currentPinnedMessageId = null;
 const messageElements = new Map();
 
 function getMessagePreview(data){
@@ -735,63 +775,105 @@ chatID = createChatID(currentUser.uid, friendUser.uid);
 attachButton.onclick = e => { e.stopPropagation(); attachMenu.classList.toggle("show"); };
 document.addEventListener("pointerdown", e => {
 if(!e.target.closest("#attachMenu") && !e.target.closest("#attachButton")) attachMenu.classList.remove("show");
-if(!e.target.closest(".message-menu") && !e.target.closest(".message")) removeMenus();
 });
 
 galleryButton.onclick = () => { attachMenu.classList.remove("show"); galleryInput.click(); };
 cameraButton.onclick = () => { attachMenu.classList.remove("show"); cameraInput.click(); };
 
-function removeMenus(){ document.querySelectorAll(".message-menu").forEach(x => x.remove()); }
+// إزالة القائمة السفلية عند النقر في الخارج
+function removeBottomSheet(){
+const existing = document.querySelector(".bottom-sheet-backdrop");
+if(existing) existing.remove();
+}
 
-function showMessageMenu(element, data){
-removeMenus();
-const id = data.id;
+function showBottomSheetMenu(data){
+removeBottomSheet();
 const mine = data.senderId === currentUser.uid;
 
-const menu = document.createElement("div");
-menu.className = "message-menu";
+const backdrop = document.createElement("div");
+backdrop.className = "bottom-sheet-backdrop";
+backdrop.onclick = () => removeBottomSheet();
 
-const pinButton = document.createElement("button");
-pinButton.type = "button";
-pinButton.innerHTML = data.pinned ? "<span>📌</span> إلغاء التثبيت" : "<span>📌</span> تثبيت الرسالة";
-pinButton.onclick = async e => {
-e.stopPropagation();
-await updateDoc(doc(db, "chats", chatID, "messages", id), { pinned: !data.pinned });
-removeMenus();
+const sheet = document.createElement("div");
+sheet.className = "bottom-sheet";
+sheet.onclick = e => e.stopPropagation();
+
+// شريط التفاعلات السريع فوق اللوحة
+const reactionsBar = document.createElement("div");
+reactionsBar.className = "sheet-reactions-bar";
+reactionList.forEach(emoji => {
+const btn = document.createElement("button");
+btn.type = "button";
+btn.className = "sheet-reaction-btn";
+btn.textContent = emoji;
+btn.onclick = () => {
+toggleReaction(data.id, emoji);
+removeBottomSheet();
 };
-menu.appendChild(pinButton);
+reactionsBar.appendChild(btn);
+});
+sheet.appendChild(reactionsBar);
 
+const actionsList = document.createElement("div");
+actionsList.className = "sheet-actions-list";
+
+// زر الرد
+const replyBtn = document.createElement("button");
+replyBtn.type = "button";
+replyBtn.className = "sheet-action-item";
+replyBtn.innerHTML = "<span>↩️</span> رد";
+replyBtn.onclick = () => {
+removeBottomSheet();
+startReply(data);
+};
+actionsList.appendChild(replyBtn);
+
+// زر التثبيت
+const pinBtn = document.createElement("button");
+pinBtn.type = "button";
+pinBtn.className = "sheet-action-item";
+pinBtn.innerHTML = data.pinned ? "<span>📌</span> إلغاء التثبيت" : "<span>📌</span> تثبيت الرسالة";
+pinBtn.onclick = async () => {
+await updateDoc(doc(db, "chats", chatID, "messages", data.id), { pinned: !data.pinned });
+removeBottomSheet();
+};
+actionsList.appendChild(pinBtn);
+
+// زر التعديل (إذا كانت رسالتي ونصية)
 if(mine && data.type === "text"){
 const editBtn = document.createElement("button");
 editBtn.type = "button";
+editBtn.className = "sheet-action-item";
 editBtn.innerHTML = "<span>✏️</span> تعديل";
-editBtn.onclick = e => {
-e.stopPropagation();
-removeMenus();
-editingMessageId = id;
+editBtn.onclick = () => {
+removeBottomSheet();
+editingMessageId = data.id;
 messageInput.value = data.text || "";
 sendButton.textContent = "✓";
 cancelReply();
 messageInput.focus();
 };
-menu.appendChild(editBtn);
+actionsList.appendChild(editBtn);
 }
 
+// زر الحذف أو إلغاء الإرسال
 const delBtn = document.createElement("button");
 delBtn.type = "button";
+delBtn.className = "sheet-action-item";
 delBtn.innerHTML = "<span>🗑️</span> " + (mine ? "إلغاء الإرسال" : "حذف لدي");
-delBtn.onclick = async e => {
-e.stopPropagation();
-if(mine) await deleteDoc(doc(db, "chats", chatID, "messages", id));
-else await updateDoc(doc(db, "chats", chatID, "messages", id), { deletedFor: arrayUnion(currentUser.uid) });
-removeMenus();
+delBtn.onclick = async () => {
+if(mine) await deleteDoc(doc(db, "chats", chatID, "messages", data.id));
+else await updateDoc(doc(db, "chats", chatID, "messages", data.id), { deletedFor: arrayUnion(currentUser.uid) });
+removeBottomSheet();
 };
-menu.appendChild(delBtn);
+actionsList.appendChild(delBtn);
 
-element.appendChild(menu);
+sheet.appendChild(actionsList);
+backdrop.appendChild(sheet);
+document.body.appendChild(backdrop);
 }
 
-// زيادة مسافة وحجم السحب للرد لتكون سحبة قوية ومقصودة (وليس لمس بالخطأ)
+// السحب القوي للرد
 function setupSwipeToReply(element, data){
 let startX = 0;
 let currentX = 0;
@@ -806,7 +888,6 @@ element.addEventListener("touchmove", e => {
 if(!isSwiping) return;
 currentX = e.touches[0].clientX;
 let diffX = currentX - startX;
-// سحب قوي ومحسوب (أكثر من 85 بكسل)
 if(data.senderId !== currentUser.uid && diffX > 0 && diffX < 130){
 element.style.transform = `translateX(${diffX}px)`;
 }else if(data.senderId === currentUser.uid && diffX < 0 && diffX > -130){
@@ -818,7 +899,6 @@ element.addEventListener("touchend", () => {
 if(!isSwiping) return;
 isSwiping = false;
 let diffX = currentX - startX;
-// تم زيادة الحد الأدنى للسحب إلى 85 بكسل لضمان عدم حدوثه بالخطأ
 if(Math.abs(diffX) > 85){
 startReply(data);
 }
@@ -828,13 +908,15 @@ element.style.transform = "translateX(0px)";
 
 function addMessageActions(element, data){
 let timer = null;
-element.addEventListener("pointerdown", () => { timer = setTimeout(() => showMessageMenu(element, data), 500); });
+// الضغط المطول لإظهار القائمة السفلية
+element.addEventListener("pointerdown", () => { timer = setTimeout(() => showBottomSheetMenu(data), 500); });
 element.addEventListener("pointerup", () => clearTimeout(timer));
-element.addEventListener("contextmenu", e => { e.preventDefault(); showMessageMenu(element, data); });
+element.addEventListener("contextmenu", e => { e.preventDefault(); showBottomSheetMenu(data); });
 
 let lastClickTime = 0;
+// النقر المفرد (كبسة وحدة) لا يفعل شيئاً للرد بالخطأ، بينما النقر المزدوج (Double Click) يضع تفاعل قلب ❤️
 element.addEventListener("click", e => {
-if(e.target.closest(".message-menu") || e.target.closest("button") || e.target.closest(".message-reply")) return;
+if(e.target.closest("button") || e.target.closest(".message-reply")) return;
 const currentTime = new Date().getTime();
 if(currentTime - lastClickTime < 300 && currentTime - lastClickTime > 0){
 triggerHeartReaction(element, data.id);
@@ -878,12 +960,8 @@ return;
 }
 
 if(data.pinned === true){
-currentPinnedMessageId = id;
 pinnedBannerText.textContent = (data.senderId === currentUser.uid ? "أنت: " : "") + getMessagePreview(data);
 pinnedBanner.classList.add("show");
-}else if(currentPinnedMessageId === id && !data.pinned){
-currentPinnedMessageId = null;
-pinnedBanner.classList.remove("show");
 }
 
 const box = document.createElement("div");
