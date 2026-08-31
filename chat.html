@@ -160,6 +160,7 @@ line-height:1.5;
 align-self:flex-start;
 min-width:0;
 overflow:visible !important;
+transition: transform 0.15s ease-out;
 }
 
 .message.mine{
@@ -174,6 +175,24 @@ align-self:flex-end;
 background:#18231f;
 border:1px solid rgba(255,255,255,.08);
 border-bottom-right-radius:5px
+}
+
+/* تأثير القلب السريع عند الدبل كليك */
+.heart-pop {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%) scale(0);
+font-size: 38px;
+animation: popEffect 0.4s ease forwards;
+pointer-events: none;
+z-index: 20;
+}
+
+@keyframes popEffect {
+0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 .time{
@@ -716,41 +735,6 @@ color:#00e889
 
 .message.mine .pinned-label{
 color:#fff
-}
-
-.reaction-picker{
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
-gap:3px !important;
-width:auto !important;
-min-width:0 !important;
-padding:5px !important;
-background:#0b1512 !important;
-border:1px solid rgba(0,232,137,.18) !important;
-border-radius:14px !important;
-margin-bottom:5px !important;
-}
-
-.reaction-picker button{
-width:28px !important;
-height:30px !important;
-min-height:30px !important;
-padding:0 !important;
-border:0 !important;
-border-radius:9px !important;
-background:#18231f !important;
-color:#fff !important;
-font-size:16px !important;
-cursor:pointer !important;
-display:flex !important;
-align-items:center !important;
-justify-content:center !important;
-margin:0 !important;
-}
-
-.reaction-picker button:hover{
-background:#263a33 !important
 }
 
 .reply-compose{
@@ -2139,10 +2123,14 @@ console.error("Delete for everyone:", e);
 }
 }
 
+// ==========================================
+// ميزات التفاعل بضغطتين + السحب للرد (Swipe & Double Tap)
+// ==========================================
 function addMessageActions(element, data){
 let timer = null;
 const cancel = () => { clearTimeout(timer); };
 
+// 1. الضغط المطول لإظهار القائمة
 element.addEventListener("pointerdown", e => {
 if(e.target.closest(".message-menu") || e.target.closest("button") || e.target.closest("video")) return;
 timer = setTimeout(() => { showMessageMenu(element, data); }, 500);
@@ -2154,6 +2142,63 @@ element.addEventListener("contextmenu", e => {
 e.preventDefault();
 showMessageMenu(element, data);
 });
+
+// 2. الضغط مرتين (Double Tap) لإرسال قلب ❤️
+let lastClickTime = 0;
+element.addEventListener("click", e => {
+if(e.target.closest(".message-menu") || e.target.closest("button")) return;
+const currentTime = new Date().getTime();
+const tapLength = currentTime - lastClickTime;
+if (tapLength < 300 && tapLength > 0) {
+triggerHeartReaction(element, data.id);
+e.preventDefault();
+}
+lastClickTime = currentTime;
+});
+
+// 3. السحب للرد (Swipe to Reply)
+let startX = 0;
+let currentX = 0;
+let isSwiping = false;
+
+element.addEventListener("touchstart", e => {
+startX = e.touches[0].clientX;
+isSwiping = true;
+});
+
+element.addEventListener("touchmove", e => {
+if (!isSwiping) return;
+currentX = e.touches[0].clientX;
+let diffX = currentX - startX;
+// السحب لليمين بحدود معينة
+if (diffX > 0 && diffX < 120) {
+element.style.transform = `translateX(${diffX}px)`;
+}
+});
+
+element.addEventListener("touchend", () => {
+if (!isSwiping) return;
+isSwiping = false;
+let diffX = currentX - startX;
+if (diffX > 60) {
+startReply(data);
+}
+element.style.transform = "translateX(0px)";
+});
+}
+
+function triggerHeartReaction(element, messageId){
+if(element.querySelector('.heart-pop')) return;
+const heart = document.createElement('div');
+heart.className = 'heart-pop';
+heart.innerHTML = '❤️';
+element.appendChild(heart);
+
+toggleReaction(messageId, '❤️');
+
+setTimeout(() => {
+heart.remove();
+}, 900);
 }
 
 function renderMessages(snapshot){
