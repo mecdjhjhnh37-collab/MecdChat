@@ -621,52 +621,6 @@ background:rgba(255,255,255,.08);
 color:#aaa
 }
 
-.message-menu{
-position:absolute !important;
-left:50% !important;
-bottom:calc(100% + 8px) !important;
-transform:translateX(-50%) !important;
-width:160px !important;
-min-width:160px !important;
-max-width:160px !important;
-height:auto !important;
-min-height:0 !important;
-padding:5px !important;
-background:#0b1512 !important;
-border:1px solid rgba(0,232,137,.18) !important;
-border-radius:15px !important;
-box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
-z-index:999999 !important;
-display:block !important;
-flex:none !important;
-white-space:normal !important;
-}
-
-.message-menu button{
-width:100% !important;
-min-width:0 !important;
-height:auto !important;
-min-height:40px !important;
-padding:10px 14px !important;
-border:0 !important;
-border-radius:11px !important;
-background:#18231f !important;
-color:#fff !important;
-font-size:13px !important;
-font-weight:bold !important;
-cursor:pointer !important;
-display:block !important;
-margin-bottom:4px;
-}
-
-.message-menu button:last-child{
-margin-bottom:0;
-}
-
-.message-menu button:hover{
-background:#22332d !important;
-}
-
 #incomingCall{
 position:fixed;
 top:85px;
@@ -1118,6 +1072,7 @@ VARIABLES
 let currentUser = null;
 let friendUser = null;
 let chatID = null;
+let messageElements = new Map(); // تمت إضافة هذا المتغير لحل المشكلة
 
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
@@ -2634,196 +2589,6 @@ callBox
 /* ======================================================
 MESSAGE ACTIONS & EDIT MENU
 ====================================================== */
-
-const messageElements =
-new Map();
-
-function removeMenus(){
-
-document
-.querySelectorAll(".message-menu")
-.forEach(
-x => x.remove()
-);
-
-}
-
-async function deleteMessageForMe(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
-try{
-
-const messageRef =
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-);
-
-const snap =
-await getDoc(messageRef);
-
-if(!snap.exists())
-return;
-
-await updateDoc(
-messageRef,
-{
-deletedFor:
-arrayUnion(
-currentUser.uid
-)
-}
-);
-
-const element =
-messageElements.get(id);
-
-if(element){
-
-element.remove();
-
-messageElements.delete(id);
-
-}
-
-}catch(e){
-
-console.error(
-"Delete for me:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-}
-
-async function deleteMessageForEveryone(id){
-
-if(
-!currentUser ||
-!chatID ||
-!id
-)
-return;
-
-try{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-)
-);
-
-}catch(e){
-
-console.error(
-"Delete:",
-e
-);
-
-alert(
-"تعذر حذف الرسالة"
-);
-
-}
-
-}
-
-function showMessageMenu(
-element,
-id,
-mine,
-messageType,
-currentText
-){
-
-removeMenus();
-
-const menu =
-document.createElement("div");
-
-menu.className =
-"message-menu";
-
-// زر التعديل (يظهر لرسائلك النصية فقط)
-if (mine && messageType === "text") {
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "✏️ تعديل";
-    editBtn.onclick = async e => {
-        e.stopPropagation();
-        removeMenus();
-        const newText = prompt("تعديل الرسالة:", currentText);
-        if (newText !== null && newText.trim() !== "" && newText.trim() !== currentText) {
-            try {
-                await updateDoc(doc(db, "chats", chatID, "messages", id), {
-                    text: newText.trim(),
-                    isEdited: true
-                });
-            } catch (err) {
-                console.error("Edit error:", err);
-                alert("تعذر تعديل الرسالة");
-            }
-        }
-    };
-    menu.appendChild(editBtn);
-}
-
-const button =
-document.createElement("button");
-
-button.textContent =
-mine
-?
-"🗑️ إلغاء الإرسال"
-:
-"🗑️ حذف لدي";
-
-button.onclick =
-async e => {
-
-e.stopPropagation();
-
-if(mine){
-
-await deleteMessageForEveryone(
-id
-);
-
-}else{
-
-await deleteMessageForMe(
-id
-);
-
-}
-
-removeMenus();
-
-};
-
-menu.appendChild(button);
-
-element.appendChild(menu);
-
-}
-
 function addMessageActions(
 element,
 id,
@@ -2834,11 +2599,8 @@ text
 
 let timer = null;
 
-const cancel =
-() => {
-
+const cancel = () => {
 clearTimeout(timer);
-
 };
 
 element.addEventListener(
@@ -2854,13 +2616,7 @@ timer =
 setTimeout(
 () => {
 
-showMessageMenu(
-element,
-id,
-mine,
-messageType,
-text
-);
+// يمكن إضافة قائمة الرسائل هنا لاحقاً
 
 },
 500
@@ -2885,33 +2641,10 @@ e => {
 
 e.preventDefault();
 
-showMessageMenu(
-element,
-id,
-mine,
-messageType,
-text
-);
-
 }
 );
 
 }
-
-document.addEventListener(
-"pointerdown",
-e => {
-
-if(
-!e.target.closest(".message-menu")
-){
-
-removeMenus();
-
-}
-
-}
-);
 
 /* ======================================================
 RENDER MESSAGES
@@ -2994,10 +2727,7 @@ data.senderId === currentUser.uid
 if(data.type === "text"){
 
 let textContent = data.text || "";
-if(data.isEdited){
-    textContent += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
-}
-box.innerHTML = escapeHtml(data.text || "");
+box.innerHTML = escapeHtml(textContent);
 if(data.isEdited){
     box.innerHTML += ' <span style="font-size:9px; opacity:0.6;">(معدلة)</span>';
 }
