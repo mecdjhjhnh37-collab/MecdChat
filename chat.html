@@ -4,8 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#050807">
-<title>Mecd Chat</title>
+<meta name="theme-color" content="#0b141a">
+<title>WhatsApp Chat</title>
 
 <style>
 *{
@@ -22,10 +22,8 @@ height:100%
 body{
 min-height:100vh;
 font-family:Arial,Tahoma,sans-serif;
-color:#fff;
-background:
-radial-gradient(circle at top,#123d35,transparent 40%),
-linear-gradient(180deg,#07110f,#020504);
+color:#e9edef;
+background:#0b141a;
 overflow:hidden
 }
 
@@ -35,43 +33,51 @@ max-width:650px;
 margin:auto;
 display:flex;
 flex-direction:column;
-position:relative
+position:relative;
+background: radial-gradient(circle at center, rgba(11,20,26,0.95), rgba(11,20,26,0.98)), url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+background-blend-mode: overlay;
 }
 
 header{
-height:75px;
+height:60px;
 display:flex;
 align-items:center;
 gap:12px;
-padding:12px 15px;
-background:#050807;
+padding:10px 16px;
+background:#202c33;
 border-bottom:1px solid rgba(255,255,255,.08);
 flex-shrink:0;
 z-index:10
 }
 
 .back{
-width:45px;
-height:45px;
+width:36px;
+height:36px;
 border:0;
-border-radius:15px;
-background:#18231f;
-color:#fff;
-font-size:22px;
-cursor:pointer
+border-radius:50%;
+background:transparent;
+color:#aebac1;
+font-size:20px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.back:hover{
+background:rgba(255,255,255,0.05);
 }
 
 .avatar,
 .call-avatar{
-width:48px;
-height:48px;
+width:40px;
+height:40px;
 border-radius:50%;
-background:#12352c;
+background:#2a3942;
 display:flex;
 align-items:center;
 justify-content:center;
 overflow:hidden;
-font-size:24px;
+font-size:20px;
 flex-shrink:0
 }
 
@@ -90,96 +96,105 @@ min-width:0
 }
 
 .user-name{
-font-size:17px;
-font-weight:bold;
+font-size:16px;
+font-weight:500;
+color:#e9edef;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis
 }
 
 .user-status{
-font-size:12px;
-color:#777;
-margin-top:5px;
+font-size:13px;
+color:#8696a0;
+margin-top:2px;
 transition:.2s
 }
 
 .user-status.online,
 .user-status.typing,
 .user-status.recording{
-color:#00e889
+color:#00a884
 }
 
 .user-status.recording{
-font-weight:bold
+font-weight:normal
 }
 
 .call-buttons{
 display:flex;
-gap:8px;
+gap:4px;
 flex-shrink:0
 }
 
 .call-buttons button{
-width:42px;
-height:42px;
+width:40px;
+height:40px;
 border:0;
-border-radius:14px;
-background:#18231f;
-color:#fff;
+border-radius:50%;
+background:transparent;
+color:#aebac1;
 font-size:18px;
-cursor:pointer
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.call-buttons button:hover{
+background:rgba(255,255,255,0.05);
 }
 
 .messages{
 flex:1;
 min-height:0;
 overflow-y:auto;
-padding:20px 15px 150px;
+padding:20px 16px 150px;
 display:flex;
 flex-direction:column;
-gap:18px;
+gap:4px;
 scroll-behavior: smooth;
 }
 
 .empty{
 margin:auto;
 text-align:center;
-color:#72817c;
+color:#8696a0;
 line-height:1.8
 }
 
 .message{
-max-width:78%;
-padding:10px 13px;
-border-radius:18px;
+max-width:65%;
+padding:6px 7px 8px 9px;
+border-radius:7.5px;
 position:relative;
 word-break:break-word;
 overflow-wrap:anywhere;
 user-select:none;
-line-height:1.5;
-min-width:0;
+line-height:1.45;
+min-width:60px;
+font-size:14.2px;
 overflow:visible !important;
 transition: transform 0.15s ease-out, background-color 0.5s ease;
-margin-bottom: 6px;
+margin-bottom: 2px;
+box-shadow: 0 1px 0.5px rgba(11,20,26,0.13);
 }
 
 .message.mine{
-align-self:flex-start;
-background:#00c96b;
-color:#00150e;
-border-bottom-left-radius:5px
+align-self:flex-end;
+background:#005c4b;
+color:#e9edef;
+border-top-right-radius:0;
 }
 
 .message.other{
-align-self:flex-end;
-background:#18231f;
-border:1px solid rgba(255,255,255,.08);
-border-bottom-right-radius:5px
+align-self:flex-start;
+background:#202c33;
+color:#e9edef;
+border-top-left-radius:0;
 }
 
 .message.highlight {
-background-color: #00e889 !important;
+background-color: #00a884 !important;
 color: #000 !important;
 transition: background-color 0.2s ease;
 }
@@ -193,7 +208,7 @@ font-size: 24px;
 animation: popEffect 0.4s ease forwards;
 pointer-events: none;
 z-index: 30;
-background: #0b1512;
+background: #202c33;
 border-radius: 50%;
 padding: 2px 4px;
 box-shadow: 0 2px 8px rgba(0,0,0,0.4);
@@ -211,27 +226,38 @@ left: 15px;
 }
 
 .time{
-display:block;
-font-size:9px;
-opacity:.6;
-margin-top:5px
+display:inline-block;
+font-size:11px;
+color:#8696a0;
+margin-left:4px;
+vertical-align: bottom;
+float: left;
+margin-top: 4px;
+margin-right: 4px;
+}
+
+.message.mine .time {
+color: #8696a0;
 }
 
 .message-meta{
-display:flex;
-align-items:center;
-gap:5px;
-margin-top:5px
+display:inline-block;
+float: left;
+margin-top: 4px;
+vertical-align: bottom;
 }
 
 .message-status{
-font-size:12px;
+font-size:13px;
 font-weight:bold;
-direction:ltr
+direction:ltr;
+display:inline-block;
+vertical-align: bottom;
+color:#8696a0;
 }
 
 .message-status.read{
-color:#006dff
+color:#53bdeb
 }
 
 .input-area{
@@ -241,46 +267,59 @@ left:50%;
 transform:translateX(-50%);
 width:100%;
 max-width:650px;
-padding:10px;
+padding:6px 16px 10px;
 display:flex;
+align-items: center;
 gap:8px;
-background:#050807;
+background:#202c33;
 z-index:50
 }
 
 #messageInput{
 flex:1;
 min-width:0;
-padding:14px;
-border-radius:17px;
-border:1px solid #27332f;
-background:#111916;
-color:#fff;
+padding:9px 12px;
+border-radius:8px;
+border:none;
+background:#2a3942;
+color:#e9edef;
 outline:none;
 font-size:15px
 }
 
+#messageInput::placeholder {
+color: #8696a0;
+}
+
 #messageInput:focus{
-border-color:#00e889
+border-color:transparent
 }
 
 #voiceButton,
 #sendButton,
 #attachButton{
-width:50px;
-height:50px;
+width:40px;
+height:40px;
 border:0;
-border-radius:16px;
-font-size:22px;
+border-radius:50%;
+font-size:20px;
 cursor:pointer;
-flex-shrink:0
+flex-shrink:0;
+display: flex;
+align-items: center;
+justify-content: center;
+background: transparent;
+color: #8696a0;
 }
 
 #attachButton{
-background:#18231f;
-color:#fff;
-font-size:28px;
+color:#8696a0;
+font-size:22px;
 transition:.15s
+}
+
+#attachButton:hover{
+color:#e9edef;
 }
 
 #attachButton:active{
@@ -288,9 +327,12 @@ transform:scale(.92)
 }
 
 #voiceButton{
-background:#18231f;
-color:#fff;
+color:#8696a0;
 transition:.18s
+}
+
+#voiceButton:hover{
+color:#e9edef;
 }
 
 #voiceButton.recording{
@@ -300,24 +342,29 @@ transform:scale(1.05)
 }
 
 #sendButton{
-background:#00e889;
-color:#00150e
+background:transparent;
+color:#00a884;
+font-size:18px;
+}
+
+#sendButton:hover{
+color:#00c29a;
 }
 
 #sendButton:disabled{
-opacity:.6
+opacity:.4;
+cursor: default;
 }
 
 #attachMenu{
 position:fixed;
-bottom:70px;
-right:10px;
-width:175px;
-padding:7px;
-background:#0b1512;
-border:1px solid rgba(0,232,137,.18);
-border-radius:17px;
-box-shadow:0 10px 35px rgba(0,0,0,.55);
+bottom:65px;
+left:16px;
+width:200px;
+padding:8px 0;
+background:#233138;
+border-radius:12px;
+box-shadow:0 4px 15px rgba(0,0,0,.4);
 display:none;
 z-index:1000
 }
@@ -328,32 +375,25 @@ display:block
 
 .attach-option{
 width:100%;
-height:45px;
+height:40px;
 border:0;
-border-radius:12px;
-background:#18231f;
-color:#fff;
+background:transparent;
+color:#e9edef;
 display:flex;
 align-items:center;
-gap:10px;
-padding:0 13px;
+gap:14px;
+padding:0 16px;
 font-size:14px;
-font-weight:bold;
 cursor:pointer;
-margin-bottom:5px
 }
 
-.attach-option:last-child{
-margin-bottom:0
-}
-
-.attach-option:active{
-transform:scale(.98)
+.attach-option:hover{
+background:rgba(255,255,255,0.05);
 }
 
 .attach-icon{
-font-size:20px;
-width:28px;
+font-size:18px;
+width:24px;
 text-align:center
 }
 
@@ -363,7 +403,7 @@ display:none!important
 
 .image-message,
 .video-message{
-padding:6px !important;
+padding:3px !important;
 width:max-content !important;
 max-width:82vw !important;
 overflow:visible !important;
@@ -372,6 +412,7 @@ flex-direction:column !important;
 align-items:flex-start !important;
 box-sizing:border-box !important;
 flex:0 0 auto !important;
+border-radius:8px !important;
 }
 
 .message-image,
@@ -380,8 +421,8 @@ display:block !important;
 width:auto !important;
 height:auto !important;
 max-width:100% !important;
-max-height:360px !important;
-border-radius:14px !important;
+max-height:300px !important;
+border-radius:6px !important;
 object-fit:contain !important;
 cursor:pointer !important;
 user-select:none !important;
@@ -398,76 +439,72 @@ background:#000 !important;
 
 .image-message .message-meta,
 .video-message .message-meta{
-padding:0 5px 2px !important;
+padding:0 4px 2px !important;
 width:100% !important;
 box-sizing:border-box !important;
 }
 
 .voice-message{
 display:block !important;
-width:330px !important;
+width:280px !important;
 max-width:calc(100% - 20px) !important;
-min-width:250px !important;
+min-width:230px !important;
 height:auto !important;
-min-height:76px !important;
-padding:8px 10px 7px !important;
-border-radius:18px !important;
+min-height:60px !important;
+padding:6px 8px !important;
+border-radius:8px !important;
 position:relative !important;
 overflow:visible !important;
 flex:none !important;
 box-sizing:border-box !important;
-background:linear-gradient(135deg,#162923,#0d1714) !important;
-border:1px solid rgba(0,232,137,.16) !important;
-box-shadow:0 5px 18px rgba(0,0,0,.16);
+background:transparent !important;
+border:none !important;
 line-height:normal !important;
 white-space:normal !important
 }
 
 .message.mine.voice-message{
-align-self:flex-start !important;
-background:linear-gradient(135deg,#087e50,#00a866) !important;
-color:#fff;
-border:1px solid rgba(255,255,255,.08) !important
+align-self:flex-end !important;
+background:transparent !important;
+color:#e9edef;
 }
 
 .message.other.voice-message{
-align-self:flex-end !important;
-background:linear-gradient(135deg,#162923,#0d1714) !important
+align-self:flex-start !important;
+background:transparent !important;
 }
 
 .voice-message-box{
 display:flex !important;
 align-items:center !important;
-gap:9px !important;
+gap:8px !important;
 direction:rtl !important;
 width:100% !important;
 height:auto !important;
-min-height:48px !important;
+min-height:40px !important;
 flex:none !important;
 overflow:hidden !important;
 border-radius:inherit;
 }
 
 .voice-icon{
-width:43px !important;
-height:43px !important;
-min-width:43px !important;
-max-width:43px !important;
+width:36px !important;
+height:36px !important;
+min-width:36px !important;
+max-width:36px !important;
 border-radius:50% !important;
 display:flex !important;
 align-items:center !important;
 justify-content:center !important;
-background:rgba(0,232,137,.13) !important;
-color:#00e889 !important;
-font-size:18px !important;
+background:#2a3942 !important;
+color:#00a884 !important;
+font-size:16px !important;
 flex:none !important;
-box-shadow:0 0 0 1px rgba(0,232,137,.08),0 4px 14px rgba(0,0,0,.18)
 }
 
 .voice-message.mine .voice-icon{
-background:rgba(255,255,255,.16) !important;
-color:#fff !important;
-box-shadow:none
+background:#005c4b !important;
+color:#e9edef !important;
 }
 
 .voice-player{
@@ -483,26 +520,25 @@ display:flex !important;
 align-items:center !important;
 gap:8px !important;
 width:100% !important;
-height:38px !important;
-min-height:38px !important
+height:32px !important;
+min-height:32px !important
 }
 
 .voice-play{
-width:38px !important;
-height:38px !important;
-min-width:38px !important;
-max-width:38px !important;
+width:32px !important;
+height:32px !important;
+min-width:32px !important;
+max-width:32px !important;
 border:0 !important;
 border-radius:50% !important;
-background:#00e889 !important;
-color:#00150e !important;
+background:#00a884 !important;
+color:#fff !important;
 display:flex !important;
 align-items:center !important;
 justify-content:center !important;
-font-size:14px !important;
+font-size:12px !important;
 cursor:pointer !important;
 flex:none !important;
-box-shadow:0 4px 12px rgba(0,232,137,.18);
 transition:transform .15s,background .15s
 }
 
@@ -511,84 +547,57 @@ transform:scale(.90)
 }
 
 .voice-message.mine .voice-play{
-background:#fff !important;
-color:#087e50 !important
+background:#00a884 !important;
+color:#fff !important
 }
 
 .voice-progress{
 flex:1 1 auto !important;
 width:auto !important;
 min-width:30px !important;
-height:7px !important;
-min-height:7px !important;
-max-height:7px !important;
-border-radius:20px !important;
-background:rgba(255,255,255,.13) !important;
+height:4px !important;
+min-height:4px !important;
+max-height:4px !important;
+border-radius:2px !important;
+background:#374248 !important;
 overflow:hidden !important;
 cursor:pointer !important;
 position:relative !important;
-box-shadow:inset 0 1px 2px rgba(0,0,0,.15)
 }
 
 .voice-progress-fill{
 width:0%;
 height:100% !important;
-background:linear-gradient(90deg,#00c96b,#00e889) !important;
-border-radius:20px;
+background:#00a884 !important;
+border-radius:2px;
 transition:width .05s linear
 }
 
 .voice-message.mine .voice-progress{
-background:rgba(0,0,0,.18) !important
+background:#227c6f !important
 }
 
 .voice-message.mine .voice-progress-fill{
-background:#fff !important
+background:#e9edef !important
 }
 
 .voice-time{
-font-size:10px !important;
-font-weight:bold !important;
-color:#b9c7c2 !important;
-width:39px !important;
-min-width:39px !important;
-max-width:39px !important;
+font-size:11px !important;
+color:#8696a0 !important;
+width:36px !important;
+min-width:36px !important;
+max-width:36px !important;
 text-align:center !important;
 direction:ltr !important;
 flex:none !important
 }
 
 .voice-message.mine .voice-time{
-color:rgba(255,255,255,.85) !important
+color:#8696a0 !important;
 }
 
 .voice-label{
-font-size:9px !important;
-color:#84938e !important;
-margin-top:4px !important;
-margin-right:52px !important;
-height:11px !important;
-display:flex !important;
-align-items:center !important;
-gap:4px !important
-}
-
-.voice-label::before{
-content:"";
-width:5px;
-height:5px;
-min-width:5px;
-border-radius:50%;
-background:#00e889;
-display:inline-block
-}
-
-.voice-message.mine .voice-label{
-color:rgba(255,255,255,.7) !important
-}
-
-.voice-message.mine .voice-label::before{
-background:#fff
+display:none !important;
 }
 
 .voice-audio{
@@ -598,26 +607,26 @@ height:0 !important
 }
 
 .call-message{
-min-width:245px;
-max-width:310px
+min-width:220px;
+max-width:280px
 }
 
 .call-box{
 display:flex;
 align-items:center;
-gap:11px
+gap:10px
 }
 
 .call-icon{
-width:46px;
-height:46px;
+width:38px;
+height:38px;
 border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-background:rgba(0,232,137,.14);
-color:#00e889;
-font-size:22px;
+background:rgba(0,168,132,.15);
+color:#00a884;
+font-size:18px;
 flex-shrink:0
 }
 
@@ -628,42 +637,43 @@ min-width:0
 
 .call-title{
 font-size:14px;
-font-weight:bold
+font-weight:500;
+color:#e9edef;
 }
 
 .call-subtitle{
-font-size:11px;
-opacity:.65;
-margin-top:4px
+font-size:12px;
+color:#8696a0;
+margin-top:2px;
 }
 
 .call-duration{
 font-size:11px;
-opacity:.7;
-margin-top:4px
+color:#8696a0;
+margin-top:2px;
 }
 
 .call-message.missed .call-icon{
-background:rgba(216,59,59,.15);
-color:#ff5555
+background:rgba(239,68,68,.15);
+color:#ef4444
 }
 
 .call-message.rejected .call-icon,
 .call-message.cancelled .call-icon{
 background:rgba(255,255,255,.08);
-color:#aaa
+color:#8696a0
 }
 
 .message-reply{
 display:flex;
 align-items:stretch;
-gap:7px;
-margin-bottom:8px;
-padding:7px 8px;
-border-radius:10px;
-background:rgba(0,0,0,.13);
-border-right:3px solid #00e889;
-font-size:11px;
+gap:6px;
+margin-bottom:4px;
+padding:6px 8px;
+border-radius:6px;
+background:rgba(0,0,0,.2);
+border-right:3px solid #00a884;
+font-size:12px;
 max-width:100%;
 overflow:hidden;
 cursor:pointer;
@@ -671,22 +681,15 @@ transition: background 0.2s;
 }
 
 .message-reply:hover{
-background:rgba(0,0,0,.25);
+background:rgba(0,0,0,.35);
 }
 
 .message.other .message-reply{
-background:rgba(255,255,255,.05)
-}
-
-.message.other .message-reply:hover{
-background:rgba(255,255,255,.1);
+background:rgba(255,255,255,.04)
 }
 
 .reply-line{
-width:3px;
-min-width:3px;
-border-radius:5px;
-background:#00e889
+display:none;
 }
 
 .reply-content{
@@ -695,18 +698,18 @@ overflow:hidden
 }
 
 .reply-name{
-font-weight:bold;
-font-size:10px;
+font-weight:500;
+font-size:12px;
 margin-bottom:2px;
-color:#00e889
+color:#00a884
 }
 
 .message.mine .reply-name{
-color:#fff
+color:#53bdeb
 }
 
 .reply-text{
-opacity:.75;
+color:#8696a0;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis
@@ -717,62 +720,63 @@ display:flex;
 align-items:center;
 flex-wrap:wrap;
 gap:4px;
-margin-top: 10px;
+margin-top: 4px;
 position: relative;
 z-index: 5;
 }
 
 .reaction-chip{
-border:1px solid rgba(255,255,255,.12);
-background:rgba(0,0,0,.25);
+border:none;
+background:#111b21;
 border-radius:12px;
-padding:2px 7px;
+padding:2px 6px;
 font-size:12px;
-line-height:18px;
+line-height:16px;
 cursor:pointer;
 display:flex;
 align-items:center;
-gap:3px
+gap:3px;
+box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .reaction-chip.mine{
-border-color:rgba(0,232,137,.55);
-background:rgba(0,232,137,.2)
+background:#202c33;
+border:1px solid rgba(0,168,132,0.3);
 }
 
 .reaction-count{
-font-size:9px;
-opacity:.8
+font-size:11px;
+color:#8696a0;
 }
 
 .pinned-label{
 display:flex;
 align-items:center;
 gap:4px;
-font-size:9px;
-opacity:.75;
-margin-bottom:5px;
-color:#00e889
+font-size:11px;
+color:#00a884;
+margin-bottom:4px;
+font-weight:500;
 }
 
 .message.mine .pinned-label{
-color:#fff
+color:#53bdeb;
 }
 
 .reply-compose{
 position:fixed;
-bottom:70px;
+bottom:65px;
 left:50%;
 transform:translateX(-50%);
 width:100%;
 max-width:650px;
-padding:7px 10px;
-background:#07100d;
-border-top:1px solid rgba(0,232,137,.14);
+padding:8px 16px;
+background:#202c33;
+border-top:1px solid rgba(255,255,255,.08);
 z-index:45;
 display:none;
 align-items:center;
-gap:8px
+gap:12px
 }
 
 .reply-compose.show{
@@ -782,23 +786,23 @@ display:flex
 .reply-compose-content{
 flex:1;
 min-width:0;
-padding:7px 10px;
-background:#111916;
-border-radius:10px;
-border-right:3px solid #00e889;
+padding:6px 10px;
+background:#2a3942;
+border-radius:8px;
+border-right:3px solid #00a884;
 overflow:hidden
 }
 
 .reply-compose-name{
-font-size:10px;
-font-weight:bold;
-color:#00e889;
+font-size:12px;
+font-weight:500;
+color:#00a884;
 margin-bottom:2px
 }
 
 .reply-compose-text{
-font-size:11px;
-opacity:.75;
+font-size:13px;
+color:#8696a0;
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis
@@ -808,28 +812,34 @@ text-overflow:ellipsis
 width:32px;
 height:32px;
 border:0;
-border-radius:10px;
-background:#18231f;
-color:#fff;
+border-radius:50%;
+background:transparent;
+color:#8696a0;
 font-size:16px;
-cursor:pointer
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.reply-cancel:hover{
+background:rgba(255,255,255,0.05);
+color:#e9edef;
 }
 
 .message-menu{
 position:absolute !important;
 left:50% !important;
-bottom:calc(100% + 8px) !important;
+bottom:calc(100% + 6px) !important;
 transform:translateX(-50%) !important;
-width:190px !important;
-min-width:190px !important;
-max-width:190px !important;
+width:170px !important;
+min-width:170px !important;
+max-width:170px !important;
 height:auto !important;
 min-height:0 !important;
-padding:5px !important;
-background:#0b1512 !important;
-border:1px solid rgba(0,232,137,.18) !important;
-border-radius:15px !important;
-box-shadow:0 8px 25px rgba(0,0,0,.55) !important;
+padding:6px 0 !important;
+background:#233138 !important;
+border-radius:8px !important;
+box-shadow:0 4px 15px rgba(0,0,0,.5) !important;
 z-index:999999 !important;
 display:block !important;
 flex:none !important;
@@ -840,38 +850,33 @@ white-space:normal !important;
 width:100% !important;
 min-width:0 !important;
 height:auto !important;
-min-height:40px !important;
-padding:10px 14px !important;
+min-height:36px !important;
+padding:8px 16px !important;
 border:0 !important;
-border-radius:11px !important;
-background:#18231f !important;
-color:#fff !important;
-font-size:13px !important;
-font-weight:bold !important;
+border-radius:0 !important;
+background:transparent !important;
+color:#e9edef !important;
+font-size:14px !important;
+font-weight:normal !important;
+text-align:right !important;
 cursor:pointer !important;
 display:block !important;
-margin-bottom:4px;
-}
-
-.message-menu button:last-child{
-margin-bottom:0;
 }
 
 .message-menu button:hover{
-background:#22332d !important;
+background:rgba(255,255,255,0.05) !important;
 }
 
 #incomingCall{
 position:fixed;
-top:85px;
+top:70px;
 left:50%;
 transform:translateX(-50%);
 width:min(620px,calc(100% - 24px));
-padding:14px;
-background:#101815;
-border:1px solid rgba(255,255,255,.1);
-border-radius:20px;
-box-shadow:0 15px 45px rgba(0,0,0,.5);
+padding:14px 16px;
+background:#202c33;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
 z-index:9000;
 display:none;
 align-items:center;
@@ -882,54 +887,53 @@ gap:12px
 .incoming-call-info{
 display:flex;
 align-items:center;
-gap:11px;
+gap:12px;
 min-width:0
 }
 
 .incoming-name{
 font-size:15px;
-font-weight:bold
+font-weight:500;
+color:#e9edef;
 }
 
 .incoming-type{
-font-size:12px;
-color:#9aa7a3;
-margin-top:4px
-}
-
-.call-avatar{
-width:52px;
-height:52px
+font-size:13px;
+color:#8696a0;
+margin-top:2px
 }
 
 .incoming-actions{
 display:flex;
-gap:9px
+gap:8px
 }
 
 .incoming-actions button{
-width:46px;
-height:46px;
+width:40px;
+height:40px;
 border:0;
 border-radius:50%;
-font-size:20px;
+font-size:18px;
 color:#fff;
-cursor:pointer
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 #rejectIncoming{
-background:#d83b3b
+background:#ef4444
 }
 
 #acceptIncoming{
-background:#00e889;
-color:#00150e
+background:#00a884;
+color:#fff;
 }
 
 #callScreen{
 position:fixed;
 inset:0;
-background:#020504;
+background:#0b141a;
 z-index:10000;
 display:none;
 flex-direction:column;
@@ -937,12 +941,12 @@ overflow:hidden
 }
 
 .call-top{
-height:85px;
+height:80px;
 padding:15px;
 display:flex;
 align-items:center;
 justify-content:center;
-background:linear-gradient(180deg,rgba(0,0,0,.8),transparent)
+background:linear-gradient(180deg,rgba(0,0,0,.6),transparent)
 }
 
 .call-top-info{
@@ -950,20 +954,21 @@ text-align:center
 }
 
 #callTitle{
-font-size:20px;
-font-weight:bold
+font-size:18px;
+font-weight:500;
+color:#e9edef;
 }
 
 #callState{
 font-size:13px;
-color:#00e889;
-margin-top:6px
+color:#00a884;
+margin-top:4px
 }
 
 #callDuration{
 font-size:12px;
-color:#9aa7a3;
-margin-top:4px
+color:#8696a0;
+margin-top:2px
 }
 
 #audioCallView{
@@ -971,7 +976,7 @@ flex:1;
 display:flex;
 align-items:center;
 justify-content:center;
-background:#020504
+background:#0b141a
 }
 
 #videoArea{
@@ -998,30 +1003,30 @@ inset:0;
 display:flex;
 align-items:center;
 justify-content:center;
-background:#07110f;
+background:#111b21;
 z-index:1
 }
 
 #remoteAvatar img{
-width:150px;
-height:150px;
+width:140px;
+height:140px;
 border-radius:50%;
 object-fit:cover
 }
 
 #remoteAvatarEmoji{
-font-size:70px
+font-size:60px
 }
 
 #localVideo{
 position:absolute;
-width:110px;
-height:145px;
+width:100px;
+height:140px;
 left:16px;
-top:95px;
+top:16px;
 object-fit:cover;
-border-radius:18px;
-border:2px solid rgba(255,255,255,.7);
+border-radius:8px;
+border:1px solid rgba(255,255,255,.2);
 background:#111;
 z-index:5;
 display:none
@@ -1029,55 +1034,59 @@ display:none
 
 #localAvatar{
 position:absolute;
-width:110px;
-height:110px;
+width:100px;
+height:100px;
 left:16px;
-top:110px;
+top:16px;
 border-radius:50%;
-background:#12352c;
+background:#2a3942;
 z-index:6;
 display:none;
 align-items:center;
 justify-content:center;
 overflow:hidden;
-font-size:40px
+font-size:35px
 }
 
 .call-controls{
-min-height:100px;
+min-height:90px;
 padding:15px;
 display:flex;
 align-items:center;
 justify-content:center;
 gap:12px;
-background:rgba(5,8,7,.98);
+background:#111b21;
 z-index:20
 }
 
 .call-control{
-width:58px;
-height:58px;
+width:50px;
+height:50px;
 border:0;
 border-radius:50%;
-background:#18231f;
-color:#fff;
-font-size:22px;
-cursor:pointer
+background:#2a3942;
+color:#e9edef;
+font-size:20px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
 .call-control.accept{
-background:#00e889;
-color:#00150e
+background:#00a884;
+color:#fff
 }
 
 .call-control.reject,
 .call-control.end{
-background:#d83b3b
+background:#ef4444;
+color:#fff;
 }
 
 .call-control.active{
-background:#00e889;
-color:#00150e
+background:#00a884;
+color:#fff
 }
 
 .hidden{
@@ -1085,17 +1094,17 @@ display:none!important
 }
 
 @media(max-width:500px){
-.message{max-width:84%}
-.voice-message{width:300px !important;max-width:calc(100vw - 70px) !important;min-width:245px !important}
-header{padding:10px 12px}
-#incomingCall{top:75px}
-#localVideo{width:100px;height:135px;left:12px;top:90px}
-#localAvatar{width:100px;height:100px;left:12px;top:105px}
-.call-control{width:54px;height:54px}
+.message{max-width:78%}
+.voice-message{width:260px !important;max-width:calc(100vw - 60px) !important;min-width:220px !important}
+header{padding:8px 12px}
+#incomingCall{top:60px}
+#localVideo{width:90px;height:120px;left:12px;top:12px}
+#localAvatar{width:90px;height:90px;left:12px;top:12px}
+.call-control{width:46px;height:46px}
 .message-menu{
-width:185px !important;
-min-width:185px !important;
-max-width:185px !important
+width:160px !important;
+min-width:160px !important;
+max-width:160px !important
 }
 }
 </style>
@@ -1103,18 +1112,18 @@ max-width:185px !important
 
 <body>
 
-<div id="loading" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#020504;color:white;font-size:18px;z-index:999999">
+<div id="loading" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b141a;color:#e9edef;font-size:16px;z-index:999999">
 جارٍ فتح الدردشة...
 </div>
 
 <main id="app" class="app" style="display:none">
 
 <header>
-<button id="backButton" class="back" type="button">→</button>
+<button id="backButton" class="back" type="button">➔</button>
 <div id="friendAvatar" class="avatar">👤</div>
 <div class="user-info">
 <div id="friendName" class="user-name">جار التحميل...</div>
-<div id="friendStatus" class="user-status">● غير متصل</div>
+<div id="friendStatus" class="user-status">غير متصل</div>
 </div>
 <div class="call-buttons">
 <button id="callButton" type="button">📞</button>
@@ -1133,7 +1142,7 @@ max-width:185px !important
 </button>
 <button id="cameraButton" class="attach-option" type="button">
 <span class="attach-icon">📷</span>
-<span>كاميرا / تسجيل</span>
+<span>كاميرا</span>
 </button>
 </div>
 
@@ -1150,7 +1159,7 @@ max-width:185px !important
 
 <div class="input-area">
 <button id="attachButton" type="button">＋</button>
-<input id="messageInput" type="text" placeholder="اكتب رسالة..." autocomplete="off" maxlength="2000">
+<input id="messageInput" type="text" placeholder="اكتب رسالة" autocomplete="off" maxlength="2000">
 <button id="voiceButton" type="button">🎤</button>
 <button id="sendButton" type="button">➤</button>
 </div>
@@ -1162,7 +1171,7 @@ max-width:185px !important
 <div id="incomingAvatar" class="call-avatar">👤</div>
 <div>
 <div id="incomingName" class="incoming-name">مكالمة واردة</div>
-<div id="incomingType" class="incoming-type">📞 مكالمة صوتية</div>
+<div id="incomingType" class="incoming-type">مكالمة صوتية</div>
 </div>
 </div>
 <div class="incoming-actions">
@@ -1181,7 +1190,7 @@ max-width:185px !important
 </div>
 
 <div id="audioCallView">
-<div id="audioCallAvatar" class="call-avatar" style="width:150px;height:150px;font-size:55px">👤</div>
+<div id="audioCallAvatar" class="call-avatar" style="width:130px;height:130px;font-size:50px">👤</div>
 </div>
 
 <div id="videoArea">
@@ -1362,7 +1371,7 @@ senderId: data.senderId,
 senderName: data.senderId === currentUser.uid ? "أنت" : friendUser?.name || "المستخدم",
 text: getMessagePreview(data)
 };
-replyComposeName.textContent = "الرد على " + replyTarget.senderName;
+replyComposeName.textContent = replyTarget.senderName;
 replyComposeText.textContent = replyTarget.text;
 replyCompose.classList.add("show");
 messageInput.focus();
@@ -1529,7 +1538,7 @@ if(!snap.exists()) throw new Error("المستخدم غير موجود");
 const data = snap.data();
 friendUser = {
 uid: friendId,
-name: data.name || "مستخدم Mecd",
+name: data.name || "مستخدم WhatsApp",
 photo: data.photo || data.photoURL || ""
 };
 
@@ -1550,20 +1559,20 @@ listenFriendActivity();
 function renderFriendStatus(){
 friendStatus.classList.remove("online", "typing", "recording");
 if(friendRecording){
-friendStatus.textContent = "🎤 يسجل صوت...";
+friendStatus.textContent = "جاري تسجيل صوت...";
 friendStatus.classList.add("recording");
 return;
 }
 if(friendTyping){
-friendStatus.textContent = "يكتب...";
+friendStatus.textContent = "يكتب الآن...";
 friendStatus.classList.add("typing");
 return;
 }
 if(friendOnline){
-friendStatus.textContent = "● متصل";
+friendStatus.textContent = "متصل الان";
 friendStatus.classList.add("online");
 }else{
-friendStatus.textContent = "● غير متصل";
+friendStatus.textContent = "غير متصل";
 }
 }
 
@@ -1919,7 +1928,7 @@ e.stopPropagation();
 if(!data.image) return;
 const win = window.open("", "_blank");
 if(win){
-win.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>صورة</title><style>body{margin:0;background:#020504;display:flex;align-items:center;justify-content:center;min-height:100vh;}img{max-width:100%;max-height:100vh;object-fit:contain;}</style></head><body><img src="${escapeHtml(data.image)}"></body></html>`);
+win.document.write(`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>صورة</title><style>body{margin:0;background:#0b141a;display:flex;align-items:center;justify-content:center;min-height:100vh;}img{max-width:100%;max-height:100vh;object-fit:contain;}</style></head><body><img src="${escapeHtml(data.image)}"></body></html>`);
 win.document.close();
 }
 };
@@ -1974,10 +1983,10 @@ titleElement.textContent = title;
 
 const subtitle = document.createElement("div");
 subtitle.className = "call-subtitle";
-if(data.callStatus === "completed") subtitle.textContent = "تمت المكالمة";
+if(data.callStatus === "completed") subtitle.textContent = "انتهت المكالمة";
 else if(data.callStatus === "missed") subtitle.textContent = "لم يتم الرد";
-else if(data.callStatus === "rejected") subtitle.textContent = "تم رفض المكالمة";
-else if(data.callStatus === "cancelled") subtitle.textContent = "تم إلغاء المكالمة";
+else if(data.callStatus === "rejected") subtitle.textContent = "مكالمة مرفوضة";
+else if(data.callStatus === "cancelled") subtitle.textContent = "مكالمة ملغاة";
 else subtitle.textContent = "مكالمة";
 
 info.appendChild(titleElement);
@@ -2027,7 +2036,7 @@ menu.className = "message-menu";
 
 const pinButton = document.createElement("button");
 pinButton.type = "button";
-pinButton.textContent = data.pinned ? "📌 إلغاء التثبيت" : "📌 تثبيت الرسالة";
+pinButton.textContent = data.pinned ? "إلغاء التثبيت" : "تثبيت الرسالة";
 pinButton.onclick = async e => {
 e.stopPropagation();
 await togglePinMessage(id, data.pinned === true);
@@ -2038,7 +2047,7 @@ menu.appendChild(pinButton);
 if(mine && messageType === "text"){
 const editBtn = document.createElement("button");
 editBtn.type = "button";
-editBtn.textContent = "✏️ تعديل";
+editBtn.textContent = "تعديل";
 editBtn.onclick = async e => {
 e.stopPropagation();
 removeMenus();
@@ -2059,7 +2068,7 @@ menu.appendChild(editBtn);
 
 const button = document.createElement("button");
 button.type = "button";
-button.textContent = mine ? "🗑️ إلغاء الإرسال" : "🗑️ حذف لدي";
+button.textContent = mine ? "حذف لدى الجميع" : "حذف لديك";
 button.onclick = async e => {
 e.stopPropagation();
 if(mine){
@@ -2227,8 +2236,6 @@ replyBox.onclick = e => {
 e.stopPropagation();
 scrollToMessage(data.replyTo.messageId);
 };
-const replyLine = document.createElement("div");
-replyLine.className = "reply-line";
 const replyContent = document.createElement("div");
 replyContent.className = "reply-content";
 const replyName = document.createElement("div");
@@ -2238,7 +2245,7 @@ const replyText = document.createElement("div");
 replyText.className = "reply-text";
 replyText.textContent = data.replyTo.text || "رسالة";
 replyContent.append(replyName, replyText);
-replyBox.append(replyLine, replyContent);
+replyBox.append(replyContent);
 box.appendChild(replyBox);
 }
 
@@ -2246,9 +2253,10 @@ if(data.type === "text"){
 box.innerHTML += escapeHtml(data.text || "");
 if(data.isEdited){
 const edited = document.createElement("span");
-edited.style.fontSize = "9px";
-edited.style.opacity = "0.6";
-edited.textContent = " (معدلة)";
+edited.style.fontSize = "10px";
+edited.style.color = "#8696a0";
+edited.style.marginRight = "4px";
+edited.textContent = "(معدلة)";
 box.appendChild(edited);
 }
 }else if(data.type === "voice"){
@@ -2419,7 +2427,7 @@ setupCallVisuals();
 function showIncoming(){
 incomingCall.style.display = "flex";
 incomingName.textContent = activeCallPeer?.name || "مكالمة واردة";
-incomingType.textContent = activeCallType === "video" ? "📹 مكالمة فيديو" : "📞 مكالمة صوتية";
+incomingType.textContent = activeCallType === "video" ? "مكالمة فيديو" : "مكالمة صوتية";
 setUserAvatar(incomingAvatar, activeCallPeer);
 }
 
@@ -2817,7 +2825,7 @@ activeCallType = data.callType || "audio";
 activeCallRole = "receiver";
 activeCallPeer = {
 uid: data.callerId,
-name: callerData.name || "مستخدم Mecd",
+name: callerData.name || "مستخدم WhatsApp",
 photo: callerData.photo || callerData.photoURL || ""
 };
 callSeconds = 0;
@@ -3188,7 +3196,7 @@ await finishCall();
 if(unsubscribeMessages) unsubscribeMessages();
 if(unsubscribeFriendStatus) unsubscribeFriendStatus();
 if(unsubscribeFriendActivity) unsubscribeFriendActivity();
-if(unsubscribeIncomingCalls) unsubscribeIncomingCalls();
+if(unsubscribeIncomingCalls)unsubscribeIncomingCalls();
 stopPresence();
 history.back();
 };
