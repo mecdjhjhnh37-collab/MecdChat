@@ -4,457 +4,603 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#050807">
+<meta name="theme-color" content="#075E54">
 <title>Mecd Chat</title>
 
 <style>
 *{
 box-sizing:border-box;
 margin:0;
-padding:0;
--webkit-tap-highlight-color:transparent
+padding:0
 }
 
 html,body{
 width:100%;
 height:100%;
-overflow:hidden
 }
 
 body{
 font-family:Arial,Tahoma,sans-serif;
-color:#fff;
-background:
-radial-gradient(circle at 50% -15%,#173d34 0,#0b211b 28%,transparent 58%),
-linear-gradient(180deg,#07110f 0%,#020504 100%)
+background:#0b141a;
+color:#e9edef;
+overflow:hidden;
 }
 
 button,input{
-font-family:inherit
+font-family:inherit;
 }
 
 button{
--webkit-user-select:none;
-user-select:none
+-webkit-tap-highlight-color:transparent;
 }
 
 .app{
-height:100dvh;
+width:100%;
 max-width:650px;
+height:100vh;
 margin:auto;
 display:flex;
 flex-direction:column;
 position:relative;
-background:linear-gradient(180deg,rgba(5,12,10,.28),rgba(2,5,4,.45))
+background:#efeae2;
+overflow:hidden;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 
 header{
-height:72px;
-min-height:72px;
+height:64px;
+min-height:64px;
+background:#075e54;
 display:flex;
 align-items:center;
-gap:11px;
-padding:10px 13px;
-background:rgba(5,8,7,.96);
-border-bottom:1px solid rgba(255,255,255,.07);
-z-index:20
+padding:7px 10px;
+gap:8px;
+z-index:20;
+box-shadow:0 1px 3px rgba(0,0,0,.25);
 }
 
 .back{
-width:43px;
-height:43px;
+width:38px;
+height:44px;
 border:0;
-border-radius:14px;
-background:#18231f;
+background:transparent;
 color:#fff;
-font-size:21px;
+font-size:27px;
 cursor:pointer;
 display:flex;
 align-items:center;
-justify-content:center
-}
-
-.back:active,
-.call-buttons button:active,
-#attachButton:active,
-#voiceButton:active,
-#sendButton:active{
-transform:scale(.94)
+justify-content:center;
 }
 
 .avatar{
-width:47px;
-height:47px;
-min-width:47px;
+width:45px;
+height:45px;
+min-width:45px;
 border-radius:50%;
-background:#17372f;
+background:#128c7e;
 display:flex;
 align-items:center;
 justify-content:center;
 overflow:hidden;
-font-size:23px;
-border:1px solid rgba(255,255,255,.08)
+font-size:22px;
 }
 
 .avatar img{
 width:100%;
 height:100%;
-object-fit:cover
+object-fit:cover;
+display:block;
 }
 
 .user-info{
 flex:1;
 min-width:0;
-text-align:right
+color:#fff;
 }
 
 .user-name{
 font-size:16px;
-font-weight:700;
+font-weight:500;
 white-space:nowrap;
 overflow:hidden;
-text-overflow:ellipsis
+text-overflow:ellipsis;
 }
 
 .user-status{
-font-size:11px;
-color:#777;
-margin-top:4px;
-transition:.2s
+font-size:12px;
+margin-top:3px;
+color:rgba(255,255,255,.8);
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 .user-status.online,
 .user-status.typing,
 .user-status.recording{
-color:#00e889
+color:#fff;
 }
 
 .call-buttons{
 display:flex;
 align-items:center;
-gap:7px
+gap:2px;
 }
 
 .call-buttons button{
-width:41px;
-height:41px;
-border:0;
-border-radius:13px;
-background:#18231f;
-color:#fff;
-font-size:18px;
-cursor:pointer;
-transition:.15s
-}
-
-/* PINNED */
-
-.pinned-banner{
-display:none;
-height:42px;
-padding:6px 13px;
-align-items:center;
-justify-content:space-between;
-gap:8px;
-background:#0a1512;
-border-bottom:1px solid rgba(0,232,137,.13);
-z-index:15
-}
-
-.pinned-banner.show{
-display:flex
-}
-
-.pinned-banner-content{
-flex:1;
-min-width:0;
-display:flex;
-align-items:center;
-gap:7px;
-cursor:pointer
-}
-
-.pinned-banner-text{
-color:#00e889;
-font-size:11px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.pinned-banner-close{
-width:28px;
-height:28px;
+width:38px;
+height:44px;
 border:0;
 background:transparent;
-color:#aaa;
-cursor:pointer
+color:#fff;
+font-size:21px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
 }
 
-/* MESSAGES */
+/* ================= CHAT BACKGROUND ================= */
 
 .messages{
+position:relative;
 flex:1;
 min-height:0;
 overflow-y:auto;
-overflow-x:hidden;
-padding:18px 13px 145px;
+padding:14px 9px 145px;
 display:flex;
 flex-direction:column;
-gap:14px;
+gap:4px;
 scroll-behavior:smooth;
--webkit-overflow-scrolling:touch
+background-color:#efeae2;
+background-image:
+radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);
+background-size:7px 7px;
 }
 
 .messages::-webkit-scrollbar{
-width:3px
+width:4px;
 }
 
 .messages::-webkit-scrollbar-thumb{
-background:#26352f;
-border-radius:10px
+background:rgba(0,0,0,.18);
+border-radius:10px;
 }
+
+/* ================= EMPTY ================= */
 
 .empty{
 margin:auto;
 text-align:center;
-color:#65736e;
+color:#667781;
+line-height:1.8;
 font-size:14px;
-line-height:1.9
+background:rgba(255,255,255,.65);
+padding:13px 20px;
+border-radius:10px;
 }
+
+/* ================= MESSAGE ================= */
 
 .message{
 position:relative;
-max-width:78%;
-padding:10px 13px 27px;
-border-radius:17px;
-line-height:1.5;
+max-width:82%;
+min-width:45px;
+padding:7px 9px 19px;
+border-radius:7px;
 word-break:break-word;
 overflow-wrap:anywhere;
-margin-bottom:6px;
+line-height:1.45;
+font-size:14px;
 user-select:none;
-transition:transform .12s ease,background-color .3s ease;
-box-shadow:0 2px 8px rgba(0,0,0,.08)
+box-shadow:0 1px 1px rgba(0,0,0,.12);
+transition:transform .12s ease,background .2s ease;
 }
 
 .message.mine{
 align-self:flex-start;
-background:#00c96b;
-color:#00150e;
-border-bottom-left-radius:5px
+background:#d9fdd3;
+color:#111;
+border-top-left-radius:0;
 }
 
 .message.other{
 align-self:flex-end;
-background:#18231f;
-border:1px solid rgba(255,255,255,.07);
-border-bottom-right-radius:5px
+background:#fff;
+color:#111;
+border-top-right-radius:0;
 }
 
 .message.highlight{
-background:#00e889!important;
-color:#00150e!important
+background:#fff3a6!important;
 }
+
+.message-text{
+white-space:pre-wrap;
+}
+
+.time{
+position:absolute;
+bottom:4px;
+left:8px;
+font-size:9px;
+color:#667781;
+direction:ltr;
+white-space:nowrap;
+}
+
+.message.mine .time{
+left:30px;
+}
+
+.message-status{
+position:absolute;
+bottom:3px;
+left:8px;
+font-size:13px;
+font-weight:bold;
+direction:ltr;
+color:#667781;
+}
+
+.message-status.read{
+color:#53bdeb;
+}
+
+.message.mine .message-status{
+left:8px;
+}
+
+/* ================= MEDIA ================= */
 
 .message.image-message,
 .message.video-message{
-padding:7px 7px 27px!important;
-width:max-content!important;
-max-width:80%!important
+padding:4px 4px 21px;
+max-width:82%;
+background:#fff;
 }
 
 .message.mine.image-message,
 .message.mine.video-message{
-background:#00c96b!important
+background:#d9fdd3;
 }
 
 .message-image,
 .message-video{
 display:block;
 width:100%;
-max-width:265px;
-max-height:290px;
-border-radius:12px;
-object-fit:cover
-}
-
-.message-video{
-background:#000
-}
-
-/* TIME */
-
-.message-meta{
-position:absolute;
-bottom:6px;
-left:11px;
-display:inline-flex;
-align-items:center;
-gap:4px;
-direction:ltr
-}
-
-.message.other .message-meta{
-left:auto;
-right:11px
-}
-
-.time{
-font-size:9px;
-opacity:.62;
-white-space:nowrap
-}
-
-.message-status{
-font-size:11px;
-font-weight:bold
-}
-
-.message-status.read{
-color:#006dff
-}
-
-/* REACTIONS */
-
-.message-reactions{
-position:absolute;
-bottom:-11px;
-right:9px;
-z-index:5;
-display:flex;
-align-items:center;
-flex-wrap:wrap;
-gap:3px
-}
-
-.message.mine .message-reactions{
-right:auto;
-left:9px
-}
-
-.reaction-chip{
-border:1px solid rgba(255,255,255,.13);
-background:#0b1613;
-border-radius:12px;
-padding:2px 5px;
-font-size:11px;
+max-width:280px;
+max-height:320px;
+object-fit:cover;
+border-radius:5px;
 cursor:pointer;
-display:flex;
-align-items:center;
-gap:2px;
-color:#fff
 }
 
-.reaction-chip.mine{
-border-color:rgba(0,232,137,.55);
-background:rgba(0,232,137,.23)
+.message.video-message video{
+background:#000;
 }
 
-.reaction-count{
-font-size:9px;
-opacity:.9
-}
-
-.heart-pop{
-position:absolute;
-bottom:8px;
-right:14px;
-transform:scale(0);
-font-size:22px;
-animation:popEffect .4s ease forwards;
-pointer-events:none;
-z-index:30;
-background:#0b1512;
-border-radius:50%;
-padding:2px 4px
-}
-
-.message.mine .heart-pop{
-right:auto;
-left:14px
-}
-
-@keyframes popEffect{
-0%{transform:scale(0);opacity:0}
-50%{transform:scale(1.3);opacity:1}
-100%{transform:scale(1);opacity:1}
-}
-
-/* REPLY */
+/* ================= REPLY ================= */
 
 .message-reply{
 display:flex;
-align-items:stretch;
-gap:6px;
-margin-bottom:6px;
+gap:7px;
+margin-bottom:5px;
 padding:5px 7px;
-border-radius:8px;
-background:rgba(0,0,0,.15);
-border-right:3px solid #00e889;
-font-size:11px;
-cursor:pointer
+border-radius:5px;
+background:rgba(0,0,0,.07);
+border-right:3px solid #25d366;
+cursor:pointer;
+overflow:hidden;
 }
 
 .message.other .message-reply{
-background:rgba(255,255,255,.06)
+background:#f1f2f3;
 }
 
 .reply-content{
 min-width:0;
-overflow:hidden
+overflow:hidden;
 }
 
 .reply-name{
 font-size:10px;
 font-weight:bold;
-color:#00e889;
-margin-bottom:2px
-}
-
-.message.mine .reply-name{
-color:#00150e
+color:#128c7e;
+margin-bottom:2px;
 }
 
 .reply-text{
-opacity:.8;
+font-size:10px;
+color:#667781;
 white-space:nowrap;
 overflow:hidden;
-text-overflow:ellipsis
+text-overflow:ellipsis;
 }
 
-/* BOTTOM SHEET */
+/* ================= REACTIONS ================= */
+
+.message-reactions{
+position:absolute;
+bottom:-9px;
+right:7px;
+display:flex;
+gap:2px;
+z-index:5;
+}
+
+.message.mine .message-reactions{
+right:auto;
+left:7px;
+}
+
+.reaction-chip{
+border:1px solid #ddd;
+background:#fff;
+border-radius:12px;
+padding:1px 5px;
+font-size:11px;
+display:flex;
+align-items:center;
+gap:2px;
+cursor:pointer;
+box-shadow:0 1px 2px rgba(0,0,0,.15);
+}
+
+.reaction-chip.mine{
+border-color:#25d366;
+}
+
+.reaction-count{
+font-size:9px;
+color:#667781;
+}
+
+/* ================= PIN ================= */
+
+.pinned-banner{
+display:none;
+background:#fff;
+color:#333;
+border-bottom:1px solid #ddd;
+padding:7px 12px;
+align-items:center;
+gap:8px;
+z-index:15;
+}
+
+.pinned-banner.show{
+display:flex;
+}
+
+.pinned-banner-content{
+display:flex;
+align-items:center;
+gap:7px;
+flex:1;
+min-width:0;
+cursor:pointer;
+}
+
+.pinned-banner-text{
+font-size:12px;
+color:#667781;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.pinned-banner-close{
+border:0;
+background:transparent;
+font-size:15px;
+color:#667781;
+cursor:pointer;
+}
+
+/* ================= BOTTOM INPUT ================= */
+
+.input-area{
+position:absolute;
+bottom:0;
+left:0;
+right:0;
+padding:7px 7px 8px;
+background:#efeae2;
+display:flex;
+align-items:flex-end;
+gap:6px;
+z-index:30;
+}
+
+.message-input-wrap{
+flex:1;
+min-width:0;
+display:flex;
+align-items:center;
+background:#fff;
+border-radius:24px;
+min-height:48px;
+padding:0 4px;
+}
+
+#attachButton{
+width:42px;
+height:42px;
+border:0;
+border-radius:50%;
+background:transparent;
+color:#54656f;
+font-size:25px;
+cursor:pointer;
+}
+
+#messageInput{
+flex:1;
+min-width:0;
+height:44px;
+border:0;
+outline:none;
+background:transparent;
+font-size:15px;
+color:#111;
+padding:0 5px;
+}
+
+#messageInput::placeholder{
+color:#8696a0;
+}
+
+#voiceButton,
+#sendButton{
+width:48px;
+height:48px;
+min-width:48px;
+border:0;
+border-radius:50%;
+font-size:21px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+#voiceButton{
+background:#25d366;
+color:#fff;
+}
+
+#sendButton{
+background:#25d366;
+color:#fff;
+display:none;
+}
+
+#sendButton.show{
+display:flex;
+}
+
+#voiceButton.hide{
+display:none;
+}
+
+/* ================= ATTACH MENU ================= */
+
+#attachMenu{
+position:absolute;
+bottom:67px;
+right:8px;
+width:205px;
+padding:6px;
+background:#fff;
+border-radius:12px;
+box-shadow:0 5px 25px rgba(0,0,0,.25);
+display:none;
+z-index:100;
+}
+
+#attachMenu.show{
+display:block;
+}
+
+.attach-option{
+width:100%;
+height:46px;
+border:0;
+border-radius:8px;
+background:#fff;
+color:#333;
+display:flex;
+align-items:center;
+gap:12px;
+padding:0 13px;
+font-size:14px;
+cursor:pointer;
+}
+
+.attach-option:hover{
+background:#f0f2f5;
+}
+
+/* ================= REPLY COMPOSE ================= */
+
+.reply-compose{
+position:absolute;
+bottom:64px;
+left:0;
+right:0;
+padding:6px 9px;
+background:#f0f2f5;
+border-top:1px solid #ddd;
+display:none;
+align-items:center;
+gap:7px;
+z-index:29;
+}
+
+.reply-compose.show{
+display:flex;
+}
+
+.reply-compose-content{
+flex:1;
+min-width:0;
+background:#fff;
+border-right:3px solid #25d366;
+padding:6px 9px;
+border-radius:5px;
+overflow:hidden;
+}
+
+.reply-compose-name{
+font-size:11px;
+font-weight:bold;
+color:#128c7e;
+margin-bottom:2px;
+}
+
+.reply-compose-text{
+font-size:11px;
+color:#667781;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.reply-cancel{
+width:32px;
+height:32px;
+border:0;
+background:transparent;
+font-size:18px;
+color:#667781;
+cursor:pointer;
+}
+
+/* ================= BOTTOM SHEET ================= */
 
 .bottom-sheet-backdrop{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.67);
+background:rgba(0,0,0,.45);
 z-index:1000;
 display:flex;
 align-items:flex-end;
-animation:fadeIn .18s ease
 }
 
 .bottom-sheet{
 width:100%;
 max-width:650px;
-margin:auto auto 0;
-background:#111b18;
-border-top-left-radius:24px;
-border-top-right-radius:24px;
-padding:14px 18px 28px;
-box-shadow:0 -12px 40px rgba(0,0,0,.75);
-animation:slideUp .23s ease;
-border-top:1px solid rgba(0,232,137,.18)
+margin:auto;
+background:#fff;
+border-radius:18px 18px 0 0;
+padding:10px 10px 22px;
+box-shadow:0 -5px 25px rgba(0,0,0,.25);
+animation:sheetUp .2s ease;
 }
 
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
-}
-
-@keyframes slideUp{
+@keyframes sheetUp{
 from{transform:translateY(100%)}
 to{transform:translateY(0)}
 }
@@ -463,233 +609,47 @@ to{transform:translateY(0)}
 display:flex;
 justify-content:space-around;
 align-items:center;
-background:#182521;
-padding:9px 12px;
-border-radius:30px;
-border:1px solid rgba(255,255,255,.06);
-margin-bottom:12px
+padding:8px;
+margin-bottom:7px;
+background:#f0f2f5;
+border-radius:15px;
 }
 
 .sheet-reaction-btn{
-width:42px;
-height:38px;
 border:0;
 background:transparent;
-font-size:23px;
-cursor:pointer
+font-size:25px;
+cursor:pointer;
+padding:5px 9px;
 }
 
 .sheet-actions-list{
 display:flex;
 flex-direction:column;
-gap:6px
+gap:2px;
 }
 
 .sheet-action-item{
 width:100%;
-min-height:46px;
-padding:11px 14px;
-background:#182521;
+height:47px;
 border:0;
-border-radius:12px;
-color:#fff;
-font-size:14px;
-font-weight:bold;
-text-align:right;
+background:#fff;
+border-radius:8px;
 display:flex;
 align-items:center;
 gap:12px;
-cursor:pointer
-}
-
-.sheet-action-item:active{
-background:#20312b;
-transform:scale(.99)
-}
-
-/* ATTACH MENU */
-
-#attachMenu{
-position:fixed;
-bottom:70px;
-right:max(10px,calc((100vw - 650px)/2 + 10px));
-width:180px;
-padding:7px;
-background:#0b1512;
-border:1px solid rgba(0,232,137,.17);
-border-radius:17px;
-box-shadow:0 10px 35px rgba(0,0,0,.55);
-display:none;
-z-index:1000
-}
-
-#attachMenu.show{
-display:block
-}
-
-.attach-option{
-width:100%;
-height:45px;
-border:0;
-border-radius:12px;
-background:#18231f;
-color:#fff;
-display:flex;
-align-items:center;
-gap:10px;
-padding:0 13px;
-font-size:13px;
-font-weight:bold;
-cursor:pointer;
-margin-bottom:5px
-}
-
-.attach-option:last-child{
-margin-bottom:0
-}
-
-.attach-option:active{
-background:#20312b
-}
-
-/* REPLY COMPOSE */
-
-.reply-compose{
-position:fixed;
-bottom:70px;
-left:50%;
-transform:translateX(-50%);
-width:100%;
-max-width:650px;
-padding:7px 10px;
-background:#07100d;
-border-top:1px solid rgba(0,232,137,.14);
-z-index:45;
-display:none;
-align-items:center;
-gap:8px
-}
-
-.reply-compose.show{
-display:flex
-}
-
-.reply-compose-content{
-flex:1;
-min-width:0;
-padding:7px 10px;
-background:#111916;
-border-radius:10px;
-border-right:3px solid #00e889;
-overflow:hidden
-}
-
-.reply-compose-name{
-font-size:10px;
-font-weight:bold;
-color:#00e889;
-margin-bottom:2px
-}
-
-.reply-compose-text{
-font-size:11px;
-opacity:.75;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.reply-cancel{
-width:32px;
-height:32px;
-border:0;
-border-radius:10px;
-background:#18231f;
-color:#fff;
-cursor:pointer
-}
-
-/* INPUT */
-
-.input-area{
-position:fixed;
-bottom:0;
-left:50%;
-transform:translateX(-50%);
-width:100%;
-max-width:650px;
-min-height:70px;
-padding:9px 10px;
-display:flex;
-align-items:center;
-gap:7px;
-background:#050807;
-border-top:1px solid rgba(255,255,255,.05);
-z-index:50
-}
-
-#messageInput{
-flex:1;
-min-width:0;
-height:50px;
 padding:0 14px;
-border-radius:17px;
-border:1px solid #27332f;
-background:#111916;
-color:#fff;
-outline:none;
-font-size:15px;
-direction:rtl
-}
-
-#messageInput::placeholder{
-color:#68746f
-}
-
-#messageInput:focus{
-border-color:#00e889
-}
-
-#voiceButton,
-#sendButton,
-#attachButton{
-width:49px;
-height:49px;
-min-width:49px;
-border:0;
-border-radius:16px;
-font-size:21px;
+font-size:14px;
+color:#222;
 cursor:pointer;
-transition:.15s
+text-align:right;
 }
 
-#attachButton{
-background:#18231f;
-color:#fff;
-font-size:25px
+.sheet-action-item:hover{
+background:#f0f2f5;
 }
 
-#voiceButton{
-background:#18231f;
-color:#fff
-}
-
-#sendButton{
-background:#00e889;
-color:#00150e;
-font-size:22px
-}
-
-#sendButton:disabled{
-opacity:.5;
-cursor:not-allowed
-}
-
-.hidden-file{
-display:none!important
-}
-
-/* LOADING */
+/* ================= LOADING ================= */
 
 #loading{
 position:fixed;
@@ -697,63 +657,32 @@ inset:0;
 display:flex;
 align-items:center;
 justify-content:center;
-flex-direction:column;
-gap:12px;
-background:#020504;
+background:#075e54;
 color:#fff;
 font-size:17px;
-z-index:999999
+z-index:999999;
 }
 
-.loading-spinner{
-width:30px;
-height:30px;
-border:3px solid #1a2b25;
-border-top-color:#00e889;
-border-radius:50%;
-animation:spin .8s linear infinite
+/* ================= FILE ================= */
+
+.hidden-file{
+display:none!important;
 }
 
-@keyframes spin{
-to{transform:rotate(360deg)}
-}
+/* ================= MOBILE ================= */
 
-@media(max-width:420px){
-header{
-height:68px;
-min-height:68px;
-padding:8px 10px
-}
-
-.avatar{
-width:44px;
-height:44px;
-min-width:44px
-}
-
-.call-buttons button{
-width:39px;
-height:39px
+@media(max-width:650px){
+.app{
+max-width:none;
 }
 
 .message{
-max-width:82%
+max-width:86%;
 }
 
-.input-area{
-padding:8px
-}
-
-#voiceButton,
-#sendButton,
-#attachButton{
-width:46px;
-height:46px;
-min-width:46px
-}
-
-#messageInput{
-height:46px
+.message-image,
+.message-video{
+max-width:270px;
 }
 }
 </style>
@@ -761,10 +690,7 @@ height:46px
 
 <body>
 
-<div id="loading">
-<div class="loading-spinner"></div>
-<div>جارٍ فتح الدردشة...</div>
-</div>
+<div id="loading">جارٍ فتح الدردشة...</div>
 
 <main id="app" class="app" style="display:none">
 
@@ -776,12 +702,13 @@ height:46px
 
 <div class="user-info">
 <div id="friendName" class="user-name">جار التحميل...</div>
-<div id="friendStatus" class="user-status">● غير متصل</div>
+<div id="friendStatus" class="user-status">غير متصل</div>
 </div>
 
 <div class="call-buttons">
-<button id="callButton" type="button" aria-label="مكالمة صوتية">📞</button>
-<button id="videoButton" type="button" aria-label="مكالمة فيديو">📹</button>
+<button id="callButton" type="button" aria-label="مكالمة">📞</button>
+<button id="videoButton" type="button" aria-label="فيديو">📹</button>
+<button id="moreButton" type="button" aria-label="المزيد">⋮</button>
 </div>
 
 </header>
@@ -810,67 +737,50 @@ height:46px
 
 <button id="galleryButton" class="attach-option" type="button">
 <span>🖼️</span>
-صورة أو فيديو
+<span>صورة أو فيديو</span>
 </button>
 
 <button id="cameraButton" class="attach-option" type="button">
 <span>📷</span>
-كاميرا
+<span>الكاميرا</span>
 </button>
 
 </div>
 
-<input
-id="galleryInput"
-class="hidden-file"
-type="file"
-accept="image/*,video/*"
->
+<input id="galleryInput" class="hidden-file" type="file" accept="image/*,video/*">
 
-<input
-id="cameraInput"
-class="hidden-file"
-type="file"
-accept="image/*,video/*"
-capture="environment"
->
+<input id="cameraInput" class="hidden-file" type="file" accept="image/*,video/*" capture="environment">
 
 <div id="replyCompose" class="reply-compose">
 
 <div class="reply-compose-content">
-<div id="replyComposeName" class="reply-compose-name">
-الرد على الرسالة
-</div>
+<div id="replyComposeName" class="reply-compose-name">الرد على الرسالة</div>
 <div id="replyComposeText" class="reply-compose-text"></div>
 </div>
 
-<button id="replyCancel" class="reply-cancel" type="button">
-✕
-</button>
+<button id="replyCancel" class="reply-cancel" type="button">✕</button>
 
 </div>
 
 <div class="input-area">
 
-<button id="attachButton" type="button" aria-label="إرفاق">
-＋
-</button>
+<div class="message-input-wrap">
+
+<button id="attachButton" type="button" aria-label="إرفاق">📎</button>
 
 <input
 id="messageInput"
 type="text"
-placeholder="اكتب رسالة..."
+placeholder="اكتب رسالة"
 autocomplete="off"
 maxlength="2000"
 >
 
-<button id="voiceButton" type="button" aria-label="رسالة صوتية">
-🎤
-</button>
+</div>
 
-<button id="sendButton" type="button" aria-label="إرسال">
-➤
-</button>
+<button id="voiceButton" type="button" aria-label="رسالة صوتية">🎤</button>
+
+<button id="sendButton" type="button" aria-label="إرسال">➤</button>
 
 </div>
 
@@ -891,6 +801,7 @@ import {
 getFirestore,
 doc,
 getDoc,
+setDoc,
 updateDoc,
 addDoc,
 collection,
@@ -908,9 +819,9 @@ createClient
 } from "https://esm.sh/@supabase/supabase-js@2";
 
 
-/* =========================
+/* =========================================================
    FIREBASE
-========================= */
+========================================================= */
 
 const firebaseConfig = {
 apiKey:"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
@@ -922,13 +833,15 @@ appId:"1:643005547408:web:b1719060ec340dd0e0a915"
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
+
 const auth = getAuth(firebaseApp);
+
 const db = getFirestore(firebaseApp);
 
 
-/* =========================
+/* =========================================================
    SUPABASE
-========================= */
+========================================================= */
 
 const SUPABASE_URL =
 "https://aqukohedqmtjuspjbkmn.supabase.co";
@@ -943,17 +856,18 @@ SUPABASE_PUBLISHABLE_KEY
 );
 
 
-/* =========================
+/* =========================================================
    ELEMENTS
-========================= */
+========================================================= */
 
 const $ = id => document.getElementById(id);
 
 const loading = $("loading");
 const app = $("app");
-const messages = $("messages");
 
+const messages = $("messages");
 const messageInput = $("messageInput");
+
 const sendButton = $("sendButton");
 const voiceButton = $("voiceButton");
 
@@ -971,6 +885,7 @@ const friendAvatar = $("friendAvatar");
 const friendStatus = $("friendStatus");
 
 const backButton = $("backButton");
+const moreButton = $("moreButton");
 
 const pinnedBanner = $("pinnedBanner");
 const pinnedBannerText = $("pinnedBannerText");
@@ -982,16 +897,14 @@ const replyComposeName = $("replyComposeName");
 const replyComposeText = $("replyComposeText");
 const replyCancel = $("replyCancel");
 
-const callButton = $("callButton");
-const videoButton = $("videoButton");
 
-
-/* =========================
+/* =========================================================
    STATE
-========================= */
+========================================================= */
 
 let currentUser = null;
 let friendUser = null;
+
 let chatID = null;
 
 let unsubscribeMessages = null;
@@ -1002,28 +915,22 @@ let editingMessageId = null;
 
 const messageElements = new Map();
 
-const reactionList = [
-"❤️",
-"👍",
-"🔥",
-"😂",
-"😮"
-];
 
-
-/* =========================
+/* =========================================================
    HELPERS
-========================= */
+========================================================= */
 
 function escapeHtml(value){
 
 return String(value ?? "")
 .replace(/[&<>'"]/g,c=>({
+
 "&":"&amp;",
 "<":"&lt;",
 ">":"&gt;",
 "'":"&#39;",
 '"':"&quot;"
+
 }[c]));
 
 }
@@ -1057,7 +964,7 @@ return "رسالة";
 
 function formatTime(timestamp){
 
-if(!timestamp?.toDate)
+if(!timestamp || !timestamp.toDate)
 return "";
 
 try{
@@ -1078,10 +985,6 @@ return "";
 }
 
 
-/* =========================
-   AVATAR
-========================= */
-
 function setUserAvatar(element,user){
 
 element.innerHTML = "";
@@ -1092,7 +995,6 @@ const img = document.createElement("img");
 
 img.src = user.photo;
 img.alt = "";
-img.referrerPolicy = "no-referrer";
 
 img.onerror = ()=>{
 element.textContent = "👤";
@@ -1109,196 +1011,14 @@ element.textContent = "👤";
 }
 
 
-/* =========================
-   FRIEND STATUS
-========================= */
-
-function updateFriendStatus(data){
-
-if(!data){
-
-friendStatus.textContent = "● غير متصل";
-friendStatus.className = "user-status";
-
-return;
-
-}
-
-if(data.typing === true){
-
-friendStatus.textContent = "● يكتب الآن...";
-friendStatus.className = "user-status typing";
-return;
-
-}
-
-if(data.recording === true){
-
-friendStatus.textContent = "● يسجل رسالة صوتية...";
-friendStatus.className = "user-status recording";
-return;
-
-}
-
-if(data.online === true){
-
-friendStatus.textContent = "● متصل";
-friendStatus.className = "user-status online";
-return;
-
-}
-
-if(data.lastSeen){
-
-let date = null;
-
-try{
-
-if(typeof data.lastSeen.toDate === "function"){
-date = data.lastSeen.toDate();
-}
-
-}catch{}
-
-if(date){
-
-friendStatus.textContent =
-"● آخر ظهور " +
-date.toLocaleString("ar",{
-day:"2-digit",
-month:"2-digit",
-hour:"2-digit",
-minute:"2-digit"
-});
-
-}else{
-
-friendStatus.textContent = "● غير متصل";
-
-}
-
-}else{
-
-friendStatus.textContent = "● غير متصل";
-
-}
-
-}
-
-
-/* =========================
-   LOAD FRIEND
-========================= */
-
-async function loadFriend(){
-
-const params =
-new URLSearchParams(location.search);
-
-const friendId =
-params.get("friend");
-
-if(!friendId)
-throw new Error("لا يوجد صديق في الرابط");
-
-const snap =
-await getDoc(
-doc(db,"users",friendId)
-);
-
-if(!snap.exists())
-throw new Error("المستخدم غير موجود");
-
-const data = snap.data();
-
-friendUser = {
-uid:friendId,
-name:data.name || data.displayName || "مستخدم",
-photo:data.photo || data.photoURL || "",
-online:data.online === true,
-lastSeen:data.lastSeen || null,
-typing:data.typing === true,
-recording:data.recording === true
-};
-
-friendName.textContent =
-friendUser.name;
-
-setUserAvatar(
-friendAvatar,
-friendUser
-);
-
-updateFriendStatus(friendUser);
-
-chatID =
-createChatID(
-currentUser.uid,
-friendUser.uid
-);
-
-listenFriendStatus(friendId);
-
-}
-
-
-/* =========================
-   FRIEND STATUS LISTENER
-========================= */
-
-function listenFriendStatus(friendId){
-
-if(unsubscribeFriend)
-unsubscribeFriend();
-
-unsubscribeFriend =
-onSnapshot(
-doc(db,"users",friendId),
-snap=>{
-
-if(!snap.exists())
-return;
-
-const data = snap.data();
-
-friendUser = {
-...friendUser,
-...data
-};
-
-friendName.textContent =
-friendUser.name ||
-friendUser.displayName ||
-"مستخدم";
-
-setUserAvatar(
-friendAvatar,
-friendUser
-);
-
-updateFriendStatus(friendUser);
-
-},
-()=>{
-
-friendStatus.textContent =
-"● غير متصل";
-
-friendStatus.className =
-"user-status";
-
-});
-
-}
-
-
-/* =========================
+/* =========================================================
    REPLY
-========================= */
+========================================================= */
 
 function startReply(data){
 
 editingMessageId = null;
+
 sendButton.textContent = "➤";
 
 replyTarget = {
@@ -1317,8 +1037,7 @@ text:getMessagePreview(data)
 };
 
 replyComposeName.textContent =
-"الرد على " +
-replyTarget.senderName;
+"الرد على " + replyTarget.senderName;
 
 replyComposeText.textContent =
 replyTarget.text;
@@ -1348,9 +1067,18 @@ cancelReply();
 };
 
 
-/* =========================
+/* =========================================================
    REACTIONS
-========================= */
+========================================================= */
+
+const reactionList=[
+"❤️",
+"👍",
+"🔥",
+"😂",
+"😮"
+];
+
 
 async function toggleReaction(messageId,emoji){
 
@@ -1359,12 +1087,11 @@ if(
 !chatID ||
 !messageId ||
 !emoji
-)
-return;
+)return;
 
 try{
 
-const messageRef =
+const ref =
 doc(
 db,
 "chats",
@@ -1373,110 +1100,106 @@ chatID,
 messageId
 );
 
-const snap =
-await getDoc(messageRef);
+const snap = await getDoc(ref);
 
 if(!snap.exists())
 return;
 
-const data = snap.data();
+const data=snap.data();
 
-const reactions =
+const reactions=
 Array.isArray(data.reactions)
-? data.reactions
-: [];
+?data.reactions
+:[];
 
-const mine =
-reactions.some(
+const mine=
+reactions.find(
 r=>
 r &&
-r.userId === currentUser.uid &&
-r.emoji === emoji
+r.userId===currentUser.uid &&
+r.emoji===emoji
 );
 
 if(mine){
 
-await updateDoc(
-messageRef,
-{
+await updateDoc(ref,{
+
 reactions:
-arrayRemove({
-userId:currentUser.uid,
-emoji
-})
-}
-);
+arrayRemove(mine)
+
+});
 
 }else{
 
-const oldMine =
+const oldMine=
 reactions.find(
 r=>
 r &&
-r.userId === currentUser.uid
+r.userId===currentUser.uid
 );
 
 if(oldMine){
 
-await updateDoc(
-messageRef,
-{
+await updateDoc(ref,{
+
 reactions:
 arrayRemove(oldMine)
-}
-);
+
+});
 
 }
 
-await updateDoc(
-messageRef,
-{
+await updateDoc(ref,{
+
 reactions:
 arrayUnion({
+
 userId:currentUser.uid,
 emoji
+
 })
-}
-);
+
+});
 
 }
 
-}catch(e){
+}catch(error){
 
-console.error(e);
-
-}
+console.error("Reaction error:",error);
 
 }
 
+}
+
+
+/* =========================================================
+   RENDER REACTIONS
+========================================================= */
 
 function renderReactions(box,data){
 
 if(
 !Array.isArray(data.reactions) ||
 !data.reactions.length
-)
-return;
+)return;
 
-const wrapper =
+const wrapper=
 document.createElement("div");
 
-wrapper.className =
-"message-reactions";
+wrapper.className="message-reactions";
 
-const counts = {};
+const counts={};
 
 data.reactions.forEach(reaction=>{
 
 if(
 !reaction ||
 !reaction.emoji
-)
-return;
+)return;
 
 if(!counts[reaction.emoji]){
 
-counts[reaction.emoji] = {
+counts[reaction.emoji]={
 count:0,
 mine:false
 };
@@ -1486,49 +1209,39 @@ mine:false
 counts[reaction.emoji].count++;
 
 if(
-reaction.userId === currentUser.uid
+reaction.userId===currentUser.uid
 ){
 
-counts[reaction.emoji].mine = true;
+counts[reaction.emoji].mine=true;
 
 }
 
 });
 
+
 reactionList.forEach(emoji=>{
 
-const info = counts[emoji];
+const info=counts[emoji];
 
 if(!info)
 return;
 
-const chip =
+const chip=
 document.createElement("button");
 
-chip.type = "button";
+chip.type="button";
 
-chip.className =
-"reaction-chip" +
-(info.mine ? " mine" : "");
+chip.className=
+"reaction-chip"+
+(info.mine?" mine":"");
 
-chip.textContent = emoji;
+chip.textContent=
+emoji+
+(info.count>1
+?" "+info.count
+:"");
 
-if(info.count > 1){
-
-const count =
-document.createElement("span");
-
-count.className =
-"reaction-count";
-
-count.textContent =
-info.count;
-
-chip.appendChild(count);
-
-}
-
-chip.onclick = e=>{
+chip.onclick=e=>{
 
 e.stopPropagation();
 
@@ -1543,25 +1256,103 @@ wrapper.appendChild(chip);
 
 });
 
+
 if(wrapper.children.length)
 box.appendChild(wrapper);
 
 }
 
 
-/* =========================
-   BOTTOM SHEET
-========================= */
+/* =========================================================
+   REPLY COMPOSER
+========================================================= */
+
+function renderReply(box,data){
+
+if(!data.replyTo)
+return;
+
+const replyBox=
+document.createElement("div");
+
+replyBox.className="message-reply";
+
+replyBox.onclick=e=>{
+
+e.stopPropagation();
+
+const target=
+messageElements.get(
+data.replyTo.messageId
+);
+
+if(target){
+
+target.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+target.classList.add("highlight");
+
+setTimeout(
+()=>target.classList.remove("highlight"),
+1500
+);
+
+}
+
+};
+
+
+const content=
+document.createElement("div");
+
+content.className="reply-content";
+
+
+const name=
+document.createElement("div");
+
+name.className="reply-name";
+
+name.textContent=
+data.replyTo.senderId===currentUser.uid
+?"أنت"
+:(data.replyTo.senderName||"المستخدم");
+
+
+const text=
+document.createElement("div");
+
+text.className="reply-text";
+
+text.textContent=
+data.replyTo.text||"رسالة";
+
+
+content.append(name,text);
+
+replyBox.appendChild(content);
+
+box.appendChild(replyBox);
+
+}
+
+
+/* =========================================================
+   MESSAGE ACTIONS
+========================================================= */
 
 function removeBottomSheet(){
 
-const existing =
+const old=
 document.querySelector(
 ".bottom-sheet-backdrop"
 );
 
-if(existing)
-existing.remove();
+if(old)
+old.remove();
 
 }
 
@@ -1570,46 +1361,53 @@ function showBottomSheetMenu(data){
 
 removeBottomSheet();
 
-const mine =
-data.senderId === currentUser.uid;
+const mine=
+data.senderId===currentUser.uid;
 
-const backdrop =
+
+const backdrop=
 document.createElement("div");
 
-backdrop.className =
+backdrop.className=
 "bottom-sheet-backdrop";
 
-backdrop.onclick =
-()=>removeBottomSheet();
+backdrop.onclick=()=>{
+removeBottomSheet();
+};
 
-const sheet =
+
+const sheet=
 document.createElement("div");
 
-sheet.className =
-"bottom-sheet";
+sheet.className="bottom-sheet";
 
-sheet.onclick =
-e=>e.stopPropagation();
+sheet.onclick=e=>{
+e.stopPropagation();
+};
 
-const reactionsBar =
+
+/* reactions */
+
+const reactionsBar=
 document.createElement("div");
 
-reactionsBar.className =
+reactionsBar.className=
 "sheet-reactions-bar";
+
 
 reactionList.forEach(emoji=>{
 
-const btn =
+const button=
 document.createElement("button");
 
-btn.type = "button";
+button.type="button";
 
-btn.className =
+button.className=
 "sheet-reaction-btn";
 
-btn.textContent = emoji;
+button.textContent=emoji;
 
-btn.onclick = ()=>{
+button.onclick=()=>{
 
 toggleReaction(
 data.id,
@@ -1620,59 +1418,71 @@ removeBottomSheet();
 
 };
 
-reactionsBar.appendChild(btn);
+reactionsBar.appendChild(button);
 
 });
 
+
 sheet.appendChild(reactionsBar);
 
-const actionsList =
+
+/* actions */
+
+const actions=
 document.createElement("div");
 
-actionsList.className =
+actions.className=
 "sheet-actions-list";
 
 
-/* REPLY */
+function addAction(icon,text,callback){
 
-const replyBtn =
+const btn=
 document.createElement("button");
 
-replyBtn.type = "button";
+btn.type="button";
 
-replyBtn.className =
+btn.className=
 "sheet-action-item";
 
-replyBtn.innerHTML =
-"<span>↩️</span><span>رد</span>";
+btn.innerHTML=
+"<span>"+
+icon+
+"</span>"+
+"<span>"+
+escapeHtml(text)+
+"</span>";
 
-replyBtn.onclick = ()=>{
+btn.onclick=callback;
+
+actions.appendChild(btn);
+
+}
+
+
+/* reply */
+
+addAction(
+"↩️",
+"رد",
+()=>{
 
 removeBottomSheet();
 
 startReply(data);
 
-};
+}
+);
 
-actionsList.appendChild(replyBtn);
 
+/* pin */
 
-/* PIN */
-
-const pinBtn =
-document.createElement("button");
-
-pinBtn.type = "button";
-
-pinBtn.className =
-"sheet-action-item";
-
-pinBtn.innerHTML =
+addAction(
+"📌",
 data.pinned
-? "<span>📌</span><span>إلغاء التثبيت</span>"
-: "<span>📌</span><span>تثبيت الرسالة</span>";
-
-pinBtn.onclick = async()=>{
+?"إلغاء التثبيت"
+:"تثبيت الرسالة",
+async()=>{
 
 try{
 
@@ -1689,76 +1499,61 @@ pinned:!data.pinned
 }
 );
 
-}catch(e){
+}catch(error){
 
-console.error(e);
+console.error(error);
 
 }
 
 removeBottomSheet();
 
-};
+}
+);
 
-actionsList.appendChild(pinBtn);
 
-
-/* EDIT */
+/* edit */
 
 if(
 mine &&
-data.type === "text"
+data.type==="text"
 ){
 
-const editBtn =
-document.createElement("button");
-
-editBtn.type = "button";
-
-editBtn.className =
-"sheet-action-item";
-
-editBtn.innerHTML =
-"<span>✏️</span><span>تعديل</span>";
-
-editBtn.onclick = ()=>{
+addAction(
+"✏️",
+"تعديل",
+()=>{
 
 removeBottomSheet();
 
-editingMessageId =
-data.id;
+editingMessageId=data.id;
 
-messageInput.value =
-data.text || "";
+messageInput.value=
+data.text||"";
 
-sendButton.textContent = "✓";
+sendButton.textContent="✓";
+
+sendButton.classList.add("show");
+
+voiceButton.classList.add("hide");
 
 cancelReply();
 
 messageInput.focus();
 
-};
-
-actionsList.appendChild(editBtn);
+}
+);
 
 }
 
 
-/* DELETE */
+/* delete */
 
-const delBtn =
-document.createElement("button");
-
-delBtn.type = "button";
-
-delBtn.className =
-"sheet-action-item";
-
-delBtn.innerHTML =
+addAction(
+"🗑️",
 mine
-? "<span>🗑️</span><span>حذف للجميع</span>"
-: "<span>🗑️</span><span>حذف لدي</span>";
-
-delBtn.onclick = async()=>{
+?"حذف للجميع"
+:"حذف لدي",
+async()=>{
 
 try{
 
@@ -1786,25 +1581,27 @@ data.id
 ),
 {
 deletedFor:
-arrayUnion(currentUser.uid)
+arrayUnion(
+currentUser.uid
+)
 }
 );
 
 }
 
-}catch(e){
+}catch(error){
 
-console.error(e);
+console.error(error);
 
 }
 
 removeBottomSheet();
 
-};
+}
+);
 
-actionsList.appendChild(delBtn);
 
-sheet.appendChild(actionsList);
+sheet.appendChild(actions);
 
 backdrop.appendChild(sheet);
 
@@ -1813,63 +1610,62 @@ document.body.appendChild(backdrop);
 }
 
 
-/* =========================
-   SWIPE REPLY
-========================= */
+/* =========================================================
+   MESSAGE EVENTS
+========================================================= */
 
 function setupSwipeToReply(element,data){
 
-let startX = 0;
-let currentX = 0;
-let swiping = false;
+let startX=0;
+let currentX=0;
+let active=false;
+
 
 element.addEventListener(
 "touchstart",
 e=>{
 
-if(!e.touches.length)
-return;
-
-startX =
+startX=
 e.touches[0].clientX;
 
-currentX = startX;
+currentX=startX;
 
-swiping = true;
+active=true;
 
 },
 {passive:true}
 );
+
 
 element.addEventListener(
 "touchmove",
 e=>{
 
-if(!swiping || !e.touches.length)
+if(!active)
 return;
 
-currentX =
+currentX=
 e.touches[0].clientX;
 
-const diff =
-currentX - startX;
+const diff=
+currentX-startX;
 
 if(
-data.senderId !== currentUser.uid &&
-diff > 0 &&
-diff < 120
+data.senderId!==currentUser.uid &&
+diff>0 &&
+diff<110
 ){
 
-element.style.transform =
+element.style.transform=
 `translateX(${diff}px)`;
 
 }else if(
-data.senderId === currentUser.uid &&
-diff < 0 &&
-diff > -120
+data.senderId===currentUser.uid &&
+diff<0 &&
+diff>-110
 ){
 
-element.style.transform =
+element.style.transform=
 `translateX(${diff}px)`;
 
 }
@@ -1878,23 +1674,23 @@ element.style.transform =
 {passive:true}
 );
 
+
 element.addEventListener(
 "touchend",
 ()=>{
 
-if(!swiping)
+if(!active)
 return;
 
-swiping = false;
+active=false;
 
-const diff =
-currentX - startX;
+const diff=
+currentX-startX;
 
-if(Math.abs(diff) > 75)
+if(Math.abs(diff)>70)
 startReply(data);
 
-element.style.transform =
-"translateX(0)";
+element.style.transform="translateX(0)";
 
 }
 );
@@ -1902,51 +1698,65 @@ element.style.transform =
 }
 
 
-/* =========================
-   MESSAGE ACTIONS
-========================= */
+function triggerHeartReaction(element,id){
+
+if(element.querySelector(".heart-pop"))
+return;
+
+toggleReaction(id,"❤️");
+
+}
+
+
+/* long press */
 
 function addMessageActions(element,data){
 
-let timer = null;
-let isLongPress = false;
-let lastClickTime = 0;
+let timer=null;
+let longPress=false;
+let lastTap=0;
+
 
 element.addEventListener(
 "pointerdown",
-e=>{
+()=>{
 
-if(
-e.pointerType === "mouse" &&
-e.button !== 0
-)
-return;
+longPress=false;
 
-isLongPress = false;
+timer=setTimeout(
+()=>{
 
-timer =
-setTimeout(()=>{
-
-isLongPress = true;
+longPress=true;
 
 showBottomSheetMenu(data);
 
-},500);
+},
+500
+);
 
 }
 );
 
-const clear =
-()=>{
-if(timer){
-clearTimeout(timer);
-timer = null;
-}
-};
 
-element.addEventListener("pointerup",clear);
-element.addEventListener("pointercancel",clear);
-element.addEventListener("pointerleave",clear);
+element.addEventListener(
+"pointerup",
+()=>{
+
+clearTimeout(timer);
+
+}
+);
+
+
+element.addEventListener(
+"pointercancel",
+()=>{
+
+clearTimeout(timer);
+
+}
+);
+
 
 element.addEventListener(
 "contextmenu",
@@ -1954,18 +1764,17 @@ e=>{
 
 e.preventDefault();
 
-clear();
-
 showBottomSheetMenu(data);
 
 }
 );
 
+
 element.addEventListener(
 "click",
 e=>{
 
-if(isLongPress)
+if(longPress)
 return;
 
 if(
@@ -1975,12 +1784,11 @@ e.target.closest("video")
 )
 return;
 
-const now =
-Date.now();
+const now=Date.now();
 
 if(
-now - lastClickTime < 320 &&
-now - lastClickTime > 0
+now-lastTap<320 &&
+now-lastTap>0
 ){
 
 triggerHeartReaction(
@@ -1992,10 +1800,11 @@ e.preventDefault();
 
 }
 
-lastClickTime = now;
+lastTap=now;
 
 }
 );
+
 
 setupSwipeToReply(
 element,
@@ -2005,76 +1814,23 @@ data
 }
 
 
-/* =========================
-   HEART
-========================= */
+/* =========================================================
+   RENDER MESSAGE
+========================================================= */
 
-function triggerHeartReaction(
-element,
-messageId
-){
+function renderMessage(change){
 
-if(
-element.querySelector(".heart-pop")
-)
-return;
+const id=change.doc.id;
 
-const heart =
-document.createElement("div");
-
-heart.className =
-"heart-pop";
-
-heart.textContent = "❤️";
-
-element.appendChild(heart);
-
-toggleReaction(
-messageId,
-"❤️"
-);
-
-setTimeout(
-()=>heart.remove(),
-900
-);
-
-}
-
-
-/* =========================
-   RENDER MESSAGES
-========================= */
-
-function renderMessages(snapshot){
-
-const empty =
-messages.querySelector(".empty");
-
-if(empty)
-empty.remove();
-
-const nearBottom =
-messages.scrollHeight -
-messages.scrollTop -
-messages.clientHeight < 150;
-
-snapshot.docChanges().forEach(change=>{
-
-const id =
-change.doc.id;
-
-const data = {
+const data={
 ...change.doc.data(),
 id
 };
 
 
-/* REMOVED */
+if(change.type==="removed"){
 
-if(change.type === "removed"){
-
-const old =
+const old=
 messageElements.get(id);
 
 if(old)
@@ -2086,8 +1842,6 @@ return;
 
 }
 
-
-/* DELETED FOR ME */
 
 if(
 Array.isArray(data.deletedFor) &&
@@ -2096,7 +1850,7 @@ currentUser.uid
 )
 ){
 
-const old =
+const old=
 messageElements.get(id);
 
 if(old)
@@ -2109,14 +1863,18 @@ return;
 }
 
 
-/* PIN */
+const old=
+messageElements.get(id);
 
-if(data.pinned === true){
 
-pinnedBannerText.textContent =
-(data.senderId === currentUser.uid
-? "أنت: "
-: "") +
+/* pinned */
+
+if(data.pinned===true){
+
+pinnedBannerText.textContent=
+(data.senderId===currentUser.uid
+?"أنت: "
+:"")+
 getMessagePreview(data);
 
 pinnedBanner.classList.add("show");
@@ -2124,165 +1882,82 @@ pinnedBanner.classList.add("show");
 }
 
 
-/* MESSAGE */
+/* box */
 
-const box =
+const box=
 document.createElement("div");
 
-let boxClass =
-"message " +
+box.className=
+"message "+
 (
-data.senderId === currentUser.uid
-? "mine"
-: "other"
+data.senderId===currentUser.uid
+?"mine"
+:"other"
 );
 
-if(data.type === "image")
-boxClass += " image-message";
 
-if(data.type === "video")
-boxClass += " video-message";
+if(data.type==="image")
+box.classList.add("image-message");
 
-box.className = boxClass;
+if(data.type==="video")
+box.classList.add("video-message");
 
 
-/* REPLY */
+/* reply */
 
-if(data.replyTo){
+renderReply(box,data);
 
-const replyBox =
+
+/* content */
+
+if(data.type==="text"){
+
+const text=
 document.createElement("div");
 
-replyBox.className =
-"message-reply";
+text.className="message-text";
 
-replyBox.onclick =
-e=>{
+text.textContent=
+data.text||"";
 
-e.stopPropagation();
+box.appendChild(text);
 
-const targetEl =
-messageElements.get(
-data.replyTo.messageId
-);
-
-if(targetEl){
-
-targetEl.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
-targetEl.classList.add(
-"highlight"
-);
-
-setTimeout(
-()=>targetEl.classList.remove("highlight"),
-1500
-);
-
-}
-
-};
-
-const replyContent =
-document.createElement("div");
-
-replyContent.className =
-"reply-content";
-
-const replyName =
-document.createElement("div");
-
-replyName.className =
-"reply-name";
-
-replyName.textContent =
-data.replyTo.senderId === currentUser.uid
-? "أنت"
-: data.replyTo.senderName || "المستخدم";
-
-const replyText =
-document.createElement("div");
-
-replyText.className =
-"reply-text";
-
-replyText.textContent =
-data.replyTo.text || "رسالة";
-
-replyContent.append(
-replyName,
-replyText
-);
-
-replyBox.appendChild(
-replyContent
-);
-
-box.appendChild(
-replyBox
-);
-
-}
-
-
-/* TEXT */
-
-if(data.type === "text"){
-
-box.appendChild(
-document.createTextNode(
-data.text || ""
-)
-);
 
 if(data.isEdited){
 
-const edited =
+const edited=
 document.createElement("span");
 
-edited.style.fontSize =
-"9px";
+edited.style.fontSize="9px";
+edited.style.color="#667781";
+edited.textContent=" (معدلة)";
 
-edited.style.opacity =
-".6";
-
-edited.textContent =
-" (معدلة)";
-
-box.appendChild(
-edited
-);
+box.appendChild(edited);
 
 }
 
 }
 
-
-/* IMAGE */
 
 else if(
-data.type === "image" &&
+data.type==="image" &&
 data.url
 ){
 
-const img =
+const img=
 document.createElement("img");
 
-img.className =
-"message-image";
+img.className="message-image";
 
-img.src =
-data.url;
+img.src=data.url;
 
-img.alt = "صورة";
+img.alt="صورة";
 
-img.loading = "lazy";
+img.loading="lazy";
 
-img.onclick = e=>{
+img.onclick=e=>{
 e.stopPropagation();
+window.open(data.url,"_blank");
 };
 
 box.appendChild(img);
@@ -2290,76 +1965,68 @@ box.appendChild(img);
 }
 
 
-/* VIDEO */
-
 else if(
-data.type === "video" &&
+data.type==="video" &&
 data.url
 ){
 
-const vid =
+const video=
 document.createElement("video");
 
-vid.className =
-"message-video";
+video.className="message-video";
 
-vid.src =
-data.url;
+video.src=data.url;
 
-vid.controls = true;
+video.controls=true;
 
-vid.preload = "metadata";
+video.preload="metadata";
 
-box.appendChild(vid);
+box.appendChild(video);
 
 }
 
 
-/* META */
+/* time */
 
-const meta =
-document.createElement("div");
-
-meta.className =
-"message-meta";
-
-const time =
+const time=
 document.createElement("span");
 
-time.className =
-"time";
+time.className="time";
 
-time.textContent =
+time.textContent=
 formatTime(data.createdAt);
 
-meta.appendChild(time);
+box.appendChild(time);
+
+
+/* status */
 
 if(
-data.senderId === currentUser.uid
+data.senderId===currentUser.uid
 ){
 
-const status =
+const status=
 document.createElement("span");
 
-status.className =
-"message-status " +
-(data.read === true
-? "read"
-: "");
+status.className=
+"message-status "+
+(
+data.read===true
+?"read"
+:""
+);
 
-status.textContent =
-data.read === true
-? "✓✓"
-: "✓";
+status.textContent=
+data.read===true
+?"✓✓"
+:"✓";
 
-meta.appendChild(status);
+box.appendChild(status);
 
 }
 
-box.appendChild(meta);
 
-
-/* REACTIONS */
+/* reactions */
 
 renderReactions(
 box,
@@ -2367,7 +2034,7 @@ data
 );
 
 
-/* ACTIONS */
+/* actions */
 
 addMessageActions(
 box,
@@ -2375,10 +2042,7 @@ data
 );
 
 
-/* REPLACE / ADD */
-
-const old =
-messageElements.get(id);
+/* replace */
 
 if(old){
 
@@ -2390,20 +2054,74 @@ messages.appendChild(box);
 
 }
 
-messageElements.set(
-id,
-box
+messageElements.set(id,box);
+
+}
+
+
+/* =========================================================
+   SNAPSHOT
+========================================================= */
+
+function renderMessages(snapshot){
+
+const nearBottom=
+messages.scrollHeight-
+messages.scrollTop-
+messages.clientHeight<
+140;
+
+
+if(
+snapshot.docChanges().length &&
+messages.querySelector(".empty")
+){
+
+messages.querySelector(".empty").remove();
+
+}
+
+
+snapshot.docChanges().forEach(
+renderMessage
 );
 
-});
+
+if(!snapshot.size){
+
+if(!messages.querySelector(".empty")){
+
+const empty=
+document.createElement("div");
+
+empty.className="empty";
+
+empty.innerHTML=
+"💬<br>ابدأ المحادثة الآن";
+
+messages.appendChild(empty);
+
+}
+
+}else{
+
+const empty=
+messages.querySelector(".empty");
+
+if(empty)
+empty.remove();
+
+}
 
 
 if(nearBottom){
 
 requestAnimationFrame(
 ()=>{
-messages.scrollTop =
+
+messages.scrollTop=
 messages.scrollHeight;
+
 }
 );
 
@@ -2412,16 +2130,26 @@ messages.scrollHeight;
 }
 
 
-/* =========================
+/* =========================================================
    LISTEN MESSAGES
-========================= */
+========================================================= */
 
 function listenMessages(){
 
 if(!chatID)
 return;
 
-const q =
+
+if(unsubscribeMessages){
+
+unsubscribeMessages();
+
+unsubscribeMessages=null;
+
+}
+
+
+const q=
 query(
 collection(
 db,
@@ -2435,16 +2163,14 @@ orderBy(
 )
 );
 
-if(unsubscribeMessages)
-unsubscribeMessages();
 
-unsubscribeMessages =
+unsubscribeMessages=
 onSnapshot(
 q,
 renderMessages,
 error=>{
 console.error(
-"Firestore messages:",
+"Messages listener:",
 error
 );
 }
@@ -2453,29 +2179,239 @@ error
 }
 
 
-/* =========================
-   SEND MESSAGE
-========================= */
+/* =========================================================
+   FRIEND STATUS
+========================================================= */
+
+function listenFriend(){
+
+if(
+!friendUser ||
+!friendUser.uid
+)
+return;
+
+
+if(unsubscribeFriend){
+
+unsubscribeFriend();
+
+unsubscribeFriend=null;
+
+}
+
+
+unsubscribeFriend=
+onSnapshot(
+doc(db,"users",friendUser.uid),
+snap=>{
+
+if(!snap.exists())
+return;
+
+const data=snap.data();
+
+
+friendUser={
+...friendUser,
+...data,
+uid:friendUser.uid,
+name:data.name||friendUser.name||"مستخدم",
+photo:data.photo||data.photoURL||friendUser.photo||""
+};
+
+
+friendName.textContent=
+friendUser.name;
+
+setUserAvatar(
+friendAvatar,
+friendUser
+);
+
+
+/*
+  يدعم أكثر من طريقة لتخزين الحالة:
+  online / isOnline / status
+*/
+
+const online=
+data.online===true ||
+data.isOnline===true ||
+data.status==="online";
+
+
+if(online){
+
+friendStatus.textContent=
+"متصل الآن";
+
+friendStatus.className=
+"user-status online";
+
+}else if(data.lastSeen){
+
+let date=null;
+
+try{
+
+if(
+typeof data.lastSeen.toDate==="function"
+){
+
+date=data.lastSeen.toDate();
+
+}else{
+
+date=new Date(data.lastSeen);
+
+}
+
+}catch{}
+
+if(date && !isNaN(date.getTime())){
+
+friendStatus.textContent=
+"آخر ظهور "+
+date.toLocaleString(
+"ar",
+{
+hour:"2-digit",
+minute:"2-digit",
+day:"numeric",
+month:"short"
+}
+);
+
+}else{
+
+friendStatus.textContent=
+"غير متصل";
+
+}
+
+friendStatus.className=
+"user-status";
+
+}else{
+
+friendStatus.textContent=
+"غير متصل";
+
+friendStatus.className=
+"user-status";
+
+}
+
+},
+error=>{
+console.error(
+"Friend listener:",
+error
+);
+}
+);
+
+}
+
+
+/* =========================================================
+   LOAD FRIEND
+========================================================= */
+
+async function loadFriend(){
+
+const params=
+new URLSearchParams(
+location.search
+);
+
+const friendId=
+params.get("friend");
+
+
+if(!friendId)
+throw new Error(
+"لا يوجد مستخدم في الرابط"
+);
+
+
+const snap=
+await getDoc(
+doc(db,"users",friendId)
+);
+
+
+if(!snap.exists())
+throw new Error(
+"المستخدم غير موجود"
+);
+
+
+const data=snap.data();
+
+
+friendUser={
+
+uid:friendId,
+
+name:
+data.name||
+data.displayName||
+"مستخدم",
+
+photo:
+data.photo||
+data.photoURL||
+""
+
+};
+
+
+friendName.textContent=
+friendUser.name;
+
+setUserAvatar(
+friendAvatar,
+friendUser
+);
+
+
+chatID=
+createChatID(
+currentUser.uid,
+friendUser.uid
+);
+
+
+listenFriend();
+
+}
+
+
+/* =========================================================
+   SEND TEXT
+========================================================= */
 
 async function handleSendMessage(){
 
-const text =
+const text=
 messageInput.value.trim();
+
 
 if(
 !text ||
 !currentUser ||
 !friendUser ||
-!chatID ||
-sendButton.disabled
+!chatID
 )
 return;
 
-sendButton.disabled = true;
+
+sendButton.disabled=true;
+
 
 try{
-
-/* EDIT */
 
 if(editingMessageId){
 
@@ -2488,26 +2424,21 @@ chatID,
 editingMessageId
 ),
 {
-text,
+text:text,
 isEdited:true
 }
 );
 
-editingMessageId = null;
 
-sendButton.textContent =
-"➤";
+editingMessageId=null;
 
-}
+sendButton.textContent="➤";
 
+}else{
 
-/* NEW MESSAGE */
+const messageData={
 
-else{
-
-const messageData = {
-
-text,
+text:text,
 
 senderId:
 currentUser.uid,
@@ -2526,9 +2457,10 @@ serverTimestamp()
 
 };
 
+
 if(replyTarget){
 
-messageData.replyTo = {
+messageData.replyTo={
 
 messageId:
 replyTarget.id,
@@ -2546,6 +2478,7 @@ replyTarget.text
 
 }
 
+
 await addDoc(
 collection(
 db,
@@ -2558,13 +2491,17 @@ messageData
 
 }
 
-messageInput.value = "";
+
+messageInput.value="";
 
 cancelReply();
 
-}catch(e){
+}catch(error){
 
-console.error(e);
+console.error(
+"Send error:",
+error
+);
 
 alert(
 "تعذر إرسال الرسالة"
@@ -2572,7 +2509,9 @@ alert(
 
 }finally{
 
-sendButton.disabled = false;
+sendButton.disabled=false;
+
+updateInputButtons();
 
 messageInput.focus();
 
@@ -2581,7 +2520,41 @@ messageInput.focus();
 }
 
 
-sendButton.onclick =
+/* =========================================================
+   INPUT BUTTONS
+========================================================= */
+
+function updateInputButtons(){
+
+const hasText=
+messageInput.value.trim().length>0 ||
+editingMessageId;
+
+
+if(hasText){
+
+sendButton.classList.add("show");
+
+voiceButton.classList.add("hide");
+
+}else{
+
+sendButton.classList.remove("show");
+
+voiceButton.classList.remove("hide");
+
+}
+
+}
+
+
+messageInput.addEventListener(
+"input",
+updateInputButtons
+);
+
+
+sendButton.onclick=
 handleSendMessage;
 
 
@@ -2589,7 +2562,10 @@ messageInput.addEventListener(
 "keydown",
 e=>{
 
-if(e.key === "Enter"){
+if(
+e.key==="Enter" &&
+!e.shiftKey
+){
 
 e.preventDefault();
 
@@ -2601,18 +2577,15 @@ handleSendMessage();
 );
 
 
-/* =========================
+/* =========================================================
    ATTACHMENTS
-========================= */
+========================================================= */
 
-attachButton.onclick =
-e=>{
+attachButton.onclick=e=>{
 
 e.stopPropagation();
 
-attachMenu.classList.toggle(
-"show"
-);
+attachMenu.classList.toggle("show");
 
 };
 
@@ -2626,9 +2599,7 @@ if(
 !e.target.closest("#attachButton")
 ){
 
-attachMenu.classList.remove(
-"show"
-);
+attachMenu.classList.remove("show");
 
 }
 
@@ -2636,38 +2607,25 @@ attachMenu.classList.remove(
 );
 
 
-galleryButton.onclick =
-()=>{
+galleryButton.onclick=()=>{
 
-attachMenu.classList.remove(
-"show"
-);
+attachMenu.classList.remove("show");
 
 galleryInput.click();
 
 };
 
 
-cameraButton.onclick =
-()=>{
+cameraButton.onclick=()=>{
 
-attachMenu.classList.remove(
-"show"
-);
+attachMenu.classList.remove("show");
 
 cameraInput.click();
 
 };
 
 
-/* =========================
-   UPLOAD MEDIA
-========================= */
-
-async function uploadMediaAndSend(
-file,
-type
-){
+async function uploadMediaAndSend(file,type){
 
 if(
 !file ||
@@ -2677,37 +2635,37 @@ if(
 )
 return;
 
-const maxSize =
-type === "video"
-? 50 * 1024 * 1024
-: 15 * 1024 * 1024;
 
-if(file.size > maxSize){
+const maxSize=
+type==="video"
+?50*1024*1024
+:15*1024*1024;
+
+
+if(file.size>maxSize){
 
 alert(
-type === "video"
-? "حجم الفيديو كبير جدًا"
-: "حجم الصورة كبير جدًا"
+type==="video"
+?"الفيديو أكبر من 50MB"
+:"الصورة أكبر من 15MB"
 );
 
 return;
 
 }
 
+
 try{
 
-const safeName =
+const safeName=
 file.name
-.replace(/[^\w.\-() ]/g,"_")
-.slice(-100);
+.replace(/[^a-zA-Z0-9._-]/g,"_");
 
-const fileName =
+const fileName=
 `${currentUser.uid}/${Date.now()}_${safeName}`;
 
-const {
-data,
-error
-} =
+
+const result=
 await supabase
 .storage
 .from("mecd-media")
@@ -2715,40 +2673,27 @@ await supabase
 fileName,
 file,
 {
-upsert:false,
-contentType:file.type
+upsert:false
 }
 );
 
-if(error)
-throw error;
 
-const {
-data:publicURLData
-} =
+if(result.error)
+throw result.error;
+
+
+const publicResult=
 supabase
 .storage
 .from("mecd-media")
-.getPublicUrl(
-fileName
-);
+.getPublicUrl(fileName);
 
-const mediaUrl =
-publicURLData?.publicUrl;
 
-if(!mediaUrl)
-throw new Error(
-"لم يتم إنشاء رابط الملف"
-);
+const mediaUrl=
+publicResult.data.publicUrl;
 
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
+
+const messageData={
 
 url:mediaUrl,
 
@@ -2758,7 +2703,7 @@ currentUser.uid,
 receiverId:
 friendUser.uid,
 
-type,
+type:type,
 
 read:false,
 
@@ -2767,12 +2712,50 @@ deletedFor:[],
 createdAt:
 serverTimestamp()
 
+};
+
+
+if(replyTarget){
+
+messageData.replyTo={
+
+messageId:
+replyTarget.id,
+
+senderId:
+replyTarget.senderId,
+
+senderName:
+replyTarget.senderName,
+
+text:
+replyTarget.text
+
+};
+
 }
+
+
+await addDoc(
+collection(
+db,
+"chats",
+chatID,
+"messages"
+),
+messageData
 );
 
-}catch(e){
 
-console.error(e);
+cancelReply();
+
+
+}catch(error){
+
+console.error(
+"Upload error:",
+error
+);
 
 alert(
 "فشل رفع الملف"
@@ -2783,84 +2766,76 @@ alert(
 }
 
 
-/* =========================
-   FILE INPUTS
-========================= */
+/* gallery */
 
-galleryInput.onchange =
-async e=>{
+galleryInput.onchange=e=>{
 
-const file =
+const file=
 e.target.files?.[0];
 
 if(!file)
 return;
 
-const type =
-file.type.startsWith("video")
-? "video"
-: "image";
+const type=
+file.type.startsWith("video/")
+?"video"
+:"image";
 
-await uploadMediaAndSend(
+uploadMediaAndSend(
 file,
 type
 );
 
-galleryInput.value = "";
+galleryInput.value="";
 
 };
 
 
-cameraInput.onchange =
-async e=>{
+/* camera */
 
-const file =
+cameraInput.onchange=e=>{
+
+const file=
 e.target.files?.[0];
 
 if(!file)
 return;
 
-const type =
-file.type.startsWith("video")
-? "video"
-: "image";
+const type=
+file.type.startsWith("video/")
+?"video"
+:"image";
 
-await uploadMediaAndSend(
+uploadMediaAndSend(
 file,
 type
 );
 
-cameraInput.value = "";
+cameraInput.value="";
 
 };
 
 
-/* =========================
-   PINNED BANNER
-========================= */
+/* =========================================================
+   PINNED
+========================================================= */
 
-pinnedBannerClose.onclick =
-e=>{
+pinnedBannerClose.onclick=()=>{
 
-e.stopPropagation();
-
-pinnedBanner.classList.remove(
-"show"
-);
+pinnedBanner.classList.remove("show");
 
 };
 
 
-pinnedBannerClick.onclick =
-()=>{
+pinnedBannerClick.onclick=()=>{
 
-const pinned =
+const pinned=
 [...messageElements.entries()]
 .find(
 ([id,el])=>
-el &&
-el.isConnected
+el.dataset.pinned==="true"
 );
+
 
 if(pinned){
 
@@ -2874,64 +2849,176 @@ block:"center"
 };
 
 
-/* =========================
-   VOICE
-   يبقى الزر موجودًا بدون تغيير
-   ملف Voice الخاص بك يمكن ربطه هنا
-========================= */
+/* =========================================================
+   HEADER MORE
+========================================================= */
 
-voiceButton.onclick = ()=>{
+moreButton.onclick=()=>{
 
-/*
-   لا يتم حذف أو تغيير زر Voice.
-   ضع كود/رابط ملف Voice الموجود عندك هنا
-   إذا كان ملف Voice يعمل مع هذه الصفحة.
-*/
+const backdrop=
+document.createElement("div");
+
+backdrop.className=
+"bottom-sheet-backdrop";
+
+backdrop.onclick=()=>{
+backdrop.remove();
+};
+
+
+const sheet=
+document.createElement("div");
+
+sheet.className="bottom-sheet";
+
+sheet.onclick=e=>
+e.stopPropagation();
+
+
+const actions=
+document.createElement("div");
+
+actions.className=
+"sheet-actions-list";
+
+
+function option(icon,text,callback){
+
+const btn=
+document.createElement("button");
+
+btn.type="button";
+
+btn.className=
+"sheet-action-item";
+
+btn.innerHTML=
+"<span>"+
+icon+
+"</span>"+
+"<span>"+
+text+
+"</span>";
+
+btn.onclick=()=>{
+
+backdrop.remove();
+
+callback();
+
+};
+
+actions.appendChild(btn);
+
+}
+
+
+option(
+"🔍",
+"بحث",
+()=>{
+messageInput.focus();
+}
+);
+
+
+option(
+"🔔",
+"إشعارات المحادثة",
+()=>{
+alert("إعدادات الإشعارات متاحة حسب إعدادات جهازك.");
+}
+);
+
+
+option(
+"🧹",
+"مسح المحادثة من هذا الجهاز",
+()=>{
+messages.innerHTML="";
+messageElements.clear();
+}
+);
+
+
+sheet.appendChild(actions);
+
+backdrop.appendChild(sheet);
+
+document.body.appendChild(backdrop);
 
 };
 
 
-/* =========================
+/* =========================================================
    CALL BUTTONS
-========================= */
+========================================================= */
 
-callButton.onclick = ()=>{
+$("callButton").onclick=()=>{
 
 /*
-   زر المكالمة محفوظ.
-   اربطه بملف Voice الخاص بك بدون تغيير رابط الدردشة.
+  يبقى زر المكالمة موجوداً.
+  يمكن ربطه بملف Voice الحالي عندك
+  بدون تغيير رابط الدردشة.
 */
+
+if(typeof window.startVoiceCall==="function"){
+
+window.startVoiceCall(
+currentUser,
+friendUser
+);
+
+}else{
+
+console.log(
+"Voice call button pressed"
+);
+
+}
 
 };
 
 
-videoButton.onclick = ()=>{
+$("videoButton").onclick=()=>{
 
-/*
-   زر الفيديو محفوظ.
-   اربطه بملف مكالمات الفيديو الخاص بك.
-*/
+if(typeof window.startVideoCall==="function"){
+
+window.startVideoCall(
+currentUser,
+friendUser
+);
+
+}else{
+
+console.log(
+"Video call button pressed"
+);
+
+}
 
 };
 
 
-/* =========================
+/* =========================================================
    BACK
-========================= */
+========================================================= */
 
-backButton.onclick = ()=>{
+backButton.onclick=()=>{
 
 if(unsubscribeMessages){
 
 unsubscribeMessages();
-unsubscribeMessages = null;
+
+unsubscribeMessages=null;
 
 }
 
 if(unsubscribeFriend){
 
 unsubscribeFriend();
-unsubscribeFriend = null;
+
+unsubscribeFriend=null;
 
 }
 
@@ -2940,9 +3027,9 @@ history.back();
 };
 
 
-/* =========================
+/* =========================================================
    AUTH
-========================= */
+========================================================= */
 
 onAuthStateChanged(
 auth,
@@ -2950,14 +3037,16 @@ async user=>{
 
 if(!user){
 
-loading.innerHTML =
-"<div>يجب تسجيل الدخول أولاً</div>";
+loading.textContent=
+"يجب تسجيل الدخول أولاً";
 
 return;
 
 }
 
-currentUser = user;
+
+currentUser=user;
+
 
 try{
 
@@ -2965,20 +3054,38 @@ await loadFriend();
 
 listenMessages();
 
-loading.style.display =
-"none";
+loading.style.display="none";
 
-app.style.display =
-"flex";
+app.style.display="flex";
 
-}catch(e){
+updateInputButtons();
 
-console.error(e);
+}catch(error){
 
-loading.innerHTML =
-"<div>تعذر فتح الدردشة</div>";
+console.error(error);
+
+loading.textContent=
+error.message||
+"حدث خطأ في فتح الدردشة";
 
 }
+
+});
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+window.addEventListener(
+"beforeunload",
+()=>{
+
+if(unsubscribeMessages)
+unsubscribeMessages();
+
+if(unsubscribeFriend)
+unsubscribeFriend();
 
 }
 );
