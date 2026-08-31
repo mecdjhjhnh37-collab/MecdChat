@@ -3146,7 +3146,8 @@ console.error("Flip camera error:", e);
 };
 
 switchVideoButton.onclick = async () => {
-if(!activeCallId || !peerConnection || activeCallType !== "audio") return;
+if(!activeCallId) return;
+if(!peerConnection || activeCallType !== "audio") return;
 switchVideoButton.disabled = true;
 await enableVideoForCall(true);
 switchVideoButton.disabled = false;
