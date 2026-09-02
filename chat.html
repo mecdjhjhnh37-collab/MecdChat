@@ -156,47 +156,6 @@ width:38px!important;
 font-size:21px!important
 }
 
-/* ================= PINNED ================= */
-
-.pinned-banner{
-display:none;
-align-items:center;
-gap:9px;
-padding:8px 13px;
-background:#0b1613;
-border-bottom:1px solid rgba(0,232,137,.15);
-z-index:40
-}
-
-.pinned-banner.show{
-display:flex
-}
-
-.pinned-banner-content{
-flex:1;
-min-width:0;
-display:flex;
-align-items:center;
-gap:8px;
-cursor:pointer
-}
-
-.pinned-banner-text{
-color:#00e889;
-font-size:12px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-
-.pinned-banner-close{
-background:none;
-border:0;
-color:#aaa;
-font-size:14px;
-cursor:pointer
-}
-
 /* ================= MESSAGES ================= */
 
 .messages{
@@ -1036,14 +995,6 @@ font-weight:bold
 
 </header>
 
-<div id="pinnedBanner" class="pinned-banner">
-<div id="pinnedBannerClick" class="pinned-banner-content">
-<span>📌</span>
-<span id="pinnedBannerText" class="pinned-banner-text">رسالة مثبتة</span>
-</div>
-<button id="pinnedBannerClose" class="pinned-banner-close" type="button">✕</button>
-</div>
-
 <div id="messages" class="messages">
 <div class="empty">💬<br>ابدأ المحادثة الآن</div>
 </div>
@@ -1294,7 +1245,7 @@ maxlength="2000"
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, onSnapshot, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, onSnapshot, deleteDoc, serverTimestamp, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const firebaseConfig = {
@@ -1337,11 +1288,6 @@ const backButton = $("backButton");
 const callButton = $("callButton");
 const videoButton = $("videoButton");
 const moreButton = $("moreButton");
-
-const pinnedBanner = $("pinnedBanner");
-const pinnedBannerText = $("pinnedBannerText");
-const pinnedBannerClick = $("pinnedBannerClick");
-const pinnedBannerClose = $("pinnedBannerClose");
 
 const replyCompose = $("replyCompose");
 const replyComposeName = $("replyComposeName");
@@ -1918,13 +1864,13 @@ listenCallCandidates();
 function listenIncomingCalls(){
 if(!currentUser) return;
 if(unsubscribeIncomingCalls) unsubscribeIncomingCalls();
-const q = query(collection(db, "calls"), where("receiverId", "==", currentUser.uid));
+const q = query(collection(db, "calls"), where("receiverId", "==", currentUser.uid), where("status", "==", "ringing"));
 unsubscribeIncomingCalls = onSnapshot(q, snapshot => {
 snapshot.docChanges().forEach(async change => {
 if(change.type !== "added") return;
 const id = change.doc.id;
 const data = change.doc.data();
-if(data.status !== "ringing" || !data.offer || activeCallId || handledIncomingCalls.has(id)) return;
+if(!data.offer || activeCallId || handledIncomingCalls.has(id)) return;
 handledIncomingCalls.add(id);
 
 const callerSnap = await getDoc(doc(db, "users", data.callerId));
@@ -2095,7 +2041,25 @@ remoteAudio.muted = remoteAudioMuted;
 speakerButton.textContent = remoteAudioMuted ? "🔇" : "🔊";
 };
 
-switchVideoButton.onclick = async () => {};
+switchVideoButton.onclick = async () => {
+if(!localStream) return;
+const videoTrack = localStream.getVideoTracks()[0];
+if(!videoTrack) return;
+try{
+const constraints = videoTrack.getConstraints();
+const newFacingMode = constraints.facingMode === "user" ? "environment" : "user";
+const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: newFacingMode }, audio: true });
+const newVideoTrack = newStream.getVideoTracks()[0];
+const sender = peerConnection?.getSenders().find(s => s.track && s.track.kind === "video");
+if(sender){
+await sender.replaceTrack(newVideoTrack);
+}
+localStream.removeTrack(videoTrack);
+videoTrack.stop();
+localStream.addTrack(newVideoTrack);
+localVideo.srcObject = localStream;
+}catch(e){}
+};
 
 flipCameraButton.onclick = async () => {
 if(!localStream) return;
@@ -2114,7 +2078,7 @@ localStream.removeTrack(videoTrack);
 videoTrack.stop();
 localStream.addTrack(newVideoTrack);
 localVideo.srcObject = localStream;
-}catch(e){ console.error("Flip camera error:", e); }
+}catch(e){}
 };
 
 callButton.onclick = () => startCall("audio");
@@ -2294,12 +2258,18 @@ video.controls = true;
 video.playsInline = true;
 box.appendChild(video);
 }else if(data.type === "voice" && data.url){
+const voiceContainer = document.createElement("div");
+voiceContainer.style.cssText = "display:flex;flex-direction:column;gap:4px;width:220px;max-width:100%;";
 const audio = document.createElement("audio");
 audio.controls = true;
 audio.preload = "metadata";
 audio.src = data.url;
-audio.style.cssText = "width:220px;max-width:100%";
-box.appendChild(audio);
+audio.style.cssText = "width:100%;height:36px;outline:none;";
+audio.onerror = () => {
+voiceContainer.innerHTML = `<span style="font-size:11px;color:#ff6b6b;padding:4px;">⚠️ تعذر تشغيل الصوت</span>`;
+};
+voiceContainer.appendChild(audio);
+box.appendChild(voiceContainer);
 }else if(data.type === "document" && data.url){
 const link = document.createElement("a");
 link.href = data.url;
@@ -2573,7 +2543,7 @@ if(e.key === "Enter"){ e.preventDefault(); handleSendMessage(); }
 });
 
 /* ======================================================
-   ATTACHMENTS & MEDIA UPLOAD (تمت معالجة مشكلة تعليق دائرة التحميل هنا)
+   ATTACHMENTS & MEDIA UPLOAD
 ====================================================== */
 
 attachButton.onclick = e => { e.stopPropagation(); attachmentOverlay.classList.add("show"); };
@@ -2675,13 +2645,20 @@ profileVideo.onclick = () => { closeProfile(); videoButton.click(); };
 profileSearch.onclick = () => { closeProfile(); messageInput.focus(); };
 
 moreButton.onclick = async () => {
-if(confirm("هل أنت متأكد من حذف هذه الدردشة نهائياً؟")){
+if(confirm("هل أنت متأكد من حذف هذه الدردشة وجميع رسائلها؟")){
 try{
+setLoading("جارٍ حذف الدردشة...");
+loading.style.display = "flex";
 unsubscribeMessages?.();
+const msgSnap = await getDocs(collection(db, "chats", chatID, "messages"));
+const batchDeletes = msgSnap.docs.map(d => deleteDoc(d.ref));
+await Promise.all(batchDeletes);
+await deleteDoc(doc(db, "chats", chatID));
 alert("تم حذف الدردشة بنجاح.");
 location.reload();
 }catch(e){
 alert("تعذر حذف الدردشة.");
+loading.style.display = "none";
 }
 }
 };
