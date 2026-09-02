@@ -203,7 +203,7 @@ cursor:pointer
 flex:1;
 min-height:0;
 overflow-y:auto;
-padding:18px 13px 125px;
+padding:18px 13px 135px;
 display:flex;
 flex-direction:column;
 gap:13px;
@@ -792,7 +792,7 @@ font-size:20px
 
 .emoji-panel{
 position:absolute;
-bottom:67px;
+bottom:70px;
 right:9px;
 width:280px;
 max-width:calc(100% - 18px);
@@ -1056,21 +1056,23 @@ font-weight:bold
 <div id="replyCompose" style="
 position:absolute;
 bottom:68px;
-left:0;
-width:100%;
+left:9px;
+right:9px;
 padding:7px 10px;
 background:#07100d;
-border-top:1px solid rgba(0,232,137,.14);
+border:1px solid rgba(0,232,137,.14);
+border-radius:14px;
 z-index:70;
 display:none;
 align-items:center;
-gap:8px
+gap:8px;
+box-shadow:0 -4px 15px rgba(0,0,0,0.5);
 ">
 
 <div style="
 flex:1;
 min-width:0;
-padding:7px 10px;
+padding:5px 8px;
 background:#111916;
 border-radius:10px;
 border-right:3px solid #00e889;
@@ -1095,12 +1097,17 @@ text-overflow:ellipsis
 </div>
 
 <button id="replyCancel" type="button" style="
-width:32px;
-height:32px;
+width:28px;
+height:28px;
 border:0;
-border-radius:10px;
+border-radius:8px;
 background:#18231f;
-color:#fff
+color:#fff;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-shrink:0;
 ">✕</button>
 
 </div>
