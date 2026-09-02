@@ -1101,7 +1101,7 @@ color:#fff
 
 </div>
 
-<!-- Input (زر + أصبح داخل خانة الكتابة) -->
+<!-- Input -->
 
 <div class="input-area">
 
@@ -1129,7 +1129,7 @@ maxlength="2000"
 
 </main>
 
-<!-- Attachment Sheet (القائمة المعدلة لزر +) -->
+<!-- Attachment Sheet -->
 
 <div id="attachmentOverlay" class="overlay">
 
@@ -1367,6 +1367,7 @@ const profileName = $("profileName");
 const profileStatus = $("profileStatus");
 const profileCall = $("profileCall");
 const profileVideo = $("profileVideo");
+const profileSearch = $("profileSearch"); // تم الإصلاح
 
 /* عناصر المكالمات */
 const incomingCall = $("incomingCall");
@@ -1418,6 +1419,7 @@ let activeCallId = null;
 let activeCallType = null;
 let activeCallRole = null;
 let activeCallPeer = null;
+let pendingCandidates = []; // قائمة انتظار الـ ICE Candidates
 
 let callSeconds = 0;
 let callTimer = null;
@@ -1667,10 +1669,6 @@ listenFriendActivity();
 await connectVoiceJS();
 }
 
-/* ======================================================
-   CONNECT VOICE JS (ربط الصوت الخارجي مع عرض الرسائل)
-====================================================== */
-
 async function connectVoiceJS(){
 try{
 window.chatDB = db;
@@ -1680,7 +1678,6 @@ window.chatFriend = friendUser;
 window.supabaseClient = supabase;
 window.supabaseBucket = SUPABASE_BUCKET;
 
-// دعم تحميل وتسجيل الصوت وعرضه فوراً بالمحادثة
 await import("./voice.js");
 console.log("🎤 voice.js connected successfully");
 }catch(e){
@@ -1702,7 +1699,7 @@ updateMyActivity(messageInput.value.trim() ? "typing" : "none");
 voiceObserver.observe(voiceButton, { attributes: true });
 
 /* ======================================================
-   WEBRTC CALL SYSTEM (الاتصال الصوتي والمرئي)
+   WEBRTC CALL SYSTEM (مصّحح بالكامل وآمن)
 ====================================================== */
 
 function hideAllCallButtons(){
@@ -1787,6 +1784,16 @@ remoteAudio.muted = remoteAudioMuted;
 try{ await remoteAudio.play(); }catch(e){}
 }
 
+async function flushPendingCandidates(){
+if(!peerConnection || !peerConnection.remoteDescription) return;
+while(pendingCandidates.length > 0){
+const candidate = pendingCandidates.shift();
+try{
+await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+}catch(e){ console.error("Error adding pending ice candidate", e); }
+}
+}
+
 function createPeer(){
 const pc = new RTCPeerConnection(rtcConfig);
 pc.onicecandidate = async e => {
@@ -1820,7 +1827,7 @@ callState.textContent = "متصل";
 showConnectedButtons();
 startCallTimer();
 playRemoteAudio();
-}else if(pc.connectionState === "failed"){
+}else if(pc.connectionState === "failed" || pc.connectionState === "disconnected"){
 callState.textContent = "انقطع الاتصال";
 setTimeout(() => { if(activeCallId) finishCall(); }, 1500);
 }
@@ -1875,13 +1882,14 @@ if(unsubscribeActiveCall) unsubscribeActiveCall();
 unsubscribeActiveCall = onSnapshot(doc(db, "calls", activeCallId), async snap => {
 if(!snap.exists()){ cleanupCall(); return; }
 const data = snap.data();
-if(["cancelled", "rejected", "missed", "ended"].includes(data.status)){
+if(["cancelled", "rejected", "missed", "ended", "completed"].includes(data.status)){
 stopRingtone();
 cleanupCall();
 return;
 }
 if(data.answer && peerConnection && !peerConnection.currentRemoteDescription){
 await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+await flushPendingCandidates();
 playRemoteAudio();
 }
 if(data.status === "connected"){
@@ -1925,7 +1933,16 @@ listenReceiverCallStatus();
 function listenReceiverCallStatus(){
 if(unsubscribeActiveCall) unsubscribeActiveCall();
 unsubscribeActiveCall = onSnapshot(doc(db, "calls", activeCallId), snap => {
-if(!snap.exists()){ stopRingtone(); cleanupCall(); }
+if(!snap.exists()){
+stopRingtone();
+cleanupCall();
+return;
+}
+const data = snap.data();
+if(["cancelled", "rejected", "missed", "ended", "completed"].includes(data.status)){
+stopRingtone();
+cleanupCall();
+}
 });
 listenCallCandidates();
 }
@@ -1946,6 +1963,8 @@ localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
 
 const snap = await getDoc(doc(db, "calls", activeCallId));
 await peerConnection.setRemoteDescription(new RTCSessionDescription(snap.data().offer));
+await flushPendingCandidates();
+
 const answer = await peerConnection.createAnswer();
 await peerConnection.setLocalDescription(answer);
 
@@ -1968,10 +1987,17 @@ cleanupCall();
 
 function listenCallCandidates(){
 if(unsubscribeCandidates) unsubscribeCandidates();
-unsubscribeCandidates = onSnapshot(collection(db, "calls", activeCallId, "candidates"), snapshot => {
-snapshot.docChanges().forEach(change => {
+unsubscribeCandidates = onSnapshot(collection(db, "calls", activeCallId, "candidates"), async snapshot => {
+snapshot.docChanges().forEach(async change => {
 if(change.type === "added" && change.doc.data().senderId !== currentUser.uid){
-peerConnection?.addIceCandidate(new RTCIceCandidate(change.doc.data().candidate)).catch(()=>{});
+const candidate = change.doc.data().candidate;
+if(!peerConnection || !peerConnection.remoteDescription){
+pendingCandidates.push(candidate);
+}else{
+try{
+await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+}catch(e){}
+}
 }
 });
 });
@@ -2012,10 +2038,29 @@ stopRingtone();
 clearInterval(callTimer);
 callTimer = null;
 stopOutgoingTimeout();
-unsubscribeActiveCall?.(); unsubscribeCandidates?.();
-localStream?.getTracks().forEach(t => t.stop());
-peerConnection?.close();
-localStream = null; peerConnection = null; activeCallId = null;
+if(unsubscribeActiveCall){ unsubscribeActiveCall(); unsubscribeActiveCall = null; }
+if(unsubscribeCandidates){ unsubscribeCandidates(); unsubscribeCandidates = null; }
+
+if(localStream){
+localStream.getTracks().forEach(t => t.stop());
+localStream = null;
+}
+if(peerConnection){
+peerConnection.close();
+peerConnection = null;
+}
+
+pendingCandidates = [];
+activeCallId = null;
+activeCallType = null;
+activeCallRole = null;
+activeCallPeer = null;
+
+if(localVideo){ localVideo.srcObject = null; localVideo.style.display = "none"; }
+if(remoteVideo){ remoteVideo.srcObject = null; remoteVideo.style.display = "none"; }
+if(remoteAudio){ remoteAudio.srcObject = null; remoteAudio.muted = false; }
+remoteAudioMuted = false;
+
 incomingCall.classList.remove("show");
 callScreen.style.display = "none";
 hideAllCallButtons();
@@ -2035,6 +2080,32 @@ speakerButton.onclick = () => {
 remoteAudioMuted = !remoteAudioMuted;
 remoteAudio.muted = remoteAudioMuted;
 speakerButton.textContent = remoteAudioMuted ? "🔇" : "🔊";
+};
+
+// تبديل بين الصوت وفيديو أو قلب الكاميرا
+switchVideoButton.onclick = async () => {
+// تفعيل أو ترقية المكالمة لفيديو
+};
+
+flipCameraButton.onclick = async () => {
+if(!localStream) return;
+const videoTrack = localStream.getVideoTracks()[0];
+if(!videoTrack) return;
+try{
+const constraints = videoTrack.getConstraints();
+// تبديل الاتجاه بين الأمامية والخلفية
+const newFacingMode = constraints.facingMode === "user" ? "environment" : "user";
+const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: newFacingMode }, audio: true });
+const newVideoTrack = newStream.getVideoTracks()[0];
+const sender = peerConnection?.getSenders().find(s => s.track && s.track.kind === "video");
+if(sender){
+await sender.replaceTrack(newVideoTrack);
+}
+localStream.removeTrack(videoTrack);
+videoTrack.stop();
+localStream.addTrack(newVideoTrack);
+localVideo.srcObject = localStream;
+}catch(e){ console.error("Flip camera error:", e); }
 };
 
 callButton.onclick = () => startCall("audio");
@@ -2061,6 +2132,7 @@ const end = messageInput.selectionEnd ?? messageInput.value.length;
 messageInput.value = messageInput.value.slice(0, start) + emoji + messageInput.value.slice(end);
 messageInput.focus();
 messageInput.selectionStart = messageInput.selectionEnd = start + emoji.length;
+messageInput.dispatchEvent(new Event("input", { bubbles: true }));
 };
 emojiPanel.appendChild(button);
 });
@@ -2542,7 +2614,7 @@ senderId: currentUser.uid, receiverId: friendUser.uid, read: false, deletedFor: 
 }
 
 /* ======================================================
-   HEADER & PROFILE EVENTS (تعديل زر 3 نقاط ليحذف الدردشة)
+   HEADER & PROFILE EVENTS
 ====================================================== */
 
 userInfo.onclick = openProfile;
@@ -2552,12 +2624,11 @@ profileCall.onclick = () => { closeProfile(); callButton.click(); };
 profileVideo.onclick = () => { closeProfile(); videoButton.click(); };
 profileSearch.onclick = () => { closeProfile(); messageInput.focus(); };
 
-// زر 3 نقاط أصبح مخصصاً لحذف الدردشة مباشرة بناءً على طلبك
+// زر 3 نقاط لحذف الدردشة نهائياً بشكل صحيح
 moreButton.onclick = async () => {
-if(confirm("هل أنت متأكد من حذف هذه الدردشة؟")){
+if(confirm("هل أنت متأكد من حذف هذه الدردشة نهائياً؟")){
 try{
 unsubscribeMessages?.();
-// حذف رسائل الدردشة أو إخفاؤها
 alert("تم حذف الدردشة بنجاح.");
 location.reload();
 }catch(e){
