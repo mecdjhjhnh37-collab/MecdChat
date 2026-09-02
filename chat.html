@@ -1617,37 +1617,67 @@ createdAt: serverTimestamp()
 
 listenFriendStatus();
 listenFriendActivity();
-await connectVoiceJS();
 }
 
-async function connectVoiceJS(){
-try{
-window.chatDB = db;
-window.chatID = chatID;
-window.chatUser = currentUser;
-window.chatFriend = friendUser;
-window.supabaseClient = supabase;
-window.supabaseBucket = SUPABASE_BUCKET;
+/* ======================================================
+   VOICE RECORDING MODULE (Built-in)
+====================================================== */
+let mediaRecorder = null;
+let audioChunks = [];
 
-await import("./voice.js");
-console.log("🎤 voice.js connected successfully");
-}catch(e){
-console.error("❌ Error loading voice.js:", e);
-}
-}
+async function uploadFile(file, pathPrefix = "media"){
+const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+const filePath = `${pathPrefix}/${currentUser.uid}/${Date.now()}_${safeName}`;
 
-const voiceObserver = new MutationObserver(() => {
-const recording = voiceButton.classList.contains("recording");
-if(recording === voiceRecording) return;
-voiceRecording = recording;
-if(recording){
-typingState = false;
-updateMyActivity("recording");
-}else{
-updateMyActivity(messageInput.value.trim() ? "typing" : "none");
-}
+const uploadPromise = supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { 
+    upsert: false, 
+    contentType: file.type || undefined 
 });
-voiceObserver.observe(voiceButton, { attributes: true });
+
+const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error("انتهت مهلة الرفع، يرجى التحقق من اتصال الإنترنت")), 45000)
+);
+
+const { error } = await Promise.race([uploadPromise, timeoutPromise]);
+if(error) throw error;
+
+const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(filePath);
+return data.publicUrl;
+}
+
+voiceButton.onclick = async () => {
+if(!mediaRecorder || mediaRecorder.state === "inactive"){
+try{
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+mediaRecorder = new MediaRecorder(stream);
+audioChunks = [];
+
+mediaRecorder.ondataavailable = e => {
+if(e.data.size > 0) audioChunks.push(e.data);
+};
+
+mediaRecorder.onstop = async () => {
+stream.getTracks().forEach(t => t.stop());
+updateMyActivity("none");
+voiceButton.classList.remove("recording");
+
+const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+if(audioBlob.size < 1000) return;
+
+const file = new File([audioBlob], `voice_${Date.now()}.webm`, { type: 'audio/webm' });
+await uploadMediaAndSend(file, "voice");
+};
+
+mediaRecorder.start();
+voiceButton.classList.add("recording");
+updateMyActivity("recording");
+}catch(e){
+alert("تعذر الوصول للميكروفون.");
+}
+}else if(mediaRecorder.state === "recording"){
+mediaRecorder.stop();
+}
+};
 
 /* ======================================================
    WEBRTC CALL SYSTEM
@@ -2560,26 +2590,6 @@ searchOptionButton.onclick = () => {
     messageInput.placeholder = "ابحث في الرسائل...";
     messageInput.focus();
 };
-
-async function uploadFile(file, pathPrefix = "media"){
-const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-const filePath = `${pathPrefix}/${currentUser.uid}/${Date.now()}_${safeName}`;
-
-const uploadPromise = supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { 
-    upsert: false, 
-    contentType: file.type || undefined 
-});
-
-const timeoutPromise = new Promise((_, reject) => 
-    setTimeout(() => reject(new Error("انتهت مهلة الرفع، يرجى التحقق من اتصال الإنترنت")), 45000)
-);
-
-const { error } = await Promise.race([uploadPromise, timeoutPromise]);
-if(error) throw error;
-
-const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(filePath);
-return data.publicUrl;
-}
 
 async function uploadMediaAndSend(file, type){
 if(!file || !currentUser || !friendUser || !chatID) return;
