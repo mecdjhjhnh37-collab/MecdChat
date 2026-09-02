@@ -243,7 +243,6 @@ transition:transform .12s ease,background-color .2s ease;
 box-shadow:0 2px 7px rgba(0,0,0,.12)
 }
 
-/* رسائل المستخدم */
 .message.mine{
 align-self:flex-start;
 background:#00c96b;
@@ -251,7 +250,6 @@ color:#00150e;
 border-bottom-left-radius:5px
 }
 
-/* رسائل الطرف الآخر */
 .message.other{
 align-self:flex-end;
 background:#18231f;
@@ -817,6 +815,145 @@ font-size:20px;
 cursor:pointer
 }
 
+/* ================= CALL & VIDEO SCREENS ================= */
+
+#incomingCall{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%) translateY(-150px);
+width:92%;
+max-width:400px;
+background:rgba(17,27,24,0.95);
+backdrop-filter:blur(12px);
+border:1px solid rgba(0,232,137,0.3);
+border-radius:20px;
+padding:15px 20px;
+display:none;
+align-items:center;
+justify-content:space-between;
+z-index:99999;
+box-shadow:0 10px 30px rgba(0,0,0,0.6);
+transition:transform 0.3s ease;
+}
+#incomingCall.show{
+transform:translateX(-50%) translateY(0);
+display:flex;
+}
+.incoming-call-info{
+display:flex;
+align-items:center;
+gap:12px;
+min-width:0;
+}
+.call-avatar{
+width:50px;
+height:50px;
+border-radius:50%;
+background:#12352c;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:22px;
+overflow:hidden;
+flex-shrink:0;
+}
+.call-avatar img{width:100%;height:100%;object-fit:cover;}
+.incoming-name{font-weight:bold;font-size:15px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.incoming-type{font-size:12px;color:#00e889;margin-top:3px;}
+.incoming-actions{display:flex;gap:10px;}
+
+#callScreen{
+position:fixed;
+inset:0;
+background:#07110f;
+z-index:99998;
+display:none;
+flex-direction:column;
+justify-content:space-between;
+padding:30px 20px calc(30px + env(safe-area-inset-bottom));
+}
+.call-top{
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+margin-top:20px;
+}
+.call-top-info{display:flex;flex-direction:column;align-items:center;gap:6px;}
+#callTitle{font-size:20px;font-weight:bold;}
+#callState{font-size:13px;color:#00e889;}
+#callDuration{font-size:12px;color:#9ba5a1;margin-top:4px;}
+
+#audioCallView{
+flex:1;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+#videoArea{
+position:absolute;
+inset:0;
+background:#000;
+display:none;
+z-index:-1;
+}
+#remoteVideo{
+width:100%;
+height:100%;
+object-fit:cover;
+display:none;
+}
+#remoteAvatar{
+position:absolute;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:80px;
+background:#07110f;
+}
+#localVideo{
+position:absolute;
+bottom:120px;
+left:20px;
+width:100px;
+height:140px;
+border-radius:12px;
+object-fit:cover;
+background:#111b18;
+display:none;
+border:1px solid rgba(255,255,255,0.2);
+z-index:5;
+}
+
+.call-controls{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:15px;
+margin-bottom:10px;
+z-index:10;
+}
+.call-control{
+width:56px;
+height:56px;
+border-radius:50%;
+border:0;
+background:#18231f;
+color:#fff;
+font-size:22px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+box-shadow:0 4px 15px rgba(0,0,0,0.3);
+}
+.call-control.accept{background:#00c96b;color:#00150e;}
+.call-control.reject, .call-control.end{background:#d93636;color:#fff;}
+.call-control.active{background:#fff;color:#000;}
+.call-control.hidden{display:none !important;}
+
 /* ================= FILE ================= */
 
 .hidden-file{
@@ -850,8 +987,6 @@ animation:spin .8s linear infinite
 @keyframes spin{
 to{transform:rotate(360deg)}
 }
-
-/* ================= ERROR ================= */
 
 .error-box{
 padding:25px;
@@ -892,8 +1027,8 @@ font-weight:bold
 </div>
 
 <div class="call-buttons">
-<button id="callButton" type="button" aria-label="مكالمة">☎</button>
-<button id="videoButton" type="button" aria-label="فيديو">▣</button>
+<button id="callButton" type="button" aria-label="مكالمة صوتية">📞</button>
+<button id="videoButton" type="button" aria-label="مكالمة فيديو">📹</button>
 <button id="moreButton" class="more-button" type="button" aria-label="المزيد">⋮</button>
 </div>
 
@@ -987,7 +1122,7 @@ maxlength="2000"
 
 </div>
 
-<button id="voiceButton" class="voice-button" type="button">🎤</button>
+<button id="voiceButton" class="voice-button" type="button" title="تسجيل صوتي">🎤</button>
 
 <button id="sendButton" class="send-button" type="button">➤</button>
 
@@ -1083,12 +1218,12 @@ maxlength="2000"
 <div class="profile-actions">
 
 <button id="profileCall" class="profile-action" type="button">
-<span>☎</span>
+<span>📞</span>
 مكالمة
 </button>
 
 <button id="profileVideo" class="profile-action" type="button">
-<span>▣</span>
+<span>📹</span>
 فيديو
 </button>
 
@@ -1103,2686 +1238,1368 @@ maxlength="2000"
 
 </div>
 
+<!-- Incoming Call Box -->
+<div id="incomingCall">
+<div class="incoming-call-info">
+<div id="incomingAvatar" class="call-avatar">👤</div>
+<div>
+<div id="incomingName" class="incoming-name">مكالمة واردة</div>
+<div id="incomingType" class="incoming-type">📞 مكالمة صوتية</div>
+</div>
+</div>
+<div class="incoming-actions">
+<button id="rejectIncoming" type="button" class="call-control reject">✕</button>
+<button id="acceptIncoming" type="button" class="call-control accept">✓</button>
+</div>
+</div>
+
+<!-- Active Call Screen -->
+<div id="callScreen">
+<div class="call-top">
+<div class="call-top-info">
+<div id="callTitle">مكالمة</div>
+<div id="callState">جارٍ الاتصال...</div>
+<div id="callDuration">00:00</div>
+</div>
+</div>
+
+<div id="audioCallView">
+<div id="audioCallAvatar" class="call-avatar" style="width:150px;height:150px;font-size:55px">👤</div>
+</div>
+
+<div id="videoArea">
+<div id="remoteAvatar">
+<div id="remoteAvatarEmoji">👤</div>
+</div>
+<video id="remoteVideo" autoplay playsinline></video>
+<video id="localVideo" autoplay muted playsinline></video>
+</div>
+
+<audio id="remoteAudio" autoplay playsinline></audio>
+
+<div class="call-controls">
+<button id="switchVideoButton" class="call-control hidden" type="button" title="تشغيل الكاميرا">📹</button>
+<button id="muteButton" class="call-control hidden" type="button" title="كتم الميكروفون">🎤</button>
+<button id="speakerButton" class="call-control hidden" type="button" title="مكبر الصوت">🔊</button>
+<button id="flipCameraButton" class="call-control hidden" type="button" title="قلب الكاميرا">🔄</button>
+<button id="acceptCallButton" class="call-control accept hidden" type="button">✓</button>
+<button id="rejectCallButton" class="call-control reject hidden" type="button">✕</button>
+<button id="endCallButton" class="call-control end hidden" type="button" title="إنهاء المكالمة">📞</button>
+</div>
+</div>
+
 <script type="module">
 
 /* =========================================================
-   FIREBASE
+   FIREBASE & SUPABASE
 ========================================================= */
 
-import {
-initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getAuth,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import {
-getFirestore,
-doc,
-getDoc,
-setDoc,
-updateDoc,
-addDoc,
-collection,
-query,
-orderBy,
-onSnapshot,
-deleteDoc,
-serverTimestamp,
-arrayUnion,
-arrayRemove
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import {
-createClient
-} from "https://esm.sh/@supabase/supabase-js@2";
-
-
-/* =========================================================
-   CONFIG
-========================================================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, orderBy, onSnapshot, deleteDoc, serverTimestamp, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const firebaseConfig = {
-apiKey:"AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
-authDomain:"mecd-tools.firebaseapp.com",
-projectId:"mecd-tools",
-storageBucket:"mecd-tools.firebasestorage.app",
-messagingSenderId:"643005547408",
-appId:"1:643005547408:web:b1719060ec340dd0e0a915"
+apiKey: "AIzaSyA8ZA5fcy1Tl3hZ7_5n91xVOw06syHPGyI",
+authDomain: "mecd-tools.firebaseapp.com",
+projectId: "mecd-tools",
+storageBucket: "mecd-tools.firebasestorage.app",
+messagingSenderId: "643005547408",
+appId: "1:643005547408:web:b1719060ec340dd0e0a915"
 };
 
-const SUPABASE_URL =
-"https://aqukohedqmtjuspjbkmn.supabase.co";
+const SUPABASE_URL = "https://aqukohedqmtjuspjbkmn.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
+const SUPABASE_BUCKET = "mecd-media";
 
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_jODiQ8WSON3ouLqvLlQcZA_2Q6GwF_l";
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-const firebaseApp=initializeApp(firebaseConfig);
+const $ = id => document.getElementById(id);
 
-const auth=getAuth(firebaseApp);
+const loading = $("loading");
+const loadingText = $("loadingText");
+const app = $("app");
+const messages = $("messages");
+const messageInput = $("messageInput");
+const sendButton = $("sendButton");
+const voiceButton = $("voiceButton");
+const attachButton = $("attachButton");
+const emojiButton = $("emojiButton");
+const emojiPanel = $("emojiPanel");
 
-const db=getFirestore(firebaseApp);
+const friendName = $("friendName");
+const friendAvatar = $("friendAvatar");
+const friendStatus = $("friendStatus");
+const userInfo = $("userInfo");
 
-const supabase=createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
-);
+const backButton = $("backButton");
+const callButton = $("callButton");
+const videoButton = $("videoButton");
+const moreButton = $("moreButton");
 
+const pinnedBanner = $("pinnedBanner");
+const pinnedBannerText = $("pinnedBannerText");
+const pinnedBannerClick = $("pinnedBannerClick");
+const pinnedBannerClose = $("pinnedBannerClose");
 
-/* =========================================================
-   HELPERS
-========================================================= */
+const replyCompose = $("replyCompose");
+const replyComposeName = $("replyComposeName");
+const replyComposeText = $("replyComposeText");
+const replyCancel = $("replyCancel");
 
-const $=id=>document.getElementById(id);
+const attachmentOverlay = $("attachmentOverlay");
+const attachmentSheet = $("attachmentSheet");
+const galleryButton = $("galleryButton");
+const cameraButton = $("cameraButton");
+const documentButton = $("documentButton");
+const audioButton = $("audioButton");
+const locationButton = $("locationButton");
+const contactButton = $("contactButton");
 
-const loading=$("loading");
-const loadingText=$("loadingText");
-const app=$("app");
+const galleryInput = $("galleryInput");
+const cameraInput = $("cameraInput");
+const documentInput = $("documentInput");
 
-const messages=$("messages");
-const messageInput=$("messageInput");
-const sendButton=$("sendButton");
-const voiceButton=$("voiceButton");
-const attachButton=$("attachButton");
-const emojiButton=$("emojiButton");
-const emojiPanel=$("emojiPanel");
+const contextOverlay = $("contextOverlay");
+const contextPreview = $("contextPreview");
+const contextReactions = $("contextReactions");
+const contextActions = $("contextActions");
 
-const friendName=$("friendName");
-const friendAvatar=$("friendAvatar");
-const friendStatus=$("friendStatus");
-const userInfo=$("userInfo");
+const profileOverlay = $("profileOverlay");
+const profileAvatar = $("profileAvatar");
+const profileName = $("profileName");
+const profileStatus = $("profileStatus");
+const profileCall = $("profileCall");
+const profileVideo = $("profileVideo");
 
-const backButton=$("backButton");
-const callButton=$("callButton");
-const videoButton=$("videoButton");
-const moreButton=$("moreButton");
+/* عناصر المكالمات */
+const incomingCall = $("incomingCall");
+const incomingAvatar = $("incomingAvatar");
+const incomingName = $("incomingName");
+const incomingType = $("incomingType");
+const acceptIncoming = $("acceptIncoming");
+const rejectIncoming = $("rejectIncoming");
 
-const pinnedBanner=$("pinnedBanner");
-const pinnedBannerText=$("pinnedBannerText");
-const pinnedBannerClick=$("pinnedBannerClick");
-const pinnedBannerClose=$("pinnedBannerClose");
+const callScreen = $("callScreen");
+const callTitle = $("callTitle");
+const callState = $("callState");
+const callDuration = $("callDuration");
+const audioCallView = $("audioCallView");
+const audioCallAvatar = $("audioCallAvatar");
+const videoArea = $("videoArea");
+const remoteVideo = $("remoteVideo");
+const remoteAvatar = $("remoteAvatar");
+const localVideo = $("localVideo");
+const remoteAudio = $("remoteAudio");
 
-const replyCompose=$("replyCompose");
-const replyComposeName=$("replyComposeName");
-const replyComposeText=$("replyComposeText");
-const replyCancel=$("replyCancel");
+const switchVideoButton = $("switchVideoButton");
+const muteButton = $("muteButton");
+const speakerButton = $("speakerButton");
+const flipCameraButton = $("flipCameraButton");
+const acceptCallButton = $("acceptCallButton");
+const rejectCallButton = $("rejectCallButton");
+const endCallButton = $("endCallButton");
 
-const attachmentOverlay=$("attachmentOverlay");
-const attachmentSheet=$("attachmentSheet");
-const galleryButton=$("galleryButton");
-const cameraButton=$("cameraButton");
-const documentButton=$("documentButton");
-const audioButton=$("audioButton");
-const locationButton=$("locationButton");
-const contactButton=$("contactButton");
+let currentUser = null;
+let friendUser = null;
+let chatID = null;
 
-const galleryInput=$("galleryInput");
-const cameraInput=$("cameraInput");
-const documentInput=$("documentInput");
+let unsubscribeMessages = null;
+let unsubscribeFriendStatus = null;
+let unsubscribeFriendActivity = null;
+let unsubscribeIncomingCalls = null;
+let unsubscribeActiveCall = null;
+let unsubscribeCandidates = null;
 
-const contextOverlay=$("contextOverlay");
-const contextPreview=$("contextPreview");
-const contextReactions=$("contextReactions");
-const contextActions=$("contextActions");
+let presenceInterval = null;
+let typingTimer = null;
+let typingState = false;
+let voiceRecording = false;
 
-const profileOverlay=$("profileOverlay");
-const profileAvatar=$("profileAvatar");
-const profileName=$("profileName");
-const profileStatus=$("profileStatus");
-const profileCall=$("profileCall");
-const profileVideo=$("profileVideo");
+let localStream = null;
+let peerConnection = null;
+let activeCallId = null;
+let activeCallType = null;
+let activeCallRole = null;
+let activeCallPeer = null;
 
+let callSeconds = 0;
+let callTimer = null;
+let callTimeout = null;
+let remoteAudioMuted = false;
 
-/* =========================================================
-   STATE
-========================================================= */
+let friendOnline = false;
+let friendTyping = false;
+let friendRecording = false;
+let handledIncomingCalls = new Set();
 
-let currentUser=null;
-let friendUser=null;
-let chatID=null;
+const rtcConfig = {
+iceServers: [
+{ urls: "stun:stun.l.google.com:19302" },
+{ urls: "stun:stun1.l.google.com:19302" }
+]
+};
 
-let unsubscribeMessages=null;
-let unsubscribeFriend=null;
+let replyTarget = null;
+let editingMessageId = null;
+let currentContextMessage = null;
+const messageElements = new Map();
 
-let replyTarget=null;
-let editingMessageId=null;
-
-let currentContextMessage=null;
-
-let mediaRecorder=null;
-let mediaStream=null;
-let audioChunks=[];
-
-const messageElements=new Map();
-
-const reactionList=[
-"❤️",
-"👍",
-"🔥",
-"😂",
-"😮",
-"😢"
-];
-
-const emojiList=[
+const reactionList = ["❤️", "👍", "🔥", "😂", "😮", "😢"];
+const emojiList = [
 "😀","😂","😍","🥰","😎","😢","😭","😡",
 "😮","😴","🤔","😉","😊","🙌","👏","👍",
 "👎","❤️","💚","💙","💜","🖤","🔥","🎉",
 "✨","💯","🤣","😅","🙏","🥳","🤩","😇"
 ];
 
-
-/* =========================================================
-   BASIC FUNCTIONS
-========================================================= */
-
-function createChatID(a,b){
-return [a,b].sort().join("_");
+function createChatID(a, b){
+return [a, b].sort().join("_");
 }
 
 function escapeHtml(value){
-return String(value??"")
-.replace(/[&<>'"]/g,c=>({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-"'":"&#39;",
-'"':"&quot;"
+return String(value ?? "").replace(/[&<>'"]/g, c => ({
+"&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;"
 }[c]));
 }
 
 function getMessagePreview(data){
-
-if(data.type==="text")
-return data.text||"رسالة";
-
-if(data.type==="image")
-return "📷 صورة";
-
-if(data.type==="video")
-return "🎥 فيديو";
-
-if(data.type==="voice")
-return "🎤 رسالة صوتية";
-
-if(data.type==="document")
-return "📄 مستند";
-
-if(data.type==="location")
-return "📍 الموقع";
-
-if(data.type==="contact")
-return "👤 جهة اتصال";
-
+if(data.type==="text") return data.text||"رسالة";
+if(data.type==="image") return "📷 صورة";
+if(data.type==="video") return "🎥 فيديو";
+if(data.type==="voice") return "🎤 رسالة صوتية";
+if(data.type==="document") return "📄 مستند";
+if(data.type==="location") return "📍 الموقع";
+if(data.type==="contact") return "👤 جهة اتصال";
 return "رسالة";
 }
 
 function formatTime(timestamp){
-
-if(!timestamp?.toDate)
-return "";
-
+if(!timestamp?.toDate) return "";
 try{
-
-return timestamp.toDate().toLocaleTimeString(
-"ar",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-);
-
-}catch{
-
-return "";
-
+return timestamp.toDate().toLocaleTimeString("ar", { hour:"2-digit", minute:"2-digit" });
+}catch{ return ""; }
 }
 
+function formatDuration(seconds){
+seconds = Math.max(0, Math.floor(Number(seconds || 0)));
+const m = Math.floor(seconds / 60);
+const s = seconds % 60;
+return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
 }
 
-function setAvatar(element,user){
-
-element.innerHTML="";
-
+function setAvatar(element, user){
+element.innerHTML = "";
 if(user?.photo){
-
-const img=document.createElement("img");
-
-img.src=user.photo;
-img.alt="";
-
-img.onerror=()=>{
-element.textContent="👤";
-};
-
+const img = document.createElement("img");
+img.src = user.photo;
+img.alt = "";
+img.onerror = () => { element.textContent = "👤"; };
 element.appendChild(img);
-
 }else{
-
-element.textContent="👤";
-
+element.textContent = "👤";
 }
-
 }
 
 function setLoading(text){
-
-loadingText.textContent=text;
-
+loadingText.textContent = text;
 }
 
 function openProfile(){
-
-profileName.textContent=friendUser?.name||"المستخدم";
-
-profileStatus.textContent=
-friendStatus.textContent.replace("● ","")||"غير متصل";
-
-setAvatar(profileAvatar,friendUser);
-
+profileName.textContent = friendUser?.name || "المستخدم";
+profileStatus.textContent = friendStatus.textContent.replace("● ","") || "غير متصل";
+setAvatar(profileAvatar, friendUser);
 profileOverlay.classList.add("show");
-
 }
 
 function closeProfile(){
-
 profileOverlay.classList.remove("show");
-
 }
 
+/* ======================================================
+   PRESENCE & ACTIVITY
+====================================================== */
 
-/* =========================================================
-   LOAD FRIEND
-========================================================= */
+async function updateMyPresence(online = true){
+if(!currentUser) return;
+try{
+await setDoc(doc(db, "users", currentUser.uid), {
+online,
+lastSeen: serverTimestamp()
+}, { merge:true });
+}catch(e){ console.error("Presence:", e); }
+}
+
+function startPresence(){
+updateMyPresence(true);
+clearInterval(presenceInterval);
+presenceInterval = setInterval(() => {
+if(document.visibilityState === "visible"){
+updateMyPresence(true);
+}
+}, 10000);
+}
+
+function stopPresence(){
+clearInterval(presenceInterval);
+presenceInterval = null;
+updateMyPresence(false);
+}
+
+function renderFriendStatus(){
+friendStatus.classList.remove("online", "typing", "recording");
+if(friendRecording){
+friendStatus.textContent = "🎤 يسجل صوت...";
+friendStatus.classList.add("recording");
+profileStatus.textContent = "يسجل صوت...";
+return;
+}
+if(friendTyping){
+friendStatus.textContent = "يكتب...";
+friendStatus.classList.add("typing");
+profileStatus.textContent = "يكتب...";
+return;
+}
+if(friendOnline){
+friendStatus.textContent = "● متصل الآن";
+friendStatus.classList.add("online");
+profileStatus.textContent = "متصل الآن";
+}else{
+friendStatus.textContent = "● غير متصل";
+profileStatus.textContent = "غير متصل";
+}
+}
+
+function listenFriendStatus(){
+if(unsubscribeFriendStatus) unsubscribeFriendStatus();
+unsubscribeFriendStatus = onSnapshot(doc(db, "users", friendUser.uid), snap => {
+if(!snap.exists()){
+friendOnline = false;
+renderFriendStatus();
+return;
+}
+const data = snap.data();
+friendUser.name = data.name || friendUser.name;
+friendUser.photo = data.photo || friendUser.photo;
+friendName.textContent = friendUser.name;
+setAvatar(friendAvatar, friendUser);
+
+const last = data.lastSeen?.toMillis?.() || 0;
+friendOnline = data.online === true && last > 0 && Date.now() - last < 30000;
+renderFriendStatus();
+});
+}
+
+function listenFriendActivity(){
+if(unsubscribeFriendActivity) unsubscribeFriendActivity();
+unsubscribeFriendActivity = onSnapshot(doc(db, "chats", chatID, "typing", friendUser.uid), snap => {
+if(!snap.exists()){
+friendTyping = false;
+friendRecording = false;
+renderFriendStatus();
+return;
+}
+const data = snap.data();
+const updated = data.updatedAt?.toMillis?.() || 0;
+const fresh = !updated || Date.now() - updated < 5000;
+friendRecording = fresh && data.recording === true;
+friendTyping = fresh && data.typing === true && !friendRecording;
+renderFriendStatus();
+});
+}
+
+async function updateMyActivity(type){
+if(!currentUser || !chatID) return;
+try{
+await setDoc(doc(db, "chats", chatID, "typing", currentUser.uid), {
+typing: type === "typing",
+recording: type === "recording",
+updatedAt: serverTimestamp()
+}, { merge:true });
+}catch(e){ console.error("Activity:", e); }
+}
+
+messageInput.addEventListener("input", () => {
+clearTimeout(typingTimer);
+if(!messageInput.value.trim()){
+typingState = false;
+updateMyActivity("none");
+return;
+}
+if(!typingState){
+typingState = true;
+updateMyActivity("typing");
+}
+typingTimer = setTimeout(() => {
+typingState = false;
+updateMyActivity("none");
+}, 1200);
+});
+
+/* ======================================================
+   LOAD FRIEND & CHAT
+====================================================== */
 
 async function loadFriend(){
+const params = new URLSearchParams(location.search);
+const friendId = params.get("friend");
+if(!friendId) throw new Error("لا يوجد معرف المستخدم في الرابط.");
+if(!currentUser) throw new Error("لم يتم تسجيل الدخول.");
+if(friendId === currentUser.uid) throw new Error("لا يمكن فتح محادثة مع نفسك.");
 
-const params=new URLSearchParams(location.search);
+const snap = await getDoc(doc(db, "users", friendId));
+if(!snap.exists()) throw new Error("المستخدم غير موجود.");
 
-const friendId=params.get("friend");
-
-if(!friendId)
-throw new Error("لا يوجد معرف المستخدم في الرابط.");
-
-if(!currentUser)
-throw new Error("لم يتم تسجيل الدخول.");
-
-if(friendId===currentUser.uid)
-throw new Error("لا يمكن فتح محادثة مع نفسك.");
-
-const friendRef=doc(db,"users",friendId);
-
-const snap=await getDoc(friendRef);
-
-if(!snap.exists())
-throw new Error("المستخدم غير موجود.");
-
-const data=snap.data();
-
-friendUser={
-uid:friendId,
-name:data.name||data.displayName||"مستخدم",
-photo:data.photo||data.photoURL||"",
-status:data.status||"",
-lastSeen:data.lastSeen||null
+const data = snap.data();
+friendUser = {
+uid: friendId,
+name: data.name || data.displayName || "مستخدم",
+photo: data.photo || data.photoURL || ""
 };
 
-friendName.textContent=friendUser.name;
+friendName.textContent = friendUser.name;
+setAvatar(friendAvatar, friendUser);
 
-setAvatar(friendAvatar,friendUser);
+chatID = createChatID(currentUser.uid, friendUser.uid);
 
-profileName.textContent=friendUser.name;
+await setDoc(doc(db, "chats", chatID), {
+members: [currentUser.uid, friendUser.uid],
+createdAt: serverTimestamp()
+}, { merge:true });
 
-setAvatar(profileAvatar,friendUser);
-
-chatID=createChatID(
-currentUser.uid,
-friendUser.uid
-);
-
-updateFriendStatus(data);
-
-listenFriendStatus(friendId);
-
+listenFriendStatus();
+listenFriendActivity();
+await connectVoiceJS();
 }
 
+/* ======================================================
+   CONNECT VOICE JS (ربط الصوت الخارجي)
+====================================================== */
 
-/* =========================================================
-   ONLINE / OFFLINE / LAST SEEN
-========================================================= */
+async function connectVoiceJS(){
+try{
+window.chatDB = db;
+window.chatID = chatID;
+window.chatUser = currentUser;
+window.chatFriend = friendUser;
 
-function formatLastSeen(value){
+await import("./voice.js");
+console.log("🎤 voice.js connected successfully");
+}catch(e){
+console.error("❌ Error loading voice.js:", e);
+}
+}
 
-if(!value)
-return "آخر ظهور غير معروف";
+const voiceObserver = new MutationObserver(() => {
+const recording = voiceButton.classList.contains("recording");
+if(recording === voiceRecording) return;
+voiceRecording = recording;
+if(recording){
+typingState = false;
+updateMyActivity("recording");
+}else{
+updateMyActivity(messageInput.value.trim() ? "typing" : "none");
+}
+});
+voiceObserver.observe(voiceButton, { attributes: true });
 
-let date=null;
+/* ======================================================
+   WEBRTC CALL SYSTEM (الاتصال الصوتي والمرئي)
+====================================================== */
+
+function hideAllCallButtons(){
+[muteButton, speakerButton, flipCameraButton, switchVideoButton, acceptCallButton, rejectCallButton, endCallButton].forEach(x => x.classList.add("hidden"));
+}
+
+function showOutgoingButtons(){
+hideAllCallButtons();
+endCallButton.classList.remove("hidden");
+}
+
+function showIncomingButtons(){
+hideAllCallButtons();
+acceptCallButton.classList.remove("hidden");
+rejectCallButton.classList.remove("hidden");
+}
+
+function showConnectedButtons(){
+hideAllCallButtons();
+muteButton.classList.remove("hidden");
+speakerButton.classList.remove("hidden");
+endCallButton.classList.remove("hidden");
+if(activeCallType === "audio") switchVideoButton.classList.remove("hidden");
+if(activeCallType === "video") flipCameraButton.classList.remove("hidden");
+}
+
+function setupCallVisuals(){
+if(activeCallType === "video"){
+audioCallView.style.display = "none";
+videoArea.style.display = "block";
+}else{
+audioCallView.style.display = "flex";
+videoArea.style.display = "none";
+}
+}
+
+function showCallScreen(){
+callScreen.style.display = "flex";
+callTitle.textContent = activeCallPeer?.name || "مكالمة";
+setAvatar(audioCallAvatar, activeCallPeer);
+setupCallVisuals();
+}
+
+function showIncoming(){
+incomingCall.classList.add("show");
+incomingName.textContent = activeCallPeer?.name || "مكالمة واردة";
+incomingType.textContent = activeCallType === "video" ? "📹 مكالمة فيديو" : "📞 مكالمة صوتية";
+setAvatar(incomingAvatar, activeCallPeer);
+}
+
+let ringtoneContext = null;
+let ringtoneTimer = null;
+function startRingtone(){
+stopRingtone();
+try{
+ringtoneContext = new (window.AudioContext || window.webkitAudioContext)();
+const gain = ringtoneContext.createGain();
+gain.gain.value = 0.05;
+gain.connect(ringtoneContext.destination);
+const playTone = () => {
+if(!ringtoneContext) return;
+const osc = ringtoneContext.createOscillator();
+osc.frequency.value = 440;
+osc.connect(gain);
+osc.start();
+osc.stop(ringtoneContext.currentTime + 0.3);
+};
+playTone();
+ringtoneTimer = setInterval(playTone, 1000);
+}catch(e){}
+}
+function stopRingtone(){
+if(ringtoneTimer) clearInterval(ringtoneTimer);
+ringtoneTimer = null;
+if(ringtoneContext) try{ ringtoneContext.close(); }catch{}
+ringtoneContext = null;
+}
+
+async function playRemoteAudio(){
+if(!remoteAudio || !remoteAudio.srcObject) return;
+remoteAudio.muted = remoteAudioMuted;
+try{ await remoteAudio.play(); }catch(e){}
+}
+
+function createPeer(){
+const pc = new RTCPeerConnection(rtcConfig);
+pc.onicecandidate = async e => {
+if(!e.candidate || !activeCallId || !currentUser) return;
+await addDoc(collection(db, "calls", activeCallId, "candidates"), {
+senderId: currentUser.uid,
+candidate: e.candidate.toJSON(),
+createdAt: serverTimestamp()
+});
+};
+pc.ontrack = e => {
+const stream = e.streams?.[0];
+if(!stream) return;
+remoteAudio.srcObject = stream;
+const hasVideo = stream.getVideoTracks().some(t => t.readyState !== "ended");
+if(hasVideo){
+remoteVideo.srcObject = stream;
+remoteVideo.style.display = "block";
+remoteAvatar.style.display = "none";
+videoArea.style.display = "block";
+audioCallView.style.display = "none";
+remoteVideo.play().catch(()=>{});
+}else{
+playRemoteAudio();
+}
+};
+pc.onconnectionstatechange = () => {
+if(pc.connectionState === "connected"){
+stopOutgoingTimeout();
+callState.textContent = "متصل";
+showConnectedButtons();
+startCallTimer();
+playRemoteAudio();
+}else if(pc.connectionState === "failed"){
+callState.textContent = "انقطع الاتصال";
+setTimeout(() => { if(activeCallId) finishCall(); }, 1500);
+}
+};
+return pc;
+}
+
+async function startCall(type){
+if(activeCallId) return;
+activeCallId = crypto.randomUUID();
+activeCallType = type;
+activeCallRole = "caller";
+activeCallPeer = { uid: friendUser.uid, name: friendUser.name, photo: friendUser.photo };
+callSeconds = 0;
+showCallScreen();
+showOutgoingButtons();
+callState.textContent = "جارٍ الاتصال...";
 
 try{
+localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === "video" });
+if(type === "video"){
+localVideo.srcObject = localStream;
+localVideo.style.display = "block";
+}
+peerConnection = createPeer();
+if(type === "audio") peerConnection.addTransceiver("video", { direction: "sendrecv" });
+localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
 
-if(value.toDate)
-date=value.toDate();
-else
-date=new Date(value);
+const offer = await peerConnection.createOffer();
+await peerConnection.setLocalDescription(offer);
 
-}catch{
-return "آخر ظهور غير معروف";
+await setDoc(doc(db, "calls", activeCallId), {
+callId: activeCallId,
+callerId: currentUser.uid,
+receiverId: friendUser.uid,
+callType: type,
+status: "ringing",
+offer: { type: offer.type, sdp: offer.sdp },
+createdAt: serverTimestamp()
+});
+
+listenCallerCall();
+startOutgoingTimeout();
+}catch(e){
+alert("تعذر الوصول للميكروفون أو الكاميرا");
+cleanupCall();
+}
 }
 
-if(!date||Number.isNaN(date.getTime()))
-return "آخر ظهور غير معروف";
-
-return "آخر ظهور "+date.toLocaleString(
-"ar",
-{
-day:"2-digit",
-month:"2-digit",
-hour:"2-digit",
-minute:"2-digit"
-}
-);
-}
-
-function updateFriendStatus(data){
-
-if(data.online===true||data.isOnline===true){
-
-friendStatus.textContent="● متصل الآن";
-friendStatus.className="user-status online";
-
-}else{
-
-friendStatus.textContent=
-"● "+formatLastSeen(data.lastSeen);
-
-friendStatus.className="user-status";
-
-}
-
-profileStatus.textContent=
-friendStatus.textContent.replace("● ","");
-
-}
-
-function listenFriendStatus(friendId){
-
-if(unsubscribeFriend)
-unsubscribeFriend();
-
-unsubscribeFriend=onSnapshot(
-doc(db,"users",friendId),
-snap=>{
-
-if(!snap.exists())
+function listenCallerCall(){
+if(unsubscribeActiveCall) unsubscribeActiveCall();
+unsubscribeActiveCall = onSnapshot(doc(db, "calls", activeCallId), async snap => {
+if(!snap.exists()){ cleanupCall(); return; }
+const data = snap.data();
+if(["cancelled", "rejected", "missed", "ended"].includes(data.status)){
+stopRingtone();
+cleanupCall();
 return;
-
-const data=snap.data();
-
-friendUser.name=
-data.name||
-data.displayName||
-friendUser.name;
-
-friendUser.photo=
-data.photo||
-data.photoURL||
-friendUser.photo;
-
-friendName.textContent=friendUser.name;
-
-setAvatar(friendAvatar,friendUser);
-
-updateFriendStatus(data);
-
 }
-);
-
+if(data.answer && peerConnection && !peerConnection.currentRemoteDescription){
+await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+playRemoteAudio();
+}
+if(data.status === "connected"){
+stopOutgoingTimeout();
+stopRingtone();
+callState.textContent = "متصل";
+showConnectedButtons();
+startCallTimer();
+}
+});
+listenCallCandidates();
 }
 
+function listenIncomingCalls(){
+if(!currentUser) return;
+if(unsubscribeIncomingCalls) unsubscribeIncomingCalls();
+const q = query(collection(db, "calls"), where("receiverId", "==", currentUser.uid));
+unsubscribeIncomingCalls = onSnapshot(q, snapshot => {
+snapshot.docChanges().forEach(async change => {
+if(change.type !== "added") return;
+const id = change.doc.id;
+const data = change.doc.data();
+if(data.status !== "ringing" || !data.offer || activeCallId || handledIncomingCalls.has(id)) return;
+handledIncomingCalls.add(id);
 
-/* =========================================================
-   EMOJI
-========================================================= */
+const callerSnap = await getDoc(doc(db, "users", data.callerId));
+const callerData = callerSnap.exists() ? callerSnap.data() : {};
+
+activeCallId = id;
+activeCallType = data.callType || "audio";
+activeCallRole = "receiver";
+activeCallPeer = { uid: data.callerId, name: callerData.name || "مستخدم", photo: callerData.photo || "" };
+
+showIncoming();
+startRingtone();
+listenReceiverCallStatus();
+});
+});
+}
+
+function listenReceiverCallStatus(){
+if(unsubscribeActiveCall) unsubscribeActiveCall();
+unsubscribeActiveCall = onSnapshot(doc(db, "calls", activeCallId), snap => {
+if(!snap.exists()){ stopRingtone(); cleanupCall(); }
+});
+listenCallCandidates();
+}
+
+async function acceptIncomingCall(){
+if(!activeCallId) return;
+stopRingtone();
+incomingCall.classList.remove("show");
+showCallScreen();
+try{
+localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: activeCallType === "video" });
+if(activeCallType === "video"){
+localVideo.srcObject = localStream;
+localVideo.style.display = "block";
+}
+peerConnection = createPeer();
+localStream.getTracks().forEach(t => peerConnection.addTrack(t, localStream));
+
+const snap = await getDoc(doc(db, "calls", activeCallId));
+await peerConnection.setRemoteDescription(new RTCSessionDescription(snap.data().offer));
+const answer = await peerConnection.createAnswer();
+await peerConnection.setLocalDescription(answer);
+
+await updateDoc(doc(db, "calls", activeCallId), {
+answer: { type: answer.type, sdp: answer.sdp },
+status: "connected",
+receivedAt: serverTimestamp()
+});
+showConnectedButtons();
+startCallTimer();
+playRemoteAudio();
+}catch(e){ cleanupCall(); }
+}
+
+async function rejectIncomingCall(){
+if(activeCallId) await updateDoc(doc(db, "calls", activeCallId), { status: "rejected", endedAt: serverTimestamp() });
+incomingCall.classList.remove("show");
+cleanupCall();
+}
+
+function listenCallCandidates(){
+if(unsubscribeCandidates) unsubscribeCandidates();
+unsubscribeCandidates = onSnapshot(collection(db, "calls", activeCallId, "candidates"), snapshot => {
+snapshot.docChanges().forEach(change => {
+if(change.type === "added" && change.doc.data().senderId !== currentUser.uid){
+peerConnection?.addIceCandidate(new RTCIceCandidate(change.doc.data().candidate)).catch(()=>{});
+}
+});
+});
+}
+
+function startCallTimer(){
+if(callTimer) return;
+callTimer = setInterval(() => {
+callSeconds++;
+callDuration.textContent = formatDuration(callSeconds);
+}, 1000);
+}
+
+function startOutgoingTimeout(){
+callTimeout = setTimeout(() => { if(activeCallId && activeCallRole === "caller") finishCall("missed"); }, 30000);
+}
+
+function stopOutgoingTimeout(){
+clearTimeout(callTimeout);
+callTimeout = null;
+}
+
+async function finishCall(status = "completed"){
+if(activeCallId){
+try{
+await updateDoc(doc(db, "calls", activeCallId), {
+status: status === "completed" ? "ended" : status,
+duration: callSeconds,
+endedAt: serverTimestamp()
+});
+}catch(e){}
+}
+cleanupCall();
+}
+
+function cleanupCall(){
+stopRingtone();
+clearInterval(callTimer);
+callTimer = null;
+stopOutgoingTimeout();
+unsubscribeActiveCall?.(); unsubscribeCandidates?.();
+localStream?.getTracks().forEach(t => t.stop());
+peerConnection?.close();
+localStream = null; peerConnection = null; activeCallId = null;
+incomingCall.classList.remove("show");
+callScreen.style.display = "none";
+hideAllCallButtons();
+callSeconds = 0;
+}
+
+muteButton.onclick = () => {
+const track = localStream?.getAudioTracks()[0];
+if(track){
+track.enabled = !track.enabled;
+muteButton.textContent = track.enabled ? "🎤" : "🔇";
+muteButton.classList.toggle("active", !track.enabled);
+}
+};
+
+speakerButton.onclick = () => {
+remoteAudioMuted = !remoteAudioMuted;
+remoteAudio.muted = remoteAudioMuted;
+speakerButton.textContent = remoteAudioMuted ? "🔇" : "🔊";
+};
+
+callButton.onclick = () => startCall("audio");
+videoButton.onclick = () => startCall("video");
+acceptIncoming.onclick = acceptIncomingCall;
+rejectIncoming.onclick = rejectIncomingCall;
+acceptCallButton.onclick = acceptIncomingCall;
+rejectCallButton.onclick = rejectIncomingCall;
+endCallButton.onclick = () => finishCall("ended");
+
+/* ======================================================
+   EMOJIS & REPLY
+====================================================== */
 
 function buildEmojiPanel(){
-
-emojiPanel.innerHTML="";
-
-emojiList.forEach(emoji=>{
-
-const button=document.createElement("button");
-
-button.type="button";
-
-button.textContent=emoji;
-
-button.onclick=()=>{
-
-const start=messageInput.selectionStart??messageInput.value.length;
-const end=messageInput.selectionEnd??messageInput.value.length;
-
-messageInput.value=
-messageInput.value.slice(0,start)+
-emoji+
-messageInput.value.slice(end);
-
+emojiPanel.innerHTML = "";
+emojiList.forEach(emoji => {
+const button = document.createElement("button");
+button.type = "button";
+button.textContent = emoji;
+button.onclick = () => {
+const start = messageInput.selectionStart ?? messageInput.value.length;
+const end = messageInput.selectionEnd ?? messageInput.value.length;
+messageInput.value = messageInput.value.slice(0, start) + emoji + messageInput.value.slice(end);
 messageInput.focus();
-
-messageInput.selectionStart=
-messageInput.selectionEnd=
-start+emoji.length;
-
+messageInput.selectionStart = messageInput.selectionEnd = start + emoji.length;
 };
-
 emojiPanel.appendChild(button);
-
 });
-
 }
 
-emojiButton.onclick=e=>{
-
+emojiButton.onclick = e => {
 e.stopPropagation();
-
 emojiPanel.classList.toggle("show");
-
 };
 
-document.addEventListener("pointerdown",e=>{
-
-if(
-!e.target.closest("#emojiPanel") &&
-!e.target.closest("#emojiButton")
-){
-
+document.addEventListener("pointerdown", e => {
+if(!e.target.closest("#emojiPanel") && !e.target.closest("#emojiButton")){
 emojiPanel.classList.remove("show");
-
 }
-
 });
-
-
-/* =========================================================
-   REPLY
-========================================================= */
 
 function startReply(data){
-
-editingMessageId=null;
-
-sendButton.textContent="➤";
-
-replyTarget={
-id:data.id,
-senderId:data.senderId,
-senderName:
-data.senderId===currentUser.uid
-?"أنت"
-:friendUser?.name||"المستخدم",
-text:getMessagePreview(data)
+editingMessageId = null;
+sendButton.textContent = "➤";
+replyTarget = {
+id: data.id,
+senderId: data.senderId,
+senderName: data.senderId === currentUser.uid ? "أنت" : friendUser?.name || "المستخدم",
+text: getMessagePreview(data)
 };
-
-replyComposeName.textContent=
-"الرد على "+replyTarget.senderName;
-
-replyComposeText.textContent=
-replyTarget.text;
-
-replyCompose.style.display="flex";
-
+replyComposeName.textContent = "الرد على " + replyTarget.senderName;
+replyComposeText.textContent = replyTarget.text;
+replyCompose.style.display = "flex";
 messageInput.focus();
-
 }
 
 function cancelReply(){
-
-replyTarget=null;
-
-replyCompose.style.display="none";
-
-if(!editingMessageId)
-sendButton.textContent="➤";
-
+replyTarget = null;
+replyCompose.style.display = "none";
+if(!editingMessageId) sendButton.textContent = "➤";
 }
 
-replyCancel.onclick=e=>{
+replyCancel.onclick = e => { e.stopPropagation(); cancelReply(); };
 
-e.stopPropagation();
+/* ======================================================
+   REACTIONS & MESSAGES RENDER
+====================================================== */
 
-cancelReply();
-
-};
-
-
-/* =========================================================
-   REACTIONS
-========================================================= */
-
-async function toggleReaction(messageId,emoji){
-
-if(!currentUser||!chatID)
-return;
-
+async function toggleReaction(messageId, emoji){
+if(!currentUser || !chatID) return;
 try{
-
-const ref=doc(
-db,
-"chats",
-chatID,
-"messages",
-messageId
-);
-
-const snap=await getDoc(ref);
-
-if(!snap.exists())
-return;
-
-const data=snap.data();
-
-const reactions=
-Array.isArray(data.reactions)
-?data.reactions
-:[];
-
-const mine=reactions.find(
-r=>
-r &&
-r.userId===currentUser.uid &&
-r.emoji===emoji
-);
-
+const ref = doc(db, "chats", chatID, "messages", messageId);
+const snap = await getDoc(ref);
+if(!snap.exists()) return;
+const data = snap.data();
+const reactions = Array.isArray(data.reactions) ? data.reactions : [];
+const mine = reactions.find(r => r && r.userId === currentUser.uid && r.emoji === emoji);
 if(mine){
-
-await updateDoc(
-ref,
-{
-reactions:arrayRemove(mine)
-}
-);
-
+await updateDoc(ref, { reactions: arrayRemove(mine) });
 return;
-
+}
+const oldMine = reactions.find(r => r && r.userId === currentUser.uid);
+if(oldMine) await updateDoc(ref, { reactions: arrayRemove(oldMine) });
+await updateDoc(ref, { reactions: arrayUnion({ userId: currentUser.uid, emoji }) });
+}catch(e){ console.error("Reaction:", e); }
 }
 
-const oldMine=reactions.find(
-r=>r&&r.userId===currentUser.uid
-);
-
-if(oldMine){
-
-await updateDoc(
-ref,
-{
-reactions:arrayRemove(oldMine)
-}
-);
-
-}
-
-await updateDoc(
-ref,
-{
-reactions:arrayUnion({
-userId:currentUser.uid,
-emoji:emoji
-})
-}
-);
-
-}catch(error){
-
-console.error("Reaction error:",error);
-
-}
-
-}
-
-function renderReactions(box,data){
-
-if(!Array.isArray(data.reactions))
-return;
-
-const counts={};
-
-data.reactions.forEach(reaction=>{
-
-if(!reaction?.emoji)
-return;
-
-if(!counts[reaction.emoji]){
-
-counts[reaction.emoji]={
-count:0,
-mine:false
-};
-
-}
-
-counts[reaction.emoji].count++;
-
-if(
-reaction.userId===currentUser.uid
-){
-
-counts[reaction.emoji].mine=true;
-
-}
-
+function renderReactions(box, data){
+if(!Array.isArray(data.reactions)) return;
+const counts = {};
+data.reactions.forEach(r => {
+if(!r?.emoji) return;
+if(!counts[r.emoji]) counts[r.emoji] = { count: 0, mine: false };
+counts[r.emoji].count++;
+if(r.userId === currentUser.uid) counts[r.emoji].mine = true;
 });
 
-const wrapper=document.createElement("div");
-
-wrapper.className="message-reactions";
-
-reactionList.forEach(emoji=>{
-
-const info=counts[emoji];
-
-if(!info)
-return;
-
-const chip=document.createElement("button");
-
-chip.type="button";
-
-chip.className=
-"reaction-chip"+
-(info.mine?" mine":"");
-
-chip.textContent=emoji;
-
-if(info.count>1){
-
-const count=document.createElement("span");
-
-count.className="reaction-count";
-
-count.textContent=info.count;
-
+const wrapper = document.createElement("div");
+wrapper.className = "message-reactions";
+reactionList.forEach(emoji => {
+const info = counts[emoji];
+if(!info) return;
+const chip = document.createElement("button");
+chip.type = "button";
+chip.className = "reaction-chip" + (info.mine ? " mine" : "");
+chip.textContent = emoji;
+if(info.count > 1){
+const count = document.createElement("span");
+count.className = "reaction-count";
+count.textContent = info.count;
 chip.appendChild(count);
-
 }
-
-chip.onclick=e=>{
-
-e.stopPropagation();
-
-toggleReaction(
-data.id,
-emoji
-);
-
-};
-
+chip.onclick = e => { e.stopPropagation(); toggleReaction(data.id, emoji); };
 wrapper.appendChild(chip);
-
 });
-
-if(wrapper.children.length)
-box.appendChild(wrapper);
-
+if(wrapper.children.length) box.appendChild(wrapper);
 }
-
-
-/* =========================================================
-   MESSAGE RENDER
-========================================================= */
 
 function renderMessage(data){
-
-const box=document.createElement("div");
-
-box.className=
-"message "+
-(
-data.senderId===currentUser.uid
-?"mine"
-:"other"
-);
-
-box.dataset.id=data.id;
-
-
-/* Reply */
+const box = document.createElement("div");
+box.className = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
+box.dataset.id = data.id;
 
 if(data.replyTo){
-
-const replyBox=document.createElement("div");
-
-replyBox.className="message-reply";
-
-const replyContent=document.createElement("div");
-
-replyContent.className="reply-content";
-
-const name=document.createElement("div");
-
-name.className="reply-name";
-
-name.textContent=
-data.replyTo.senderId===currentUser.uid
-?"أنت"
-:(data.replyTo.senderName||"المستخدم");
-
-const text=document.createElement("div");
-
-text.className="reply-text";
-
-text.textContent=
-data.replyTo.text||"رسالة";
-
-replyContent.append(name,text);
-
+const replyBox = document.createElement("div");
+replyBox.className = "message-reply";
+const replyContent = document.createElement("div");
+replyContent.className = "reply-content";
+const name = document.createElement("div");
+name.className = "reply-name";
+name.textContent = data.replyTo.senderId === currentUser.uid ? "أنت" : (data.replyTo.senderName || "المستخدم");
+const text = document.createElement("div");
+text.className = "reply-text";
+text.textContent = data.replyTo.text || "رسالة";
+replyContent.append(name, text);
 replyBox.appendChild(replyContent);
-
-replyBox.onclick=e=>{
-
+replyBox.onclick = e => {
 e.stopPropagation();
-
-const target=
-messageElements.get(
-data.replyTo.messageId
-);
-
+const target = messageElements.get(data.replyTo.messageId);
 if(target){
-
-target.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
+target.scrollIntoView({ behavior: "smooth", block: "center" });
 target.classList.add("highlight");
-
-setTimeout(
-()=>target.classList.remove("highlight"),
-1500
-);
-
+setTimeout(() => target.classList.remove("highlight"), 1500);
 }
-
 };
-
 box.appendChild(replyBox);
-
 }
 
-
-/* Text */
-
-if(data.type==="text"){
-
-const text=document.createElement("span");
-
-text.className="message-text";
-
-text.textContent=data.text||"";
-
+if(data.type === "text"){
+const text = document.createElement("span");
+text.className = "message-text";
+text.textContent = data.text || "";
 box.appendChild(text);
-
 if(data.isEdited){
-
-const edited=document.createElement("span");
-
-edited.style.fontSize="9px";
-edited.style.opacity=".6";
-
-edited.textContent=" (معدلة)";
-
+const edited = document.createElement("span");
+edited.style.cssText = "font-size:9px;opacity:.6";
+edited.textContent = " (معدلة)";
 box.appendChild(edited);
-
 }
-
-}
-
-
-/* Image */
-
-else if(data.type==="image"&&data.url){
-
+}else if(data.type === "image" && data.url){
 box.classList.add("image-message");
-
-const img=document.createElement("img");
-
-img.className="message-image";
-
-img.src=data.url;
-
-img.alt="صورة";
-
-img.loading="lazy";
-
-img.onclick=e=>{
-
-e.stopPropagation();
-
-window.open(data.url,"_blank");
-
-};
-
+const img = document.createElement("img");
+img.className = "message-image";
+img.src = data.url;
+img.alt = "صورة";
+img.loading = "lazy";
+img.onclick = e => { e.stopPropagation(); window.open(data.url, "_blank"); };
 box.appendChild(img);
-
-}
-
-
-/* Video */
-
-else if(data.type==="video"&&data.url){
-
+}else if(data.type === "video" && data.url){
 box.classList.add("video-message");
-
-const video=document.createElement("video");
-
-video.className="message-video";
-
-video.src=data.url;
-
-video.controls=true;
-
-video.playsInline=true;
-
+const video = document.createElement("video");
+video.className = "message-video";
+video.src = data.url;
+video.controls = true;
+video.playsInline = true;
 box.appendChild(video);
-
-}
-
-
-/* Voice */
-
-else if(data.type==="voice"&&data.url){
-
-const audio=document.createElement("audio");
-
-audio.controls=true;
-
-audio.preload="metadata";
-
-audio.src=data.url;
-
-audio.style.width="220px";
-audio.style.maxWidth="100%";
-
+}else if(data.type === "voice" && data.url){
+const audio = document.createElement("audio");
+audio.controls = true;
+audio.preload = "metadata";
+audio.src = data.url;
+audio.style.cssText = "width:220px;max-width:100%";
 box.appendChild(audio);
-
-}
-
-
-/* Document */
-
-else if(data.type==="document"&&data.url){
-
-const link=document.createElement("a");
-
-link.href=data.url;
-
-link.target="_blank";
-
-link.rel="noopener noreferrer";
-
-link.textContent=
-"📄 "+(data.fileName||"فتح المستند");
-
-link.style.color="inherit";
-link.style.textDecoration="none";
-link.style.fontWeight="bold";
-
+}else if(data.type === "document" && data.url){
+const link = document.createElement("a");
+link.href = data.url;
+link.target = "_blank";
+link.textContent = "📄 " + (data.fileName || "فتح المستند");
+link.style.cssText = "color:inherit;text-decoration:none;font-weight:bold";
 box.appendChild(link);
-
-}
-
-
-/* Location */
-
-else if(data.type==="location"&&data.lat!=null&&data.lng!=null){
-
-const locationButton=document.createElement("button");
-
-locationButton.type="button";
-
-locationButton.textContent="📍 فتح الموقع";
-
-locationButton.style.cssText=`
-border:0;
-background:rgba(0,0,0,.15);
-color:inherit;
-padding:9px 13px;
-border-radius:10px;
-cursor:pointer;
-`;
-
-locationButton.onclick=e=>{
-
+}else if(data.type === "location" && data.lat != null && data.lng != null){
+const locBtn = document.createElement("button");
+locBtn.type = "button";
+locBtn.textContent = "📍 فتح الموقع";
+locBtn.style.cssText = "border:0;background:rgba(0,0,0,.15);color:inherit;padding:9px 13px;border-radius:10px;cursor:pointer";
+locBtn.onclick = e => {
 e.stopPropagation();
-
-window.open(
-`https://www.google.com/maps?q=${encodeURIComponent(data.lat)},${encodeURIComponent(data.lng)}`,
-"_blank"
-);
-
+window.open(`https://www.google.com/maps?q=${encodeURIComponent(data.lat)},${encodeURIComponent(data.lng)}`, "_blank");
 };
-
-box.appendChild(locationButton);
-
-}
-
-
-/* Contact */
-
-else if(data.type==="contact"){
-
-const contact=document.createElement("div");
-
-contact.textContent=
-"👤 "+(data.contactName||"جهة اتصال");
-
+box.appendChild(locBtn);
+}else if(data.type === "contact"){
+const contact = document.createElement("div");
+contact.textContent = "👤 " + (data.contactName || "جهة اتصال");
 box.appendChild(contact);
-
 }
 
-
-/* Meta */
-
-const meta=document.createElement("div");
-
-meta.className="message-meta";
-
-const time=document.createElement("span");
-
-time.className="time";
-
-time.textContent=
-formatTime(data.createdAt);
-
+const meta = document.createElement("div");
+meta.className = "message-meta";
+const time = document.createElement("span");
+time.className = "time";
+time.textContent = formatTime(data.createdAt);
 meta.appendChild(time);
 
-if(data.senderId===currentUser.uid){
-
-const status=document.createElement("span");
-
-status.className=
-"message-status "+
-(data.read===true?"read":"");
-
-status.textContent=
-data.read===true
-?"✓✓"
-:"✓";
-
+if(data.senderId === currentUser.uid){
+const status = document.createElement("span");
+status.className = "message-status " + (data.read === true ? "read" : "");
+status.textContent = data.read === true ? "✓✓" : "✓";
 meta.appendChild(status);
-
 }
-
 box.appendChild(meta);
-
-renderReactions(box,data);
-
-addMessageActions(box,data);
-
+renderReactions(box, data);
+addMessageActions(box, data);
 return box;
-
 }
 
+function addMessageActions(element, data){
+let pressTimer = null;
+let longPressed = false;
+element.addEventListener("pointerdown", e => {
+if(e.button !== undefined && e.button !== 0) return;
+longPressed = false;
+pressTimer = setTimeout(() => { longPressed = true; showContextMenu(data); }, 520);
+});
+const clearPress = () => { if(pressTimer){ clearTimeout(pressTimer); pressTimer = null; } };
+element.addEventListener("pointerup", clearPress);
+element.addEventListener("pointercancel", clearPress);
+element.addEventListener("contextmenu", e => { e.preventDefault(); clearPress(); showContextMenu(data); });
 
-/* =========================================================
-   MESSAGE ACTIONS
-========================================================= */
-
-function addMessageActions(element,data){
-
-let pressTimer=null;
-let longPressed=false;
-let startX=0;
-let currentX=0;
-
-element.addEventListener(
-"pointerdown",
-e=>{
-
-if(e.button!==undefined&&e.button!==0)
-return;
-
-longPressed=false;
-
-pressTimer=setTimeout(()=>{
-
-longPressed=true;
-
-showContextMenu(data);
-
-},520);
-
+let lastTap = 0;
+element.addEventListener("click", e => {
+if(longPressed) return;
+if(e.target.closest("button") || e.target.closest("audio") || e.target.closest("video") || e.target.closest(".message-reply")) return;
+const now = Date.now();
+if(now - lastTap < 320){
+triggerHeartReaction(element, data.id);
 }
-);
-
-const clearPress=()=>{
-
-if(pressTimer){
-
-clearTimeout(pressTimer);
-
-pressTimer=null;
-
+lastTap = now;
+});
 }
 
-};
-
-element.addEventListener("pointerup",clearPress);
-
-element.addEventListener("pointercancel",clearPress);
-
-element.addEventListener(
-"contextmenu",
-e=>{
-
-e.preventDefault();
-
-clearPress();
-
-showContextMenu(data);
-
-}
-);
-
-
-/* Double tap */
-
-let lastTap=0;
-
-element.addEventListener(
-"click",
-e=>{
-
-if(longPressed)
-return;
-
-if(
-e.target.closest("button")||
-e.target.closest("audio")||
-e.target.closest("video")||
-e.target.closest(".message-reply")
-)
-return;
-
-const now=Date.now();
-
-if(now-lastTap<320){
-
-triggerHeartReaction(
-element,
-data.id
-);
-
-}
-
-lastTap=now;
-
-}
-);
-
-
-/* Swipe reply */
-
-element.addEventListener(
-"touchstart",
-e=>{
-
-startX=e.touches[0].clientX;
-currentX=startX;
-
-},
-{passive:true}
-);
-
-element.addEventListener(
-"touchmove",
-e=>{
-
-currentX=e.touches[0].clientX;
-
-const diff=currentX-startX;
-
-if(
-data.senderId!==currentUser.uid &&
-diff>0 &&
-diff<120
-){
-
-element.style.transform=
-`translateX(${diff}px)`;
-
-}
-
-else if(
-data.senderId===currentUser.uid &&
-diff<0 &&
-diff>-120
-){
-
-element.style.transform=
-`translateX(${diff}px)`;
-
-}
-
-},
-{passive:true}
-);
-
-element.addEventListener(
-"touchend",
-()=>{
-
-const diff=currentX-startX;
-
-element.style.transform="translateX(0)";
-
-if(Math.abs(diff)>75){
-
-startReply(data);
-
-}
-
-}
-);
-
-}
-
-function triggerHeartReaction(element,messageId){
-
-if(element.querySelector(".heart-pop"))
-return;
-
-const heart=document.createElement("div");
-
-heart.className="heart-pop";
-
-heart.textContent="❤️";
-
+function triggerHeartReaction(element, messageId){
+if(element.querySelector(".heart-pop")) return;
+const heart = document.createElement("div");
+heart.className = "heart-pop";
+heart.textContent = "❤️";
 element.appendChild(heart);
-
-toggleReaction(messageId,"❤️");
-
-setTimeout(
-()=>heart.remove(),
-900
-);
-
+toggleReaction(messageId, "❤️");
+setTimeout(() => heart.remove(), 900);
 }
-
-
-/* =========================================================
-   CONTEXT MENU
-========================================================= */
 
 function closeContextMenu(){
-
 contextOverlay.classList.remove("show");
-
-currentContextMessage=null;
-
+currentContextMessage = null;
 }
 
 function showContextMenu(data){
-
-currentContextMessage=data;
-
-contextPreview.innerHTML="";
-
-const preview=renderMessagePreview(data);
-
-contextPreview.appendChild(preview);
-
-contextReactions.innerHTML="";
-
-reactionList.forEach(emoji=>{
-
-const button=document.createElement("button");
-
-button.type="button";
-
-button.className="context-reaction";
-
-button.textContent=emoji;
-
-button.onclick=async()=>{
-
-await toggleReaction(
-data.id,
-emoji
-);
-
-closeContextMenu();
-
-};
-
+currentContextMessage = data;
+contextPreview.innerHTML = "";
+contextPreview.appendChild(renderMessagePreview(data));
+contextReactions.innerHTML = "";
+reactionList.forEach(emoji => {
+const button = document.createElement("button");
+button.type = "button";
+button.className = "context-reaction";
+button.textContent = emoji;
+button.onclick = async () => { await toggleReaction(data.id, emoji); closeContextMenu(); };
 contextReactions.appendChild(button);
-
 });
 
-contextActions.innerHTML="";
+contextActions.innerHTML = "";
+addContextAction("↩️", "رد", () => { closeContextMenu(); startReply(data); });
 
-
-addContextAction(
-"↩️",
-"رد",
-()=>{
+if(data.type === "text"){
+addContextAction("📋", "نسخ", async () => {
+try{ await navigator.clipboard.writeText(data.text || ""); }catch{}
 closeContextMenu();
-startReply(data);
-}
-);
-
-
-if(data.type==="text"){
-
-addContextAction(
-"📋",
-"نسخ",
-async()=>{
-
-try{
-
-await navigator.clipboard.writeText(
-data.text||""
-);
-
-}catch{
-
-const temp=document.createElement("textarea");
-
-temp.value=data.text||"";
-
-document.body.appendChild(temp);
-
-temp.select();
-
-document.execCommand("copy");
-
-temp.remove();
-
+});
 }
 
-closeContextMenu();
-
-}
-);
-
-}
-
-
-addContextAction(
-"📤",
-"توجيه",
-()=>{
-
-alert("يمكنك استخدام الرد أو نسخ الرسالة لإرسالها في محادثة أخرى.");
-
-closeContextMenu();
-
-}
-);
-
-
-addContextAction(
-data.pinned?"📌":"📌",
-data.pinned?"إلغاء التثبيت":"تثبيت",
-async()=>{
-
-try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-data.id
-),
-{
-pinned:!data.pinned
-}
-);
-
-}catch(error){
-
-console.error(error);
-
-}
-
-closeContextMenu();
-
-}
-);
-
-
-if(
-data.senderId===currentUser.uid
-){
-
-if(data.type==="text"){
-
-addContextAction(
-"✏️",
-"تعديل",
-()=>{
-
-editingMessageId=data.id;
-
-messageInput.value=data.text||"";
-
-sendButton.textContent="✓";
-
+if(data.senderId === currentUser.uid && data.type === "text"){
+addContextAction("✏️", "تعديل", () => {
+editingMessageId = data.id;
+messageInput.value = data.text || "";
+sendButton.textContent = "✓";
 cancelReply();
-
 messageInput.focus();
-
 closeContextMenu();
-
-}
-);
-
+});
 }
 
-addContextAction(
-"🗑️",
-"حذف للجميع",
-async()=>{
-
-try{
-
-await deleteDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-data.id
-)
-);
-
-}catch(error){
-
-console.error(error);
-
-}
-
+if(data.senderId === currentUser.uid){
+addContextAction("🗑️", "حذف للجميع", async () => {
+try{ await deleteDoc(doc(db, "chats", chatID, "messages", data.id)); }catch(e){}
 closeContextMenu();
-
-}
-);
-
+});
 }else{
-
-addContextAction(
-"🗑️",
-"حذف لدي",
-async()=>{
-
-try{
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-data.id
-),
-{
-deletedFor:arrayUnion(
-currentUser.uid
-)
-}
-);
-
-}catch(error){
-
-console.error(error);
-
-}
-
+addContextAction("🗑️", "حذف لدي", async () => {
+try{ await updateDoc(doc(db, "chats", chatID, "messages", data.id), { deletedFor: arrayUnion(currentUser.uid) }); }catch(e){}
 closeContextMenu();
-
+});
 }
-);
-
-}
-
 contextOverlay.classList.add("show");
-
 }
 
 function renderMessagePreview(data){
-
-const box=document.createElement("div");
-
-box.className="message "+(
-data.senderId===currentUser.uid
-?"mine"
-:"other"
-);
-
-box.style.maxWidth="85%";
-box.style.margin="0 auto";
-
-if(data.type==="text"){
-
-const text=document.createElement("span");
-
-text.textContent=data.text||"";
-
+const box = document.createElement("div");
+box.className = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
+box.style.cssText = "max-width:85%;margin:0 auto";
+const text = document.createElement("span");
+text.textContent = data.type === "text" ? (data.text || "") : getMessagePreview(data);
 box.appendChild(text);
-
-}else{
-
-const text=document.createElement("span");
-
-text.textContent=getMessagePreview(data);
-
-box.appendChild(text);
-
-}
-
 return box;
-
 }
 
-function addContextAction(icon,label,handler){
-
-const button=document.createElement("button");
-
-button.type="button";
-
-button.className="context-action";
-
-const iconSpan=document.createElement("span");
-
-iconSpan.textContent=icon;
-
-const textSpan=document.createElement("span");
-
-textSpan.textContent=label;
-
-button.append(
-iconSpan,
-textSpan
-);
-
-button.onclick=handler;
-
+function addContextAction(icon, label, handler){
+const button = document.createElement("button");
+button.type = "button";
+button.className = "context-action";
+const iconSpan = document.createElement("span");
+iconSpan.textContent = icon;
+const textSpan = document.createElement("span");
+textSpan.textContent = label;
+button.append(iconSpan, textSpan);
+button.onclick = handler;
 contextActions.appendChild(button);
-
 }
 
-
-/* =========================================================
-   FIRESTORE LISTENER
-========================================================= */
+/* ======================================================
+   FIRESTORE MESSAGES & SEND
+====================================================== */
 
 function listenMessages(){
+if(!chatID) return;
+if(unsubscribeMessages) unsubscribeMessages();
+const q = query(collection(db, "chats", chatID, "messages"), orderBy("createdAt", "asc"));
+unsubscribeMessages = onSnapshot(q, snapshot => {
+const nearBottom = messages.scrollHeight - messages.scrollTop - messages.clientHeight < 140;
 
-if(!chatID)
-return;
-
-if(unsubscribeMessages)
-unsubscribeMessages();
-
-const q=query(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-orderBy("createdAt","asc")
-);
-
-unsubscribeMessages=onSnapshot(
-q,
-snapshot=>{
-
-const nearBottom=
-messages.scrollHeight-
-messages.scrollTop-
-messages.clientHeight<140;
-
-if(
-snapshot.empty &&
-messageElements.size===0
-){
-
-messages.innerHTML=`
-<div class="empty">
-💬<br>
-ابدأ المحادثة الآن
-</div>
-`;
-
+if(snapshot.empty && messageElements.size === 0){
+messages.innerHTML = `<div class="empty">💬<br>ابدأ المحادثة الآن</div>`;
 }
 
-snapshot.docChanges().forEach(change=>{
+snapshot.docChanges().forEach(change => {
+const id = change.doc.id;
+const data = { ...change.doc.data(), id };
 
-const id=change.doc.id;
-
-const data={
-...change.doc.data(),
-id
-};
-
-if(change.type==="removed"){
-
-const old=
-messageElements.get(id);
-
-if(old)
-old.remove();
-
+if(change.type === "removed"){
+const old = messageElements.get(id);
+if(old) old.remove();
 messageElements.delete(id);
-
 return;
-
 }
 
-if(
-Array.isArray(data.deletedFor)&&
-data.deletedFor.includes(
-currentUser.uid
-)
-){
-
-const old=
-messageElements.get(id);
-
-if(old)
-old.remove();
-
+if(Array.isArray(data.deletedFor) && data.deletedFor.includes(currentUser.uid)){
+const old = messageElements.get(id);
+if(old) old.remove();
 messageElements.delete(id);
-
 return;
-
 }
 
-const newElement=
-renderMessage(data);
-
-const old=
-messageElements.get(id);
-
+const newElement = renderMessage(data);
+const old = messageElements.get(id);
 if(old){
-
 old.replaceWith(newElement);
-
 }else{
-
-const empty=
-messages.querySelector(".empty");
-
-if(empty)
-empty.remove();
-
+messages.querySelector(".empty")?.remove();
 messages.appendChild(newElement);
-
 }
-
-messageElements.set(
-id,
-newElement
-);
-
+messageElements.set(id, newElement);
 });
-
-updatePinnedBanner();
 
 if(nearBottom){
-
-requestAnimationFrame(
-()=>{
-messages.scrollTop=
-messages.scrollHeight;
+requestAnimationFrame(() => { messages.scrollTop = messages.scrollHeight; });
 }
-);
-
+}, e => console.error("Messages:", e));
 }
-
-},
-error=>{
-
-console.error(
-"Messages listener:",
-error
-);
-
-}
-);
-
-}
-
-
-/* =========================================================
-   PINNED
-========================================================= */
-
-async function updatePinnedBanner(){
-
-if(!chatID)
-return;
-
-try{
-
-const q=query(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-orderBy("createdAt","asc")
-);
-
-const snap=await getDoc(
-doc(db,"chats",chatID)
-);
-
-/*
-  التثبيت الأساسي محفوظ على الرسالة نفسها.
-  نبحث من العناصر الحالية لتجنب طلبات كثيرة.
-*/
-
-let pinnedData=null;
-
-for(const [id,element] of messageElements){
-
-const messageRef=doc(
-db,
-"chats",
-chatID,
-"messages",
-id
-);
-
-const messageSnap=await getDoc(messageRef);
-
-if(
-messageSnap.exists()&&
-messageSnap.data().pinned===true
-){
-
-pinnedData={
-...messageSnap.data(),
-id
-};
-
-break;
-
-}
-
-}
-
-if(pinnedData){
-
-pinnedBannerText.textContent=
-(pinnedData.senderId===currentUser.uid?"أنت: ":"")+
-getMessagePreview(pinnedData);
-
-pinnedBanner.classList.add("show");
-
-pinnedBannerClick.onclick=()=>{
-
-const element=
-messageElements.get(pinnedData.id);
-
-if(element){
-
-element.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
-element.classList.add("highlight");
-
-setTimeout(
-()=>element.classList.remove("highlight"),
-1500
-);
-
-}
-
-};
-
-}else{
-
-pinnedBanner.classList.remove("show");
-
-}
-
-}catch(error){
-
-console.error(
-"Pinned error:",
-error
-);
-
-}
-
-}
-
-pinnedBannerClose.onclick=e=>{
-
-e.stopPropagation();
-
-pinnedBanner.classList.remove("show");
-
-};
-
-
-/* =========================================================
-   SEND TEXT
-========================================================= */
 
 async function handleSendMessage(){
-
-const text=messageInput.value.trim();
-
-if(
-!text||
-!currentUser||
-!friendUser||
-!chatID
-)
-return;
-
-if(sendButton.disabled)
-return;
-
-sendButton.disabled=true;
+const text = messageInput.value.trim();
+if(!text || !currentUser || !friendUser || !chatID || sendButton.disabled) return;
+sendButton.disabled = true;
 
 try{
-
-/* EDIT */
-
 if(editingMessageId){
-
-await updateDoc(
-doc(
-db,
-"chats",
-chatID,
-"messages",
-editingMessageId
-),
-{
-text:text,
-isEdited:true,
-editedAt:serverTimestamp()
-}
-);
-
-editingMessageId=null;
-
-sendButton.textContent="➤";
-
-messageInput.value="";
-
+await updateDoc(doc(db, "chats", chatID, "messages", editingMessageId), {
+text, isEdited: true, editedAt: serverTimestamp()
+});
+editingMessageId = null;
+sendButton.textContent = "➤";
+messageInput.value = "";
 cancelReply();
-
 return;
-
 }
 
-
-/* NEW */
-
-const messageData={
-
-text:text,
-
-senderId:currentUser.uid,
-
-receiverId:friendUser.uid,
-
-type:"text",
-
-read:false,
-
-deletedFor:[],
-
-createdAt:serverTimestamp()
-
+const messageData = {
+text,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+type: "text",
+read: false,
+deletedFor: [],
+createdAt: serverTimestamp()
 };
 
 if(replyTarget){
-
-messageData.replyTo={
-messageId:replyTarget.id,
-senderId:replyTarget.senderId,
-senderName:replyTarget.senderName,
-text:replyTarget.text
+messageData.replyTo = {
+messageId: replyTarget.id,
+senderId: replyTarget.senderId,
+senderName: replyTarget.senderName,
+text: replyTarget.text
 };
-
 }
 
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-messageData
-);
-
-messageInput.value="";
-
+await addDoc(collection(db, "chats", chatID, "messages"), messageData);
+messageInput.value = "";
 cancelReply();
-
-}catch(error){
-
-console.error(
-"Send error:",
-error
-);
-
-alert(
-"تعذر إرسال الرسالة. تأكد من اتصال الإنترنت وقواعد Firestore."
-);
-
+}catch(e){
+console.error("Send:", e);
+alert("تعذر إرسال الرسالة.");
 }finally{
-
-sendButton.disabled=false;
-
+sendButton.disabled = false;
 messageInput.focus();
-
+}
 }
 
-}
-
-sendButton.onclick=handleSendMessage;
-
-messageInput.addEventListener(
-"keydown",
-e=>{
-
-if(e.key==="Enter"){
-
-e.preventDefault();
-
-handleSendMessage();
-
-}
-
-}
-);
-
-
-/* =========================================================
-   ATTACHMENT SHEET
-========================================================= */
-
-function openAttachmentSheet(){
-
-attachmentOverlay.classList.add("show");
-
-}
-
-function closeAttachmentSheet(){
-
-attachmentOverlay.classList.remove("show");
-
-}
-
-attachButton.onclick=e=>{
-
-e.stopPropagation();
-
-openAttachmentSheet();
-
-};
-
-attachmentOverlay.addEventListener(
-"click",
-e=>{
-
-if(
-e.target===attachmentOverlay
-){
-
-closeAttachmentSheet();
-
-}
-
-}
-);
-
-attachmentSheet.onclick=e=>{
-e.stopPropagation();
-};
-
-galleryButton.onclick=()=>{
-
-closeAttachmentSheet();
-
-galleryInput.click();
-
-};
-
-cameraButton.onclick=()=>{
-
-closeAttachmentSheet();
-
-cameraInput.click();
-
-};
-
-documentButton.onclick=()=>{
-
-closeAttachmentSheet();
-
-documentInput.click();
-
-};
-
-audioButton.onclick=async()=>{
-
-closeAttachmentSheet();
-
-await startVoiceRecording();
-
-};
-
-locationButton.onclick=async()=>{
-
-closeAttachmentSheet();
-
-await sendLocation();
-
-};
-
-contactButton.onclick=()=>{
-
-closeAttachmentSheet();
-
-alert("ميزة جهات الاتصال جاهزة للربط بجهات اتصال التطبيق.");
-
-};
-
-
-/* =========================================================
-   MEDIA UPLOAD
-========================================================= */
-
-async function uploadFile(file,pathPrefix="media"){
-
-const safeName=
-file.name
-.replace(/[^a-zA-Z0-9._-]/g,"_");
-
-const filePath=
-`${pathPrefix}/${currentUser.uid}/${Date.now()}_${safeName}`;
-
-const result=
-await supabase
-.storage
-.from("mecd-media")
-.upload(
-filePath,
-file,
-{
-upsert:false,
-contentType:file.type||undefined
-}
-);
-
-if(result.error)
-throw result.error;
-
-const publicResult=
-supabase
-.storage
-.from("mecd-media")
-.getPublicUrl(filePath);
-
-return publicResult.data.publicUrl;
-
-}
-
-async function uploadMediaAndSend(file,type){
-
-if(
-!file||
-!currentUser||
-!friendUser||
-!chatID
-)
-return;
-
-if(file.size>30*1024*1024){
-
-alert("حجم الملف كبير جداً. الحد الأقصى 30MB.");
-
-return;
-
-}
-
-try{
-
-setLoading("جارٍ رفع الملف...");
-
-loading.style.display="flex";
-
-const url=
-await uploadFile(
-file,
-type
-);
-
-const data={
-
-url:url,
-
-senderId:currentUser.uid,
-
-receiverId:friendUser.uid,
-
-type:type,
-
-read:false,
-
-deletedFor:[],
-
-fileName:file.name||"",
-
-createdAt:serverTimestamp()
-
-};
-
-if(replyTarget){
-
-data.replyTo={
-messageId:replyTarget.id,
-senderId:replyTarget.senderId,
-senderName:replyTarget.senderName,
-text:replyTarget.text
-};
-
-}
-
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-data
-);
-
-cancelReply();
-
-}catch(error){
-
-console.error(
-"Upload error:",
-error
-);
-
-alert(
-"فشل رفع الملف. تأكد من إعدادات Storage في Supabase."
-);
-
-}finally{
-
-loading.style.display="none";
-
-}
-
-}
-
-galleryInput.onchange=e=>{
-
-const file=e.target.files?.[0];
-
-if(!file)
-return;
-
-const type=
-file.type.startsWith("video")
-?"video"
-:"image";
-
-uploadMediaAndSend(
-file,
-type
-);
-
-galleryInput.value="";
-
-};
-
-cameraInput.onchange=e=>{
-
-const file=e.target.files?.[0];
-
-if(!file)
-return;
-
-const type=
-file.type.startsWith("video")
-?"video"
-:"image";
-
-uploadMediaAndSend(
-file,
-type
-);
-
-cameraInput.value="";
-
-};
-
-documentInput.onchange=e=>{
-
-const file=e.target.files?.[0];
-
-if(!file)
-return;
-
-uploadMediaAndSend(
-file,
-"document"
-);
-
-documentInput.value="";
-
-};
-
-
-/* =========================================================
-   VOICE RECORDING
-========================================================= */
-
-async function startVoiceRecording(){
-
-if(mediaRecorder){
-
-stopVoiceRecording();
-
-return;
-
-}
-
-if(
-!navigator.mediaDevices||
-!navigator.mediaDevices.getUserMedia
-){
-
-alert(
-"المتصفح لا يدعم تسجيل الصوت."
-);
-
-return;
-
-}
-
-try{
-
-mediaStream=
-await navigator.mediaDevices.getUserMedia({
-audio:true
+sendButton.onclick = handleSendMessage;
+messageInput.addEventListener("keydown", e => {
+if(e.key === "Enter"){ e.preventDefault(); handleSendMessage(); }
 });
 
-audioChunks=[];
+/* ======================================================
+   ATTACHMENTS & MEDIA UPLOAD
+====================================================== */
 
-let options={};
+attachButton.onclick = e => { e.stopPropagation(); attachmentOverlay.classList.add("show"); };
+attachmentOverlay.onclick = e => { if(e.target === attachmentOverlay) attachmentOverlay.classList.remove("show"); };
+attachmentSheet.onclick = e => e.stopPropagation();
 
-if(
-MediaRecorder.isTypeSupported(
-"audio/webm;codecs=opus"
-)
-){
+galleryButton.onclick = () => { attachmentOverlay.classList.remove("show"); galleryInput.click(); };
+cameraButton.onclick = () => { attachmentOverlay.classList.remove("show"); cameraInput.click(); };
+documentButton.onclick = () => { attachmentOverlay.classList.remove("show"); documentInput.click(); };
+audioButton.onclick = () => { attachmentOverlay.classList.remove("show"); };
+locationButton.onclick = async () => { attachmentOverlay.classList.remove("show"); await sendLocation(); };
+contactButton.onclick = () => { attachmentOverlay.classList.remove("show"); alert("جهات الاتصال جاهزة للربط."); };
 
-options.mimeType=
-"audio/webm;codecs=opus";
-
+async function uploadFile(file, pathPrefix = "media"){
+const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+const filePath = `${pathPrefix}/${currentUser.uid}/${Date.now()}_${safeName}`;
+const { error } = await supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { upsert: false, contentType: file.type || undefined });
+if(error) throw error;
+const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(filePath);
+return data.publicUrl;
 }
 
-mediaRecorder=
-new MediaRecorder(
-mediaStream,
-options
-);
-
-mediaRecorder.ondataavailable=e=>{
-
-if(e.data&&e.data.size>0)
-audioChunks.push(e.data);
-
-};
-
-mediaRecorder.onstop=async()=>{
-
-const mime=
-mediaRecorder?.mimeType||
-"audio/webm";
-
-const blob=
-new Blob(
-audioChunks,
-{
-type:mime
-}
-);
-
-if(mediaStream){
-
-mediaStream
-.getTracks()
-.forEach(track=>track.stop());
-
-}
-
-mediaStream=null;
-
-mediaRecorder=null;
-
-voiceButton.classList.remove(
-"recording"
-);
-
-voiceButton.textContent="🎤";
-
-if(blob.size===0)
-return;
-
+async function uploadMediaAndSend(file, type){
+if(!file || !currentUser || !friendUser || !chatID) return;
+if(file.size > 30 * 1024 * 1024){ alert("حجم الملف كبير جداً (أقصى حد 30MB)"); return; }
 try{
-
-setLoading("جارٍ إرسال التسجيل...");
-
-loading.style.display="flex";
-
-const file=new File(
-[blob],
-`voice_${Date.now()}.webm`,
-{
-type:mime
-}
-);
-
-const url=
-await uploadFile(
-file,
-"voice"
-);
-
-const data={
-
-url:url,
-
-senderId:currentUser.uid,
-
-receiverId:friendUser.uid,
-
-type:"voice",
-
-read:false,
-
-deletedFor:[],
-
-createdAt:serverTimestamp()
-
+setLoading("جارٍ رفع الملف...");
+loading.style.display = "flex";
+const url = await uploadFile(file, type);
+const data = {
+url,
+senderId: currentUser.uid,
+receiverId: friendUser.uid,
+type,
+read: false,
+deletedFor: [],
+fileName: file.name || "",
+createdAt: serverTimestamp()
 };
-
 if(replyTarget){
-
-data.replyTo={
-messageId:replyTarget.id,
-senderId:replyTarget.senderId,
-senderName:replyTarget.senderName,
-text:replyTarget.text
-};
-
+data.replyTo = { messageId: replyTarget.id, senderId: replyTarget.senderId, senderName: replyTarget.senderName, text: replyTarget.text };
 }
-
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-data
-);
-
+await addDoc(collection(db, "chats", chatID, "messages"), data);
 cancelReply();
-
-}catch(error){
-
-console.error(
-"Voice upload error:",
-error
-);
-
-alert(
-"فشل إرسال الرسالة الصوتية."
-);
-
+}catch(e){
+console.error("Upload:", e);
+alert("فشل رفع الملف.");
 }finally{
-
-loading.style.display="none";
-
+loading.style.display = "none";
+}
 }
 
-};
-
-mediaRecorder.start();
-
-voiceButton.classList.add(
-"recording"
-);
-
-voiceButton.textContent="■";
-
-}catch(error){
-
-console.error(
-"Microphone error:",
-error
-);
-
-alert(
-"لم يتم السماح باستخدام الميكروفون."
-);
-
-mediaRecorder=null;
-
-if(mediaStream){
-
-mediaStream
-.getTracks()
-.forEach(track=>track.stop());
-
-mediaStream=null;
-
-}
-
-}
-
-}
-
-function stopVoiceRecording(){
-
-if(mediaRecorder){
-
-mediaRecorder.stop();
-
-}
-
-}
-
-
-/* اضغط مرة للتسجيل ومرة ثانية للإيقاف */
-
-voiceButton.onclick=()=>{
-
-if(mediaRecorder)
-stopVoiceRecording();
-else
-startVoiceRecording();
-
-};
-
-
-/* =========================================================
-   LOCATION
-========================================================= */
+galleryInput.onchange = e => { if(e.target.files?.[0]) uploadMediaAndSend(e.target.files[0], e.target.files[0].type.startsWith("video") ? "video" : "image"); galleryInput.value = ""; };
+cameraInput.onchange = e => { if(e.target.files?.[0]) uploadMediaAndSend(e.target.files[0], e.target.files[0].type.startsWith("video") ? "video" : "image"); cameraInput.value = ""; };
+documentInput.onchange = e => { if(e.target.files?.[0]) uploadMediaAndSend(e.target.files[0], "document"); documentInput.value = ""; };
 
 async function sendLocation(){
-
-if(
-!navigator.geolocation||
-!currentUser||
-!friendUser||
-!chatID
-)
-return;
-
-navigator.geolocation.getCurrentPosition(
-async position=>{
-
+if(!navigator.geolocation || !currentUser || !friendUser || !chatID) return;
+navigator.geolocation.getCurrentPosition(async pos => {
 try{
-
-await addDoc(
-collection(
-db,
-"chats",
-chatID,
-"messages"
-),
-{
-
-type:"location",
-
-lat:position.coords.latitude,
-
-lng:position.coords.longitude,
-
-senderId:currentUser.uid,
-
-receiverId:friendUser.uid,
-
-read:false,
-
-deletedFor:[],
-
-createdAt:serverTimestamp()
-
-}
-);
-
-}catch(error){
-
-console.error(error);
-
-alert("تعذر إرسال الموقع.");
-
+await addDoc(collection(db, "chats", chatID, "messages"), {
+type: "location", lat: pos.coords.latitude, lng: pos.coords.longitude,
+senderId: currentUser.uid, receiverId: friendUser.uid, read: false, deletedFor: [], createdAt: serverTimestamp()
+});
+}catch(e){ alert("تعذر إرسال الموقع."); }
+}, () => alert("لم يتم السماح بالوصول للموقع."));
 }
 
-},
-()=>{
-alert("لم يتم السماح بالوصول إلى الموقع.");
-},
-{
-enableHighAccuracy:true,
-timeout:10000,
-maximumAge:0
-}
-);
+/* ======================================================
+   HEADER & PROFILE EVENTS
+====================================================== */
 
-}
+userInfo.onclick = openProfile;
+friendAvatar.onclick = openProfile;
+profileOverlay.onclick = e => { if(e.target === profileOverlay) closeProfile(); };
+profileCall.onclick = () => { closeProfile(); callButton.click(); };
+profileVideo.onclick = () => { closeProfile(); videoButton.click(); };
+profileSearch.onclick = () => { closeProfile(); messageInput.focus(); };
+moreButton.onclick = openProfile;
 
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-userInfo.onclick=openProfile;
-
-friendAvatar.onclick=openProfile;
-
-profileOverlay.onclick=e=>{
-
-if(e.target===profileOverlay)
-closeProfile();
-
-};
-
-profileCall.onclick=()=>{
-
-closeProfile();
-
-callButton.click();
-
-};
-
-profileVideo.onclick=()=>{
-
-closeProfile();
-
-videoButton.click();
-
-};
-
-profileSearch.onclick=()=>{
-
-closeProfile();
-
-messageInput.focus();
-
-};
-
-
-/* =========================================================
-   CALL BUTTONS
-========================================================= */
-
-callButton.onclick=()=>{
-
-alert(
-"ميزة المكالمات تحتاج إلى WebRTC + signaling server."
-);
-
-};
-
-videoButton.onclick=()=>{
-
-alert(
-"ميزة مكالمات الفيديو تحتاج إلى WebRTC + signaling server."
-);
-
-};
-
-moreButton.onclick=()=>{
-
-openProfile();
-
-};
-
-
-/* =========================================================
-   BACK
-========================================================= */
-
-backButton.onclick=()=>{
-
-if(unsubscribeMessages)
-unsubscribeMessages();
-
-if(unsubscribeFriend)
-unsubscribeFriend();
-
+backButton.onclick = () => {
+unsubscribeMessages?.();
+unsubscribeFriendStatus?.();
+unsubscribeFriendActivity?.();
 history.back();
-
 };
 
+/* ======================================================
+   AUTH & INITIALIZATION
+====================================================== */
 
-/* =========================================================
-   AUTH
-========================================================= */
-
-onAuthStateChanged(
-auth,
-async user=>{
-
-if(!user){
-
-setLoading(
-"يجب تسجيل الدخول أولاً..."
-);
-
-return;
-
-}
-
-currentUser=user;
-
+onAuthStateChanged(auth, async user => {
+if(!user){ setLoading("يجب تسجيل الدخول أولاً..."); return; }
+currentUser = user;
 try{
-
+startPresence();
 await loadFriend();
-
 buildEmojiPanel();
-
 listenMessages();
-
-loading.style.display="none";
-
-app.style.display="flex";
-
-}catch(error){
-
-console.error(error);
-
-loading.innerHTML=`
-<div class="error-box">
-<div style="font-size:40px">⚠️</div>
-<div>${escapeHtml(error.message||"حدث خطأ")}</div>
-<button id="reloadButton" type="button">
-إعادة المحاولة
-</button>
-</div>
-`;
-
-const reloadButton=
-document.getElementById("reloadButton");
-
-if(reloadButton){
-
-reloadButton.onclick=()=>{
-location.reload();
-};
-
+listenIncomingCalls();
+loading.style.display = "none";
+app.style.display = "flex";
+}catch(e){
+console.error(e);
+loading.innerHTML = `<div class="error-box"><div style="font-size:40px">⚠️</div><div>${escapeHtml(e.message || "حدث خطأ")}</div><button onclick="location.reload()">إعادة المحاولة</button></div>`;
 }
-
-}
-
 });
 
+contextOverlay.onclick = e => { if(e.target === contextOverlay) closeContextMenu(); };
 
-/* =========================================================
-   CLOSE MENUS
-========================================================= */
-
-contextOverlay.onclick=e=>{
-
-if(e.target===contextOverlay)
-closeContextMenu();
-
-};
-
-
-/* =========================================================
-   PAGE CLEANUP
-========================================================= */
-
-window.addEventListener(
-"beforeunload",
-()=>{
-
-if(unsubscribeMessages)
-unsubscribeMessages();
-
-if(unsubscribeFriend)
-unsubscribeFriend();
-
-if(mediaStream){
-
-mediaStream
-.getTracks()
-.forEach(track=>track.stop());
-
-}
-
-}
-);
+window.addEventListener("beforeunload", () => {
+unsubscribeMessages?.();
+unsubscribeFriendStatus?.();
+unsubscribeFriendActivity?.();
+stopPresence();
+});
 
 </script>
-
 </body>
 </html>
