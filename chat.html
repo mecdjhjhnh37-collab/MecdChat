@@ -231,8 +231,8 @@ font-size:14px
 .message{
 position:relative;
 max-width:78%;
-min-width:45px;
-padding:9px 12px 25px;
+min-width:70px;
+padding:9px 12px 24px 12px; /* تم تعديل الهوامش السفلية للفقاعة لاحتواء الوقت وعلامات الصح */
 border-radius:17px;
 word-break:break-word;
 overflow-wrap:anywhere;
@@ -240,7 +240,8 @@ line-height:1.5;
 user-select:none;
 -webkit-user-select:none;
 transition:transform .12s ease,background-color .2s ease;
-box-shadow:0 2px 7px rgba(0,0,0,.12)
+box-shadow:0 2px 7px rgba(0,0,0,.12);
+touch-action: pan-y;
 }
 
 .message.mine{
@@ -264,19 +265,22 @@ color:#00150e!important
 }
 
 .message-text{
-white-space:pre-wrap
+white-space:pre-wrap;
+display:block;
+margin-bottom:2px;
 }
 
 /* ================= TIME / TICKS ================= */
 
 .message-meta{
 position:absolute;
-bottom:5px;
+bottom:4px;
 left:10px;
 display:flex;
 align-items:center;
-gap:4px;
-direction:ltr
+gap:3px;
+direction:ltr;
+pointer-events: none;
 }
 
 .message.other .message-meta{
@@ -286,7 +290,7 @@ right:10px
 
 .time{
 font-size:9px;
-opacity:.62;
+opacity:.72;
 white-space:nowrap
 }
 
@@ -297,14 +301,14 @@ line-height:1
 }
 
 .message-status.read{
-color:#006dff
+color:#0047bb
 }
 
 /* ================= MEDIA ================= */
 
 .message.image-message,
 .message.video-message{
-padding:7px 7px 27px!important;
+padding:7px 7px 24px!important;
 width:max-content;
 max-width:82%;
 background:#18231f!important
@@ -331,9 +335,9 @@ cursor:pointer
 .message-reply{
 display:flex;
 gap:7px;
-margin-bottom:7px;
-padding:5px 7px;
-border-radius:9px;
+margin-bottom:5px;
+padding:4px 6px;
+border-radius:8px;
 background:rgba(0,0,0,.15);
 border-right:3px solid #00e889;
 font-size:11px;
@@ -354,7 +358,7 @@ overflow:hidden
 font-weight:bold;
 font-size:10px;
 color:#00e889;
-margin-bottom:2px
+margin-bottom:1px
 }
 
 .message.mine .reply-name{
@@ -1171,7 +1175,7 @@ maxlength="2000"
 </div>
 
 <input id="galleryInput" class="hidden-file" type="file" accept="image/*,video/*">
-<input id="cameraInput" class="hidden-file" type="file" accept="image/*,video/*" capture="environment">
+<input id="cameraInput" class="hidden-file" type="file" accept="image/*" capture="environment">
 <input id="documentInput" class="hidden-file" type="file" accept=".pdf,.doc,.docx,.txt,.zip">
 
 <!-- Context Menu -->
@@ -1367,7 +1371,7 @@ const profileName = $("profileName");
 const profileStatus = $("profileStatus");
 const profileCall = $("profileCall");
 const profileVideo = $("profileVideo");
-const profileSearch = $("profileSearch"); // تم الإصلاح
+const profileSearch = $("profileSearch");
 
 /* عناصر المكالمات */
 const incomingCall = $("incomingCall");
@@ -1419,7 +1423,7 @@ let activeCallId = null;
 let activeCallType = null;
 let activeCallRole = null;
 let activeCallPeer = null;
-let pendingCandidates = []; // قائمة انتظار الـ ICE Candidates
+let pendingCandidates = [];
 
 let callSeconds = 0;
 let callTimer = null;
@@ -1699,7 +1703,7 @@ updateMyActivity(messageInput.value.trim() ? "typing" : "none");
 voiceObserver.observe(voiceButton, { attributes: true });
 
 /* ======================================================
-   WEBRTC CALL SYSTEM (مصّحح بالكامل وآمن)
+   WEBRTC CALL SYSTEM
 ====================================================== */
 
 function hideAllCallButtons(){
@@ -2082,10 +2086,7 @@ remoteAudio.muted = remoteAudioMuted;
 speakerButton.textContent = remoteAudioMuted ? "🔇" : "🔊";
 };
 
-// تبديل بين الصوت وفيديو أو قلب الكاميرا
-switchVideoButton.onclick = async () => {
-// تفعيل أو ترقية المكالمة لفيديو
-};
+switchVideoButton.onclick = async () => {};
 
 flipCameraButton.onclick = async () => {
 if(!localStream) return;
@@ -2093,7 +2094,6 @@ const videoTrack = localStream.getVideoTracks()[0];
 if(!videoTrack) return;
 try{
 const constraints = videoTrack.getConstraints();
-// تبديل الاتجاه بين الأمامية والخلفية
 const newFacingMode = constraints.facingMode === "user" ? "environment" : "user";
 const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: newFacingMode }, audio: true });
 const newVideoTrack = newStream.getVideoTracks()[0];
@@ -2173,7 +2173,7 @@ if(!editingMessageId) sendButton.textContent = "➤";
 replyCancel.onclick = e => { e.stopPropagation(); cancelReply(); };
 
 /* ======================================================
-   REACTIONS & MESSAGES RENDER
+   REACTIONS & MESSAGES RENDER & SWIPE TO REPLY
 ====================================================== */
 
 async function toggleReaction(messageId, emoji){
@@ -2326,7 +2326,38 @@ meta.appendChild(status);
 box.appendChild(meta);
 renderReactions(box, data);
 addMessageActions(box, data);
+setupSwipeToReply(box, data);
 return box;
+}
+
+function setupSwipeToReply(element, data){
+let startX = 0;
+let currentX = 0;
+let isSwiping = false;
+
+element.addEventListener("touchstart", e => {
+startX = e.touches[0].clientX;
+isSwiping = true;
+}, { passive: true });
+
+element.addEventListener("touchmove", e => {
+if(!isSwiping) return;
+currentX = e.touches[0].clientX;
+let diff = currentX - startX;
+if(diff > 0 && diff < 100){
+element.style.transform = `translateX(${diff}px)`;
+}
+}, { passive: true });
+
+element.addEventListener("touchend", () => {
+if(!isSwiping) return;
+isSwiping = false;
+let diff = currentX - startX;
+element.style.transform = "translateX(0px)";
+if(diff > 60){
+startReply(data);
+}
+});
 }
 
 function addMessageActions(element, data){
@@ -2556,7 +2587,13 @@ galleryButton.onclick = () => { attachmentOverlay.classList.remove("show"); gall
 cameraButton.onclick = () => { attachmentOverlay.classList.remove("show"); cameraInput.click(); };
 documentButton.onclick = () => { attachmentOverlay.classList.remove("show"); documentInput.click(); };
 locationButton.onclick = async () => { attachmentOverlay.classList.remove("show"); await sendLocation(); };
-searchOptionButton.onclick = () => { attachmentOverlay.classList.remove("show"); messageInput.focus(); };
+
+// تفعيل زر البحث في قائمة المرفقات لينقلك لحقل الكتابة للبحث أو تصفية الرسائل
+searchOptionButton.onclick = () => {
+    attachmentOverlay.classList.remove("show");
+    messageInput.placeholder = "ابحث في الرسائل...";
+    messageInput.focus();
+};
 
 async function uploadFile(file, pathPrefix = "media"){
 const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -2624,7 +2661,6 @@ profileCall.onclick = () => { closeProfile(); callButton.click(); };
 profileVideo.onclick = () => { closeProfile(); videoButton.click(); };
 profileSearch.onclick = () => { closeProfile(); messageInput.focus(); };
 
-// زر 3 نقاط لحذف الدردشة نهائياً بشكل صحيح
 moreButton.onclick = async () => {
 if(confirm("هل أنت متأكد من حذف هذه الدردشة نهائياً؟")){
 try{
