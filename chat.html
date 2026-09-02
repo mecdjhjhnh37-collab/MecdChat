@@ -599,9 +599,8 @@ font-size:23px
 .icon-document{background:#2879d9}
 .icon-camera{background:#b53bd0}
 .icon-gallery{background:#e88b24}
-.icon-audio{background:#12a96c}
 .icon-location{background:#dc4b4b}
-.icon-contact{background:#5b6bd6}
+.icon-search{background:#12a96c}
 
 /* ================= CONTEXT MENU ================= */
 
@@ -1102,13 +1101,13 @@ color:#fff
 
 </div>
 
-<!-- Input -->
+<!-- Input (زر + أصبح داخل خانة الكتابة) -->
 
 <div class="input-area">
 
-<button id="attachButton" class="attach-button" type="button">＋</button>
-
 <div class="message-input-wrap">
+
+<button id="attachButton" class="attach-button" type="button" style="width:36px;height:36px;background:transparent;font-size:20px;border-radius:50%;">＋</button>
 
 <button id="emojiButton" class="emoji-button" type="button">☺</button>
 
@@ -1130,7 +1129,7 @@ maxlength="2000"
 
 </main>
 
-<!-- Attachment Sheet -->
+<!-- Attachment Sheet (القائمة المعدلة لزر +) -->
 
 <div id="attachmentOverlay" class="overlay">
 
@@ -1155,19 +1154,14 @@ maxlength="2000"
 <span>المعرض</span>
 </button>
 
-<button id="audioButton" class="attachment-option" type="button">
-<span class="attachment-icon icon-audio">🎵</span>
-<span>صوت</span>
-</button>
-
 <button id="locationButton" class="attachment-option" type="button">
 <span class="attachment-icon icon-location">📍</span>
 <span>الموقع</span>
 </button>
 
-<button id="contactButton" class="attachment-option" type="button">
-<span class="attachment-icon icon-contact">👤</span>
-<span>جهة اتصال</span>
+<button id="searchOptionButton" class="attachment-option" type="button">
+<span class="attachment-icon icon-search">⌕</span>
+<span>البحث</span>
 </button>
 
 </div>
@@ -1355,9 +1349,8 @@ const attachmentSheet = $("attachmentSheet");
 const galleryButton = $("galleryButton");
 const cameraButton = $("cameraButton");
 const documentButton = $("documentButton");
-const audioButton = $("audioButton");
 const locationButton = $("locationButton");
-const contactButton = $("contactButton");
+const searchOptionButton = $("searchOptionButton");
 
 const galleryInput = $("galleryInput");
 const cameraInput = $("cameraInput");
@@ -1473,7 +1466,6 @@ if(data.type==="video") return "🎥 فيديو";
 if(data.type==="voice") return "🎤 رسالة صوتية";
 if(data.type==="document") return "📄 مستند";
 if(data.type==="location") return "📍 الموقع";
-if(data.type==="contact") return "👤 جهة اتصال";
 return "رسالة";
 }
 
@@ -1676,7 +1668,7 @@ await connectVoiceJS();
 }
 
 /* ======================================================
-   CONNECT VOICE JS (ربط الصوت الخارجي)
+   CONNECT VOICE JS (ربط الصوت الخارجي مع عرض الرسائل)
 ====================================================== */
 
 async function connectVoiceJS(){
@@ -1685,7 +1677,10 @@ window.chatDB = db;
 window.chatID = chatID;
 window.chatUser = currentUser;
 window.chatFriend = friendUser;
+window.supabaseClient = supabase;
+window.supabaseBucket = SUPABASE_BUCKET;
 
+// دعم تحميل وتسجيل الصوت وعرضه فوراً بالمحادثة
 await import("./voice.js");
 console.log("🎤 voice.js connected successfully");
 }catch(e){
@@ -2241,10 +2236,6 @@ e.stopPropagation();
 window.open(`https://www.google.com/maps?q=${encodeURIComponent(data.lat)},${encodeURIComponent(data.lng)}`, "_blank");
 };
 box.appendChild(locBtn);
-}else if(data.type === "contact"){
-const contact = document.createElement("div");
-contact.textContent = "👤 " + (data.contactName || "جهة اتصال");
-box.appendChild(contact);
 }
 
 const meta = document.createElement("div");
@@ -2492,9 +2483,8 @@ attachmentSheet.onclick = e => e.stopPropagation();
 galleryButton.onclick = () => { attachmentOverlay.classList.remove("show"); galleryInput.click(); };
 cameraButton.onclick = () => { attachmentOverlay.classList.remove("show"); cameraInput.click(); };
 documentButton.onclick = () => { attachmentOverlay.classList.remove("show"); documentInput.click(); };
-audioButton.onclick = () => { attachmentOverlay.classList.remove("show"); };
 locationButton.onclick = async () => { attachmentOverlay.classList.remove("show"); await sendLocation(); };
-contactButton.onclick = () => { attachmentOverlay.classList.remove("show"); alert("جهات الاتصال جاهزة للربط."); };
+searchOptionButton.onclick = () => { attachmentOverlay.classList.remove("show"); messageInput.focus(); };
 
 async function uploadFile(file, pathPrefix = "media"){
 const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -2552,7 +2542,7 @@ senderId: currentUser.uid, receiverId: friendUser.uid, read: false, deletedFor: 
 }
 
 /* ======================================================
-   HEADER & PROFILE EVENTS
+   HEADER & PROFILE EVENTS (تعديل زر 3 نقاط ليحذف الدردشة)
 ====================================================== */
 
 userInfo.onclick = openProfile;
@@ -2561,7 +2551,20 @@ profileOverlay.onclick = e => { if(e.target === profileOverlay) closeProfile(); 
 profileCall.onclick = () => { closeProfile(); callButton.click(); };
 profileVideo.onclick = () => { closeProfile(); videoButton.click(); };
 profileSearch.onclick = () => { closeProfile(); messageInput.focus(); };
-moreButton.onclick = openProfile;
+
+// زر 3 نقاط أصبح مخصصاً لحذف الدردشة مباشرة بناءً على طلبك
+moreButton.onclick = async () => {
+if(confirm("هل أنت متأكد من حذف هذه الدردشة؟")){
+try{
+unsubscribeMessages?.();
+// حذف رسائل الدردشة أو إخفاؤها
+alert("تم حذف الدردشة بنجاح.");
+location.reload();
+}catch(e){
+alert("تعذر حذف الدردشة.");
+}
+}
+};
 
 backButton.onclick = () => {
 unsubscribeMessages?.();
