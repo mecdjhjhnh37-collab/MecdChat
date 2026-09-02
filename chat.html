@@ -605,7 +605,7 @@ font-size:23px
 .icon-location{background:#dc4b4b}
 .icon-search{background:#12a96c}
 
-/* ================= CONTEXT MENU (FIXED DIRECTLY ABOVE MESSAGE) ================= */
+/* ================= CONTEXT MENU ================= */
 
 .context-overlay{
 position:fixed;
@@ -613,7 +613,6 @@ inset:0;
 background:rgba(0,0,0,.65);
 z-index:2000;
 display:none;
-/* تم إزالة الـ flex للتمركز في المنتصف، لكي يتم حساب الإحداثيات فوق الرسالة بدقة */
 }
 
 .context-overlay.show{
@@ -2426,7 +2425,6 @@ closeContextMenu();
 });
 }
 
-// حساب مكان ظهور النافذة تماماً فوق الرسالة
 contextOverlay.classList.add("show");
 requestAnimationFrame(() => {
 const rect = element.getBoundingClientRect();
@@ -2436,12 +2434,10 @@ const appRect = app.getBoundingClientRect();
 let top = rect.top - boxRect.height - 10;
 let left = rect.left + (rect.width / 2) - (boxRect.width / 2);
 
-// إذا كانت الرسالة في أعلى الشاشة ولا توجد مساحة كافية، تظهر تحتها مباشرة
 if(top < appRect.top + 10){
 top = rect.bottom + 10;
 }
 
-// منع خروج القائمة عن حدود التطبيق يميناً أو يساراً
 if(left < appRect.left + 10) left = appRect.left + 10;
 if(left + boxRect.width > appRect.right - 10) left = appRect.right - boxRect.width - 10;
 
@@ -2577,7 +2573,7 @@ if(e.key === "Enter"){ e.preventDefault(); handleSendMessage(); }
 });
 
 /* ======================================================
-   ATTACHMENTS & MEDIA UPLOAD
+   ATTACHMENTS & MEDIA UPLOAD (تمت معالجة مشكلة تعليق دائرة التحميل هنا)
 ====================================================== */
 
 attachButton.onclick = e => { e.stopPropagation(); attachmentOverlay.classList.add("show"); };
@@ -2598,8 +2594,19 @@ searchOptionButton.onclick = () => {
 async function uploadFile(file, pathPrefix = "media"){
 const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
 const filePath = `${pathPrefix}/${currentUser.uid}/${Date.now()}_${safeName}`;
-const { error } = await supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { upsert: false, contentType: file.type || undefined });
+
+const uploadPromise = supabase.storage.from(SUPABASE_BUCKET).upload(filePath, file, { 
+    upsert: false, 
+    contentType: file.type || undefined 
+});
+
+const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error("انتهت مهلة الرفع، يرجى التحقق من اتصال الإنترنت")), 45000)
+);
+
+const { error } = await Promise.race([uploadPromise, timeoutPromise]);
 if(error) throw error;
+
 const { data } = supabase.storage.from(SUPABASE_BUCKET).getPublicUrl(filePath);
 return data.publicUrl;
 }
@@ -2607,10 +2614,13 @@ return data.publicUrl;
 async function uploadMediaAndSend(file, type){
 if(!file || !currentUser || !friendUser || !chatID) return;
 if(file.size > 30 * 1024 * 1024){ alert("حجم الملف كبير جداً (أقصى حد 30MB)"); return; }
+
 try{
 setLoading("جارٍ رفع الملف...");
 loading.style.display = "flex";
+
 const url = await uploadFile(file, type);
+
 const data = {
 url,
 senderId: currentUser.uid,
@@ -2621,14 +2631,17 @@ deletedFor: [],
 fileName: file.name || "",
 createdAt: serverTimestamp()
 };
+
 if(replyTarget){
 data.replyTo = { messageId: replyTarget.id, senderId: replyTarget.senderId, senderName: replyTarget.senderName, text: replyTarget.text };
 }
+
 await addDoc(collection(db, "chats", chatID, "messages"), data);
 cancelReply();
+
 }catch(e){
-console.error("Upload:", e);
-alert("فشل رفع الملف.");
+console.error("Upload Error:", e);
+alert("فشل رفع الملف: " + (e.message || "خطأ غير معروف"));
 }finally{
 loading.style.display = "none";
 }
