@@ -510,12 +510,6 @@ async function loadCallSystem(){
 
     try{
 
-        /*
-         مهم:
-         call.js يتم تحميله بعد initializeApp
-         حتى لا يظهر خطأ Firebase
-        */
-
         callModule =
             await import("./call.js");
 
@@ -524,10 +518,6 @@ async function loadCallSystem(){
             "Mecd Call system loaded"
         );
 
-
-        /*
-         تشغيل استقبال المكالمات
-        */
 
         if(
             typeof callModule.listenIncomingCalls ===
@@ -1791,11 +1781,6 @@ callButton.addEventListener(
 
         try{
 
-            /*
-             تحميل call.js فقط عند الضغط
-             وبعد Firebase
-            */
-
             if(!callModule){
 
                 callModule =
@@ -2001,11 +1986,6 @@ function init(){
 
                 listenMessages();
 
-
-                /*
-                 تشغيل نظام المكالمات
-                 بعد تهيئة Firebase
-                */
 
                 await loadCallSystem();
 
