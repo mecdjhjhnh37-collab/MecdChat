@@ -109,14 +109,80 @@ transition:.2s ease;
 color:#00e889;
 }
 
+.user-status.typing{
+color:#00e889;
+font-weight:bold;
+}
+
+.search-bar{
+display:none;
+align-items:center;
+gap:6px;
+padding:8px 12px;
+background:#0b1411;
+border-bottom:1px solid rgba(0,232,137,.18);
+z-index:96;
+}
+
+.search-bar.show{
+display:flex;
+}
+
+#searchInput{
+flex:1;
+min-width:0;
+padding:8px 12px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,.1);
+background:#131d19;
+color:#fff;
+font-family:inherit;
+font-size:13px;
+outline:none;
+}
+
+.search-bar button{
+border:none;
+border-radius:10px;
+background:#18231f;
+color:#fff;
+padding:8px 10px;
+font-family:inherit;
+font-size:12px;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.search-count{
+font-size:11px;
+color:#8cf5c2;
+min-width:44px;
+text-align:center;
+white-space:nowrap;
+}
+
+.upload-banner{
+display:none;
+padding:8px 14px;
+background:#0e1d18;
+border-bottom:1px solid rgba(0,232,137,.2);
+color:#8cf5c2;
+font-size:12px;
+text-align:center;
+z-index:95;
+}
+
+.upload-banner.show{
+display:block;
+}
+
 .messages{
 flex:1;
 overflow-y:auto;
-padding:20px 15px 100px;
+padding:18px 15px 92px;
 display:flex;
 flex-direction:column;
 gap:10px;
-scroll-behavior:smooth;
 }
 
 .empty{
@@ -137,6 +203,9 @@ line-height:1.5;
 word-wrap:break-word;
 overflow-wrap:anywhere;
 white-space:pre-wrap;
+user-select:none;
+-webkit-user-select:none;
+flex-shrink:0;
 }
 
 .message.mine{
@@ -154,11 +223,36 @@ border:1px solid rgba(255,255,255,.07);
 border-bottom-right-radius:5px;
 }
 
-.time{
-display:block;
-font-size:9px;
-opacity:.55;
+.message.search-hit{
+outline:2px solid #00e889;
+}
+
+.meta-row{
+display:flex;
+align-items:center;
+gap:5px;
 margin-top:4px;
+}
+
+.time{
+font-size:9px;
+opacity:.65;
+}
+
+.read-mark{
+font-size:10px;
+opacity:.75;
+letter-spacing:-1px;
+}
+
+.read-mark.seen{
+color:#003b22;
+font-weight:bold;
+opacity:1;
+}
+
+.message.other .read-mark{
+display:none;
 }
 
 .input-area{
@@ -334,6 +428,7 @@ font-family:inherit;
 font-size:14px;
 border-radius:7px;
 cursor:pointer;
+white-space:nowrap;
 }
 
 .top-more-menu button:hover{
@@ -357,18 +452,18 @@ flex:0 0 45px;
 }
 
 .attach-menu{
-position:absolute;
-bottom:72px;
-right:72px;
+position:fixed;
+bottom:76px;
+right:max(14px,calc(50% - 311px));
 display:none;
 flex-direction:column;
 gap:7px;
 padding:8px;
 background:#111916;
-border:1px solid rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.1);
 border-radius:16px;
 z-index:90;
-box-shadow:0 15px 35px rgba(0,0,0,.45);
+box-shadow:0 15px 35px rgba(0,0,0,.55);
 }
 
 .attach-menu.show{
@@ -380,7 +475,7 @@ border:0;
 background:#18231f;
 color:#fff;
 border-radius:12px;
-padding:11px 14px;
+padding:11px 16px;
 font-family:inherit;
 font-size:14px;
 white-space:nowrap;
@@ -396,6 +491,7 @@ width:auto;
 height:auto;
 border-radius:14px;
 object-fit:cover;
+cursor:pointer;
 }
 
 .message-video{
@@ -433,7 +529,7 @@ margin-bottom:2px;
 
 .edited-mark{
 font-size:9px;
-opacity:.55;
+opacity:.65;
 margin-right:5px;
 }
 
@@ -456,15 +552,16 @@ cursor:pointer;
 
 .pinned-mark{
 font-size:10px;
-opacity:.7;
+opacity:.75;
 margin-top:4px;
 }
 
 .reply-preview{
-position:absolute;
-bottom:72px;
-left:12px;
-right:12px;
+position:fixed;
+bottom:76px;
+left:50%;
+transform:translateX(-50%);
+width:min(626px,calc(100% - 24px));
 display:none;
 align-items:center;
 justify-content:space-between;
@@ -563,7 +660,7 @@ text-align:center;
 
 #recordBox{
 position:fixed;
-bottom:75px;
+bottom:78px;
 left:50%;
 transform:translateX(-50%);
 background:#18231f;
@@ -578,6 +675,7 @@ border:1px solid rgba(0,232,137,.2);
 
 #recordText{
 color:#00e889;
+white-space:nowrap;
 }
 
 #cancelRecord{
@@ -587,33 +685,80 @@ border:none;
 border-radius:12px;
 padding:6px 12px;
 cursor:pointer;
+white-space:nowrap;
 }
 
 .message-menu{
-position:absolute;
-right:10px;
-top:50%;
-transform:translateY(-50%);
+position:fixed;
+bottom:82px;
+left:50%;
+transform:translateX(-50%);
+width:min(320px,calc(100% - 28px));
 background:#111916;
-border:1px solid rgba(255,255,255,.1);
-border-radius:12px;
-padding:8px;
+border:1px solid rgba(0,232,137,.25);
+border-radius:16px;
+padding:10px;
 z-index:999;
-box-shadow:0 5px 20px rgba(0,0,0,.5);
+box-shadow:0 14px 36px rgba(0,0,0,.75);
 }
 
-.message-menu button{
+.message-menu-reactions{
+display:flex;
+justify-content:space-around;
+padding-bottom:8px;
+margin-bottom:6px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.message-menu-reactions button{
+background:#18231f;
+border:none;
+border-radius:10px;
+padding:7px 10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.message-menu button.action-btn{
 background:#18231f;
 color:white;
 border:none;
-padding:10px 15px;
+padding:11px 15px;
 border-radius:10px;
 cursor:pointer;
+font-family:inherit;
 font-size:14px;
 display:block;
 width:100%;
-margin:2px 0;
+margin:4px 0;
 text-align:right;
+white-space:nowrap;
+}
+
+.message-menu button.action-btn:hover{
+background:#22312c;
+}
+
+.image-lightbox{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.92);
+z-index:1200;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.image-lightbox.show{
+display:flex;
+}
+
+.image-lightbox img{
+max-width:100%;
+max-height:90vh;
+border-radius:14px;
+object-fit:contain;
 }
 
 .incoming-call{
@@ -876,6 +1021,16 @@ color:#fff;
 </div>
 </header>
 
+<div id="searchBar" class="search-bar">
+<input id="searchInput" type="text" placeholder="ابحث في الرسائل...">
+<span id="searchCount" class="search-count">0 / 0</span>
+<button id="prevMatchBtn" type="button">▲</button>
+<button id="nextMatchBtn" type="button">▼</button>
+<button id="closeSearchBtn" type="button">✕</button>
+</div>
+
+<div id="uploadBanner" class="upload-banner">جارٍ رفع الملف...</div>
+
 <div id="messages" class="messages">
 <div class="empty">💬<br>ابدأ المحادثة الآن</div>
 </div>
@@ -886,7 +1041,7 @@ color:#fff;
 </div>
 
 <input id="galleryInput" type="file" accept="image/*,video/*" style="display:none">
-<input id="cameraInput" type="file" accept="image/*,video/*" capture="environment" style="display:none">
+<input id="cameraInput" type="file" accept="image/*" capture="environment" style="display:none">
 
 <div id="replyPreview" class="reply-preview">
 <div id="replyPreviewText" class="reply-preview-text"></div>
@@ -906,6 +1061,10 @@ color:#fff;
 <button id="sendButton" type="button">➤</button>
 </div>
 </main>
+
+<div id="imageLightbox" class="image-lightbox">
+<img id="lightboxImg" src="" alt="معاينة الصورة">
+</div>
 
 <div id="incomingCall" class="incoming-call" style="display:none">
 <div class="incoming-call-info">
@@ -957,7 +1116,7 @@ color:#fff;
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc,
+  getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, addDoc,
   collection, query, where, orderBy, onSnapshot, deleteDoc,
   serverTimestamp, arrayUnion, arrayRemove
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -996,6 +1155,7 @@ const friendName = $("friendName");
 const friendAvatar = $("friendAvatar");
 const friendStatus = $("friendStatus");
 const backButton = $("backButton");
+const uploadBanner = $("uploadBanner");
 
 let currentUser = null;
 let friendUser = null;
@@ -1003,8 +1163,14 @@ let chatID = null;
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
 let presenceInterval = null;
+let typingTimeout = null;
+let isCurrentlyTyping = false;
 let editingMessageId = null;
 let replyTarget = null;
+let activeAudio = null;
+let activePlayBtn = null;
+let searchMatches = [];
+let searchIndex = -1;
 
 function escapeHtml(value){
   return String(value ?? "").replace(/[&<>'"]/g, c => ({
@@ -1029,6 +1195,21 @@ function formatSeconds(value){
 
 function createChatID(a, b){
   return [a, b].sort().join("_");
+}
+
+function scrollToBottom(instant = true){
+  const run = () => {
+    messages.style.scrollBehavior = instant ? "auto" : "smooth";
+    messages.scrollTop = messages.scrollHeight;
+  };
+  run();
+  requestAnimationFrame(run);
+}
+
+function setUploading(active, text = "جارٍ رفع الملف..."){
+  if(!uploadBanner) return;
+  uploadBanner.textContent = text;
+  uploadBanner.classList.toggle("show", Boolean(active));
 }
 
 function getMessagePreview(data){
@@ -1058,12 +1239,26 @@ async function updateChatSummary(lastMessage){
   }, { merge: true });
 }
 
+async function setTypingState(typing){
+  if(!currentUser || !friendUser) return;
+  if(isCurrentlyTyping === typing) return;
+  isCurrentlyTyping = typing;
+  try{
+    await setDoc(doc(db, "users", currentUser.uid), {
+      typingTo: typing ? friendUser.uid : null
+    }, { merge: true });
+  }catch(error){
+    console.error("Typing error:", error);
+  }
+}
+
 async function updateMyPresence(online = true){
   if(!currentUser) return;
   try{
     await setDoc(doc(db, "users", currentUser.uid), {
       online,
-      lastSeen: serverTimestamp()
+      lastSeen: serverTimestamp(),
+      ...(online ? {} : { typingTo: null })
     }, { merge: true });
   }catch(error){
     console.error("Presence error:", error);
@@ -1085,6 +1280,10 @@ function stopPresence(){
     clearInterval(presenceInterval);
     presenceInterval = null;
   }
+  if(typingTimeout){
+    clearTimeout(typingTimeout);
+    typingTimeout = null;
+  }
   if(currentUser) updateMyPresence(false);
 }
 
@@ -1094,10 +1293,17 @@ function listenFriendStatus(){
   unsubscribeFriendStatus = onSnapshot(doc(db, "users", friendUser.uid), snap => {
     if(!snap.exists()){
       friendStatus.textContent = "● غير متصل";
-      friendStatus.classList.remove("online");
+      friendStatus.classList.remove("online", "typing");
       return;
     }
     const data = snap.data();
+    const isTypingToMe = data.typingTo === currentUser?.uid;
+    if(isTypingToMe){
+      friendStatus.textContent = "يكتب الآن...";
+      friendStatus.classList.add("online", "typing");
+      return;
+    }
+    friendStatus.classList.remove("typing");
     const lastSeen = data.lastSeen?.toMillis?.() || 0;
     const online = data.online === true && lastSeen > 0 && (Date.now() - lastSeen < 30000);
     if(online){
@@ -1133,6 +1339,10 @@ function showError(error){
   app.style.display = "none";
   const msg = typeof error === "string" ? error : (error?.message || "");
   loading.innerHTML = '<div style="text-align:center;padding:20px">⚠️ تعذر فتح الدردشة<br><small style="color:#777">' + escapeHtml(msg) + '</small></div>';
+}
+
+function closeMessageMenu(){
+  document.querySelectorAll(".message-menu").forEach(el => el.remove());
 }
 
 function startReply(data){
@@ -1217,11 +1427,25 @@ function renderReactions(box, data){
   box.appendChild(wrapper);
 }
 
+function openLightbox(src){
+  const box = $("imageLightbox");
+  const img = $("lightboxImg");
+  if(!box || !img || !src) return;
+  img.src = src;
+  box.classList.add("show");
+}
+
+$("imageLightbox")?.addEventListener("click", () => {
+  $("imageLightbox")?.classList.remove("show");
+  if($("lightboxImg")) $("lightboxImg").src = "";
+});
+
 function renderMessage(data){
+  const isMine = data.senderId === currentUser.uid;
   const box = document.createElement("div");
-  let className = "message " + (data.senderId === currentUser.uid ? "mine" : "other");
+  let className = "message " + (isMine ? "mine" : "other");
   if(data.type === "image" || data.type === "video") className += " media-message";
-  if(data.type === "voice" && data.audio) className += " voice-message";
+  if(data.type === "voice" && (data.audio || data.url)) className += " voice-message";
   box.className = className;
 
   if(data.replyTo){
@@ -1244,7 +1468,7 @@ function renderMessage(data){
     box.appendChild(replyBox);
   }
 
-  if(data.type === "text" || (data.type === "voice" && !data.audio && data.text)){
+  if(data.type === "text" || (data.type === "voice" && !data.audio && !data.url && data.text)){
     box.appendChild(document.createTextNode(data.text || ""));
     if(data.isEdited){
       const edited = document.createElement("span");
@@ -1260,6 +1484,10 @@ function renderMessage(data){
     img.src = data.url;
     img.alt = "صورة";
     img.loading = "lazy";
+    img.onclick = e => {
+      e.stopPropagation();
+      openLightbox(data.url);
+    };
     box.appendChild(img);
   }
 
@@ -1272,7 +1500,8 @@ function renderMessage(data){
     box.appendChild(video);
   }
 
-  if(data.type === "voice" && data.audio){
+  const voiceSrc = data.url || data.audio;
+  if(data.type === "voice" && voiceSrc){
     const player = document.createElement("div");
     player.className = "voice-player";
     const play = document.createElement("button");
@@ -1293,7 +1522,7 @@ function renderMessage(data){
     duration.className = "voice-duration";
     duration.textContent = "00:00";
 
-    const audio = new Audio(data.audio);
+    const audio = new Audio(voiceSrc);
     audio.preload = "metadata";
     audio.addEventListener("loadedmetadata", () => {
       duration.textContent = formatSeconds(audio.duration);
@@ -1307,10 +1536,20 @@ function renderMessage(data){
     audio.addEventListener("ended", () => {
       play.textContent = "▶";
       progress.value = "0";
+      if(activeAudio === audio){
+        activeAudio = null;
+        activePlayBtn = null;
+      }
     });
     play.onclick = e => {
       e.stopPropagation();
+      if(activeAudio && activeAudio !== audio){
+        activeAudio.pause();
+        if(activePlayBtn) activePlayBtn.textContent = "▶";
+      }
       if(audio.paused){
+        activeAudio = audio;
+        activePlayBtn = play;
         audio.play().catch(console.error);
         play.textContent = "Ⅱ";
       }else{
@@ -1330,10 +1569,22 @@ function renderMessage(data){
     box.appendChild(player);
   }
 
-  const meta = document.createElement("div");
+  const metaRow = document.createElement("div");
+  metaRow.className = "meta-row";
+
+  const meta = document.createElement("span");
   meta.className = "time";
   meta.textContent = formatTime(data.createdAt);
-  box.appendChild(meta);
+  metaRow.appendChild(meta);
+
+  if(isMine){
+    const readMark = document.createElement("span");
+    readMark.className = "read-mark" + (data.read ? " seen" : "");
+    readMark.textContent = data.read ? "✓✓" : "✓";
+    metaRow.appendChild(readMark);
+  }
+
+  box.appendChild(metaRow);
 
   if(data.pinned){
     const pin = document.createElement("div");
@@ -1348,46 +1599,66 @@ function renderMessage(data){
   return box;
 }
 
-function showMessageMenu(messageElement, data){
-  document.querySelectorAll(".message-menu").forEach(el => el.remove());
+function showMessageMenu(data){
+  closeMessageMenu();
   const menu = document.createElement("div");
   menu.className = "message-menu";
+  menu.addEventListener("click", e => e.stopPropagation());
+  menu.addEventListener("pointerdown", e => e.stopPropagation());
+
+  const reactBar = document.createElement("div");
+  reactBar.className = "message-menu-reactions";
+  reactionList.forEach(emoji => {
+    const rBtn = document.createElement("button");
+    rBtn.type = "button";
+    rBtn.textContent = emoji;
+    rBtn.onclick = e => {
+      e.stopPropagation();
+      toggleReaction(data.id, emoji);
+      closeMessageMenu();
+    };
+    reactBar.appendChild(rBtn);
+  });
+  menu.appendChild(reactBar);
 
   const reply = document.createElement("button");
   reply.type = "button";
+  reply.className = "action-btn";
   reply.textContent = "↩ رد";
   reply.onclick = e => {
     e.stopPropagation();
-    menu.remove();
+    closeMessageMenu();
     startReply(data);
   };
   menu.appendChild(reply);
 
   const pin = document.createElement("button");
   pin.type = "button";
+  pin.className = "action-btn";
   pin.textContent = data.pinned ? "إلغاء التثبيت" : "📌 تثبيت";
   pin.onclick = async e => {
     e.stopPropagation();
+    closeMessageMenu();
     try{
       await updateDoc(doc(db, "chats", chatID, "messages", data.id), { pinned: !data.pinned });
     }catch(error){
       console.error("Pin error:", error);
     }
-    menu.remove();
   };
   menu.appendChild(pin);
 
   if(data.senderId === currentUser.uid && data.type === "text"){
     const edit = document.createElement("button");
     edit.type = "button";
+    edit.className = "action-btn";
     edit.textContent = "✏ تعديل";
     edit.onclick = e => {
       e.stopPropagation();
+      closeMessageMenu();
       editingMessageId = data.id;
       messageInput.value = data.text || "";
       sendButton.textContent = "✓";
       cancelReply();
-      menu.remove();
       messageInput.focus();
     };
     menu.appendChild(edit);
@@ -1395,9 +1666,11 @@ function showMessageMenu(messageElement, data){
 
   const del = document.createElement("button");
   del.type = "button";
+  del.className = "action-btn";
   del.textContent = data.senderId === currentUser.uid ? "🗑 حذف للجميع" : "🗑 حذف لدي";
   del.onclick = async e => {
     e.stopPropagation();
+    closeMessageMenu();
     try{
       if(data.senderId === currentUser.uid){
         await deleteDoc(doc(db, "chats", chatID, "messages", data.id));
@@ -1409,10 +1682,10 @@ function showMessageMenu(messageElement, data){
     }catch(error){
       console.error("Delete error:", error);
     }
-    menu.remove();
   };
   menu.appendChild(del);
-  messageElement.appendChild(menu);
+
+  app.appendChild(menu);
 }
 
 function addMessageActions(messageElement, data){
@@ -1424,14 +1697,14 @@ function addMessageActions(messageElement, data){
     longPress = false;
     pressTimer = setTimeout(() => {
       longPress = true;
-      showMessageMenu(messageElement, data);
-    }, 500);
+      showMessageMenu(data);
+    }, 450);
   });
   messageElement.addEventListener("pointerup", () => { clearTimeout(pressTimer); });
   messageElement.addEventListener("pointercancel", () => { clearTimeout(pressTimer); });
   messageElement.addEventListener("contextmenu", e => {
     e.preventDefault();
-    showMessageMenu(messageElement, data);
+    showMessageMenu(data);
   });
 
   let lastTap = 0;
@@ -1448,7 +1721,7 @@ function addMessageActions(messageElement, data){
 
 function renderMessages(snapshot){
   const hadNoMessages = !messages.querySelector(".message");
-  const nearBottom = hadNoMessages || (messages.scrollHeight - messages.scrollTop - messages.clientHeight < 140);
+  const nearBottom = hadNoMessages || (messages.scrollHeight - messages.scrollTop - messages.clientHeight < 180);
   messages.querySelectorAll(".message").forEach(el => el.remove());
 
   const docs = snapshot.docs.filter(docSnap => {
@@ -1467,18 +1740,20 @@ function renderMessages(snapshot){
     return;
   }
 
+  let hasNewMine = false;
   docs.forEach(docSnap => {
     const data = { ...docSnap.data(), id: docSnap.id };
+    if(data.senderId === currentUser.uid && !data.createdAt){
+      hasNewMine = true;
+    }
     if(data.senderId !== currentUser.uid && data.read === false){
       updateDoc(doc(db, "chats", chatID, "messages", data.id), { read: true }).catch(() => {});
     }
     messages.appendChild(renderMessage(data));
   });
 
-  if(nearBottom){
-    requestAnimationFrame(() => {
-      messages.scrollTop = messages.scrollHeight;
-    });
+  if(nearBottom || hasNewMine){
+    scrollToBottom(true);
   }
 }
 
@@ -1495,6 +1770,7 @@ async function sendMessage(){
   const text = messageInput.value.trim();
   if(!text || !currentUser || !friendUser || !chatID) return;
   sendButton.disabled = true;
+  await setTypingState(false);
 
   try{
     if(editingMessageId){
@@ -1527,6 +1803,7 @@ async function sendMessage(){
     }
     messageInput.value = "";
     cancelReply();
+    scrollToBottom(true);
   }catch(error){
     console.error("Send message error:", error);
     alert("تعذر إرسال الرسالة:\n" + error.message);
@@ -1543,6 +1820,17 @@ messageInput.addEventListener("keydown", event => {
   }
 });
 
+messageInput.addEventListener("input", () => {
+  const hasText = messageInput.value.trim().length > 0;
+  setTypingState(hasText);
+  if(typingTimeout) clearTimeout(typingTimeout);
+  if(hasText){
+    typingTimeout = setTimeout(() => {
+      setTypingState(false);
+    }, 2500);
+  }
+});
+
 backButton.addEventListener("click", () => {
   if(window.history.length > 1){
     history.back();
@@ -1553,6 +1841,7 @@ backButton.addEventListener("click", () => {
 
 attachButton.addEventListener("click", e => {
   e.stopPropagation();
+  closeMessageMenu();
   attachMenu.classList.toggle("show");
 });
 
@@ -1561,7 +1850,7 @@ document.addEventListener("click", e => {
     attachMenu.classList.remove("show");
   }
   if(!e.target.closest(".message-menu") && !e.target.closest(".message")){
-    document.querySelectorAll(".message-menu").forEach(el => el.remove());
+    closeMessageMenu();
   }
 });
 
@@ -1574,17 +1863,26 @@ cameraButton.addEventListener("click", () => {
   cameraInput.click();
 });
 
+async function uploadToSupabaseBucket(blobOrFile, folderPrefix, extension){
+  const rawName = blobOrFile.name || `file.${extension}`;
+  const safeName = String(rawName).replace(/[^a-zA-Z0-9._-]/g, "_");
+  const fileName = `${currentUser.uid}/${folderPrefix}_${Date.now()}_${safeName}`;
+
+  const { error } = await supabase.storage
+    .from("mecd-media")
+    .upload(fileName, blobOrFile, { upsert: false, contentType: blobOrFile.type || undefined });
+  if(error) throw error;
+
+  const { data: publicURLData } = supabase.storage.from("mecd-media").getPublicUrl(fileName);
+  return publicURLData.publicUrl;
+}
+
 async function uploadMediaAndSend(file, type){
   if(!currentUser || !friendUser || !chatID || !file) return;
+  setUploading(true, type === "video" ? "جارٍ رفع الفيديو..." : "جارٍ رفع الصورة...");
   try{
-    const safeName = String(file.name || "file").replace(/[^a-zA-Z0-9._-]/g, "_");
-    const fileName = `${currentUser.uid}/${Date.now()}_${safeName}`;
-
-    const { error } = await supabase.storage.from("mecd-media").upload(fileName, file, { upsert: false });
-    if(error) throw error;
-
-    const { data: publicURLData } = supabase.storage.from("mecd-media").getPublicUrl(fileName);
-    const mediaUrl = publicURLData.publicUrl;
+    const ext = file.name?.split(".").pop() || (type === "video" ? "mp4" : "jpg");
+    const mediaUrl = await uploadToSupabaseBucket(file, type, ext);
 
     await addDoc(collection(db, "chats", chatID, "messages"), {
       url: mediaUrl,
@@ -1597,9 +1895,12 @@ async function uploadMediaAndSend(file, type){
     });
 
     await updateChatSummary(type === "video" ? "🎥 فيديو" : "📷 صورة");
+    scrollToBottom(true);
   }catch(error){
     console.error("Upload error:", error);
     alert("فشل رفع الملف: تأكد من إعدادات سلة Supabase أو اتصال الإنترنت.");
+  }finally{
+    setUploading(false);
   }
 }
 
@@ -1624,10 +1925,7 @@ async function clearMyChat(){
   const confirmed = confirm("هل تريد حذف الرسائل من جهازك؟");
   if(!confirmed) return;
   try{
-    const q = query(collection(db, "chats", chatID, "messages"));
-    const snap = await new Promise((resolve, reject) => {
-      const unsub = onSnapshot(q, s => { unsub(); resolve(s); }, reject);
-    });
+    const snap = await getDocs(collection(db, "chats", chatID, "messages"));
     const tasks = [];
     snap.docs.forEach(messageDoc => {
       const data = messageDoc.data();
@@ -1645,6 +1943,36 @@ async function clearMyChat(){
   }
 }
 
+function clearSearchHighlights(){
+  document.querySelectorAll(".message.search-hit").forEach(el => el.classList.remove("search-hit"));
+  searchMatches = [];
+  searchIndex = -1;
+  if($("searchCount")) $("searchCount").textContent = "0 / 0";
+}
+
+function focusMatchAt(index){
+  if(!searchMatches.length) return;
+  searchIndex = (index + searchMatches.length) % searchMatches.length;
+  searchMatches.forEach((el, i) => {
+    el.classList.toggle("search-hit", i === searchIndex);
+  });
+  searchMatches[searchIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+  if($("searchCount")) $("searchCount").textContent = `${searchIndex + 1} / ${searchMatches.length}`;
+}
+
+function runChatSearch(){
+  const term = ($("searchInput")?.value || "").trim().toLowerCase();
+  clearSearchHighlights();
+  if(!term) return;
+  const allMsgs = Array.from(document.querySelectorAll(".message"));
+  searchMatches = allMsgs.filter(el => el.textContent.toLowerCase().includes(term));
+  if(searchMatches.length){
+    focusMatchAt(0);
+  }else if($("searchCount")){
+    $("searchCount").textContent = "0 / 0";
+  }
+}
+
 $("clearChatButton")?.addEventListener("click", async () => {
   $("topMoreMenu").hidden = true;
   await clearMyChat();
@@ -1652,21 +1980,20 @@ $("clearChatButton")?.addEventListener("click", async () => {
 
 $("searchChatButton")?.addEventListener("click", () => {
   $("topMoreMenu").hidden = true;
-  const text = prompt("اكتب كلمة للبحث في المحادثة:");
-  if(!text) return;
-  const term = text.trim().toLowerCase();
-  if(!term) return;
-  let found = false;
-  document.querySelectorAll(".message").forEach(el => {
-    const value = el.textContent.toLowerCase();
-    el.style.outline = "";
-    if(value.includes(term)){
-      found = true;
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-      el.style.outline = "2px solid #00e889";
-    }
-  });
-  if(!found) alert("لم يتم العثور على الرسالة.");
+  const bar = $("searchBar");
+  if(!bar) return;
+  bar.classList.add("show");
+  $("searchInput")?.focus();
+  runChatSearch();
+});
+
+$("searchInput")?.addEventListener("input", runChatSearch);
+$("prevMatchBtn")?.addEventListener("click", () => focusMatchAt(searchIndex - 1));
+$("nextMatchBtn")?.addEventListener("click", () => focusMatchAt(searchIndex + 1));
+$("closeSearchBtn")?.addEventListener("click", () => {
+  $("searchBar")?.classList.remove("show");
+  if($("searchInput")) $("searchInput").value = "";
+  clearSearchHighlights();
 });
 
 const moreButton = document.getElementById("moreButton");
@@ -1674,6 +2001,7 @@ const topMoreMenu = document.getElementById("topMoreMenu");
 if(moreButton && topMoreMenu){
   moreButton.addEventListener("click", event => {
     event.stopPropagation();
+    closeMessageMenu();
     topMoreMenu.hidden = !topMoreMenu.hidden;
   });
   document.addEventListener("click", event => {
@@ -1732,7 +2060,16 @@ function showCallScreen(type){
 function hideCallScreen(){
   $("callScreen")?.classList.remove("show");
   $("videoStage")?.classList.remove("show");
-  if($("localVideo")) $("localVideo").style.display = "none";
+  if($("localVideo")){
+    $("localVideo").style.display = "none";
+    $("localVideo").srcObject = null;
+  }
+  if($("remoteVideo")){
+    $("remoteVideo").srcObject = null;
+  }
+  if($("remoteAudioCall")){
+    $("remoteAudioCall").srcObject = null;
+  }
 }
 
 function showVideoStage(){
@@ -1756,6 +2093,20 @@ function stopTimer(){
   }
 }
 
+async function attachLocalTracksToPeer(){
+  if(!pc || !localStream) return;
+  for(const track of localStream.getTracks()){
+    const existingSender = pc.getSenders().find(
+      sender => sender.track === track || (sender.track && sender.track.kind === track.kind)
+    );
+    if(!existingSender){
+      pc.addTrack(track, localStream);
+    }else if(existingSender.track !== track){
+      await existingSender.replaceTrack(track);
+    }
+  }
+}
+
 async function ensureMedia(needVideo = false){
   if(!navigator.mediaDevices?.getUserMedia){
     throw new Error("المتصفح لا يدعم المكالمات");
@@ -1763,23 +2114,23 @@ async function ensureMedia(needVideo = false){
   if(!localStream){
     localStream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-      video: needVideo
+      video: needVideo ? { facingMode: "user" } : false
     });
   }else if(needVideo && !localStream.getVideoTracks().length){
     const cam = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-    localStream.addTrack(cam.getVideoTracks()[0]);
-  }
-  if(pc){
-    for(const track of localStream.getTracks()){
-      const sender = pc.getSenders().find(s => s.track?.kind === track.kind);
-      if(!sender){
-        pc.addTrack(track, localStream);
-      }else if(track.kind === "video" && sender.track !== track){
-        await sender.replaceTrack(track);
-      }
+    const newVideoTrack = cam.getVideoTracks()[0];
+    if(newVideoTrack){
+      localStream.getVideoTracks().forEach(oldTrack => {
+        oldTrack.stop();
+        localStream.removeTrack(oldTrack);
+      });
+      localStream.addTrack(newVideoTrack);
     }
   }
-  if(localStream.getVideoTracks().length){
+
+  await attachLocalTracksToPeer();
+
+  if(localStream.getVideoTracks().length && $("localVideo")){
     $("localVideo").srcObject = localStream;
     $("localVideo").style.display = "block";
   }
@@ -1812,6 +2163,13 @@ async function addRemoteCandidate(candidate, id){
 }
 
 function createPeer(){
+  if(pc){
+    pc.onicecandidate = null;
+    pc.ontrack = null;
+    pc.onconnectionstatechange = null;
+    pc.close();
+    pc = null;
+  }
   pc = new RTCPeerConnection(rtcConfig);
   pc.onicecandidate = async event => {
     if(!event.candidate || !callId || !currentUser) return;
@@ -1906,6 +2264,9 @@ async function finishCall(status = "ended", remote = false){
     stopCandidatesWatch?.();
     stopCandidatesWatch = null;
     if(pc){
+      pc.onicecandidate = null;
+      pc.ontrack = null;
+      pc.onconnectionstatechange = null;
       pc.close();
       pc = null;
     }
@@ -1920,6 +2281,7 @@ async function finishCall(status = "ended", remote = false){
     callSeconds = 0;
     lastUpgradeOffer = "";
     lastUpgradeAnswer = "";
+    remoteMuted = false;
     connected = false;
     hideCallScreen();
     $("incomingCall").style.display = "none";
@@ -2276,7 +2638,7 @@ $("muteCallNormal")?.addEventListener("click", () => {
 });
 
 /* =========================
-   Voice Recording
+   Voice Recording (Supabase)
 ========================= */
 const vBtn = $("voiceButton");
 const rBox = $("recordBox");
@@ -2333,28 +2695,31 @@ async function startVoice(){
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = async () => {
-        if(!currentUser || !friendUser || !chatID) return;
-        try{
-          await addDoc(collection(db, "chats", chatID, "messages"), {
-            type: "voice",
-            audio: reader.result,
-            mimeType: blob.type,
-            text: "🎤 تسجيل صوتي",
-            senderId: currentUser.uid,
-            receiverId: friendUser.uid,
-            read: false,
-            createdAt: serverTimestamp(),
-            deletedFor: []
-          });
-          await updateChatSummary("🎤 تسجيل صوتي");
-        }catch(error){
-          console.error(error);
-          alert("تعذر إرسال التسجيل الصوتي");
-        }
-      };
-      reader.readAsDataURL(blob);
+      if(!currentUser || !friendUser || !chatID) return;
+      setUploading(true, "جارٍ إرسال التسجيل الصوتي...");
+      try{
+        const ext = recordedMime.includes("mp4") ? "m4a" : "webm";
+        const audioUrl = await uploadToSupabaseBucket(blob, "voice", ext);
+
+        await addDoc(collection(db, "chats", chatID, "messages"), {
+          type: "voice",
+          url: audioUrl,
+          mimeType: blob.type,
+          text: "🎤 تسجيل صوتي",
+          senderId: currentUser.uid,
+          receiverId: friendUser.uid,
+          read: false,
+          createdAt: serverTimestamp(),
+          deletedFor: []
+        });
+        await updateChatSummary("🎤 تسجيل صوتي");
+        scrollToBottom(true);
+      }catch(error){
+        console.error(error);
+        alert("تعذر رفع أو إرسال التسجيل الصوتي");
+      }finally{
+        setUploading(false);
+      }
     };
 
     vRec.start();
