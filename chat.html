@@ -353,11 +353,12 @@ color:white;
 font-size:20px;
 cursor:pointer;
 flex-shrink:0;
+touch-action:none;
 }
 
 #voiceButton.recording{
-background:#321817;
-color:#ff5555;
+background:#00c96b;
+color:#00150e;
 animation:pulse 1.2s infinite;
 }
 
@@ -1049,7 +1050,7 @@ color:#fff;
 </div>
 
 <div id="recordBox" style="display:none">
-<span id="recordText">🎤 يسجل صوت…</span>
+<span id="recordText">🎤 يسجل صوت… ارفع إصبعك للإرسال</span>
 <span id="recordTime">00:00</span>
 <button id="cancelRecord" type="button">إلغاء</button>
 </div>
@@ -1057,7 +1058,7 @@ color:#fff;
 <div class="input-area">
 <button id="attachButton" type="button">＋</button>
 <input id="messageInput" type="text" placeholder="اكتب رسالة..." autocomplete="off" maxlength="2000">
-<button id="voiceButton" type="button">🎤</button>
+<button id="voiceButton" type="button" title="اضغط باستمرار للتسجيل وارفع للإرسال">🎤</button>
 <button id="sendButton" type="button">➤</button>
 </div>
 </main>
@@ -1163,6 +1164,8 @@ let chatID = null;
 let unsubscribeMessages = null;
 let unsubscribeFriendStatus = null;
 let presenceInterval = null;
+let statusRefreshInterval = null;
+let latestFriendSnapshotData = null;
 let typingTimeout = null;
 let isCurrentlyTyping = false;
 let editingMessageId = null;
@@ -1185,6 +1188,21 @@ function formatTime(timestamp){
   }catch{
     return "";
   }
+}
+
+function formatLastSeen(dateObj){
+  if(!dateObj) return "● غير متصل";
+  const now = new Date();
+  const sameDay =
+    now.getFullYear() === dateObj.getFullYear() &&
+    now.getMonth() === dateObj.getMonth() &&
+    now.getDate() === dateObj.getDate();
+  const timeStr = dateObj.toLocaleTimeString("ar", { hour:"2-digit", minute:"2-digit" });
+  if(sameDay){
+    return "آخر ظهور اليوم " + timeStr;
+  }
+  const dateStr = dateObj.toLocaleDateString("ar", { month:"short", day:"numeric" });
+  return `آخر ظهور ${dateStr} • ${timeStr}`;
 }
 
 function formatSeconds(value){
@@ -1266,19 +1284,23 @@ async function updateMyPresence(online = true){
 }
 
 function startPresence(){
-  updateMyPresence(true);
+  updateMyPresence(document.visibilityState === "visible");
   if(presenceInterval) clearInterval(presenceInterval);
   presenceInterval = setInterval(() => {
     if(document.visibilityState === "visible"){
       updateMyPresence(true);
     }
-  }, 10000);
+  }, 8000);
 }
 
 function stopPresence(){
   if(presenceInterval){
     clearInterval(presenceInterval);
     presenceInterval = null;
+  }
+  if(statusRefreshInterval){
+    clearInterval(statusRefreshInterval);
+    statusRefreshInterval = null;
   }
   if(typingTimeout){
     clearTimeout(typingTimeout);
@@ -1287,34 +1309,49 @@ function stopPresence(){
   if(currentUser) updateMyPresence(false);
 }
 
+function renderFriendStatus(data){
+  if(!data){
+    friendStatus.textContent = "● غير متصل";
+    friendStatus.classList.remove("online", "typing");
+    return;
+  }
+  const isTypingToMe = data.typingTo === currentUser?.uid;
+  if(isTypingToMe){
+    friendStatus.textContent = "يكتب الآن...";
+    friendStatus.classList.add("online", "typing");
+    return;
+  }
+  friendStatus.classList.remove("typing");
+  const lastSeenMillis = data.lastSeen?.toMillis?.() || 0;
+  const isOnline = data.online === true && lastSeenMillis > 0 && (Date.now() - lastSeenMillis < 25000);
+  if(isOnline){
+    friendStatus.textContent = "● متصل";
+    friendStatus.classList.add("online");
+  }else{
+    friendStatus.classList.remove("online");
+    if(data.lastSeen?.toDate){
+      friendStatus.textContent = formatLastSeen(data.lastSeen.toDate());
+    }else{
+      friendStatus.textContent = "● غير متصل";
+    }
+  }
+}
+
 function listenFriendStatus(){
   if(!friendUser) return;
   if(unsubscribeFriendStatus) unsubscribeFriendStatus();
+  if(statusRefreshInterval) clearInterval(statusRefreshInterval);
+
   unsubscribeFriendStatus = onSnapshot(doc(db, "users", friendUser.uid), snap => {
-    if(!snap.exists()){
-      friendStatus.textContent = "● غير متصل";
-      friendStatus.classList.remove("online", "typing");
-      return;
-    }
-    const data = snap.data();
-    const isTypingToMe = data.typingTo === currentUser?.uid;
-    if(isTypingToMe){
-      friendStatus.textContent = "يكتب الآن...";
-      friendStatus.classList.add("online", "typing");
-      return;
-    }
-    friendStatus.classList.remove("typing");
-    const lastSeen = data.lastSeen?.toMillis?.() || 0;
-    const online = data.online === true && lastSeen > 0 && (Date.now() - lastSeen < 30000);
-    if(online){
-      friendStatus.textContent = "● متصل";
-    }else{
-      friendStatus.textContent = data.lastSeen?.toDate
-        ? "آخر ظهور " + data.lastSeen.toDate().toLocaleTimeString("ar", { hour:"2-digit", minute:"2-digit" })
-        : "● غير متصل";
-    }
-    friendStatus.classList.toggle("online", online);
+    latestFriendSnapshotData = snap.exists() ? snap.data() : null;
+    renderFriendStatus(latestFriendSnapshotData);
   });
+
+  statusRefreshInterval = setInterval(() => {
+    if(latestFriendSnapshotData){
+      renderFriendStatus(latestFriendSnapshotData);
+    }
+  }, 5000);
 }
 
 async function loadFriend(){
@@ -1863,14 +1900,15 @@ cameraButton.addEventListener("click", () => {
   cameraInput.click();
 });
 
-async function uploadToSupabaseBucket(blobOrFile, folderPrefix, extension){
+async function uploadToSupabaseBucket(blobOrFile, folderPrefix, extension, forcedContentType = ""){
   const rawName = blobOrFile.name || `file.${extension}`;
   const safeName = String(rawName).replace(/[^a-zA-Z0-9._-]/g, "_");
   const fileName = `${currentUser.uid}/${folderPrefix}_${Date.now()}_${safeName}`;
+  const contentType = forcedContentType || blobOrFile.type || "application/octet-stream";
 
   const { error } = await supabase.storage
     .from("mecd-media")
-    .upload(fileName, blobOrFile, { upsert: false, contentType: blobOrFile.type || undefined });
+    .upload(fileName, blobOrFile, { upsert: false, contentType });
   if(error) throw error;
 
   const { data: publicURLData } = supabase.storage.from("mecd-media").getPublicUrl(fileName);
@@ -1882,7 +1920,7 @@ async function uploadMediaAndSend(file, type){
   setUploading(true, type === "video" ? "جارٍ رفع الفيديو..." : "جارٍ رفع الصورة...");
   try{
     const ext = file.name?.split(".").pop() || (type === "video" ? "mp4" : "jpg");
-    const mediaUrl = await uploadToSupabaseBucket(file, type, ext);
+    const mediaUrl = await uploadToSupabaseBucket(file, type, ext, file.type);
 
     await addDoc(collection(db, "chats", chatID, "messages"), {
       url: mediaUrl,
@@ -1898,7 +1936,7 @@ async function uploadMediaAndSend(file, type){
     scrollToBottom(true);
   }catch(error){
     console.error("Upload error:", error);
-    alert("فشل رفع الملف: تأكد من إعدادات سلة Supabase أو اتصال الإنترنت.");
+    alert("فشل رفع الملف:\n" + (error?.message || "تأكد من إعدادات سلة Supabase أو اتصال الإنترنت."));
   }finally{
     setUploading(false);
   }
@@ -2638,7 +2676,7 @@ $("muteCallNormal")?.addEventListener("click", () => {
 });
 
 /* =========================
-   Voice Recording (Supabase)
+   Voice Recording (WhatsApp Press & Release + Toggle Fallback)
 ========================= */
 const vBtn = $("voiceButton");
 const rBox = $("recordBox");
@@ -2652,6 +2690,8 @@ let vChunks = [];
 let vCancelled = false;
 let vTimer = null;
 let vStart = 0;
+let vPressStartAt = 0;
+let vHoldMode = false;
 
 function resetVoice(){
   rBox.style.display = "none";
@@ -2660,6 +2700,7 @@ function resetVoice(){
   clearInterval(vTimer);
   vTimer = null;
   vRec = null;
+  vHoldMode = false;
 }
 
 async function startVoice(){
@@ -2670,8 +2711,9 @@ async function startVoice(){
     });
     vChunks = [];
     vCancelled = false;
-    const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4";
-    vRec = new MediaRecorder(vStream, { mimeType });
+    const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg"];
+    const mimeType = candidates.find(type => MediaRecorder.isTypeSupported(type)) || "";
+    vRec = mimeType ? new MediaRecorder(vStream, { mimeType }) : new MediaRecorder(vStream);
 
     vRec.ondataavailable = event => {
       if(event.data && event.data.size > 0) vChunks.push(event.data);
@@ -2679,7 +2721,7 @@ async function startVoice(){
 
     vRec.onstop = async () => {
       const chunksCopy = [...vChunks];
-      const recordedMime = vRec?.mimeType || mimeType;
+      const recordedMime = vRec?.mimeType || mimeType || "audio/webm";
       vChunks = [];
       vStream?.getTracks().forEach(track => track.stop());
       vStream = null;
@@ -2690,7 +2732,7 @@ async function startVoice(){
       if(wasCancelled) return;
 
       const blob = new Blob(chunksCopy, { type: recordedMime });
-      if(blob.size < 1000){
+      if(blob.size < 800){
         alert("التسجيل قصير جداً.");
         return;
       }
@@ -2698,13 +2740,14 @@ async function startVoice(){
       if(!currentUser || !friendUser || !chatID) return;
       setUploading(true, "جارٍ إرسال التسجيل الصوتي...");
       try{
-        const ext = recordedMime.includes("mp4") ? "m4a" : "webm";
-        const audioUrl = await uploadToSupabaseBucket(blob, "voice", ext);
+        const ext = recordedMime.includes("mp4") ? "m4a" : (recordedMime.includes("ogg") ? "ogg" : "webm");
+        const cleanMime = recordedMime.split(";")[0] || "audio/webm";
+        const audioUrl = await uploadToSupabaseBucket(blob, "voice", ext, cleanMime);
 
         await addDoc(collection(db, "chats", chatID, "messages"), {
           type: "voice",
           url: audioUrl,
-          mimeType: blob.type,
+          mimeType: cleanMime,
           text: "🎤 تسجيل صوتي",
           senderId: currentUser.uid,
           receiverId: friendUser.uid,
@@ -2715,16 +2758,16 @@ async function startVoice(){
         await updateChatSummary("🎤 تسجيل صوتي");
         scrollToBottom(true);
       }catch(error){
-        console.error(error);
-        alert("تعذر رفع أو إرسال التسجيل الصوتي");
+        console.error("Voice upload error:", error);
+        alert("تعذر رفع أو إرسال التسجيل الصوتي:\n" + (error?.message || "تحقق من إعدادات سلة Supabase"));
       }finally{
         setUploading(false);
       }
     };
 
-    vRec.start();
+    vRec.start(250);
     rBox.style.display = "flex";
-    rText.textContent = "🎤 يسجل صوت…";
+    rText.textContent = "🎤 يسجل صوت… ارفع للإرسال";
     vBtn.classList.add("recording");
     vStart = Date.now();
     vTimer = setInterval(() => {
@@ -2740,6 +2783,13 @@ async function startVoice(){
   }
 }
 
+function stopAndSendVoice(){
+  if(vRec && vRec.state === "recording"){
+    vCancelled = false;
+    vRec.stop();
+  }
+}
+
 function cancelVoice(){
   if(!vRec) return;
   vCancelled = true;
@@ -2750,11 +2800,36 @@ function cancelVoice(){
   }
 }
 
-vBtn?.addEventListener("click", () => {
+vBtn?.addEventListener("pointerdown", event => {
+  event.preventDefault();
   if(vRec && vRec.state === "recording"){
-    vRec.stop();
-  }else{
-    startVoice();
+    return;
+  }
+  vPressStartAt = Date.now();
+  vHoldMode = true;
+  startVoice();
+});
+
+window.addEventListener("pointerup", () => {
+  if(!vHoldMode) return;
+  vHoldMode = false;
+  const heldMs = Date.now() - vPressStartAt;
+  if(vRec && vRec.state === "recording" && heldMs >= 250){
+    stopAndSendVoice();
+  }
+});
+
+window.addEventListener("pointercancel", () => {
+  if(!vHoldMode) return;
+  vHoldMode = false;
+  if(vRec && vRec.state === "recording"){
+    stopAndSendVoice();
+  }
+});
+
+vBtn?.addEventListener("click", () => {
+  if(vRec && vRec.state === "recording" && !vHoldMode){
+    stopAndSendVoice();
   }
 });
 
@@ -2795,9 +2870,22 @@ onAuthStateChanged(auth, async user => {
   }
 });
 
+document.addEventListener("visibilitychange", () => {
+  if(!currentUser) return;
+  if(document.visibilityState === "visible"){
+    updateMyPresence(true);
+  }else{
+    setTypingState(false);
+    updateMyPresence(false);
+  }
+});
+
 window.addEventListener("pagehide", () => {
   if(callId && !ending){
     finishCall(connected ? "ended" : "cancelled").catch(() => {});
+  }
+  if(currentUser){
+    updateMyPresence(false);
   }
 });
 
